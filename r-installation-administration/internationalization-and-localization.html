@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="add-on-packages.html">
+<link rel="next" href="choosing-between-32-and-64-bit-builds.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="internationalization-and-localization" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> Internationalization and Localization</h1>
+<p>
+<a href="" id="index-Internationalization"></a> <a href="" id="index-Localization"></a>
+</p>
+<p>
+<em>Internationalization</em> refers to the process of enabling support for many human languages, and <em>localization</em> to adapting to a specific country and language.
+</p>
+<p>
+Current builds of R support all the character sets that the underlying OS can handle. These are interpreted according to the <a href="" id="index-Locale"></a> current <code class="calibre6">locale</code>, a sufficiently complicated topic to merit a separate section. Note though that R has no built-in support for right-to-left languages and bidirectional output, relying on the OS services. For example, how character vectors in UTF-8 containing both English digits and Hebrew characters are printed is OS-dependent (and perhaps locale-dependent).
+</p>
+<p>
+The other aspect of the internationalization is support for the translation of messages. This is enabled in almost all builds of R.
+</p>
+<hr />
+<p>
+<a href="" id="Locales"></a> <a href="" id="Locales-1"></a>
+</p>
+<h3 id="locales" class="section">
+7.1 Locales
+</h3>
+<p>
+<a href="" id="index-Locale-1"></a>
+</p>
+<p>
+A <em>locale</em> is a description of the local environment of the user, including the preferred language, the encoding of characters, the currency used and its conventions, and so on. Aspects of the locale are accessed by the R functions <code class="calibre6">Sys.getlocale</code> and <code class="calibre6">Sys.localeconv</code>.
+</p>
+<p>
+The system of naming locales is OS-specific. There is quite wide agreement on schemes, but not on the details of their implementation. A locale needs to specify
+</p>
+<ul>
+<li>
+A human language. These are generally specified by a lower-case two-character abbreviation following ISO 639 (see e.g. <a href="https://en.wikipedia.org/wiki/ISO_639-1" class="uri">https://en.wikipedia.org/wiki/ISO_639-1</a>).
+</li>
+<li>
+A ‘territory’, used mainly to specify the currency. These are generally specified by an upper-case two-character abbreviation following ISO 3166 (see e.g. <a href="https://en.wikipedia.org/wiki/ISO_3166" class="uri">https://en.wikipedia.org/wiki/ISO_3166</a>).
+</li>
+<li>
+A charset encoding, which determines both how a byte stream should be divided into characters, and which characters the subsequences of bytes represent. Sometimes the combination of language and territory is used to specify the encoding, for example to distinguish between traditional and simplified Chinese.
+</li>
+<li>
+Optionally, a modifier, for example to indicate that Austria is to be considered pre- or post-Euro. The modifier is also used to indicate the script (<code class="calibre6"><span class="citation">@latin</span></code>, <code class="calibre6"><span class="citation">@cyrillic</span></code> for Serbian, <code class="calibre6"><span class="citation">@iqtelif</span></code>) or language dialect (e.g. <code class="calibre6"><span class="citation">@saaho</span></code>, a dialect of Afar, and <code class="calibre6"><span class="citation">@bokmal</span></code> and <code class="calibre6"><span class="citation">@nynorsk</span></code>, dialects of Norwegian regarded by some OSes as separate languages, <code class="calibre6">no</code> and <code class="calibre6">nn</code>).
+</li>
+</ul>
+<p>
+R is principally concerned with the first (for translations) and third. Note that the charset may be deducible from the language, as some OSes offer only one charset per language.
+</p>
+<hr />
+<p>
+<a href="" id="Locales-under-Unix_002dalikes"></a> <a href="" id="Locales-under-Unix_002dalikes-1"></a>
+</p>
+<h4 id="locales-under-unix-alikes" class="subsection">
+7.1.1 Locales under Unix-alikes
+</h4>
+<p>
+Modern Linux uses the XPG<a href="environment-variable-index.html#FOOT28" id="DOCF28"><sup>28</sup></a> locale specifications which have the form ‘en_GB’, ‘en_GB.UTF-8’, ‘<a href="mailto:aa_ER.UTF-8@saaho">aa_ER.UTF-8@saaho</a>’, ‘<a href="mailto:de_AT.iso885915@euro">de_AT.iso885915@euro</a>’, the components being in the order listed above. (See <code class="calibre6">man locale</code> and <code class="calibre6">locale -a</code> for more details.) Similar schemes are used by most Unix-alikes: some (including some distributions of Linux) use ‘.utf8’ rather than ‘.UTF-8’.
+</p>
+<p>
+Note that whereas UTF-8 locales are nowadays almost universally used, locales such as ‘en_GB’ use 8-bit encodings for backwards compatibility.
+</p>
+<hr />
+<p>
+<a href="" id="Locales-under-Windows"></a> <a href="" id="Locales-under-Windows-1"></a>
+</p>
+<h4 id="locales-under-windows" class="subsection">
+7.1.2 Locales under Windows
+</h4>
+<p>
+Windows also uses locales, but specified in a rather less concise way. Most users will encounter locales only via drop-down menus, but more information and lists can be found at <a href="https://msdn.microsoft.com/en-us/library/hzz3tw78(v=vs.80)" class="uri">https://msdn.microsoft.com/en-us/library/hzz3tw78(v=vs.80)</a> (or if Microsoft moves it yet again, search for ‘Windows language country strings’).
+</p>
+<p>
+It offers only one encoding per language.
+</p>
+<p>
+Some care is needed with Windows’ locale names. For example, <code class="calibre6">chinese</code> is Traditional Chinese and not Simplified Chinese as used in most of the Chinese-speaking world.
+</p>
+<hr />
+<p>
+<a href="" id="Locales-under-macOS"></a> <a href="" id="Locales-under-macOS-1"></a>
+</p>
+<h4 id="locales-under-macos" class="subsection">
+7.1.3 Locales under macOS
+</h4>
+<p>
+macOS supports locales in its own particular way, but the R GUI tries to make this easier for users. See <a href="https://developer.apple.com/documentation/MacOSX/Conceptual/BPInternational/" class="uri">https://developer.apple.com/documentation/MacOSX/Conceptual/BPInternational/</a> for how users can set their locales. As with Windows, end users will generally only see lists of languages/territories. Users of R in a terminal may need to set the locale to something like ‘en_GB.UTF-8’ if it defaults to ‘C’ (as it sometimes does when logging in remotely and for batch jobs: note whether <code class="calibre6">Terminal</code> sets the <code class="calibre6">LANG</code> environment variable is an (advanced) preference, but does so by default).
+</p>
+<p>
+Internally macOS uses a form similar to Linux: the main difference from other Unix-alikes is that where a character set is not specified it is assumed to be <code class="calibre6">UTF-8</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Localization-of-messages"></a> <a href="" id="Localization-of-messages-1"></a>
+</p>
+<h3 id="localization-of-messages" class="section">
+7.2 Localization of messages
+</h3>
+<p>
+The preferred language for messages is by default taken from the locale. This can be overridden first by the setting of the environment variable <a href="" id="index-LANGUAGE"></a> <a href="" id="index-LC_005fALL"></a> <a href="" id="index-LC_005fMESSAGES"></a> <a href="" id="index-LANG"></a> <code class="calibre6">LANGUAGE</code> and then<a href="environment-variable-index.html#FOOT29" id="DOCF29"><sup>29</sup></a> by the environment variables <code class="calibre6">LC_ALL</code>, <code class="calibre6">LC_MESSAGES</code> and <code class="calibre6">LANG</code>. (The last three are normally used to set the locale and so should not be needed, but the first is only used to select the language for messages.) The code tries hard to map locales to languages, but on some systems (notably Windows) the locale names needed for the environment variable <code class="calibre6">LC_ALL</code> do not all correspond to XPG language names and so <code class="calibre6">LANGUAGE</code> may need to be set. (One example is ‘LC_ALL=es’ on Windows which sets the locale to Estonian and the language to Spanish.)
+</p>
+<p>
+It is usually possible to change the language once R is running <em>via</em> (not Windows) <code class="calibre6">Sys.setlocale(“LC_MESSAGES”, “new_locale”)</code>, or by setting an environment variable such as <code class="calibre6">LANGUAGE</code>, <em>provided</em><a href="environment-variable-index.html#FOOT30" id="DOCF30"><sup>30</sup></a> the language you are changing to can be output in the current character set. But this is OS-specific, and has been known to stop working on an OS upgrade.
+</p>
+<p>
+Messages are divided into <em>domains</em>, and translations may be available for some or all messages in a domain. R makes use of the following domains.
+</p>
+<ul>
+<li>
+Domain <code class="calibre6">R</code> for the C-level error and warning messages from the R interpreter.
+</li>
+<li>
+Domain <code class="calibre6">R-pkg</code> for the R <code class="calibre6">stop</code>, <code class="calibre6">warning</code> and <code class="calibre6">message</code> messages in each package, including <code class="calibre6">R-base</code> for the <strong>base</strong> package.
+</li>
+<li>
+Domain <code class="calibre6">pkg</code> for the C-level messages in each package.
+</li>
+<li>
+Domain <code class="calibre6">RGui</code> for the menus etc of the R for Windows GUI front-end.
+</li>
+</ul>
+<p>
+Dividing up the messages in this way allows R to be extensible: as packages are loaded, their message translation catalogues can be loaded too.
+</p>
+<p>
+R can be built without support for translations, but it is enabled by default.
+</p>
+<p>
+R-level and C-level domains are subtly different, for example in the way strings are canonicalized before being passed for translation.
+</p>
+<p>
+Translations are looked for by domain according to the currently specified language, as specifically as possible, so for example an Austrian (‘de_AT’) translation catalogue will be used in preference to a generic German one (‘de’) for an Austrian user. However, if a specific translation catalogue exists but does not contain a translation, the less specific catalogues are consulted. For example, R has catalogues for ‘en_GB’ that translate the Americanisms (e.g., ‘gray’) in the standard messages into English.<a href="environment-variable-index.html#FOOT31" id="DOCF31"><sup>31</sup></a> Two other examples: there are catalogues for ‘es’, which is Spanish as written in Spain and these will by default also be used in Spanish-speaking Latin American countries, and also for ‘pt_BR’, which are used for Brazilian locales but not for locales specifying Portugal.
+</p>
+<p>
+Translations in the right language but the wrong charset are made use of <a href="" id="index-LANGUAGE-1"></a> by on-the-fly re-encoding. The <code class="calibre6">LANGUAGE</code> variable (only) can be a colon-separated list, for example ‘se:de’, giving a set of languages in decreasing order of preference. One special value is ‘<a href="mailto:en@quot">en@quot</a>’, which can be used in a UTF-8 locale to have American error messages with pairs of single quotes translated to Unicode directional quotes.
+</p>
+<p>
+If no suitable translation catalogue is found or a particular message is not translated in any suitable catalogue, ‘English’<a href="environment-variable-index.html#FOOT32" id="DOCF32"><sup>32</sup></a> is used.
+</p>
+<p>
+See <a href="https://developer.r-project.org/Translations30.html" class="uri">https://developer.r-project.org/Translations30.html</a> for how to prepare and install translation catalogues.
+</p>
+<hr />
+<p>
+<a href="" id="Choosing-between-32_002d-and-64_002dbit-builds"></a> <a href="" id="Choosing-between-32_002d-and-64_002dbit-builds-1"></a>
+</p>
+<div id="calibre_pb_17" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="add-on-packages.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="choosing-between-32-and-64-bit-builds.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

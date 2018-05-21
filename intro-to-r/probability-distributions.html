@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="reading-data-from-files.html">
+<link rel="next" href="grouping-loops-and-conditional-execution.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="probability-distributions" class="section level1">
+<h1><span class="header-section-number">Chapter 8</span> Probability distributions</h1>
+<p>
+<a href="" id="index-Probability-distributions"></a>
+</p>
+<hr />
+<p>
+<a href="" id="R-as-a-set-of-statistical-tables"></a> <a href="" id="R-as-a-set-of-statistical-tables-1"></a>
+</p>
+<h3 id="r-as-a-set-of-statistical-tables" class="section">
+8.1 R as a set of statistical tables
+</h3>
+<p>
+One convenient use of R is to provide a comprehensive set of statistical tables. Functions are provided to evaluate the cumulative distribution function P(X &lt;= x), the probability density function and the quantile function (given <em>q</em>, the smallest <em>x</em> such that P(X &lt;= x) &gt; q), and to simulate from the distribution.
+</p>
+<blockquote>
+<table>
+<thead>
+<tr class="header">
+<th align="left">
+Distribution
+</th>
+<th align="left">
+R name
+</th>
+<th align="left">
+additional arguments
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">
+beta
+</td>
+<td align="left">
+<code class="calibre2">beta</code>
+</td>
+<td align="left">
+<code class="calibre2">shape1, shape2, ncp</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+binomial
+</td>
+<td align="left">
+<code class="calibre2">binom</code>
+</td>
+<td align="left">
+<code class="calibre2">size, prob</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+Cauchy
+</td>
+<td align="left">
+<code class="calibre2">cauchy</code>
+</td>
+<td align="left">
+<code class="calibre2">location, scale</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+chi-squared
+</td>
+<td align="left">
+<code class="calibre2">chisq</code>
+</td>
+<td align="left">
+<code class="calibre2">df, ncp</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+exponential
+</td>
+<td align="left">
+<code class="calibre2">exp</code>
+</td>
+<td align="left">
+<code class="calibre2">rate</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+F
+</td>
+<td align="left">
+<code class="calibre2">f</code>
+</td>
+<td align="left">
+<code class="calibre2">df1, df2, ncp</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+gamma
+</td>
+<td align="left">
+<code class="calibre2">gamma</code>
+</td>
+<td align="left">
+<code class="calibre2">shape, scale</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+geometric
+</td>
+<td align="left">
+<code class="calibre2">geom</code>
+</td>
+<td align="left">
+<code class="calibre2">prob</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+hypergeometric
+</td>
+<td align="left">
+<code class="calibre2">hyper</code>
+</td>
+<td align="left">
+<code class="calibre2">m, n, k</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+log-normal
+</td>
+<td align="left">
+<code class="calibre2">lnorm</code>
+</td>
+<td align="left">
+<code class="calibre2">meanlog, sdlog</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+logistic
+</td>
+<td align="left">
+<code class="calibre2">logis</code>
+</td>
+<td align="left">
+<code class="calibre2">location, scale</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+negative binomial
+</td>
+<td align="left">
+<code class="calibre2">nbinom</code>
+</td>
+<td align="left">
+<code class="calibre2">size, prob</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+normal
+</td>
+<td align="left">
+<code class="calibre2">norm</code>
+</td>
+<td align="left">
+<code class="calibre2">mean, sd</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Poisson
+</td>
+<td align="left">
+<code class="calibre2">pois</code>
+</td>
+<td align="left">
+<code class="calibre2">lambda</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+signed rank
+</td>
+<td align="left">
+<code class="calibre2">signrank</code>
+</td>
+<td align="left">
+<code class="calibre2">n</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Student’s t
+</td>
+<td align="left">
+<code class="calibre2">t</code>
+</td>
+<td align="left">
+<code class="calibre2">df, ncp</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+uniform
+</td>
+<td align="left">
+<code class="calibre2">unif</code>
+</td>
+<td align="left">
+<code class="calibre2">min, max</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Weibull
+</td>
+<td align="left">
+<code class="calibre2">weibull</code>
+</td>
+<td align="left">
+<code class="calibre2">shape, scale</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+Wilcoxon
+</td>
+<td align="left">
+<code class="calibre2">wilcox</code>
+</td>
+<td align="left">
+<code class="calibre2">m, n</code>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+Prefix the name given here by ‘d’ for the density, ‘p’ for the CDF, ‘q’ for the quantile function and ‘r’ for simulation (<em>r</em>andom deviates). The first argument is <code class="calibre2">x</code> for <code class="calibre2">dxxx</code>, <code class="calibre2">q</code> for <code class="calibre2">pxxx</code>, <code class="calibre2">p</code> for <code class="calibre2">qxxx</code> and <code class="calibre2">n</code> for <code class="calibre2">rxxx</code> (except for <code class="calibre2">rhyper</code>, <code class="calibre2">rsignrank</code> and <code class="calibre2">rwilcox</code>, for which it is <code class="calibre2">nn</code>). In not quite all cases is the non-centrality parameter <code class="calibre2">ncp</code> currently available: see the on-line help for details.
+</p>
+<p>
+The <code class="calibre2">pxxx</code> and <code class="calibre2">qxxx</code> functions all have logical arguments <code class="calibre2">lower.tail</code> and <code class="calibre2">log.p</code> and the <code class="calibre2">dxxx</code> ones have <code class="calibre2">log</code>. This allows, e.g., getting the cumulative (or “integrated”) <em>hazard</em> function, H(t) = - log(1 - F(t)), by
+</p>
+<div class="example">
+<pre class="example1"><code> - pxxx(t, ..., lower.tail = FALSE, log.p = TRUE)</code></pre>
+</div>
+<p>
+or more accurate log-likelihoods (by <code class="calibre2">dxxx(…, log = TRUE)</code>), directly.
+</p>
+<p>
+In addition there are functions <code class="calibre2">ptukey</code> and <code class="calibre2">qtukey</code> for the distribution of the studentized range of samples from a normal distribution, and <code class="calibre2">dmultinom</code> and <code class="calibre2">rmultinom</code> for the multinomial distribution. Further distributions are available in contributed packages, notably <a href="https://CRAN.R-project.org/package=SuppDists"><strong>SuppDists</strong></a>.
+</p>
+<p>
+Here are some examples
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ## -tailed p-value for t distribution
+&gt; 2*pt(-2.43, df = 13)
+&gt; ## upper 1% point for an F(2, 7) distribution
+&gt; qf(0.01, 2, 7, lower.tail = FALSE)</code></pre>
+</div>
+<p>
+See the on-line help on <code class="calibre2">RNG</code> for how random-number generation is done in R.
+</p>
+<hr />
+<p>
+<a href="" id="Examining-the-distribution-of-a-set-of-data"></a> <a href="" id="Examining-the-distribution-of-a-set-of-data-1"></a>
+</p>
+<h3 id="examining-the-distribution-of-a-set-of-data" class="section">
+8.2 Examining the distribution of a set of data
+</h3>
+<p>
+Given a (univariate) set of data we can examine its distribution in a large number of ways. The simplest is to examine the numbers. Two slightly different summaries are given by <code class="calibre2">summary</code> and <code class="calibre2">fivenum</code> <a href="" id="index-summary"></a> <a href="" id="index-fivenum"></a> and a display of the numbers by <code class="calibre2">stem</code> (a “stem and leaf” plot). <a href="" id="index-stem"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; attach(faithful)
+&gt; summary(eruptions)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  1.600   2.163   4.000   3.488   4.454   5.100
+&gt; fivenum(eruptions)
+[1] 1.6000 2.1585 4.0000 4.4585 5.1000
+&gt; stem(eruptions)
+
+  The decimal point is 1 digit(s) to the left of the |
+
+  16 | 070355555588
+  18 | 000022233333335577777777888822335777888
+  20 | 00002223378800035778
+  22 | 0002335578023578
+  24 | 00228
+  26 | 23
+  28 | 080
+  30 | 7
+  32 | 2337
+  34 | 250077
+  36 | 0000823577
+  38 | 2333335582225577
+  40 | 0000003357788888002233555577778
+  42 | 03335555778800233333555577778
+  44 | 02222335557780000000023333357778888
+  46 | 0000233357700000023578
+  48 | 00000022335800333
+  50 | 0370</code></pre>
+</div>
+<p>
+A stem-and-leaf plot is like a histogram, and R has a function <code class="calibre2">hist</code> to plot histograms. <a href="" id="index-hist"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; hist(eruptions)
+## make the bins smaller, make a plot of density
+&gt; hist(eruptions, seq(1.6, 5.2, 0.2), prob=TRUE)
+&gt; lines(density(eruptions, bw=0.1))
+&gt; rug(eruptions) # show the actual data points</code></pre>
+</div>
+<p>
+<a href="" id="index-density"></a> <a href="" id="index-Density-estimation"></a>
+</p>
+<p>
+More elegant density plots can be made by <code class="calibre2">density</code>, and we added a line produced by <code class="calibre2">density</code> in this example. The bandwidth <code class="calibre2">bw</code> was chosen by trial-and-error as the default gives too much smoothing (it usually does for “interesting” densities). (Better automated methods of bandwidth choice are available, and in this example <code class="calibre2">bw = “SJ”</code> gives a good result.)
+</p>
+<p>
+<img src="hist.png" alt="images/hist" class="calibre20" />
+</p>
+<p>
+We can plot the empirical cumulative distribution function by using the function <code class="calibre2">ecdf</code>. <a href="" id="index-ecdf"></a> <a href="" id="index-Empirical-CDFs"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; plot(ecdf(eruptions), do.points=FALSE, verticals=TRUE)</code></pre>
+</div>
+<p>
+This distribution is obviously far from any standard distribution. How about the right-hand mode, say eruptions of longer than 3 minutes? Let us fit a normal distribution and overlay the fitted CDF.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; long &lt;- eruptions[eruptions &gt; 3]
+&gt; plot(ecdf(long), do.points=FALSE, verticals=TRUE)
+&gt; x &lt;- seq(3, 5.4, 0.01)
+&gt; lines(x, pnorm(x, mean=mean(long), sd=sqrt(var(long))), lty=3)</code></pre>
+</div>
+<p>
+<img src="ecdf.png" alt="images/ecdf" class="calibre20" />
+</p>
+<p>
+Quantile-quantile (Q-Q) plots can help us examine this more carefully. <a href="" id="index-Quantile_002dquantile-plots"></a> <a href="" id="index-qqnorm"></a> <a href="" id="index-qqline"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>par(pty=&quot;s&quot;)       # arrange for a square figure region
+qqnorm(long); qqline(long)</code></pre>
+</div>
+<p>
+which shows a reasonable fit but a shorter right tail than one would expect from a normal distribution. Let us compare this with some simulated data from a <em>t</em> distribution
+</p>
+<p>
+<img src="QQ.png" alt="images/QQ" class="calibre20" />
+</p>
+<div class="example">
+<pre class="example1"><code>x &lt;- rt(250, df = 5)
+qqnorm(x); qqline(x)</code></pre>
+</div>
+<p>
+which will usually (if it is a random sample) show longer tails than expected for a normal. We can make a Q-Q plot against the generating distribution by
+</p>
+<div class="example">
+<pre class="example1"><code>qqplot(qt(ppoints(250), df = 5), x, xlab = &quot;Q-Q plot for t dsn&quot;)
+qqline(x)</code></pre>
+</div>
+<p>
+Finally, we might want a more formal test of agreement with normality (or not). R provides the Shapiro-Wilk test <a href="" id="index-Shapiro_002dWilk-test"></a> <a href="" id="index-shapiro_002etest"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; shapiro.test(long)
+
+         Shapiro-Wilk normality test
+
+data:  long
+W = 0.9793, p-value = 0.01052</code></pre>
+</div>
+<p>
+and the Kolmogorov-Smirnov test <a href="" id="index-Kolmogorov_002dSmirnov-test"></a> <a href="" id="index-ks_002etest"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ks.test(long, &quot;pnorm&quot;, mean = mean(long), sd = sqrt(var(long)))
+
+         One-sample Kolmogorov-Smirnov test
+
+data:  long
+D = 0.0661, p-value = 0.4284
+alternative hypothesis: two.sided</code></pre>
+</div>
+<p>
+(Note that the distribution theory is not valid here as we have estimated the parameters of the normal distribution from the same sample.)
+</p>
+<hr />
+<p>
+<a href="" id="One_002d-and-two_002dsample-tests"></a> <a href="" id="One_002d-and-two_002dsample-tests-1"></a>
+</p>
+<h3 id="one--and-two-sample-tests" class="section">
+8.3 One- and two-sample tests
+</h3>
+<p>
+<a href="" id="index-One_002d-and-two_002dsample-tests"></a>
+</p>
+<p>
+So far we have compared a single sample to a normal distribution. A much more common operation is to compare aspects of two samples. Note that in R, all “classical” tests including the ones used below are in package <strong>stats</strong> which is normally loaded.
+</p>
+<p>
+Consider the following sets of data on the latent heat of the fusion of ice (<em>cal/gm</em>) from Rice (1995, p.490)
+</p>
+<div class="example">
+<pre class="example1"><code>Method A: 79.98 80.04 80.02 80.04 80.03 80.03 80.04 79.97
+          80.05 80.03 80.02 80.00 80.02
+Method B: 80.02 79.94 79.98 79.97 79.97 80.03 79.95 79.97</code></pre>
+</div>
+<p>
+Boxplots provide a simple graphical comparison of the two samples.
+</p>
+<div class="example">
+<pre class="example1"><code>A &lt;- scan()
+79.98 80.04 80.02 80.04 80.03 80.03 80.04 79.97
+80.05 80.03 80.02 80.00 80.02
+
+B &lt;- scan()
+80.02 79.94 79.98 79.97 79.97 80.03 79.95 79.97
+
+boxplot(A, B)</code></pre>
+</div>
+<p>
+<a href="" id="index-boxplot"></a> <a href="" id="index-Box-plots"></a>
+</p>
+<p>
+which indicates that the first group tends to give higher results than the second.
+</p>
+<p>
+<img src="ice.png" alt="images/ice" class="calibre20" />
+</p>
+<p>
+To test for the equality of the means of the two examples, we can use an <em>unpaired</em> <em>t</em>-test by <a href="" id="index-Student_0027s-t-test"></a> <a href="" id="index-t_002etest"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; t.test(A, B)
+
+         Welch Two Sample t-test
+
+data:  A and B
+t = 3.2499, df = 12.027, p-value = 0.00694
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.01385526 0.07018320
+sample estimates:
+mean of x mean of y
+ 80.02077  79.97875</code></pre>
+</div>
+<p>
+which does indicate a significant difference, assuming normality. By default the R function does not assume equality of variances in the two samples (in contrast to the similar S-PLUS <code class="calibre2">t.test</code> function). We can use the F test to test for equality in the variances, provided that the two samples are from normal populations.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; var.test(A, B)
+
+         F test to compare two variances
+
+data:  A and B
+F = 0.5837, num df = 12, denom df =  7, p-value = 0.3938
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.1251097 2.1052687
+sample estimates:
+ratio of variances
+         0.5837405</code></pre>
+</div>
+<p>
+<a href="" id="index-var_002etest"></a>
+</p>
+<p>
+which shows no evidence of a significant difference, and so we can use the classical <em>t</em>-test that assumes equality of the variances.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; t.test(A, B, var.equal=TRUE)
+
+         Two Sample t-test
+
+data:  A and B
+t = 3.4722, df = 19, p-value = 0.002551
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.01669058 0.06734788
+sample estimates:
+mean of x mean of y
+ 80.02077  79.97875</code></pre>
+</div>
+<p>
+All these tests assume normality of the two samples. The two-sample Wilcoxon (or Mann-Whitney) test only assumes a common continuous distribution under the null hypothesis.
+</p>
+<p>
+<a href="" id="index-Wilcoxon-test"></a> <a href="" id="index-wilcox_002etest"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; wilcox.test(A, B)
+
+         Wilcoxon rank sum test with continuity correction
+
+data:  A and B
+W = 89, p-value = 0.007497
+alternative hypothesis: true location shift is not equal to 0
+
+Warning message:
+Cannot compute exact p-value with ties in: wilcox.test(A, B)</code></pre>
+</div>
+<p>
+Note the warning: there are several ties in each sample, which suggests strongly that these data are from a discrete distribution (probably due to rounding).
+</p>
+<p>
+There are several ways to compare graphically the two samples. We have already seen a pair of boxplots. The following
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; plot(ecdf(A), do.points=FALSE, verticals=TRUE, xlim=range(A, B))
+&gt; plot(ecdf(B), do.points=FALSE, verticals=TRUE, add=TRUE)</code></pre>
+</div>
+<p>
+will show the two empirical CDFs, and <code class="calibre2">qqplot</code> will perform a Q-Q plot of the two samples. The Kolmogorov-Smirnov test is of the maximal vertical distance between the two ecdf’s, assuming a common continuous distribution:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ks.test(A, B)
+
+         Two-sample Kolmogorov-Smirnov test
+
+data:  A and B
+D = 0.5962, p-value = 0.05919
+alternative hypothesis: two-sided
+
+Warning message:
+cannot compute correct p-values with ties in: ks.test(A, B)</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Loops-and-conditional-execution"></a> <a href="" id="Grouping_002c-loops-and-conditional-execution"></a>
+</p>
+<div id="calibre_pb_20" class="calibre8">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="reading-data-from-files.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="grouping-loops-and-conditional-execution.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

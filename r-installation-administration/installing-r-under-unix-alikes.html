@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="obtaining-r.html">
+<link rel="next" href="installing-r-under-windows.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="installing-r-under-unix-alikes" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Installing R under Unix-alikes</h1>
+<p>
+<a href="" id="index-Installing-under-Unix_002dalikes"></a>
+</p>
+<p>
+R will configure and build under most common Unix and Unix-alike platforms including ‘cpu-<em>-linux-gnu’ for the ‘alpha’, ‘arm’, ‘hppa’, ‘ix86’, ‘m68k’, ‘mips’, ‘mipsel’, ‘powerpc’, ‘s390’, ‘sparc’, and ‘x86_64’ CPUs, ‘x86_64-apple-darwin’, ‘i386-sun-solaris’ and ‘sparc-sun-solaris’ as well as perhaps (it is tested less frequently on these platforms) ‘i386-apple-darwin’, ‘i386-</em>-freebsd’, ‘x86_64-<em>-freebsd’, ‘i386-</em>-netbsd’, ‘x86_64/<em>-openbsd’ and ‘powerpc-ibm-aix6</em>’
+</p>
+<p>
+<a href="" id="index-Linux"></a> <a href="" id="index-macOS"></a>
+</p>
+<p>
+In addition, binary distributions are available for some common Linux distributions and for macOS (formerly OS X and Mac OS). See the FAQ for current details. These are installed in platform-specific ways, so for the rest of this chapter we consider only building from the sources.
+</p>
+<p>
+Cross-building is not possible: installing R builds a minimal version of R and then runs many R scripts to complete the build.
+</p>
+<hr />
+<p>
+<a href="" id="Simple-compilation"></a> <a href="" id="Simple-compilation-1"></a>
+</p>
+<h3 id="simple-compilation" class="section">
+2.1 Simple compilation
+</h3>
+<p>
+First review the essential and useful tools and libraries in <a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html">Essential and useful other programs under a Unix-alike</a>, and install those you <a href="" id="index-TMPDIR"></a> want or need. Ensure that the environment variable <code class="calibre6">TMPDIR</code> is either unset (and /tmp exists and can be written in and scripts can be executed from) or points to the absolute path to a valid temporary directory (one from which execution of scripts is allowed) which does not contain spaces.<a href="environment-variable-index.html#FOOT3" id="DOCF3"><sup>3</sup></a>
+</p>
+<p>
+<a href="" id="index-R_005fHOME"></a>
+</p>
+<p>
+Choose a directory to install the R tree (R is not just a binary, but has additional data sets, help files, font metrics etc). Let us call this place R_HOME. Untar the source code. This should create directories src, doc, and several more under a top-level directory: change to that top-level directory (At this point North American readers should consult <a href="appendix-b-configuration-on-a-unix-alike.html#b.3.1-setting-paper-size">Setting paper size</a>.) Issue the following commands:
+</p>
+<p>
+<a href="" id="index-configure"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>./configure
+make</code></pre>
+</div>
+<p>
+(See <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-M">Using make</a> if your make is not called ‘make’.) Users of Debian-based 64-bit systems<a href="environment-variable-index.html#FOOT4" id="DOCF4"><sup>4</sup></a> may need
+</p>
+<div class="example">
+<pre class="example1"><code>./configure LIBnn=lib
+make</code></pre>
+</div>
+<p>
+Then check the built system works correctly by
+</p>
+<div class="example">
+<pre class="example1"><code>make check</code></pre>
+</div>
+<p>
+Failures are not necessarily problems as they might be caused by missing functionality, but you should look carefully at any reported discrepancies. (Some non-fatal errors are expected in locales that do not support Latin-1, in particular in true <code class="calibre6">C</code> locales and non-UTF-8 non-Western-European locales.) A failure in tests/ok-errors.R may indicate inadequate resource limits (see <a href="running-R.html">Running R</a>).
+</p>
+<p>
+More comprehensive testing can be done by
+</p>
+<div class="example">
+<pre class="example1"><code>make check-devel</code></pre>
+</div>
+<p>
+or
+</p>
+<div class="example">
+<pre class="example1"><code>make check-all</code></pre>
+</div>
+<p>
+see file tests/README and <a href="installing-r-under-unix-alikes.html#Testing-a-Unix_002dalike-Installation">Testing a Unix-alike Installation</a> for the possibilities of doing this in parallel. Note that these checks are only run completely if the recommended packages are installed.
+</p>
+<p>
+If the <code class="calibre6">configure</code> and <code class="calibre6">make</code> commands execute successfully, a shell-script front-end called R will be created and copied to R_HOME/bin. You can link or copy this script to a place where users can invoke it, for example to /usr/local/bin/R. You could also copy the man page R.1 to a place where your <code class="calibre6">man</code> reader finds it, such as /usr/local/man/man1. If you want to install the complete R tree to, e.g., /usr/local/lib/R, see <a href="installing-r-under-unix-alikes.html#Installation">Installation</a>. Note: you do not <em>need</em> to install R: you can run it from where it was built.
+</p>
+<p>
+You do not necessarily have to build R in the top-level source directory (say, TOP_SRCDIR). To build in BUILDDIR, run
+</p>
+<p>
+<a href="" id="index-configure-1"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>cd BUILDDIR
+TOP_SRCDIR/configure
+make</code></pre>
+</div>
+<p>
+and so on, as described further below. This has the advantage of always keeping your source tree clean and is particularly recommended when you work with a version of R from Subversion. (You may need GNU <code class="calibre6">make</code> to allow this, and you will need no spaces in the path to the build directory. It is unlikely to work if the source directory has previously been used for a build.)
+</p>
+<p>
+Now <code class="calibre6">rehash</code> if necessary, type R, and read the R manuals and the R FAQ (files FAQ or doc/manual/R-FAQ.html, or <a href="https://CRAN.R-project.org/doc/FAQ/R-FAQ.html" class="uri">https://CRAN.R-project.org/doc/FAQ/R-FAQ.html</a> which always has the version for the latest release of R).
+</p>
+<p>
+Note: if you already have R installed, check that where you installed R replaces or comes earlier in your path than the previous installation. Some systems are set up to have /usr/bin (the standard place for a system installation) ahead of /usr/local/bin (the default place for installation of R) in their default path, and some do not have /usr/local/bin on the default path.
+</p>
+<hr />
+<p>
+<a href="" id="Help-options"></a> <a href="" id="Help-options-1"></a>
+</p>
+<h3 id="help-options" class="section">
+2.2 Help options
+</h3>
+<p>
+By default HTML help pages are created when needed rather than being built at install time.
+</p>
+<p>
+If you need to disable the server and want HTML help, there is the option to build HTML pages when packages are installed (including those installed with R). This is enabled by the <code class="calibre6">configure</code> option –enable-prebuilt-html. Whether <code class="calibre6">R CMD INSTALL</code> (and hence <code class="calibre6">install.packages</code>) pre-builds HTML pages is determined by looking at the R installation and is reported by <code class="calibre6">R CMD INSTALL –help</code>: it can be overridden by specifying one of the <code class="calibre6">INSTALL</code> options –html or –no-html.
+</p>
+<p>
+The server is disabled by setting the environment variable <a href="" id="index-R_005fDISABLE_005fHTTPD"></a> <code class="calibre6">R_DISABLE_HTTPD</code> to a non-empty value, either before R is started or within the R session before HTML help (including <code class="calibre6">help.start</code>) is used. It is also possible that system security measures will prevent the server from being started, for example if the loopback interface has been disabled. See <code class="calibre6">?tools::startDynamicHelp</code> for more details.
+</p>
+<hr />
+<p>
+<a href="" id="Making-the-manuals"></a> <a href="" id="Making-the-manuals-1"></a>
+</p>
+<h3 id="making-the-manuals" class="section">
+2.3 Making the manuals
+</h3>
+<p>
+<a href="" id="index-Manuals"></a>
+</p>
+<p>
+There is a set of manuals that can be built from the sources,
+</p>
+<dl>
+<dt>
+‘fullrefman’
+</dt>
+<dd>
+<p>
+Printed versions of all the help pages for base and recommended packages (around 3500 pages).
+</p>
+</dd>
+<dt>
+‘refman’
+</dt>
+<dd>
+<p>
+Printed versions of the help pages for selected base packages (around 2000 pages)
+</p>
+</dd>
+<dt>
+‘R-FAQ’
+</dt>
+<dd>
+<p>
+R FAQ
+</p>
+</dd>
+<dt>
+‘R-intro’
+</dt>
+<dd>
+<p>
+“An Introduction to R”.
+</p>
+</dd>
+<dt>
+‘R-data’
+</dt>
+<dd>
+<p>
+“R Data Import/Export”.
+</p>
+</dd>
+<dt>
+‘R-admin’
+</dt>
+<dd>
+<p>
+“R Installation and Administration”, this manual.
+</p>
+</dd>
+<dt>
+‘R-exts’
+</dt>
+<dd>
+<p>
+“Writing R Extensions”.
+</p>
+</dd>
+<dt>
+‘R-lang’
+</dt>
+<dd>
+<p>
+“The R Language Definition”.
+</p>
+</dd>
+</dl>
+<p>
+To make these (with ‘fullrefman’ rather than ‘refman’), use
+</p>
+<div class="example">
+<pre class="example1"><code>make pdf      to create PDF versions
+make info     to create info files (not ‘refman’ nor ‘fullrefman’).</code></pre>
+</div>
+<p>
+You will not be able to build any of these unless you have <code class="calibre6">texi2any</code> version 5.1 or later installed, and for PDF you must have <code class="calibre6">texi2dvi</code> and texinfo.tex installed (which are part of the GNU <strong>texinfo</strong> distribution but are, especially texinfo.tex, often made part of the TeX package in re-distributions). For historical reasons, the path to <code class="calibre6">texi2any</code> can be set by macro ‘MAKEINFO’ in config.site (<code class="calibre6">makeinfo</code> is nowadays a link to <code class="calibre6">texi2any</code>).
+</p>
+<p>
+The PDF versions can be viewed using any recent PDF viewer: they have hyperlinks that can be followed. The info files are suitable for reading online with Emacs or the standalone GNU <code class="calibre6">info</code> program. The PDF versions will be created using the paper size selected at configuration (default ISO a4): this can be overridden by setting <code class="calibre6">R_PAPERSIZE</code> <a href="" id="index-R_005fPAPERSIZE"></a> on the <code class="calibre6">make</code> command line, or setting <code class="calibre6">R_PAPERSIZE</code> in the environment and using <code class="calibre6">make -e</code>. (If re-making the manuals for a different paper size, you should first delete the file doc/manual/version.texi. The usual value for North America would be ‘letter’.)
+</p>
+<p>
+There are some issues with making the PDF reference manual, fullrefman.pdf or refman.pdf. The help files contain both ISO Latin1 characters (e.g. in text.Rd) and upright quotes, neither of which are contained in the standard LaTeX Computer Modern fonts. We have provided four alternatives:
+</p>
+<dl>
+<dt>
+<code class="calibre6">times</code>
+</dt>
+<dd>
+<p>
+(The default.) Using standard PostScript fonts, Times Roman, Helvetica and Courier. This works well both for on-screen viewing and for printing. One disadvantage is that the Usage and Examples sections may come out rather wide: this can be overcome by using <em>in addition</em> either of the options <code class="calibre6">inconsolata</code> (on a Unix-alike only if found by <code class="calibre6">configure</code>) or <code class="calibre6">beramono</code>, which replace the Courier monospaced font by Inconsolata or Bera Sans mono respectively. (You will need a recent version of the appropriate LaTeX package <strong>inconsolata</strong><a href="environment-variable-index.html#FOOT5" id="DOCF5"><sup>5</sup></a> or <strong>bera</strong> installed.)
+</p>
+<p>
+Note that in most LaTeX installations this will not actually use the standard fonts for PDF, but rather embed the URW clones NimbusRom, NimbusSans and (for Courier, if used) NimbusMon.
+</p>
+<p>
+This needs LaTeX packages <strong>times</strong>, <strong>helvetic</strong> and (if used) <strong>courier</strong> installed.
+</p>
+</dd>
+<dt>
+<code class="calibre6">lm</code>
+</dt>
+<dd>
+<p>
+Using the <em>Latin Modern</em> fonts. These are not often installed as part of a TeX distribution, but can obtained from <a href="https://www.ctan.org/tex-archive/fonts/ps-type1/lm/" class="uri">https://www.ctan.org/tex-archive/fonts/ps-type1/lm/</a> and mirrors. This uses fonts rather similar to Computer Modern, but is not so good on-screen as <code class="calibre6">times</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre6">cm-super</code>
+</dt>
+<dd>
+<p>
+Using type-1 versions of the Computer Modern fonts by Vladimir Volovich. This is a large installation, obtainable from <a href="https://www.ctan.org/tex-archive/fonts/ps-type1/cm-super/" class="uri">https://www.ctan.org/tex-archive/fonts/ps-type1/cm-super/</a> and its mirrors. These type-1 fonts have poor hinting and so are nowhere near as readable on-screen as the other three options.
+</p>
+</dd>
+<dt>
+<code class="calibre6">ae</code>
+</dt>
+<dd>
+<p>
+A package to use composites of Computer Modern fonts. This works well most of the time, and its PDF is more readable on-screen than the previous two options. There are three fonts for which it will need to use bitmapped fonts, tctt0900.600pk, tctt1000.600pk and tcrm1000.600pk. Unfortunately, if those files are not available, Acrobat Reader will substitute completely incorrect glyphs so you need to examine the logs carefully.
+</p>
+</dd>
+</dl>
+<p>
+The default can be overridden by setting the environment variable <a href="" id="index-R_005fRD4PDF"></a> <code class="calibre6">R_RD4PDF</code>. (On Unix-alikes, this will be picked up at install time and stored in etc/Renviron, but can still be overridden when the manuals are built, using <code class="calibre6">make -e</code>.) The usual<a href="environment-variable-index.html#FOOT6" id="DOCF6"><sup>6</sup></a> default value for <code class="calibre6">R_RD4PDF</code> is ‘times,inconsolata,hyper’: omit ‘hyper’ if you do not want hyperlinks (e.g. for printing the manual) or do not have LaTeX package <strong>hyperref</strong>, and omit ‘inconsolata’ if you do not have LaTeX package <strong>inconsolata</strong> installed.
+</p>
+<p>
+Further options, e.g for <strong>hyperref</strong>, can be included in a file Rd.cfg somewhere on your LaTeX search path. For example, if you prefer the text and not the page number in the table of contents to be hyperlinked use
+</p>
+<div class="example">
+<pre class="example1"><code>\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{linktoc=section}}{}</code></pre>
+</div>
+<p>
+or
+</p>
+<div class="example">
+<pre class="example1"><code>\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{linktoc=all}}{}</code></pre>
+</div>
+<p>
+to hyperlink both text and page number.
+</p>
+<p>
+Ebook versions of most of the manuals in one or both of .epub and .mobi formats can be made by running in doc/manual one of
+</p>
+<div class="example">
+<pre class="example1"><code>make ebooks
+make epub
+make mobi</code></pre>
+</div>
+<p>
+This requires <code class="calibre6">ebook-convert</code> from <code class="calibre6">Calibre</code> (<a href="http://calibre-ebook.com/download" class="uri">http://calibre-ebook.com/download</a>), or from most Linux distributions. If necessary the path to <code class="calibre6">ebook-convert</code> can be set as make macro <code class="calibre6">EBOOK</code> to by editing doc/manual/Makefile (which contains a commented value suitable for macOS).
+</p>
+<hr />
+<p>
+<a href="" id="Installation"></a> <a href="" id="Installation-1"></a>
+</p>
+<h3 id="installation" class="section">
+2.4 Installation
+</h3>
+<p>
+<a href="" id="index-Installation"></a>
+</p>
+<p>
+To ensure that the installed tree is usable by the right group of users, set <code class="calibre6">umask</code> appropriately (perhaps to ‘022’) before unpacking the sources and throughout the build process.
+</p>
+<p>
+After
+</p>
+<p>
+<a href="" id="index-configure-2"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>./configure
+make
+make check</code></pre>
+</div>
+<p>
+(or, when building outside the source, <code class="calibre6">TOP_SRCDIR/configure</code>, etc) have been completed successfully, you can install the complete R tree to your system by typing
+</p>
+<div class="example">
+<pre class="example1"><code>make install</code></pre>
+</div>
+<p>
+A parallel make can be used (but run <code class="calibre6">make</code> before <code class="calibre6">make install</code>). Those using GNU <code class="calibre6">make</code> 4.0 or later may want to use <code class="calibre6">make -j n -O</code> to avoid interleaving of output.
+</p>
+<p>
+This will install to the following directories:
+</p>
+<dl>
+<dt>
+prefix/bin or bindir
+</dt>
+<dd>
+<p>
+the front-end shell script and other scripts and executables
+</p>
+</dd>
+<dt>
+prefix/man/man1 or mandir/man1
+</dt>
+<dd>
+<p>
+the man page
+</p>
+</dd>
+<dt>
+prefix/LIBnn/R or libdir/R
+</dt>
+<dd>
+<p>
+all the rest (libraries, on-line help system, …). Here LIBnn is usually ‘lib’, but may be ‘lib64’ on some 64-bit Linux systems. This is known as the R home directory.
+</p>
+</dd>
+</dl>
+<p>
+where prefix is determined during configuration (typically /usr/local) and can be set by running <code class="calibre6">configure</code> with the option –prefix, as in
+</p>
+<p>
+<a href="" id="index-configure-3"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>./configure --prefix=/where/you/want/R/to/go</code></pre>
+</div>
+<p>
+where the value should be an absolute path. This causes <code class="calibre6">make install</code> to install the R script to /where/you/want/R/to/go/bin, and so on. The prefix of the installation directories can be seen in the status message that is displayed at the end of <code class="calibre6">configure</code>. The installation may need to be done by the owner of prefix, often a root account.
+</p>
+<p>
+You can install into another directory tree by using
+</p>
+<div class="example">
+<pre class="example1"><code>make prefix=/path/to/here install</code></pre>
+</div>
+<p>
+at least with GNU or Solaris <code class="calibre6">make</code> (but not some older Unix makes).
+</p>
+<p>
+More precise control is available at configure time via options: see <code class="calibre6">configure –help</code> for details. (However, most of the ‘Fine tuning of the installation directories’ options are not used by R.)
+</p>
+<p>
+Configure options –bindir and –mandir are supported and govern where a copy of the <code class="calibre6">R</code> script and the <code class="calibre6">man</code> page are installed.
+</p>
+<p>
+The configure option –libdir controls where the main R files are installed: the default is ‘eprefix/LIBnn’, where eprefix is the prefix used for installing architecture-dependent files, defaults to prefix, and can be set via the configure option –exec-prefix.
+</p>
+<p>
+Each of <code class="calibre6">bindir</code>, <code class="calibre6">mandir</code> and <code class="calibre6">libdir</code> can also be specified on the <code class="calibre6">make install</code> command line (at least for GNU <code class="calibre6">make</code>).
+</p>
+<p>
+The <code class="calibre6">configure</code> or <code class="calibre6">make</code> variables <code class="calibre6">rdocdir</code> and <code class="calibre6">rsharedir</code> can be used to install the system-independent doc and share directories to somewhere other than <code class="calibre6">libdir</code>. The C header files can be installed to the value of <code class="calibre6">rincludedir</code>: note that as the headers are not installed into a subdirectory you probably want something like <code class="calibre6">rincludedir=/usr/local/include/R-3.4.2</code>.
+</p>
+<p>
+If you want the R home to be something other than libdir/R, use rhome: for example
+</p>
+<div class="example">
+<pre class="example1"><code>make install rhome=/usr/local/lib64/R-3.4.2</code></pre>
+</div>
+<p>
+will use a version-specific R home on a non-Debian Linux 64-bit system.
+</p>
+<p>
+If you have made R as a shared/static library you can install it in your system’s library directory by
+</p>
+<div class="example">
+<pre class="example1"><code>make prefix=/path/to/here install-libR</code></pre>
+</div>
+<p>
+where <code class="calibre6">prefix</code> is optional, and <code class="calibre6">libdir</code> will give more precise control.<a href="environment-variable-index.html#FOOT7" id="DOCF7"><sup>7</sup></a> However, you should not install to a directory mentioned in <code class="calibre6">LDPATHS</code> (e.g. /usr/local/lib64) if you intend to work with multiple versions of R, since that directory may be given precedence over the lib directory of other R installations.
+</p>
+<div class="example">
+<pre class="example1"><code>make install-strip</code></pre>
+</div>
+<p>
+will install stripped executables, and on platforms where this is supported, stripped libraries in directories lib and modules and in the standard packages.
+</p>
+<p>
+Note that installing R into a directory whose path contains spaces is not supported, and some aspects (such as installing source packages) will not work.
+</p>
+<p>
+<a href="" id="index-Manuals_002c-installing"></a>
+</p>
+<p>
+To install info and PDF versions of the manuals, use one or both of
+</p>
+<div class="example">
+<pre class="example1"><code>make install-info
+make install-pdf</code></pre>
+</div>
+<p>
+Once again, it is optional to specify <code class="calibre6">prefix</code>, <code class="calibre6">libdir</code> or <code class="calibre6">rhome</code> (the PDF manuals are installed under the R home directory). (<code class="calibre6">make install-info</code> needs <code class="calibre6">Perl</code> installed if there is no command <code class="calibre6">install-info</code> on the system.)
+</p>
+<p>
+More precise control is possible. For info, the setting used is that of <code class="calibre6">infodir</code> (default prefix/info, set by configure option –infodir). The PDF files are installed into the R doc tree, set by the <code class="calibre6">make</code> variable <code class="calibre6">rdocdir</code>.
+</p>
+<p>
+A staged installation is possible, that it is installing R into a temporary directory in order to move the installed tree to its final destination. In this case <code class="calibre6">prefix</code> (and so on) should reflect the <a href="" id="index-DESTDIR"></a> final destination, and <code class="calibre6">DESTDIR</code> should be used: see <a href="https://www.gnu.org/prep/standards/html_node/DESTDIR.html" class="uri">https://www.gnu.org/prep/standards/html_node/DESTDIR.html</a>.
+</p>
+<p>
+You can optionally install the run-time tests that are part of <code class="calibre6">make check-all</code> by
+</p>
+<div class="example">
+<pre class="example1"><code>make install-tests</code></pre>
+</div>
+<p>
+which populates a tests directory in the installation.
+</p>
+<hr />
+<p>
+<a href="" id="Uninstallation"></a> <a href="" id="Uninstallation-1"></a>
+</p>
+<h3 id="uninstallation" class="section">
+2.5 Uninstallation
+</h3>
+<p>
+You can uninstall R by
+</p>
+<div class="example">
+<pre class="example1"><code>make uninstall</code></pre>
+</div>
+<p>
+optionally specifying <code class="calibre6">prefix</code> etc in the same way as specified for installation.
+</p>
+<p>
+This will also uninstall any installed manuals. There are specific targets to uninstall info and PDF manuals in file doc/manual/Makefile.
+</p>
+<p>
+Target <code class="calibre6">uninstall-tests</code> will uninstall any installed tests, as well as removing the directory tests containing the test results.
+</p>
+<p>
+An installed shared/static <code class="calibre6">libR</code> can be uninstalled by
+</p>
+<div class="example">
+<pre class="example1"><code>make prefix=/path/to/here uninstall-libR</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Sub_002darchitectures"></a> <a href="" id="Sub_002darchitectures-1"></a>
+</p>
+<h3 id="sub-architectures" class="section">
+2.6 Sub-architectures
+</h3>
+<p>
+Some platforms can support closely related builds of R which can share all but the executables and dynamic objects. Examples include builds under Linux and Solaris for different CPUs or 32- and 64-bit builds.
+</p>
+<p>
+R supports the idea of architecture-specific builds, specified by adding ‘r_arch=name’ to the <code class="calibre6">configure</code> line. Here name can be anything non-empty, and is used to name subdirectories of lib, etc, include and the package libs subdirectories. Example names from other software are the use of sparcv9 on Sparc Solaris and 32 by <code class="calibre6">gcc</code> on ‘x86_64’ Linux.
+</p>
+<p>
+If you have two or more such builds you can install them over each other (and for 32/64-bit builds on one architecture, one build can be done without ‘r_arch’). The space savings can be considerable: on ‘x86_64’ Linux a basic install (without debugging symbols) took 74Mb, and adding a 32-bit build added 6Mb. If you have installed multiple builds you can select which build to run by
+</p>
+<div class="example">
+<pre class="example1"><code>R --arch=name</code></pre>
+</div>
+<p>
+and just running ‘R’ will run the last build that was installed.
+</p>
+<p>
+<code class="calibre6">R CMD INSTALL</code> will detect if more than one build is installed and try to install packages with the appropriate library objects for each. This will not be done if the package has an executable <code class="calibre6">configure</code> script or a src/Makefile file. In such cases you can install for extra builds by
+</p>
+<div class="example">
+<pre class="example1"><code>R --arch=name CMD INSTALL --libs-only pkg1 pkg2 …</code></pre>
+</div>
+<p>
+If you want to mix sub-architectures compiled on different platforms (for example ‘x86_64’ Linux and ‘i686’ Linux), it is wise to use explicit names for each, and you may also need to set libdir to ensure that they install into the same place.
+</p>
+<p>
+When sub-architectures are used the version of <code class="calibre6">Rscript</code> in e.g. /usr/bin will be the last installed, but architecture-specific versions will be available in e.g. /usr/lib64/R/bin/exec${R_ARCH}. Normally all installed architectures will run on the platform so the architecture of <code class="calibre6">Rscript</code> itself does not matter. The executable <code class="calibre6">Rscript</code> will run the <code class="calibre6">R</code> script, and at that time the <a href="" id="index-R_005fARCH"></a> setting of the <code class="calibre6">R_ARCH</code> environment variable determines the architecture which is run.
+</p>
+<p>
+When running post-install tests with sub-architectures, use
+</p>
+<div class="example">
+<pre class="example1"><code>R --arch=name CMD make check[-devel|all]</code></pre>
+</div>
+<p>
+to select a sub-architecture to check.
+</p>
+<p>
+Sub-architectures are also used on Windows, but by selecting executables within the appropriate bin directory, R_HOME/bin/i386 or R_HOME/bin/x64. For backwards compatibility there are executables R_HOME/bin/R.exe and R_HOME/bin/Rscript.exe: these will run an executable from one of the subdirectories, which one being taken first from the <a href="" id="index-R_005fARCH-1"></a> <code class="calibre6">R_ARCH</code> environment variable, then from the –arch command-line option<a href="environment-variable-index.html#FOOT8" id="DOCF8"><sup>8</sup></a> and finally from the installation default (which is 32-bit for a combined 32/64 bit R installation).
+</p>
+<hr />
+<p>
+<a href="" id="Multilib"></a> <a href="" id="Multilib-1"></a>
+</p>
+<h4 id="multilib" class="subsection">
+2.6.1 Multilib
+</h4>
+<p>
+For some Linux distributions<a href="environment-variable-index.html#FOOT9" id="DOCF9"><sup>9</sup></a>, there is an alternative mechanism for mixing 32-bit and 64-bit libraries known as <em>multilib</em>. If the Linux distribution supports multilib, then parallel builds of R may be installed in the sub-directories lib (32-bit) and lib64 (64-bit). The build to be run may then be selected using the <code class="calibre6">setarch</code> command. For example, a 32-bit build may be run by
+</p>
+<div class="example">
+<pre class="example1"><code>setarch i686 R</code></pre>
+</div>
+<p>
+The <code class="calibre6">setarch</code> command is only operational if both 32-bit and 64-bit builds are installed. If there is only one installation of R, then this will always be run regardless of the architecture specified by the <code class="calibre6">setarch</code> command.
+</p>
+<p>
+There can be problems with installing packages on the non-native architecture. It is a good idea to run e.g. <code class="calibre6">setarch i686 R</code> for sessions in which packages are to be installed, even if that is the only version of R installed (since this tells the package installation code the architecture needed).
+</p>
+<p>
+There is a potential problem with packages using Java, as the post-install for a ‘i686’ RPM on ‘x86_64’ Linux reconfigures Java and will find the ‘x86_64’ Java. If you know where a 32-bit Java is installed you may be able to run (as root)
+</p>
+<div class="example">
+<pre class="example1"><code>export JAVA_HOME=&lt;path to jre directory of 32-bit Java&gt;
+setarch i686 R CMD javareconf</code></pre>
+</div>
+<p>
+to get a suitable setting.
+</p>
+<p>
+When this mechanism is used, the version of <code class="calibre6">Rscript</code> in e.g. /usr/bin will be the last installed, but an architecture-specific version will be available in e.g. /usr/lib64/R/bin. Normally all installed architectures will run on the platform so the architecture of <code class="calibre6">Rscript</code> does not matter.
+</p>
+<hr />
+<p>
+<a href="" id="Other-Options"></a> <a href="" id="Other-Options-1"></a>
+</p>
+<h3 id="other-options" class="section">
+2.7 Other Options
+</h3>
+<p>
+There are many other installation options, most of which are listed by <code class="calibre6">configure –help</code>. Almost all of those not listed elsewhere in this manual are either standard <code class="calibre6">autoconf</code> options not relevant to R or intended for specialist uses by the R developers.
+</p>
+<p>
+One that may be useful when working on R itself is the option –disable-byte-compiled-packages, which ensures that the base and recommended packages are not byte-compiled. (Alternatively the (make or environment) variable <code class="calibre6">R_NO_BASE_COMPILE</code> can be set to a non-empty value for the duration of the build.)
+</p>
+<p>
+Option –with-internal-tzcode makes use of R’s own code and copy of the Olson database for managing timezones. This will be preferred where there are issues with the system implementation, usually involving times after 2037 or before 1916. An alternative time-zone directory<a href="environment-variable-index.html#FOOT10" id="DOCF10"><sup>10</sup></a> can be used, pointed to by environment variable <code class="calibre6">TZDIR</code>: this should contain files such as Europe/London. On all tested OSes the system timezone was deduced correctly, but if necessary it can be set as the value of environment variable <code class="calibre6">TZ</code>.
+</p>
+<hr />
+<p>
+<a href="" id="OpenMP-Support"></a> <a href="" id="OpenMP-Support-1"></a>
+</p>
+<h4 id="openmp-support" class="subsection">
+2.7.1 OpenMP Support
+</h4>
+<p>
+By default <code class="calibre6">configure</code> searches for suitable options<a href="environment-variable-index.html#FOOT11" id="DOCF11"><sup>11</sup></a> for OpenMP support for the C, C++98, FORTRAN 77 and Fortran compilers.
+</p>
+<p>
+Only the C result is currently used for R itself, and only if <code class="calibre6">MAIN_LD</code>/<code class="calibre6">DYLIB_LD</code> were not specified. This can be overridden by specifying
+</p>
+<div class="example">
+<pre class="example1"><code>R_OPENMP_CFLAGS</code></pre>
+</div>
+<p>
+Use for packages has similar restrictions (involving <code class="calibre6">SHLIB_LD</code> and similar: note that as FORTRAN 77 code is normally linked by the C compiler, both need to support OpenMP) and can be overridden by specifying some of
+</p>
+<div class="example">
+<pre class="example1"><code>SHLIB_OPENMP_CFLAGS
+SHLIB_OPENMP_CXXFLAGS
+SHLIB_OPENMP_FCFLAGS
+SHLIB_OPENMP_FFLAGS</code></pre>
+</div>
+<p>
+Setting to an empty value will disable OpenMP for that compiler (and configuring with –disable-openmp will disable all detection of OpenMP). The <code class="calibre6">configure</code> detection test is to compile and link a standalone OpenMP program, which is not the same as compiling a shared object and loading it into the C program of R’s executable. Note that overridden values are not tested.
+</p>
+<hr />
+<p>
+<a href="" id="C_002b_002b-Support"></a> <a href="" id="C_002b_002b-Support-1"></a>
+</p>
+<h4 id="c-support" class="subsection">
+2.7.2 C++ Support
+</h4>
+<p>
+C++ is not used by R itself, but support is provided for installing packages with C++ code via <code class="calibre6">make</code> macros defined in file etc/Makeconf (and with explanations in file config.site):
+</p>
+<div class="example">
+<pre class="example1"><code>CXX
+CXXFLAGS
+CXXPICFLAGS
+CXXSTD
+
+CXX98
+CXX98STD
+CXX98FLAGS
+CXX98PICFLAGS
+
+CXX11
+CXX11STD
+CXX11FLAGS
+CXX11PICFLAGS
+
+CXX14
+CXX14STD
+CXX14FLAGS
+CXX14PICFLAGS
+
+CXX17
+CXX17STD
+CXX17FLAGS
+CXX17PICFLAGS</code></pre>
+</div>
+<p>
+The macros <code class="calibre6">CXX</code> etc are those used by default for C++ code. <code class="calibre6">configure</code> will attempt to set the rest suitably, choosing for <code class="calibre6">CXX11STD</code> a suitable flag such as -std=c++11 for C++11 support. Similarly, configure will if possible choose for <code class="calibre6">CXX14STD</code> a flag<a href="environment-variable-index.html#FOOT12" id="DOCF12"><sup>12</sup></a> such as -std=c++14 for C++14 support and -std=c++1z for support for the forthcoming C++17 standard. The inferred values can be overridden in file config.site or on the <code class="calibre6">configure</code> command line: user-supplied values will be tested compiling some C++11/14/17 code.
+</p>
+<p>
+R versions 3.1.0 to 3.3.3 used <code class="calibre6">CXX1X</code> rather than <code class="calibre6">CXX11</code>, and these forms are deprecated but still accepted.
+</p>
+<p>
+It may be<a href="environment-variable-index.html#FOOT13" id="DOCF13"><sup>13</sup></a> that there is no suitable flag for C++11 support, in which case a different compiler could be selected for <code class="calibre6">CXX11</code> and its corresponding flags. Likewise, a different compiler can be specified for C++14 support with <code class="calibre6">CXX14</code> and for C++17 support with <code class="calibre6">CXX17</code>. Some compilers<a href="environment-variable-index.html#FOOT14" id="DOCF14"><sup>14</sup></a> by default assume a later standard than C++98 whereas the latter is assumed by some packages. So users of GCC 6 might like to specify
+</p>
+<div class="example">
+<pre class="example1"><code>CXX=&#39;g++ -std=gnu++98&#39;
+CXX11=g++
+CXX11STD=&#39;-std=c++11&#39;
+CXX14=g++
+CXX14STD=&#39;-std=c++14&#39;</code></pre>
+</div>
+<p>
+The -std flag is supported by the GCC, <code class="calibre6">clang</code>, Intel and Solaris compilers (the latter from version 12.4). Currently accepted values are (plus some synonyms)
+</p>
+<div class="example">
+<pre class="example1"><code>g++:     c++98 gnu++98 c++11 gnu+11 c++14 gnu++14 c++1z gnu++1z
+Intel:   gnu+98 c++11 c++14 (from 16.0) c++17 (from 17.0)
+Solaris: c++03 c++11 c++14 (from 12.5)</code></pre>
+</div>
+<p>
+(Those for <code class="calibre6">clang++</code> are not documented, but seem to be based on <code class="calibre6">g++</code>.) Versions 4.3.x to 4.8.x of <code class="calibre6">g++</code> accepted flag -std=c++0x with partial support<a href="environment-variable-index.html#FOOT15" id="DOCF15"><sup>15</sup></a> for C++11: this is currently still accepted as a deprecated synonym for -std=c++11. (At least for versions 4.8.x it has sufficient support to be picked by <code class="calibre6">configure</code>.) Option -std=c++14 was introduced in version 5.x.
+</p>
+<p>
+‘Standards’ for <code class="calibre6">g++</code> starting with ‘gnu’ enable ‘GNU extensions’: what those are is hard to track down.
+</p>
+<p>
+For the use of C++11 and later in R packages see the ‘Writing R Extensions’ manual.
+</p>
+<hr />
+<p>
+<a href="" id="Testing-a-Unix_002dalike-Installation"></a> <a href="" id="Testing-an-Installation"></a>
+</p>
+<h3 id="testing-an-installation" class="section">
+2.8 Testing an Installation
+</h3>
+<p>
+Full post-installation testing is possible only if the test files have been installed with
+</p>
+<div class="example">
+<pre class="example1"><code>make install-tests</code></pre>
+</div>
+<p>
+which populates a tests directory in the installation.
+</p>
+<p>
+If this has been done, two testing routes are available. The first is to move to the home directory of the R installation (as given by <code class="calibre6">R.home()</code>) and run
+</p>
+<div class="example">
+<pre class="example1"><code>cd tests
+## followed by one of
+../bin/R CMD make check
+../bin/R CMD make check-devel
+../bin/R CMD make check-all</code></pre>
+</div>
+<p>
+and other useful targets are <code class="calibre6">test-BasePackages</code> and <code class="calibre6">test-Recommended</code> to run tests of the standard and recommended packages (if installed) respectively.
+</p>
+<p>
+This re-runs all the tests relevant to the installed R (including for example code in the package vignettes), but not for example the ones checking the example code in the manuals nor making the standalone Rmath library. This can occasionally be useful when the operating environment has been changed, for example by OS updates or by substituting the BLAS (see <a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Shared-BLAS">Shared BLAS</a>).
+</p>
+<p>
+Parallel checking of packages may be possible: set the environment variable <code class="calibre6">TEST_MC_CORES</code> to the maximum number of processes to be run in parallel. This affects both checking the package examples (part of <code class="calibre6">make check</code>) and package sources (part of <code class="calibre6">make check-devel</code> and <code class="calibre6">make check-recommended</code>). It does require a <code class="calibre6">make</code> command which supports the <code class="calibre6">make -j n</code> option: most do but on Solaris you need to select GNU <code class="calibre6">make</code> or <code class="calibre6">dmake</code>. Where parallel checking of package sources is done, a log file pngname.log is left in the <code class="calibre6">tests</code> directory for inspection.
+</p>
+<p>
+Alternatively, the installed R can be run, preferably with –vanilla. Then <a href="" id="index-LC_005fCOLLATE"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>Sys.setenv(LC_COLLATE = &quot;C&quot;, LC_TIME = &quot;C&quot;, LANGUAGE = &quot;en&quot;)
+tools::testInstalledBasic(&quot;both&quot;)
+tools::testInstalledPackages(scope = &quot;base&quot;)
+tools::testInstalledPackages(scope = &quot;recommended&quot;)</code></pre>
+</div>
+<p>
+runs the basic tests and then all the tests on the standard and recommended packages. These tests can be run from anywhere: the basic tests write their results in the tests folder of the R home directory and run fewer tests than the first approach: in particular they do not test things which need Internet access—that can be tested by
+</p>
+<div class="example">
+<pre class="example1"><code>tools::testInstalledBasic(&quot;internet&quot;)</code></pre>
+</div>
+<p>
+These tests work best if <code class="calibre6">diff</code> (in Rtools*.exe for Windows users) is in the path.
+</p>
+<p>
+It is possible to test the installed packages (but not their package-specific tests) by <code class="calibre6">testInstalledPackages</code> even if <code class="calibre6">make install-tests</code> was not run.
+</p>
+<p>
+Note that the results may depend on the language set for times and messages: for maximal similarity to reference results you may want to try setting (before starting the R session)
+</p>
+<div class="example">
+<pre class="example1"><code>LANGUAGE=en</code></pre>
+</div>
+<p>
+and use a UTF-8 or Latin-1 locale.
+</p>
+<hr />
+<p>
+<a href="" id="Installing-R-under-Windows"></a> <a href="" id="Installing-R-under-Windows-1"></a>
+</p>
+<div id="calibre_pb_7" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="obtaining-r.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="installing-r-under-windows.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

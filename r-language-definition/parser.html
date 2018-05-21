@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The R language definition</title>
+  <meta name="description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="The R language definition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  <meta name="github-repo" content="ColinFay/r-language-definition" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The R language definition" />
+  
+  <meta name="twitter:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="debugging.html">
+<link rel="next" href="function-and-variable-index.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">The R language definition</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Language Definition</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="objects.html"><a href="objects.html"><i class="fa fa-check"></i><b>2</b> Objects</a></li>
+<li class="chapter" data-level="3" data-path="evaluation-of-expressions.html"><a href="evaluation-of-expressions.html"><i class="fa fa-check"></i><b>3</b> Evaluation of expressions</a></li>
+<li class="chapter" data-level="4" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>4</b> Functions</a></li>
+<li class="chapter" data-level="5" data-path="object-oriented-programming.html"><a href="object-oriented-programming.html"><i class="fa fa-check"></i><b>5</b> Object-oriented programming</a></li>
+<li class="chapter" data-level="6" data-path="computing-on-the-language.html"><a href="computing-on-the-language.html"><i class="fa fa-check"></i><b>6</b> Computing on the language</a></li>
+<li class="chapter" data-level="7" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>7</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="8" data-path="exception-handling.html"><a href="exception-handling.html"><i class="fa fa-check"></i><b>8</b> Exception handling</a></li>
+<li class="chapter" data-level="9" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>9</b> Debugging</a></li>
+<li class="chapter" data-level="10" data-path="parser.html"><a href="parser.html"><i class="fa fa-check"></i><b>10</b> Parser</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and Variable Index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept Index</a></li>
+<li class="chapter" data-level="13" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>13</b> Appendix A References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The R language definition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="parser" class="section level1">
+<h1><span class="header-section-number">Chapter 10</span> Parser</h1>
+<p>
+<a href="" id="index-parsing-6"></a>
+</p>
+<p>
+The parser is what converts the textual representation of R code into an internal form which may then be passed to the R evaluator which causes the specified instructions to be carried out. The internal form is itself an R object and can be saved and otherwise manipulated within the R system.
+</p>
+<hr />
+<p>
+<a href="" id="The-parsing-process"></a> <a href="" id="The-parsing-process-1"></a>
+</p>
+<h3 id="the-parsing-process" class="section">
+10.1 The parsing process
+</h3>
+<hr />
+<p>
+<a href="" id="Modes-of-parsing"></a> <a href="" id="Modes-of-parsing-1"></a>
+</p>
+<h4 id="modes-of-parsing" class="subsection">
+10.1.1 Modes of parsing
+</h4>
+<p>
+Parsing in R occurs in three different variants:
+</p>
+<ul>
+<li>
+The read-eval-print loop
+</li>
+<li>
+Parsing of text files
+</li>
+<li>
+Parsing of character strings
+</li>
+</ul>
+<p>
+The read-eval-print loop forms the basic command line interface to R. Textual input is read until a complete R expression is available. Expressions may be split over several input lines. The primary prompt (by default ‘&gt;’) indicates that the parser is ready for a new expression, and a continuation prompt (by default ‘+’) indicates that the parser expects the remainder of an incomplete expression. The expression is converted to internal form during input and the parsed expression is passed to the evaluator and the result is printed (unless specifically made invisible). If the parser finds itself in a state which is incompatible with the language syntax, a “Syntax Error” is flagged and the parser resets itself and resumes input at the beginning of the next input line.
+</p>
+<p>
+Text files can be parsed using the <code class="calibre7">parse</code> function. In particular, this is done during execution of the <code class="calibre7">source</code> function, which allows commands to be stored in an external file and executed as if they had been typed at the keyboard. Note, though, that the entire file is parsed and syntax checked before any evaluation takes place.
+</p>
+<p>
+Character strings, or vectors thereof, can be parsed using the <code class="calibre7">text=</code> argument to <code class="calibre7">parse</code>. The strings are treated exactly as if they were the lines of an input file.
+</p>
+<hr />
+<p>
+<a href="" id="Internal-representation"></a> <a href="" id="Internal-representation-1"></a>
+</p>
+<h4 id="internal-representation" class="subsection">
+10.1.2 Internal representation
+</h4>
+<p>
+<a href="" id="index-parsing-7"></a>
+</p>
+<p>
+Parsed expressions are stored in an R object containing the parse tree. A fuller description of such objects can be found in <a href="objects.html#Language-objects">Language objects</a> and <a href="objects.html#Expression-objects">Expression objects</a>. Briefly, every elementary R expression is stored in <a href="" id="index-function-29"></a> function call form, as a list with the first element containing the function name and the remainder containing the arguments, which may in turn be further R expressions. The list elements can be named, corresponding to tagged matching of formal and actual arguments. Note that <em>all</em> R syntax elements are treated in this way, e.g. the assignment <code class="calibre7">x &lt;- 1</code> is encoded as <code class="calibre7">“&lt;-”(x, 1)</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Deparsing"></a> <a href="" id="Deparsing-1"></a>
+</p>
+<h4 id="deparsing" class="subsection">
+10.1.3 Deparsing
+</h4>
+<p>
+Any R object can be converted to an R expression using <code class="calibre7">deparse</code>. This is frequently used in connection with output of results, e.g. for labeling plots. Notice that only objects of mode <code class="calibre7">“expression”</code> can be expected to be unchanged by reparsing the output of deparsing. For instance, the numeric vector <code class="calibre7">1:5</code> will deparse as <code class="calibre7">“c(1, 2, 3, 4, 5)”</code>, which will reparse as a call to the function <code class="calibre7">c</code>. As far as possible, evaluating the deparsed and reparsed expression gives the same result as evaluating the original, but there are a couple of awkward exceptions, mostly involving expressions that weren’t generated from a textual representation in the first place.
+</p>
+<hr />
+<p>
+<a href="" id="Comments"></a> <a href="" id="Comments-1"></a>
+</p>
+<h3 id="comments" class="section">
+10.2 Comments
+</h3>
+<p>
+<a href="" id="index-comments"></a>
+</p>
+<p>
+Comments in R are ignored by the parser. Any text from a <a href="" id="index-_0023"></a> <code class="calibre7">#</code> character to the end of the line is taken to be a comment, unless the <code class="calibre7">#</code> character is inside a quoted string. For example,
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; x &lt;- 1  # This is a comment...
+&gt; y &lt;- &quot;  #... but this is not.&quot;</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Tokens"></a> <a href="" id="Tokens-1"></a>
+</p>
+<h3 id="tokens" class="section">
+10.3 Tokens
+</h3>
+<p>
+Tokens are the elementary building blocks of a programming language. They are recognised during <em>lexical analysis</em> which (conceptually, at least) takes place prior to the syntactic analysis performed by the parser itself.
+</p>
+<hr />
+<p>
+<a href="" id="Literal-constants"></a> <a href="" id="Constants-2"></a>
+</p>
+<h4 id="constants" class="subsection">
+10.3.1 Constants
+</h4>
+<p>
+There are five types of constants: integer, logical, numeric, complex and string.
+</p>
+<p>
+In addition, there are four special constants, <code class="calibre7">NULL</code>, <code class="calibre7">NA</code>, <code class="calibre7">Inf</code>, and <code class="calibre7">NaN</code>.
+</p>
+<p>
+<code class="calibre7">NULL</code> is used to indicate the empty object. <code class="calibre7">NA</code> is used for absent (“Not Available”) data values. <code class="calibre7">Inf</code> denotes infinity and <code class="calibre7">NaN</code> is not-a-number in the IEEE floating point calculus (results of the operations respectively <em>1/0</em> and <em>0/0</em>, for instance).
+</p>
+<p>
+Logical constants are either <code class="calibre7">TRUE</code> or <code class="calibre7">FALSE</code>.
+</p>
+<p>
+Numeric constants follow a similar syntax to that of the <strong>C</strong> language. They consist of an integer part consisting of zero or more digits, followed optionally by ‘.’ and a fractional part of zero or more digits optionally followed by an exponent part consisting of an ‘E’ or an ‘e’, an optional sign and a string of one or more digits. Either the fractional or the decimal part can be empty, but not both at once.
+</p>
+<div class="example">
+<pre class="example1"><code>Valid numeric constants: 1 10 0.1 .2 1e-7 1.2e+7</code></pre>
+</div>
+<p>
+Numeric constants can also be hexadecimal, starting with ‘0x’ or ‘0x’ followed by zero or more digits, ‘a-f’ or ‘A-F’. Hexadecimal floating point constants are supported using C99 syntax, e.g. ‘0x1.1p1’.
+</p>
+<p>
+There is now a separate class of integer constants. They are created by using the qualifier <code class="calibre7">L</code> at the end of the number. For example, <code class="calibre7">123L</code> gives an integer value rather than a numeric value. The suffix <code class="calibre7">L</code> can be used to qualify any non-complex number with the intent of creating an integer. So it can be used with numbers given by hexadecimal or scientific notation. However, if the value is not a valid integer, a warning is emitted and the numeric value created. The following shows examples of valid integer constants, values which will generate a warning and give numeric constants and syntax errors.
+</p>
+<div class="example">
+<pre class="example1"><code>Valid integer constants:  1L, 0x10L, 1000000L, 1e6L
+Valid numeric constants:  1.1L, 1e-3L, 0x1.1p-2
+Syntax error:  12iL 0x1.1</code></pre>
+</div>
+<p>
+A warning is emitted for decimal values that contain an unnecessary decimal point, e.g. <code class="calibre7">1.L</code>. It is an error to have a decimal point in a hexadecimal constant without the binary exponent.
+</p>
+<p>
+Note also that a preceding sign (<code class="calibre7">+</code> or <code class="calibre7">-</code>) is treated as a unary operator, not as part of the constant.
+</p>
+<p>
+Up-to-date information on the currently accepted formats can be found by <code class="calibre7">?NumericConstants</code>.
+</p>
+<p>
+Complex constants have the form of a decimal numeric constant followed by ‘i’. Notice that only purely imaginary numbers are actual constants, other complex numbers are parsed a unary or binary operations on numeric and imaginary numbers.
+</p>
+<div class="example">
+<pre class="example1"><code>Valid complex constants: 2i 4.1i 1e-2i</code></pre>
+</div>
+<p>
+String constants are delimited by a pair of single (‘’’) or double (‘“’) quotes and can contain all other printable characters. Quotes and other special characters within strings are specified using <em>escape sequences</em>:
+</p>
+<dl>
+<dt>
+<code class="calibre7">\’</code>
+</dt>
+<dd>
+<p>
+single quote
+</p>
+</dd>
+<dt>
+<code class="calibre7">\“</code>
+</dt>
+<dd>
+<p>
+double quote
+</p>
+</dd>
+<dt>
+<code class="calibre7">\n</code>
+</dt>
+<dd>
+<p>
+newline
+</p>
+</dd>
+<dt>
+<code class="calibre7">\r</code>
+</dt>
+<dd>
+<p>
+carriage return
+</p>
+</dd>
+<dt>
+<code class="calibre7">\t</code>
+</dt>
+<dd>
+<p>
+tab character
+</p>
+</dd>
+<dt>
+<code class="calibre7">\b</code>
+</dt>
+<dd>
+<p>
+backspace
+</p>
+</dd>
+<dt>
+<code class="calibre7">\a</code>
+</dt>
+<dd>
+<p>
+bell
+</p>
+</dd>
+<dt>
+<code class="calibre7">\f</code>
+</dt>
+<dd>
+<p>
+form feed
+</p>
+</dd>
+<dt>
+<code class="calibre7">\v</code>
+</dt>
+<dd>
+<p>
+vertical tab
+</p>
+</dd>
+<dt>
+<code class="calibre7">\\</code>
+</dt>
+<dd>
+<p>
+backslash itself
+</p>
+</dd>
+<dt>
+<code class="calibre7">\nnn</code>
+</dt>
+<dd>
+<p>
+character with given octal code – sequences of one, two or three digits in the range <code class="calibre7">0 … 7</code> are accepted.
+</p>
+</dd>
+<dt>
+<code class="calibre7">\xnn</code>
+</dt>
+<dd>
+<p>
+character with given hex code – sequences of one or two hex digits (with entries <code class="calibre7">0 … 9 A … F a … f</code>).
+</p>
+</dd>
+<dt>
+<code class="calibre7">\unnnn \u{nnnn}</code>
+</dt>
+<dd>
+<p>
+(where multibyte locales are supported, otherwise an error). Unicode character with given hex code – sequences of up to four hex digits. The character needs to be valid in the current locale.
+</p>
+</dd>
+<dt>
+<code class="calibre7">\Unnnnnnnn \U{nnnnnnnn}</code>
+</dt>
+<dd>
+<p>
+(where multibyte locales are supported and not on Windows, otherwise an error). Unicode character with given hex code – sequences of up to eight hex digits.
+</p>
+</dd>
+</dl>
+<p>
+A single quote may also be embedded directly in a double-quote delimited string and vice versa.
+</p>
+<p>
+A ‘nul’ (<code class="calibre7">\0</code>) is not allowed in a character string, so using <code class="calibre7">\0</code> in a string constant terminates the constant (usually with a warning): further characters up to the closing quote are scanned but ignored.
+</p>
+<hr />
+<p>
+<a href="" id="Identifiers"></a> <a href="" id="Identifiers-1"></a>
+</p>
+<h4 id="identifiers" class="subsection">
+10.3.2 Identifiers
+</h4>
+<p>
+<a href="" id="index-identifier"></a>
+</p>
+<p>
+Identifiers consist of a sequence of letters, digits, the period (‘.’) and the underscore. They must not start with a digit or an underscore, or with a period followed by a digit.
+</p>
+<p>
+The definition of a letter depends on the current locale: the precise set of characters allowed is given by the C expression <code class="calibre7">(isalnum(c) || c == ‘.’ || c == ‘_’)</code> and will include accented letters in many Western European locales.
+</p>
+<p>
+Notice that identifiers starting with a period are not by default listed by the <code class="calibre7">ls</code> function and that ‘…’ and ‘..1’, ‘..2’, etc. are special.
+</p>
+<p>
+Notice also that objects can have names that are not identifiers. These are generally accessed via <code class="calibre7">get</code> and <code class="calibre7">assign</code>, although they can also be represented by text strings in some limited circumstances when there is no ambiguity (e.g. <code class="calibre7">“x” &lt;- 1</code>). As <code class="calibre7">get</code> and <code class="calibre7">assign</code> are not restricted to names that are identifiers they do not recognise subscripting operators or replacement functions. The following pairs are <em>not</em> equivalent <a href="" id="index-get"></a> <a href="" id="index-assign"></a>
+</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">x$a&lt;-1</code>
+</td>
+<td align="left">
+<code class="calibre7">assign(“x$a”,1)</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">x[[1]]</code>
+</td>
+<td align="left">
+<code class="calibre7">get(“x[[1]]”)</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">names(x)&lt;-nm</code>
+</td>
+<td align="left">
+<code class="calibre7">assign(“names(x)”,nm)</code>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<hr />
+<p>
+<a href="" id="Reserved-words"></a> <a href="" id="Reserved-words-1"></a>
+</p>
+<h4 id="reserved-words" class="subsection">
+10.3.3 Reserved words
+</h4>
+<p>
+The following identifiers have a special meaning and cannot be used for object names
+</p>
+<div class="example">
+<pre class="example1"><code>if else repeat while function for in next break
+TRUE FALSE NULL Inf NaN
+NA NA_integer_ NA_real_ NA_complex_ NA_character_
+... ..1 ..2 etc.</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Special-operators"></a> <a href="" id="Special-operators-1"></a>
+</p>
+<h4 id="special-operators" class="subsection">
+10.3.4 Special operators
+</h4>
+<p>
+R allows user-defined infix operators. These have the form of a string of characters delimited by the ‘%’ character. The string can contain any printable character except ‘%’. The escape sequences for strings do not apply here.
+</p>
+<p>
+Note that the following operators are predefined
+</p>
+<div class="example">
+<pre class="example1"><code>%% %*% %/% %in% %o% %x%</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Separators"></a> <a href="" id="Separators-1"></a>
+</p>
+<h4 id="separators" class="subsection">
+10.3.5 Separators
+</h4>
+<p>
+Although not strictly tokens, stretches of whitespace characters (spaces, tabs and formfeeds, on Windows and UTF-8 locales other Unicode whitespace characters<a href="appendix-a-references.html#FOOT4" id="DOCF4"><sup>4</sup></a>) serve to delimit tokens in case of ambiguity, (compare <code class="calibre7">x&lt;-5</code> and <code class="calibre7">x &lt; -5</code>).
+</p>
+<p>
+Newlines have a function which is a combination of token separator and expression terminator. If an expression can terminate at the end of the line the parser will assume it does so, otherwise the newline is treated as whitespace. Semicolons (‘;’) may be used to separate elementary <a href="" id="index-expression-2"></a> expressions on the same line.
+</p>
+<p>
+Special rules apply to the <code class="calibre7">else</code> keyword: inside a compound expression, a newline before <code class="calibre7">else</code> is discarded, whereas at the outermost level, the newline terminates the <code class="calibre7">if</code> construction and a subsequent <code class="calibre7">else</code> causes a syntax error. This somewhat anomalous behaviour occurs because R should be usable in interactive mode and then it must decide whether the input expression is complete, incomplete, or invalid as soon as the user presses <code class="calibre7">RET</code>.
+</p>
+<p>
+The comma (‘,’) is used to separate function arguments and multiple indices.
+</p>
+<hr />
+<p>
+<a href="" id="Operator-tokens"></a> <a href="" id="Operator-tokens-1"></a>
+</p>
+<h4 id="operator-tokens" class="subsection">
+10.3.6 Operator tokens
+</h4>
+<p>
+R uses the following operator tokens
+</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">+ - * / %% ^</code>
+</td>
+<td align="left">
+arithmetic
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">&gt; &gt;= &lt; &lt;= == !=</code>
+</td>
+<td align="left">
+relational
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">! &amp; |</code>
+</td>
+<td align="left">
+logical
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">~</code>
+</td>
+<td align="left">
+model formulae
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">-&gt; &lt;-</code>
+</td>
+<td align="left">
+assignment
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">$</code>
+</td>
+<td align="left">
+list indexing
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">:</code>
+</td>
+<td align="left">
+sequence
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+(Several of the operators have different meaning inside model formulas)
+</p>
+<hr />
+<p>
+<a href="" id="Grouping"></a> <a href="" id="Grouping-1"></a>
+</p>
+<h4 id="grouping" class="subsection">
+10.3.7 Grouping
+</h4>
+<p>
+Ordinary parentheses—‘(’ and ‘)’—are used for explicit grouping within expressions and to delimit the argument lists for function definitions and function calls.
+</p>
+<p>
+Braces—‘{’ and ‘}’—delimit blocks of expressions in function definitions, conditional expressions, and iterative constructs.
+</p>
+<hr />
+<p>
+<a href="" id="Indexing-tokens"></a> <a href="" id="Indexing-tokens-1"></a>
+</p>
+<h4 id="indexing-tokens" class="subsection">
+10.3.8 Indexing tokens
+</h4>
+<p>
+Indexing of arrays and vectors is performed using the single and double brackets, ‘[]’ and ‘[[]]’. Also, indexing tagged lists may be done using the ‘$’ operator.
+</p>
+<hr />
+<p>
+<a href="" id="Expressions"></a> <a href="" id="Expressions-1"></a>
+</p>
+<h3 id="expressions" class="section">
+10.4 Expressions
+</h3>
+<p>
+An R program consists of a sequence of R expressions. An expression can be a simple expression consisting of only a constant or an identifier, or it can be a compound expression constructed from other parts (which may themselves be expressions).
+</p>
+<p>
+The following sections detail the various syntactical constructs that are available.
+</p>
+<hr />
+<p>
+<a href="" id="Function-calls-_0028expressions_0029"></a> <a href="" id="Function-calls-2"></a>
+</p>
+<h4 id="function-calls" class="subsection">
+10.4.1 Function calls
+</h4>
+<p>
+<a href="" id="index-function-30"></a>
+</p>
+<p>
+A function call takes the form of a function reference followed by a comma-separated list of arguments within a set of parentheses.
+</p>
+<div class="example">
+<pre class="example1"><code>function_reference ( arg1, arg2, ...... , argn )</code></pre>
+</div>
+<p>
+The function reference can be either
+</p>
+<ul>
+<li>
+an identifier (the name of the function)
+</li>
+<li>
+a text string (ditto, but handy if the function has a name which is not a valid identifier)
+</li>
+<li>
+an expression (which should evaluate to a function object)
+</li>
+</ul>
+<p>
+Each argument can be tagged (<code class="calibre7">tag=expr</code>), or just be a simple expression. It can also be empty or it can be one of the special tokens ‘…’, ‘..2’, etc.
+</p>
+<p>
+A tag can be an identifier or a text string.
+</p>
+<p>
+Examples:
+</p>
+<div class="example">
+<pre class="example1"><code>f(x)
+g(tag = value, , 5)
+&quot;odd name&quot;(&quot;strange tag&quot; = 5, y)
+(function(x) x^2)(5)</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Infix-and-prefix-operators"></a> <a href="" id="Infix-and-prefix-operators-1"></a>
+</p>
+<h4 id="infix-and-prefix-operators" class="subsection">
+10.4.2 Infix and prefix operators
+</h4>
+<p>
+The order of precedence (highest first) of the operators is
+</p>
+<div class="example">
+<pre class="example1"><code>::
+&#36; @
+^
+- +                (unary)
+:
+%xyz%
+* /
++ -                (binary)
+&gt; &gt;= &lt; &lt;= == !=
+!
+&amp; &amp;&amp;
+| ||
+~                  (unary and binary)
+-&gt; -&gt;&gt;
+=                  (as assignment)
+&lt;- &lt;&lt;-</code></pre>
+</div>
+<p>
+Note that <code class="calibre7">:</code> precedes binary +/-, but not <code class="calibre7">^</code>. Hence, <code class="calibre7">1:3-1</code> is <em>0 1 2</em>, but <code class="calibre7">1:2^3</code> is <code class="calibre7">1:8</code>.
+</p>
+<p>
+The exponentiation operator ‘^’ and the <a href="" id="index-assignment-11"></a> left assignment plus minus operators ‘&lt;- - = &lt;&lt;-’ group right to left, all other operators group left to right. That is, <code class="calibre7">2 ^ 2 ^ 3</code> is <em>2 ^ 8</em>, not <em>4 ^ 3</em>, whereas <code class="calibre7">1 - 1 - 1</code> is <em>-1</em>, not 1.
+</p>
+<p>
+Notice that the operators <code class="calibre7">%%</code> and <code class="calibre7">%/%</code> for integer remainder and divide have higher precedence than multiply and divide.
+</p>
+<p>
+Although it is not strictly an operator, it also needs mentioning that the ‘=’ sign is used for tagging arguments in function calls and for assigning default values in function definitions.
+</p>
+<p>
+The ‘$’ sign is in some sense an operator, but does not allow arbitrary right hand sides and is discussed under <a href="parser.html#Index-constructions">Index constructions</a>. It has higher precedence than any of the other operators.
+</p>
+<p>
+The parsed form of a unary or binary operation is completely equivalent to a function call with the operator as the function name and the operands as the function arguments.
+</p>
+<p>
+Parentheses are recorded as equivalent to a unary operator, with name <code class="calibre7">“(”</code>, even in cases where the parentheses could be inferred from operator precedence (e.g., <code class="calibre7">a * (b + c)</code>).
+</p>
+<p>
+Notice that the <a href="" id="index-assignment-12"></a> assignment symbols are operators just like the arithmetic, relational, and logical ones. Any expression is allowed also on the target side of an assignment, as far as the parser is concerned (<code class="calibre7">2 + 2 &lt;- 5</code> is a valid expression as far as the parser is concerned. The evaluator will object, though). Similar comments apply to the model formula operator.
+</p>
+<hr />
+<p>
+<a href="" id="Index-constructions"></a> <a href="" id="Index-constructions-1"></a>
+</p>
+<h4 id="index-constructions" class="subsection">
+10.4.3 Index constructions
+</h4>
+<p>
+R has three indexing constructs, two of which are syntactically similar although with somewhat different semantics:
+</p>
+<div class="example">
+<pre class="example1"><code>object [ arg1, ...... , argn ]
+object [[ arg1, ...... , argn ]]</code></pre>
+</div>
+<p>
+<a href="" id="index-_005b-1"></a> <a href="" id="index-_005b_005b-1"></a>
+</p>
+<p>
+The object can formally be any valid expression, but it is understood to denote or evaluate to a subsettable object. The arguments generally evaluate to numerical or character indices, but other kinds of arguments are possible (notably <code class="calibre7">drop = FALSE</code>).
+</p>
+<p>
+Internally, these index constructs are stored as function calls with function name <code class="calibre7">“[”</code> respectively <code class="calibre7">“[[”</code>.
+</p>
+<p>
+The third index construction is
+</p>
+<div class="example">
+<pre class="example1"><code>object &#36; tag</code></pre>
+</div>
+<p>
+<a href="" id="index-_0024-1"></a>
+</p>
+<p>
+Here, object is as above, whereas tag is an identifier or a text string. Internally, it is stored as a function call with name <code class="calibre7">“$”</code>
+</p>
+<hr />
+<p>
+<a href="" id="Compound-expressions"></a> <a href="" id="Compound-expressions-1"></a>
+</p>
+<h4 id="compound-expressions" class="subsection">
+10.4.4 Compound expressions
+</h4>
+<p>
+A compound expression is of the form
+</p>
+<div class="example">
+<pre class="example1"><code>{ expr1 ; expr2 ; ...... ; exprn }</code></pre>
+</div>
+<p>
+The semicolons may be replaced by newlines. Internally, this is stored as a function call with <code class="calibre7">“{”</code> as the function name and the expressions as arguments.
+</p>
+<hr />
+<p>
+<a href="" id="Flow-control-elements"></a> <a href="" id="Flow-control-elements-1"></a>
+</p>
+<h4 id="flow-control-elements" class="subsection">
+10.4.5 Flow control elements
+</h4>
+<p>
+R contains the following control structures as special syntactic constructs
+</p>
+<div class="example">
+<pre class="example1"><code>if ( cond ) expr
+if ( cond ) expr1 else expr2
+while ( cond ) expr
+repeat expr
+for ( var in list ) expr</code></pre>
+</div>
+<p>
+The expressions in these constructs will typically be compound expressions.
+</p>
+<p>
+Within the loop constructs (<code class="calibre7">while</code>, <code class="calibre7">repeat</code>, <code class="calibre7">for</code>), one may use <code class="calibre7">break</code> (to terminate the loop) and <code class="calibre7">next</code> (to skip to the next iteration).
+</p>
+<p>
+Internally, the constructs are stored as function calls:
+</p>
+<div class="example">
+<pre class="example1"><code>&quot;if&quot;(cond, expr)
+&quot;if&quot;(cond, expr1, expr2)
+&quot;while&quot;(cond, expr)
+&quot;repeat&quot;(expr)
+&quot;for&quot;(var, list, expr)
+&quot;break&quot;()
+&quot;next&quot;()</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Function-definitions"></a> <a href="" id="Function-definitions-1"></a>
+</p>
+<h4 id="function-definitions" class="subsection">
+10.4.6 Function definitions
+</h4>
+<p>
+A <a href="" id="index-function-31"></a> function definition is of the form
+</p>
+<div class="example">
+<pre class="example1"><code>function ( arglist ) body</code></pre>
+</div>
+<p>
+The function body is an expression, often a compound expression. The arglist is a comma-separated list of items each of which can be an identifier, or of the form ‘identifier = default’, or the special token ‘…’. The default can be any valid expression.
+</p>
+<p>
+Notice that function arguments unlike list tags, etc., cannot have “strange names” given as text strings.
+</p>
+<p>
+Internally, a function definition is stored as a function call with function name <code class="calibre7">function</code> and two arguments, the arglist and the body. The arglist is stored as a tagged pairlist where the tags are the argument names and the values are the default expressions.
+</p>
+<hr />
+<p>
+<a href="" id="Directives"></a> <a href="" id="Directives-1"></a>
+</p>
+<h3 id="directives" class="section">
+10.5 Directives
+</h3>
+<p>
+<a href="" id="index-_0023line"></a>
+</p>
+<p>
+The parser currently only supports one directive, <code class="calibre7">#line</code>. This is similar to the C-preprocessor directive of the same name. The syntax is
+</p>
+<div class="example">
+<pre class="example1"><code>#line nn [ &quot;filename&quot; ]</code></pre>
+</div>
+<p>
+where nn is an integer line number, and the optional filename (in required double quotes) names the source file.
+</p>
+<p>
+Unlike the C directive, <code class="calibre7">#line</code> must appear as the first five characters on a line. As in C, nn and <code class="calibre7">“filename”</code> entries may be separated from it by whitespace. And unlike C, any following text on the line will be treated as a comment and ignored.
+</p>
+<p>
+This directive tells the parser that the following line should be assumed to be line nn of file filename. (If the filename is not given, it is assumed to be the same as for the previous directive.) This is not typically used by users, but may be used by preprocessors so that diagnostic messages refer to the original file.
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index"></a> <a href="" id="Function-and-Variable-Index-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="debugging.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="function-and-variable-index.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

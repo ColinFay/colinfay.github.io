@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The R language definition</title>
+  <meta name="description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="The R language definition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  <meta name="github-repo" content="ColinFay/r-language-definition" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The R language definition" />
+  
+  <meta name="twitter:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="parser.html">
+<link rel="next" href="concept-index.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">The R language definition</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Language Definition</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="objects.html"><a href="objects.html"><i class="fa fa-check"></i><b>2</b> Objects</a></li>
+<li class="chapter" data-level="3" data-path="evaluation-of-expressions.html"><a href="evaluation-of-expressions.html"><i class="fa fa-check"></i><b>3</b> Evaluation of expressions</a></li>
+<li class="chapter" data-level="4" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>4</b> Functions</a></li>
+<li class="chapter" data-level="5" data-path="object-oriented-programming.html"><a href="object-oriented-programming.html"><i class="fa fa-check"></i><b>5</b> Object-oriented programming</a></li>
+<li class="chapter" data-level="6" data-path="computing-on-the-language.html"><a href="computing-on-the-language.html"><i class="fa fa-check"></i><b>6</b> Computing on the language</a></li>
+<li class="chapter" data-level="7" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>7</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="8" data-path="exception-handling.html"><a href="exception-handling.html"><i class="fa fa-check"></i><b>8</b> Exception handling</a></li>
+<li class="chapter" data-level="9" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>9</b> Debugging</a></li>
+<li class="chapter" data-level="10" data-path="parser.html"><a href="parser.html"><i class="fa fa-check"></i><b>10</b> Parser</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and Variable Index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept Index</a></li>
+<li class="chapter" data-level="13" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>13</b> Appendix A References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The R language definition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="function-and-variable-index" class="section level1">
+<h1><span class="header-section-number">Chapter 11</span> Function and Variable Index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="function-and-variable-index.html#Function-and-Variable-Index_vr_symbol-1" class="summary-letter"><strong>#</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_symbol-2" class="summary-letter"><strong>$</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_symbol-3" class="summary-letter"><strong>.</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_symbol-4" class="summary-letter"><strong>[</strong></a>  <br /> <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-W" class="summary-letter"><strong>W</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_symbol-1">#</a>
+</p>
+<p>
+<a href="parser.html#index-_0023"><code class="calibre7">#</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Comments">Comments</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_symbol-2">$</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-_0024"><code class="calibre7">$</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Indexing">Indexing</a>
+</p>
+<p>
+<a href="parser.html#index-_0024-1"><code class="calibre7">$</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Index-constructions">Index constructions</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_symbol-3">.</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eC"><code class="calibre7">.C</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Foreign-language-interfaces">Foreign language interfaces</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eCall"><code class="calibre7">.Call</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Foreign-language-interfaces">Foreign language interfaces</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eExternal"><code class="calibre7">.External</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Foreign-language-interfaces">Foreign language interfaces</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eFortran"><code class="calibre7">.Fortran</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Foreign-language-interfaces">Foreign language interfaces</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eInternal-1"><code class="calibre7">.Internal</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#g_t_002eInternal-and-_002ePrimitive">.Internal and .Primitive</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002ePrimitive-1"><code class="calibre7">.Primitive</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#g_t_002eInternal-and-_002ePrimitive">.Internal and .Primitive</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_symbol-4">[</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-_005b"><code class="calibre7">[</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Indexing">Indexing</a>
+</p>
+<p>
+<a href="parser.html#index-_005b-1"><code class="calibre7">[</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Index-constructions">Index constructions</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-_005b_005b"><code class="calibre7">[[</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Indexing">Indexing</a>
+</p>
+<p>
+<a href="parser.html#index-_005b_005b-1"><code class="calibre7">[[</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Index-constructions">Index constructions</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-A">A</a>
+</p>
+<p>
+<a href="objects.html#index-as_002ecall"><code class="calibre7">as.call</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Language-objects">Language objects</a>
+</p>
+<p>
+<a href="objects.html#index-as_002echaracter"><code class="calibre7">as.character</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Symbol-objects">Symbol objects</a>
+</p>
+<p>
+<a href="objects.html#index-as_002efunction"><code class="calibre7">as.function</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="objects.html#index-as_002elist"><code class="calibre7">as.list</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Language-objects">Language objects</a>
+</p>
+<p>
+<a href="objects.html#index-as_002ename"><code class="calibre7">as.name</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Symbol-objects">Symbol objects</a>
+</p>
+<p>
+<a href="parser.html#index-assign"><code class="calibre7">assign</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Identifiers">Identifiers</a>
+</p>
+<p>
+<a href="objects.html#index-attr"><code class="calibre7">attr</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="objects.html#index-attr_003c_002d"><code class="calibre7">attr&lt;-</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="objects.html#index-attributes-1"><code class="calibre7">attributes</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="objects.html#index-attributes_003c_002d"><code class="calibre7">attributes&lt;-</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Attributes">Attributes</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-B">B</a>
+</p>
+<p>
+<a href="objects.html#index-baseenv"><code class="calibre7">baseenv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Environment-objects">Environment objects</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-basename"><code class="calibre7">basename</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="objects.html#index-body"><code class="calibre7">body</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-body-1"><code class="calibre7">body</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-functions">Manipulation of functions</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-body_003c_002d"><code class="calibre7">body&lt;-</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-functions">Manipulation of functions</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-break"><code class="calibre7">break</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Looping">Looping</a>
+</p>
+<p>
+<a href="debugging.html#index-browser"><code class="calibre7">browser</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#browser">browser</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-D">D</a>
+</p>
+<p>
+<a href="debugging.html#index-debug"><code class="calibre7">debug</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#debug_002fundebug">debug/undebug</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-dirname"><code class="calibre7">dirname</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-do_002ecall"><code class="calibre7">do.call</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-function-calls">Manipulation of function calls</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-E">E</a>
+</p>
+<p>
+<a href="objects.html#index-emptyenv"><code class="calibre7">emptyenv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Environment-objects">Environment objects</a>
+</p>
+<p>
+<a href="objects.html#index-environment-20"><code class="calibre7">environment</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-environment-21"><code class="calibre7">environment</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-functions">Manipulation of functions</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-environment_003c_002d"><code class="calibre7">environment&lt;-</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-functions">Manipulation of functions</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-eval"><code class="calibre7">eval</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#More-on-evaluation">More on evaluation</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-F">F</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002eaccess"><code class="calibre7">file.access</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002eappend"><code class="calibre7">file.append</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002echoose"><code class="calibre7">file.choose</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002ecopy"><code class="calibre7">file.copy</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002ecreate"><code class="calibre7">file.create</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002eexists"><code class="calibre7">file.exists</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002einfo"><code class="calibre7">file.info</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002epath"><code class="calibre7">file.path</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002eremove"><code class="calibre7">file.remove</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002erename"><code class="calibre7">file.rename</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-file_002eshow"><code class="calibre7">file.show</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-for"><code class="calibre7">for</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#for">for</a>
+</p>
+<p>
+<a href="objects.html#index-formals"><code class="calibre7">formals</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-formals-1"><code class="calibre7">formals</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-functions">Manipulation of functions</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-formals_003c_002d"><code class="calibre7">formals&lt;-</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-functions">Manipulation of functions</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-G">G</a>
+</p>
+<p>
+<a href="parser.html#index-get"><code class="calibre7">get</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Identifiers">Identifiers</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-I">I</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-is_002ena"><code class="calibre7">is.na</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#NA-handling">NA handling</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-is_002enan"><code class="calibre7">is.nan</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#NA-handling">NA handling</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-M">M</a>
+</p>
+<p>
+<a href="functions.html#index-match_002earg"><code class="calibre7">match.arg</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-matching">Argument matching</a>
+</p>
+<p>
+<a href="functions.html#index-match_002ecall"><code class="calibre7">match.call</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-matching">Argument matching</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-match_002ecall-1"><code class="calibre7">match.call</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-function-calls">Manipulation of function calls</a>
+</p>
+<p>
+<a href="functions.html#index-match_002efun"><code class="calibre7">match.fun</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-matching">Argument matching</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-missing"><code class="calibre7">missing</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#NA-handling">NA handling</a>
+</p>
+<p>
+<a href="objects.html#index-mode-3"><code class="calibre7">mode</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-N">N</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-NA"><code class="calibre7">NA</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#NA-handling">NA handling</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-NA-1"><code class="calibre7">NA</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Indexing-by-vectors">Indexing by vectors</a>
+</p>
+<p>
+<a href="objects.html#index-names"><code class="calibre7">names</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Names">Names</a>
+</p>
+<p>
+<a href="objects.html#index-names_003c_002d"><code class="calibre7">names&lt;-</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Names">Names</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-NaN"><code class="calibre7">NaN</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#NA-handling">NA handling</a>
+</p>
+<p>
+<a href="objects.html#index-new_002eenv"><code class="calibre7">new.env</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Environment-objects">Environment objects</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-next"><code class="calibre7">next</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Looping">Looping</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-NextMethod"><code class="calibre7">NextMethod</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#NextMethod">NextMethod</a>
+</p>
+<p>
+<a href="objects.html#index-NULL"><code class="calibre7">NULL</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#NULL-object">NULL object</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-O">O</a>
+</p>
+<p>
+<a href="exception-handling.html#index-on_002eexit"><code class="calibre7">on.exit</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="exception-handling.html#on_002eexit">on.exit</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-P">P</a>
+</p>
+<p>
+<a href="objects.html#index-pairlist"><code class="calibre7">pairlist</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Pairlist-objects">Pairlist objects</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-path_002eexpand"><code class="calibre7">path.expand</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-proc_002etime"><code class="calibre7">proc.time</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-Q">Q</a>
+</p>
+<p>
+<a href="objects.html#index-quote"><code class="calibre7">quote</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Language-objects">Language objects</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-R">R</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-repeat"><code class="calibre7">repeat</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#repeat">repeat</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-S">S</a>
+</p>
+<p>
+<a href="exception-handling.html#index-stop"><code class="calibre7">stop</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="exception-handling.html#stop">stop</a>
+</p>
+<p>
+<a href="objects.html#index-storage_002emode"><code class="calibre7">storage.mode</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-substitute"><code class="calibre7">substitute</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Substitutions">Substitutions</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-switch"><code class="calibre7">switch</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#switch">switch</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Sys_002egetenv"><code class="calibre7">Sys.getenv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Sys_002egetlocale"><code class="calibre7">Sys.getlocale</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Sys_002elocaleconv"><code class="calibre7">Sys.localeconv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Sys_002eputenv"><code class="calibre7">Sys.putenv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Sys_002eputlocale"><code class="calibre7">Sys.putlocale</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Sys_002etime"><code class="calibre7">Sys.time</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Sys_002etimezone"><code class="calibre7">Sys.timezone</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-system"><code class="calibre7">system</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-system_002etime"><code class="calibre7">system.time</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-T">T</a>
+</p>
+<p>
+<a href="debugging.html#index-trace"><code class="calibre7">trace</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#trace_002funtrace">trace/untrace</a>
+</p>
+<p>
+<a href="debugging.html#index-traceback"><code class="calibre7">traceback</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#traceback">traceback</a>
+</p>
+<p>
+<a href="objects.html#index-typeof"><code class="calibre7">typeof</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-U">U</a>
+</p>
+<p>
+<a href="debugging.html#index-undebug"><code class="calibre7">undebug</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#debug_002fundebug">debug/undebug</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-unlink"><code class="calibre7">unlink</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="debugging.html#index-untrace"><code class="calibre7">untrace</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#trace_002funtrace">trace/untrace</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-UseMethod"><code class="calibre7">UseMethod</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#UseMethod">UseMethod</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-Variable-Index_vr_letter-W">W</a>
+</p>
+<p>
+<a href="exception-handling.html#index-warning"><code class="calibre7">warning</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="exception-handling.html#warning">warning</a>
+</p>
+<p>
+<a href="exception-handling.html#index-warnings"><code class="calibre7">warnings</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="exception-handling.html#warning">warning</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-while"><code class="calibre7">while</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#while">while</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="function-and-variable-index.html#Function-and-Variable-Index_vr_symbol-1" class="summary-letter"><strong>#</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_symbol-2" class="summary-letter"><strong>$</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_symbol-3" class="summary-letter"><strong>.</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_symbol-4" class="summary-letter"><strong>[</strong></a>  <br /> <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="function-and-variable-index.html#Function-and-Variable-Index_vr_letter-W" class="summary-letter"><strong>W</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>
+<a href="" id="Concept-Index"></a> <a href="" id="Concept-Index-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="parser.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="concept-index.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

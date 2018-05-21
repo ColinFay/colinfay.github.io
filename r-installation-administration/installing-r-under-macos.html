@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="installing-r-under-windows.html">
+<link rel="next" href="running-r.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="installing-r-under-macos" class="section level1">
+<h1><span class="header-section-number">Chapter 4</span> Installing R under macOS</h1>
+<p>
+<a href="" id="index-macOS-1"></a>
+</p>
+<p>
+(‘macOS’ was known as ‘OS X’ from 2012–2016 and as ‘Mac OS X’ before that.)
+</p>
+<p>
+The front page of a CRAN site has a link ‘Download R for OS X’. Click on that, then download the file R-3.4.2.pkg and install it. This runs on macOS 10.11 and later (El Capitan, Sierra, High Sierra, …).
+</p>
+<p>
+Installers for R-patched and R-devel are usually available from <a href="https://r.research.att.com" class="uri">https://r.research.att.com</a>. (Some of these packages are unsigned: to install those Control/right/two-finger click, select ‘Open with’ and ‘Installer’.)
+</p>
+<p>
+For some older versions of the OS you can in principle (it is little tested) install R from the sources (see <a href="appendix-b-configuration-on-a-unix-alike.html#macOS">macOS</a>).
+</p>
+<p>
+It is important that if you use a binary installer package that your OS is fully updated: look at ‘Updates’ from the ‘App Store’ to be sure. (If using XQuartz, check that is current.)
+</p>
+<p>
+To install, just double-click on the icon of the file you downloaded. At the ‘Installation Type’ stage, note the option to ‘Customize’. This currently shows four components: everyone will need the ‘R Framework’ component: the remaining components are optional. (The ‘Tcl/Tk’ component is needed to use package <strong>tcltk</strong>. The ‘Texinfo’ component is only needed by those installing source packages or R from its sources.)
+</p>
+<p>
+This is an Apple Installer package. If you encounter any problem during the installation, please check the Installer log by clicking on the “Window” menu and item “Installer Log”. The full output (select “Show All Log”) is useful for tracking down problems. Note the the installer is clever enough to try to upgrade the last-installed version of the application where you installed it (which may not be where you want this time …).
+</p>
+<p>
+Various parts of the build require XQuartz to be installed: see <a href="https://xquartz.macosforge.org/" class="uri">https://xquartz.macosforge.org/</a>. These include the <strong>tcltk</strong> package and the <code class="calibre6">X11</code> device: attempting to use these without XQuartz will remind you. Also the cairographics-based devices (which are not often used on macOS) such as <code class="calibre6">png(type = “cairo”)</code>.
+</p>
+<p>
+If you update your macOS version, you should re-install R (and perhaps XQuartz): the installer may tailor the installation to the current version of the OS.
+</p>
+<p>
+When running under High Sierra (10.13), R may not be able to deduce the system timezone, in which case you will need to set the environment variable <code class="calibre6">TZ</code>: see <code class="calibre6">?Sys.timezone</code>.
+</p>
+<p>
+For building R from source, see <a href="appendix-b-configuration-on-a-unix-alike.html#macOS">macOS</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Running-R-under-macOS"></a> <a href="" id="Running-R-under-macOS-1"></a>
+</p>
+<h3 id="running-r-under-macos" class="section">
+4.1 Running R under macOS
+</h3>
+<p>
+There are two ways to run R on macOS from a CRAN binary distribution.
+</p>
+<p>
+There is a GUI console normally installed with the R icon in /Applications which you can run by double-clicking (e.g. from Launchpad or Finder). (If you cannot find it there it was possibly installed elsewhere so try searching for it in Spotlight.) This is usually referred to as R.APP to distinguish it from command-line R: its user manual is currently part of the macOS FAQ at <a href="https://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html" class="uri">https://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html</a> and can be viewed from R.APP’s ‘Help’ menu.
+</p>
+<p>
+You can run command-line R and <code class="calibre6">Rscript</code> from a Terminal<a href="environment-variable-index.html#FOOT17" id="DOCF17"><sup>17</sup></a> so these can be typed as commands like any other Unix-alike: see the next chapter of this manual. There are some small differences which may surprise users of R on other platforms, notably the default location of the personal library directory (under ~/Library/R, e.g. ~/Library/R/3.4/library), and that warnings, messages and other output to stderr are highlighted in bold.
+</p>
+<p>
+It has been reported that running R.APP may fail if no preferences are stored, so if it fails when launched for the very first time, try it again (the first attempt will store some preferences).
+</p>
+<p>
+Users of R.APP need to be aware of the ‘App Nap’ feature (<a href="https://developer.apple.com/library/mac/releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_9.html" class="uri">https://developer.apple.com/library/mac/releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_9.html</a>) which can cause R tasks to appear to run very slowly when not producing output in the console. Here are ways to avoid it:
+</p>
+<ul>
+<li>
+Ensure that the console is completely visible (or at least the activity indicator at the top right corner is visible).
+</li>
+<li>
+<p>
+In a Terminal, run
+</p>
+<div class="example">
+<pre class="example1"><code>defaults write org.R-project.R NSAppSleepDisabled -bool YES</code></pre>
+</div>
+<p>
+(see <a href="https://developer.apple.com/library/mac/releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_9.html" class="uri">https://developer.apple.com/library/mac/releasenotes/MacOSX/WhatsNewInOSX/Articles/MacOSX10_9.html</a>).
+</p>
+</li>
+</ul>
+<p>
+Using the <code class="calibre6">X11</code> device or the X11-based versions of <code class="calibre6">View()</code> and <code class="calibre6">edit()</code> for data frames and matrices (the latter are the default for command-line R but not R.APP) requires an X sub-system to be installed: see <a href="appendix-b-configuration-on-a-unix-alike.html#macOS">macOS</a>. So do the <strong>tcltk</strong> package and some third-party packages.
+</p>
+<hr />
+<p>
+<a href="" id="Uninstalling-under-macOS"></a> <a href="" id="Uninstalling-under-macOS-1"></a>
+</p>
+<h3 id="uninstalling-under-macos" class="section">
+4.2 Uninstalling under macOS
+</h3>
+<p>
+R for macOS consists of two parts: the GUI (R.APP) and the R framework. The un-installation is as simple as removing those folders (e.g. by dragging them onto the Trash). The typical installation will install the GUI into the /Applications/R.app folder and the R framework into the /Library/Frameworks/R.framework folder. The links to R and Rscript in /usr/local/bin should also be removed.
+</p>
+<p>
+If you want to get rid of R more completely using a Terminal, simply run:
+</p>
+<div class="example">
+<pre class="example1"><code>sudo rm -rf /Library/Frameworks/R.framework /Applications/R.app \
+   /usr/local/bin/R /usr/local/bin/Rscript</code></pre>
+</div>
+<p>
+The installation consists of up to four Apple packages:<a href="environment-variable-index.html#FOOT18" id="DOCF18"><sup>18</sup></a> <code class="calibre6">org.r-project.R.el-capitan.fw.pkg</code>, <code class="calibre6">org.r-project.R.el-capitan.GUI.pkg</code>, <code class="calibre6">org.r-project.x86_64.tcltk.x11</code> and <code class="calibre6">org.r-project.x86_64.texinfo</code>. You can use <code class="calibre6">pkgutil –forget</code> if you want the Apple Installer to forget about the package without deleting its files (useful for the R framework when installing multiple R versions in parallel), or after you have deleted the files.
+</p>
+<p>
+Uninstalling the Tcl/Tk or Texinfo components (which are installed under /usr/local) is not as simple. You can list the files they installed in a Terminal by
+</p>
+<div class="example">
+<pre class="example1"><code>pkgutil --files org.r-project.x86_64.tcltk.x11
+pkgutil --files org.r-project.x86_64.texinfo</code></pre>
+</div>
+<p>
+These are paths relative to /, the root of the file system.
+</p>
+<hr />
+<p>
+<a href="" id="Multiple-versions"></a> <a href="" id="Multiple-versions-1"></a>
+</p>
+<h3 id="multiple-versions" class="section">
+4.3 Multiple versions
+</h3>
+<p>
+The installer will remove any previous version<a href="environment-variable-index.html#FOOT19" id="DOCF19"><sup>19</sup></a> of the R framework which it finds installed. This can be avoided by using <code class="calibre6">pkgutil –forget</code> (see the previous section). However, note that different versions are installed under /Library/Frameworks/R.framework/Versions as 3.3, 3.4 and so on, so it is not possible to have different ‘3.x.y’ versions installed for the same ‘x’.
+</p>
+<p>
+A version of R can be run directly from the command-line as e.g.
+</p>
+<div class="example">
+<pre class="example1"><code>/Library/Frameworks/R.framework/Versions/3.4/Resources/bin/R</code></pre>
+</div>
+<p>
+However, R.APP will always run the ‘current’ version, that is the last installed version. A small utility, <code class="calibre6">Rswitch.app</code> (available at <a href="https://r.research.att.com/#other" class="uri">https://r.research.att.com/#other</a>), can be used to change the ‘current’ version. This is of limited use as R.APP is compiled against a particular version of R and will likely crash if switched to an earlier version. This may allow you to install a development version of R (de-selecting R.APP) and then switch back to the release version.
+</p>
+<hr />
+<p>
+<a href="" id="Running-R"></a> <a href="" id="Running-R-1"></a>
+</p>
+<div id="calibre_pb_11" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="installing-r-under-windows.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="running-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

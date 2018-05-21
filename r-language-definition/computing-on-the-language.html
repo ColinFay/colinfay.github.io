@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The R language definition</title>
+  <meta name="description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="The R language definition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  <meta name="github-repo" content="ColinFay/r-language-definition" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The R language definition" />
+  
+  <meta name="twitter:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="object-oriented-programming.html">
+<link rel="next" href="system-and-foreign-language-interfaces.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">The R language definition</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Language Definition</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="objects.html"><a href="objects.html"><i class="fa fa-check"></i><b>2</b> Objects</a></li>
+<li class="chapter" data-level="3" data-path="evaluation-of-expressions.html"><a href="evaluation-of-expressions.html"><i class="fa fa-check"></i><b>3</b> Evaluation of expressions</a></li>
+<li class="chapter" data-level="4" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>4</b> Functions</a></li>
+<li class="chapter" data-level="5" data-path="object-oriented-programming.html"><a href="object-oriented-programming.html"><i class="fa fa-check"></i><b>5</b> Object-oriented programming</a></li>
+<li class="chapter" data-level="6" data-path="computing-on-the-language.html"><a href="computing-on-the-language.html"><i class="fa fa-check"></i><b>6</b> Computing on the language</a></li>
+<li class="chapter" data-level="7" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>7</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="8" data-path="exception-handling.html"><a href="exception-handling.html"><i class="fa fa-check"></i><b>8</b> Exception handling</a></li>
+<li class="chapter" data-level="9" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>9</b> Debugging</a></li>
+<li class="chapter" data-level="10" data-path="parser.html"><a href="parser.html"><i class="fa fa-check"></i><b>10</b> Parser</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and Variable Index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept Index</a></li>
+<li class="chapter" data-level="13" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>13</b> Appendix A References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The R language definition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="computing-on-the-language" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Computing on the language</h1>
+<p>
+R belongs to a class of programming languages in which subroutines have the ability to modify or construct other subroutines and evaluate the result as an integral part of the language itself. This is similar to Lisp and Scheme and other languages of the “functional programming” variety, but in contrast to FORTRAN and the ALGOL family. The Lisp family takes this feature to the extreme by the “everything is a list” paradigm in which there is no distinction between programs and data.
+</p>
+<p>
+R presents a friendlier interface to programming than Lisp does, at least to someone used to mathematical formulas and C-like control structures, but the engine is really very Lisp-like. R allows direct access to <a href="" id="index-parsing-3"></a> parsed expressions and functions and allows you to alter and subsequently execute them, or create entirely new functions from scratch.
+</p>
+<p>
+There is a number of standard applications of this facility, such as calculation of analytical derivatives of expressions, or the generation of polynomial functions from a vector of coefficients. However, there are also uses that are much more fundamental to the workings of the interpreted part of R. Some of these are essential to the reuse of functions as components in other functions, as the (admittedly not very pretty) calls to <code class="calibre7">model.frame</code> that are constructed in several modeling and plotting routines. Other uses simply allow elegant interfaces to useful functionality. As an example, consider the <code class="calibre7">curve</code> function, which allows you to draw the graph of a function given as an expression like <code class="calibre7">sin(x)</code> or the facilities for plotting mathematical expressions.
+</p>
+<p>
+In this chapter, we give an introduction to the set of facilities that are available for computing on the language.
+</p>
+<hr />
+<p>
+<a href="" id="Direct-manipulation-of-language-objects"></a> <a href="" id="Direct-manipulation-of-language-objects-1"></a>
+</p>
+<h3 id="direct-manipulation-of-language-objects" class="section">
+6.1 Direct manipulation of language objects
+</h3>
+<p>
+There are three kinds of language objects that are available for modification, calls, expressions, and functions. At this point, we shall concentrate on the call objects. These are sometimes referred to as “unevaluated expressions”, although this terminology is somewhat confusing. The most direct method of obtaining a call object is to use <code class="calibre7">quote</code> with an expression argument, e.g.,
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; e1 &lt;- quote(2 + 2)
+&gt; e2 &lt;- quote(plot(x, y))</code></pre>
+</div>
+<p>
+The arguments are not evaluated, the result is simply the parsed argument. The objects <code class="calibre7">e1</code> and <code class="calibre7">e2</code> may be evaluated later using <code class="calibre7">eval</code>, or simply manipulated as data. It is perhaps most immediately obvious why the <code class="calibre7">e2</code> object has mode <code class="calibre7">“call”</code>, since it involves a call to the <code class="calibre7">plot</code> function with some arguments. However, <code class="calibre7">e1</code> actually has exactly the same structure as a call to the binary operator <code class="calibre7">+</code> with two arguments, a fact that gets clearly displayed by the following
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; quote(&quot;+&quot;(2, 2))
+2 + 2</code></pre>
+</div>
+<p>
+The components of a call object are accessed using a list-like syntax, and may in fact be converted to and from lists using <code class="calibre7">as.list</code> and <code class="calibre7">as.call</code>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; e2[[1]]
+plot
+&gt; e2[[2]]
+x
+&gt; e2[[3]]
+y</code></pre>
+</div>
+<p>
+When keyword argument matching is used, the keywords can be used as list tags:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; e3 &lt;- quote(plot(x = age, y = weight))
+&gt; e3&#36;x
+age
+&gt; e3&#36;y
+weight</code></pre>
+</div>
+<p>
+All the components of the call object have mode <code class="calibre7">“name”</code> in the preceding examples. This is true for identifiers in calls, but the components of a call can also be constants—which can be of any type, although the first component had better be a function if the call is to be evaluated successfully—or other call objects, corresponding to subexpressions. Objects of mode <a href="" id="index-name-10"></a> name can be constructed from character strings using <code class="calibre7">as.name</code>, so one might modify the <code class="calibre7">e2</code> object as follows
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; e2[[1]] &lt;- as.name(&quot;+&quot;)
+&gt; e2
+x + y</code></pre>
+</div>
+<p>
+To illustrate the fact that subexpressions are simply components that are themselves calls, consider
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; e1[[2]] &lt;- e2
+&gt; e1
+x + y + 2</code></pre>
+</div>
+<p>
+All grouping parentheses in input are preserved in parsed expressions. They are represented as a function call with one argument, so that <code class="calibre7">4 - (2 - 2)</code> becomes <code class="calibre7">“-”(4, “(” (“-”(2, 2)))</code> in prefix notation. In evaluations, the ‘(’ operator just returns its argument.
+</p>
+<p>
+This is a bit unfortunate, but it is not easy to write a <a href="" id="index-parsing-4"></a> parser/deparser combination that both preserves user input, stores it in minimal form and ensures that parsing a deparsed expression gives the same expression back.
+</p>
+<p>
+As it happens, R’s parser is not perfectly invertible, nor is its deparser, as the following examples show
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; str(quote(c(1,2)))
+ language c(1, 2)
+&gt; str(c(1,2))
+ num [1:2] 1 2
+&gt; deparse(quote(c(1,2)))
+[1] &quot;c(1, 2)&quot;
+&gt; deparse(c(1,2))
+[1] &quot;c(1, 2)&quot;
+&gt; quote(&quot;-&quot;(2, 2))
+2 - 2
+&gt; quote(2 - 2)
+2 - 2</code></pre>
+</div>
+<p>
+Deparsed expressions should, however, evaluate to an equivalent value to the original expression (up to rounding error).
+</p>
+<p>
+…internal storage of flow control constructs…note Splus incompatibility…
+</p>
+<hr />
+<p>
+<a href="" id="Substitutions"></a> <a href="" id="Substitutions-1"></a>
+</p>
+<h3 id="substitutions" class="section">
+6.2 Substitutions
+</h3>
+<p>
+It is in fact not often that one wants to modify the innards of an expression like in the previous section. More frequently, one wants to simply get at an expression in order to deparse it and use it for labeling plots, for instance. An example of this is seen at the beginning of <code class="calibre7">plot.default</code>: <a href="" id="index-substitute"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>xlabel &lt;- if (!missing(x))
+    deparse(substitute(x))</code></pre>
+</div>
+<p>
+This causes the variable or expression given as the <code class="calibre7">x</code> argument to <code class="calibre7">plot</code> to be used for labeling the x-axis later on.
+</p>
+<p>
+The function used to achieve this is <code class="calibre7">substitute</code> which takes the expression <code class="calibre7">x</code> and substitutes the expression that was passed through the formal argument <code class="calibre7">x</code>. Notice that for this to happen, <code class="calibre7">x</code> must carry information about the expression that creates its value. This is related to the <a href="" id="index-evaluation_002c-lazy-1"></a> lazy evaluation scheme of R (see <a href="objects.html#Promise-objects">Promise objects</a>). A formal argument is really a <em>promise</em>, an object with three slots, one for the expression that defines it, one for the environment in which to evaluate that expression, and one for the value of that expression once evaluated. <code class="calibre7">substitute</code> will recognize a promise variable and substitute the value of its expression slot. If <code class="calibre7">substitute</code> is invoked inside a function, the local variables of the function are also subject to substitution.
+</p>
+<p>
+The argument to <code class="calibre7">substitute</code> does not have to be a simple identifier, it can be an expression involving several variables and substitution will occur for each of these. Also, <code class="calibre7">substitute</code> has an additional argument which can be an environment or a list in which the variables are looked up. For example:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; substitute(a + b, list(a = 1, b = quote(x)))
+1 + x</code></pre>
+</div>
+<p>
+Notice that quoting was necessary to substitute the <code class="calibre7">x</code>. This kind of construction comes in handy in connection with the facilities for putting math expression in graphs, as the following case shows
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; plot(0)
+&gt; for (i in 1:4)
++   text(1, 0.2 * i,
++        substitute(x[ix] == y, list(ix = i, y = pnorm(i))))</code></pre>
+</div>
+<p>
+It is important to realize that the substitutions are purely lexical; there is no checking that the resulting call objects make sense if they are evaluated. <code class="calibre7">substitute(x &lt;- x + 1, list(x = 2))</code> will happily return <code class="calibre7">2 &lt;- 2 + 1</code>. However, some parts of R make up their own rules for what makes sense and what does not and might actually have a use for such ill-formed expressions. For example, using the “math in graphs” feature often involves constructions that are syntactically correct, but which would be meaningless to evaluate, like ‘{}&gt;=40*&quot; years“’.
+</p>
+<p>
+Substitute will not evaluate its first argument. This leads to the puzzle of how to do substitutions on an object that is contained in a variable. The solution is to use <code class="calibre7">substitute</code> once more, like this
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; expr &lt;- quote(x + y)
+&gt; substitute(substitute(e, list(x = 3)), list(e = expr))
+substitute(x + y, list(x = 3))
+&gt; eval(substitute(substitute(e, list(x = 3)), list(e = expr)))
+3 + y</code></pre>
+</div>
+<p>
+The exact rules for substitutions are as follows: Each <a href="" id="index-symbol-4"></a> symbol in the <a href="" id="index-parsing-5"></a> parse tree for the first is matched against the second argument, which can be a tagged list or an environment frame. If it is a simple local object, its value is inserted, <em>except</em> if matching against the global environment. If it is a promise (usually a function argument), the promise expression is substituted. If the symbol is not matched, it is left untouched. The special exception for substituting at the top level is admittedly peculiar. It has been inherited from S and the rationale is most likely that there is no control over which variables might be bound at that level so that it would be better to just make substitute act as <code class="calibre7">quote</code>.
+</p>
+<p>
+The rule of promise substitution is slightly different from that of S if the local variable is modified before <code class="calibre7">substitute</code> is used. R will then use the new value of the variable, whereas S will unconditionally use the argument expression—unless it was a constant, which has the curious consequence that <code class="calibre7">f((1))</code> may be very different from <code class="calibre7">f(1)</code> in S. The R rule is considerably cleaner, although it does have consequences in connection with <a href="" id="index-evaluation_002c-lazy-2"></a> lazy evaluation that comes as a surprise to some. Consider
+</p>
+<div class="example">
+<pre class="example1"><code>logplot &lt;- function(y, ylab = deparse(substitute(y))) {
+    y &lt;- log(y)
+    plot(y, ylab = ylab)
+}</code></pre>
+</div>
+<p>
+This looks straightforward, but one will discover that the y label becomes an ugly <code class="calibre7">c(…)</code> expression. It happens because the rules of lazy evaluation cause the evaluation of the <code class="calibre7">ylab</code> expression to happen <em>after</em> <code class="calibre7">y</code> has been modified. The solution is to force <code class="calibre7">ylab</code> to be evaluated first, i.e.,
+</p>
+<div class="example">
+<pre class="example1"><code>logplot &lt;- function(y, ylab = deparse(substitute(y))) {
+    ylab
+    y &lt;- log(y)
+    plot(y, ylab = ylab)
+}</code></pre>
+</div>
+<p>
+Notice that one should not use <code class="calibre7">eval(ylab)</code> in this situation. If <code class="calibre7">ylab</code> is a language or expression object, then that would cause the object to be evaluated as well, which would not at all be desirable if a math expression like <code class="calibre7">quote(log<a href="y">e</a>)</code> was being passed.
+</p>
+<p>
+A variant on <code class="calibre7">substitute</code> is <code class="calibre7">bquote</code>, which is used to replace some subexpressions with their values. The example from above
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; plot(0)
+&gt; for (i in 1:4)
++   text(1, 0.2 * i,
++        substitute(x[ix] == y, list(ix = i, y = pnorm(i))))</code></pre>
+</div>
+<p>
+could be written more compactly as
+</p>
+<div class="example">
+<pre class="example1"><code>plot(0)
+for(i in 1:4)
+   text(1, 0.2*i, bquote( x[.(i)] == .(pnorm(i)) ))</code></pre>
+</div>
+<p>
+The expression is quoted except for the contents of <code class="calibre7">.()</code> subexpressions, which are replaced with their values. There is an optional argument to compute the values in a different environment. The syntax for <code class="calibre7">bquote</code> is borrowed from the LISP backquote macro.
+</p>
+<hr />
+<p>
+<a href="" id="More-on-evaluation"></a> <a href="" id="More-on-evaluation-1"></a>
+</p>
+<h3 id="more-on-evaluation" class="section">
+6.3 More on evaluation
+</h3>
+<p>
+<a href="" id="index-evaluation-6"></a>
+</p>
+<p>
+The <code class="calibre7">eval</code> function was introduced earlier in this chapter as a means of evaluating call objects. However, this is not the full story. It is also possible to specify the <a href="" id="index-environment-15"></a> environment in which the evaluation is to take place. By default this is the evaluation frame from which <code class="calibre7">eval</code> is called, but quite frequently it needs to be set to something else. <a href="" id="index-eval"></a>
+</p>
+<p>
+Very often, the relevant evaluation frame is that of the parent of the current frame (cf. ???). In particular, when the object to evaluate is the result of a <code class="calibre7">substitute</code> operation of the function arguments, it will contain variables that make sense to the caller only (notice that there is no reason to expect that the variables of the caller are in the <a href="" id="index-scope-5"></a> lexical scope of the callee). Since evaluation in the parent frame occurs frequently, an <code class="calibre7">eval.parent</code> function exists as a shorthand for <code class="calibre7">eval(expr, sys.frame(sys.parent()))</code>.
+</p>
+<p>
+Another case that occurs frequently is evaluation in a list or a data frame. For instance, this happens in connection with the <code class="calibre7">model.frame</code> function when a <code class="calibre7">data</code> argument is given. Generally, the terms of the model formula need to be evaluated in <code class="calibre7">data</code>, but they may occasionally also contain references to items in the caller of <code class="calibre7">model.frame</code>. This is sometimes useful in connection with simulation studies. So for this purpose one needs not only to evaluate an expression in a list, but also to specify an enclosure into which the search continues if the variable is not in the list. Hence, the call has the form
+</p>
+<div class="example">
+<pre class="example1"><code>eval(expr, data, sys.frame(sys.parent()))</code></pre>
+</div>
+<p>
+Notice that evaluation in a given environment may actually change that environment, most obviously in cases involving the <a href="" id="index-assignment-9"></a> assignment operator, such as
+</p>
+<div class="example">
+<pre class="example1"><code>eval(quote(total &lt;- 0), environment(robert&#36;balance)) # rob Rob</code></pre>
+</div>
+<p>
+This is also true when evaluating in lists, but the original list does not change because one is really working on a copy.
+</p>
+<hr />
+<p>
+<a href="" id="Evaluation-of-expression-objects"></a> <a href="" id="Evaluation-of-expression-objects-1"></a>
+</p>
+<h3 id="evaluation-of-expression-objects" class="section">
+6.4 Evaluation of expression objects
+</h3>
+<p>
+Objects of mode <code class="calibre7">“expression”</code> are defined in <a href="objects.html#Expression-objects">Expression objects</a>. They are very similar to lists of call objects.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ex &lt;- expression(2 + 2, 3 + 4)
+&gt; ex[[1]]
+2 + 2
+&gt; ex[[2]]
+3 + 4
+&gt; eval(ex)
+[1] 7</code></pre>
+</div>
+<p>
+Notice that evaluating an expression object evaluates each call in turn, but the final value is that of the last call. In this respect it behaves almost identically to the compound language object <code class="calibre7">quote({2 + 2; 3 + 4})</code>. However, there is a subtle difference: Call objects are indistinguishable from subexpressions in a parse tree. This means that they are automatically evaluated in the same way a subexpression would be. Expression objects can be recognized during evaluation and in a sense retain their quotedness. The evaluator will not evaluate an expression object recursively, only when it is passed directly to <code class="calibre7">eval</code> function as above. The difference can be seen like this:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; eval(substitute(mode(x), list(x = quote(2 + 2))))
+[1] &quot;numeric&quot;
+&gt; eval(substitute(mode(x), list(x = expression(2 + 2))))
+[1] &quot;expression&quot;</code></pre>
+</div>
+<p>
+The deparser represents an expression object by the call that creates it. This is similar to the way it handles numerical vectors and several other objects that do not have a specific external representation. However, it does lead to the following bit of confusion:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; e &lt;- quote(expression(2 + 2))
+&gt; e
+expression(2 + 2)
+&gt; mode(e)
+[1] &quot;call&quot;
+&gt; ee &lt;- expression(2 + 2)
+&gt; ee
+expression(2 + 2)
+&gt; mode(ee)
+[1] &quot;expression&quot;</code></pre>
+</div>
+<p>
+I.e., <code class="calibre7">e</code> and <code class="calibre7">ee</code> look identical when printed, but one is a call that generates an expression object and the other is the object itself.
+</p>
+<hr />
+<p>
+<a href="" id="Manipulation-of-function-calls"></a> <a href="" id="Manipulation-of-function-calls-1"></a>
+</p>
+<h3 id="manipulation-of-function-calls" class="section">
+6.5 Manipulation of function calls
+</h3>
+<p>
+It is possible for a <a href="" id="index-function-26"></a> function to find out how it has been called by looking at the result of <code class="calibre7">sys.call</code> as in the following example of a function that simply returns its own call:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; f &lt;- function(x, y, ...) sys.call()
+&gt; f(y = 1, 2, z = 3, 4)
+f(y = 1, 2, z = 3, 4)</code></pre>
+</div>
+<p>
+However, this is not really useful except for debugging because it requires the function to keep track of argument matching in order to interpret the call. For instance, it must be able to see that the 2nd actual argument gets matched to the first formal one (<code class="calibre7">x</code> in the above example).
+</p>
+<p>
+More often one requires the call with all actual arguments bound to the corresponding formals. To this end, the function <code class="calibre7">match.call</code> is used. Here’s a variant of the preceding example, a function that returns its own call with arguments matched
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; f &lt;- function(x, y, ...) match.call()
+&gt; f(y = 1, 2, z = 3, 4)
+f(x = 2, y = 1, z = 3, 4)</code></pre>
+</div>
+<p>
+Notice that the second argument now gets matched to <code class="calibre7">x</code> and appears in the corresponding position in the result.
+</p>
+<p>
+The primary use of this technique is to call another function with the same arguments, possibly deleting some and adding others. A typical application is seen at the start of the <code class="calibre7">lm</code> function:
+</p>
+<div class="example">
+<pre class="example1"><code>    mf &lt;- cl &lt;- match.call()
+    mf&#36;singular.ok &lt;- mf&#36;model &lt;- mf&#36;method &lt;- NULL
+    mf&#36;x &lt;- mf&#36;y &lt;- mf&#36;qr &lt;- mf&#36;contrasts &lt;- NULL
+    mf&#36;drop.unused.levels &lt;- TRUE
+    mf[[1]] &lt;- as.name(&quot;model.frame&quot;)
+    mf &lt;- eval(mf, sys.frame(sys.parent()))</code></pre>
+</div>
+<p>
+Notice that the resulting call is <a href="" id="index-evaluation-7"></a> evaluated in the parent frame, in which one can be certain that the involved expressions make sense. The call can be treated as a list object where the first element is the name of the function and the remaining elements are the actual argument expressions, with the corresponding formal argument names as tags. Thus, the technique to eliminate undesired arguments is to assign <code class="calibre7">NULL</code>, as seen in lines 2 and 3, and to add an argument one uses tagged list <a href="" id="index-assignment-10"></a> assignment (here to pass <code class="calibre7">drop.unused.levels = TRUE</code>) as in line 4. To change the name of the function called, assign to the first element of the list and make sure that the value is a name, either using the <code class="calibre7">as.name(“model.frame”)</code> construction here or <code class="calibre7">quote(model.frame)</code>.
+</p>
+<p>
+The <code class="calibre7">match.call</code> function has an <code class="calibre7">expand.dots</code> argument which is a switch which if set to <code class="calibre7">FALSE</code> lets all ‘…’ arguments be collected as a single argument with the tag ‘…’. <a href="" id="index-match_002ecall-1"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; f &lt;- function(x, y, ...) match.call(expand.dots = FALSE)
+&gt; f(y = 1, 2, z = 3, 4)
+f(x = 2, y = 1, ... = list(z = 3, 4))</code></pre>
+</div>
+<p>
+The ‘…’ argument is a list (a pairlist to be precise), not a call to <code class="calibre7">list</code> like it is in S:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; e1 &lt;- f(y = 1, 2, z = 3, 4)&#36;...
+&gt; e1
+&#36;z
+[1] 3
+
+[[2]]
+[1] 4</code></pre>
+</div>
+<p>
+One reason for using this form of <code class="calibre7">match.call</code> is simply to get rid of any ‘…’ arguments in order not to be passing unspecified arguments on to functions that may not know them. Here’s an example paraphrased from <code class="calibre7">plot.formula</code>:
+</p>
+<div class="example">
+<pre class="example1"><code>m &lt;- match.call(expand.dots = FALSE)
+m&#36;... &lt;- NULL
+m[[1]] &lt;- &quot;model.frame&quot;</code></pre>
+</div>
+<p>
+A more elaborate application is in <code class="calibre7">update.default</code> where a set of optional extra arguments can add to, replace, or cancel those of the original call:
+</p>
+<div class="example">
+<pre class="example1"><code>extras &lt;- match.call(expand.dots = FALSE)&#36;...
+if (length(extras) &gt; 0) {
+    existing &lt;- !is.na(match(names(extras), names(call)))
+    for (a in names(extras)[existing]) call[[a]] &lt;- extras[[a]]
+    if (any(!existing)) {
+        call &lt;- c(as.list(call), extras[!existing])
+        call &lt;- as.call(call)
+    }
+}</code></pre>
+</div>
+<p>
+Notice that care is taken to modify existing arguments individually in case <code class="calibre7">extras[[a]] == NULL</code>. Concatenation does not work on call objects without the coercion as shown; this is arguably a bug.
+</p>
+<p>
+Two further functions exist for the construction of function calls, namely <code class="calibre7">call</code> and <code class="calibre7">do.call</code>.
+</p>
+<p>
+The function <code class="calibre7">call</code> allows creation of a call object from the function name and the list of arguments
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; x &lt;- 10.5
+&gt; call(&quot;round&quot;, x)
+round(10.5)</code></pre>
+</div>
+<p>
+As seen, the value of <code class="calibre7">x</code> rather than the <a href="" id="index-symbol-5"></a> symbol is inserted in the call, so it is distinctly different from <code class="calibre7">round(x)</code>. The form is used rather rarely, but is occasionally useful where the name of a function is available as a character variable.
+</p>
+<p>
+The function <code class="calibre7">do.call</code> is related, but evaluates the call immediately and takes the arguments from an object of mode <code class="calibre7">“list”</code> containing all the arguments. A natural use of this is when one wants to apply a function like <code class="calibre7">cbind</code> to all elements of a list or data frame. <a href="" id="index-do_002ecall"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>is.na.data.frame &lt;- function (x) {
+    y &lt;- do.call(&quot;cbind&quot;, lapply(x, &quot;is.na&quot;))
+    rownames(y) &lt;- row.names(x)
+    y
+}</code></pre>
+</div>
+<p>
+Other uses include variations over constructions like <code class="calibre7">do.call(“f”, list(…))</code>. However, one should be aware that this involves evaluation of the arguments before the actual function call, which may defeat aspects of lazy evaluation and argument substitution in the function itself. A similar remark applies to the <code class="calibre7">call</code> function.
+</p>
+<hr />
+<p>
+<a href="" id="Manipulation-of-functions"></a> <a href="" id="Manipulation-of-functions-1"></a>
+</p>
+<h3 id="manipulation-of-functions" class="section">
+6.6 Manipulation of functions
+</h3>
+<p>
+It is often useful to be able to manipulate the components of a <a href="" id="index-function-27"></a> function or closure. R provides a set of interface functions for this purpose.
+</p>
+<dl>
+<dt>
+<code class="calibre7">body</code> <a href="" id="index-body-1"></a>
+</dt>
+<dd>
+<p>
+Returns the expression that is the body of the function.
+</p>
+</dd>
+<dt>
+<code class="calibre7">formals</code> <a href="" id="index-formals-1"></a>
+</dt>
+<dd>
+<p>
+Returns a list of the formal arguments to the function. This is a <code class="calibre7">pairlist</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre7">environment</code> <a href="" id="index-environment-21"></a>
+</dt>
+<dd>
+<p>
+<a href="" id="index-environment-16"></a>
+</p>
+<p>
+Returns the environment associated with the function.
+</p>
+</dd>
+<dt>
+<code class="calibre7">body&lt;-</code> <a href="" id="index-body_003c_002d"></a>
+</dt>
+<dd>
+<p>
+This sets the body of the function to the supplied expression.
+</p>
+</dd>
+<dt>
+<code class="calibre7">formals&lt;-</code> <a href="" id="index-formals_003c_002d"></a>
+</dt>
+<dd>
+<p>
+Sets the formal arguments of the function to the supplied list.
+</p>
+</dd>
+<dt>
+<code class="calibre7">environment&lt;-</code> <a href="" id="index-environment_003c_002d"></a>
+</dt>
+<dd>
+<p>
+Sets the environment of the function to the specified environment.
+</p>
+</dd>
+</dl>
+<p>
+It is also possible to alter the bindings of different variables in the environment of the function, using code along the lines of <code class="calibre7">evalq(x &lt;- 5, environment(f))</code>.
+</p>
+<p>
+It is also possible to convert a <a href="" id="index-function-28"></a> function to a list using <code class="calibre7">as.list</code>. The result is the concatenation of the list of formal arguments with the function body. Conversely such a list can be converted to a function using <code class="calibre7">as.function</code>. This functionality is mainly included for S compatibility. Notice that environment information is lost when <code class="calibre7">as.list</code> is used, whereas <code class="calibre7">as.function</code> has an argument that allows the environment to be set.
+</p>
+<hr />
+<p>
+<a href="" id="System-and-foreign-language-interfaces"></a> <a href="" id="System-and-foreign-language-interfaces-1"></a>
+</p>
+<div id="calibre_pb_15" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="object-oriented-programming.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="system-and-foreign-language-interfaces.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

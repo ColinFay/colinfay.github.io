@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Internals</title>
+  <meta name="description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Internals" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  <meta name="github-repo" content="ColinFay/r-internals" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Internals" />
+  
+  <meta name="twitter:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="r-internal-structures.html">
+<link rel="next" href="internationalization-in-the-r-sources.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R internals</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Internals</a></li>
+<li class="chapter" data-level="1" data-path="r-internal-structures.html"><a href="r-internal-structures.html"><i class="fa fa-check"></i><b>1</b> R Internal Structures</a></li>
+<li class="chapter" data-level="2" data-path="internal-vs-primitive.html"><a href="internal-vs-primitive.html"><i class="fa fa-check"></i><b>2</b> <code class="calibre18">.Internal</code> vs <code class="calibre18">.Primitive</code></a></li>
+<li class="chapter" data-level="3" data-path="internationalization-in-the-r-sources.html"><a href="internationalization-in-the-r-sources.html"><i class="fa fa-check"></i><b>3</b> Internationalization in the R sources</a></li>
+<li class="chapter" data-level="4" data-path="structure-of-an-installed-package.html"><a href="structure-of-an-installed-package.html"><i class="fa fa-check"></i><b>4</b> Structure of an Installed Package</a></li>
+<li class="chapter" data-level="5" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5</b> Files</a></li>
+<li class="chapter" data-level="6" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>6</b> Graphics</a></li>
+<li class="chapter" data-level="7" data-path="gui-consoles.html"><a href="gui-consoles.html"><i class="fa fa-check"></i><b>7</b> GUI consoles</a></li>
+<li class="chapter" data-level="8" data-path="tools.html"><a href="tools.html"><i class="fa fa-check"></i><b>8</b> Tools</a></li>
+<li class="chapter" data-level="9" data-path="r-coding-standards.html"><a href="r-coding-standards.html"><i class="fa fa-check"></i><b>9</b> R coding standards</a></li>
+<li class="chapter" data-level="10" data-path="testing-r-code.html"><a href="testing-r-code.html"><i class="fa fa-check"></i><b>10</b> Testing R code</a></li>
+<li class="chapter" data-level="11" data-path="use-of-tex-dialects.html"><a href="use-of-tex-dialects.html"><i class="fa fa-check"></i><b>11</b> Use of TeX dialects</a></li>
+<li class="chapter" data-level="12" data-path="current-and-future-directions.html"><a href="current-and-future-directions.html"><i class="fa fa-check"></i><b>12</b> Current and future directions</a></li>
+<li class="chapter" data-level="13" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>13</b> Function and variable index</a></li>
+<li class="chapter" data-level="14" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>14</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Internals</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="internal-vs-.primitive" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> <code class="calibre18">.Internal</code> vs <code class="calibre18">.Primitive</code></h1>
+<p>
+<a href="" id="index-_002eInternal"></a> <a href="" id="index-_002ePrimitive"></a>
+</p>
+<p>
+C code compiled into R at build time can be called directly in what are termed <em>primitives</em> or via the <code class="calibre2">.Internal</code> interface, which is very similar to the <code class="calibre2">.External</code> interface except in syntax. More precisely, R maintains a table of R function names and corresponding C functions to call, which by convention all start with ‘do_’ and return a <code class="calibre2">SEXP</code>. This table (<code class="calibre2">R_FunTab</code> in file src/main/names.c) also specifies how many arguments to a function are required or allowed, whether or not the arguments are to be evaluated before calling, and whether the function is ‘internal’ in the sense that it must be accessed via the <code class="calibre2">.Internal</code> interface, or directly accessible in which case it is printed in R as <code class="calibre2">.Primitive</code>.
+</p>
+<p>
+Functions using <code class="calibre2">.Internal()</code> wrapped in a closure are in general preferred as this ensures standard handling of named and default arguments. For example, <code class="calibre2">grep</code> is defined as
+</p>
+<div class="example">
+<pre class="example1"><code>grep &lt;-
+function (pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE,
+         fixed = FALSE, useBytes = FALSE, invert = FALSE)
+{
+    if (!is.character(x)) x &lt;- structure(as.character(x), names = names(x))
+    .Internal(grep(as.character(pattern), x, ignore.case, value,
+                   perl, fixed, useBytes, invert))
+}
+</code></pre>
+</div>
+<p>
+and the use of <code class="calibre2">as.character</code> allows methods to be dispatched (for example, for factors).
+</p>
+<p>
+However, for reasons of convenience and also efficiency (as there is some overhead in using the <code class="calibre2">.Internal</code> interface wrapped in a function closure), the primitive functions are exceptions that can be accessed directly. And of course, primitive functions are needed for basic operations—for example <code class="calibre2">.Internal</code> is itself a primitive. Note that primitive functions make no use of R code, and hence are very different from the usual interpreted functions. In particular, <code class="calibre2">formals</code> and <code class="calibre2">body</code> return <code class="calibre2">NULL</code> for such objects, and argument matching can be handled differently. For some primitives (including <code class="calibre2">call</code>, <code class="calibre2">switch</code>, <code class="calibre2">.C</code> and <code class="calibre2">.subset</code>) positional matching is important to avoid partial matching of the first argument.
+</p>
+<p>
+The list of primitive functions is subject to change; currently, it includes the following.
+</p>
+<ol>
+<li>
+“Special functions” which really are <em>language</em> elements, but implemented as primitive functions:
+<div class="example">
+<pre class="example1"><code>{       (         if     for      while  repeat  break  next
+return  function  quote  switch</code></pre>
+</div>
+</li>
+<li>
+<p>
+Language elements and basic <em>operator</em>s (i.e., functions usually <em>not</em> called as <code class="calibre2">foo(a, b, …)</code>) for subsetting, assignment, arithmetic, comparison and logic:
+</p>
+<div class="example">
+<pre class="example1"><code>               [    [[    &#36;    @
+&lt;-   &lt;&lt;-  =    [&lt;-  [[&lt;-  &#36;&lt;-  @&lt;-
+
++    -    *    /     ^    %%   %*%  %/%
+&lt;    &lt;=   ==   !=    &gt;=   &gt;
+|    ||   &amp;    &amp;&amp;    !</code></pre>
+</div>
+<p>
+When the arithmetic, comparison and logical operators are called as functions, any argument names are discarded so positional matching is used.
+</p>
+</li>
+<li>
+“Low level” 0– and 1–argument functions which belong to one of the following groups of functions:
+<ol style="list-style-type: lower-alpha">
+<li>
+<p>
+Basic mathematical functions with a single argument, i.e.,
+</p>
+<div class="example">
+<pre class="example1"><code>abs     sign    sqrt
+floor   ceiling</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>exp     expm1
+log2    log10   log1p
+cos     sin     tan
+acos    asin    atan
+cosh    sinh    tanh
+acosh   asinh   atanh
+cospi   sinpi   tanpi</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>gamma   lgamma  digamma trigamma</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>cumsum  cumprod cummax  cummin</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>Im  Re  Arg  Conj  Mod</code></pre>
+</div>
+<p>
+<code class="calibre2">log</code> is a primitive function of one or two arguments with named argument matching.
+</p>
+<p>
+<code class="calibre2">trunc</code> is a difficult case: it is a primitive that can have one or more arguments: the default method handled in the primitive has only one.
+</p>
+</li>
+<li>
+Functions rarely used outside of “programming” (i.e., mostly used inside other functions), such as
+<div class="example">
+<pre class="example1"><code>nargs          missing        on.exit        interactive
+as.call        as.character   as.complex     as.double
+as.environment as.integer     as.logical     as.raw
+is.array       is.atomic      is.call        is.character
+is.complex     is.double      is.environment is.expression
+is.finite      is.function    is.infinite    is.integer
+is.language    is.list        is.logical     is.matrix
+is.na          is.name        is.nan         is.null
+is.numeric     is.object      is.pairlist    is.raw
+is.real        is.recursive   is.single      is.symbol
+baseenv        emptyenv       globalenv      pos.to.env
+unclass        invisible      seq_along      seq_len</code></pre>
+</div>
+</li>
+<li>
+The programming and session management utilities
+<div class="example">
+<pre class="example1"><code>browser  proc.time  gc.time tracemem retracemem untracemem</code></pre>
+</div>
+</li>
+</ol>
+</li>
+<li>
+<p>
+The following basic replacement and extractor functions
+</p>
+<div class="example">
+<pre class="example1"><code>length      length&lt;-
+class       class&lt;-
+oldClass    oldCLass&lt;-
+attr        attr&lt;-
+attributes  attributes&lt;-
+names       names&lt;-
+dim         dim&lt;-
+dimnames    dimnames&lt;-
+            environment&lt;-
+            levels&lt;-
+            storage.mode&lt;-</code></pre>
+</div>
+<p>
+<a href="" id="index-NAMED-2"></a>
+</p>
+<p>
+Note that optimizing <code class="calibre2">NAMED = 1</code> is only effective within a primitive (as the closure wrapper of a <code class="calibre2">.Internal</code> will set <code class="calibre2">NAMED = 2</code> when the promise to the argument is evaluated) and hence replacement functions should where possible be primitive to avoid copying (at least in their default methods).
+</p>
+</li>
+<li>
+<p>
+The following functions are primitive for efficiency reasons:
+</p>
+<div class="example">
+<pre class="example1"><code>:          ~          c           list
+call       expression substitute
+UseMethod  standardGeneric
+.C         .Fortran   .Call       .External
+round      signif      rep        seq.int</code></pre>
+</div>
+<p>
+as well as the following internal-use-only functions
+</p>
+<div class="example">
+<pre class="example1"><code>.Primitive     .Internal
+.Call.graphics .External.graphics
+.subset        .subset2
+.primTrace     .primUntrace
+lazyLoadDBfetch</code></pre>
+</div>
+</li>
+</ol>
+<p>
+The multi-argument primitives
+</p>
+<div class="example">
+<pre class="example1"><code>call       switch
+.C         .Fortran   .Call       .External</code></pre>
+</div>
+<p>
+intentionally use positional matching, and need to do so to avoid partial matching to their first argument. They do check that the first argument is unnamed or for the first two, partially matches the formal argument name. On the other hand,
+</p>
+<div class="example">
+<pre class="example1"><code>attr       attr&lt;-     browser     rememtrace substitute  UseMethod
+log        round      signif      rep        seq.int</code></pre>
+</div>
+<p>
+manage their own argument matching and do work in the standard way.
+</p>
+<p>
+All the one-argument primitives check that if they are called with a named argument that this (partially) matches the name given in the documentation: this is also done for replacement functions with one argument plus <code class="calibre2">value</code>.
+</p>
+<p>
+The net effect is that argument matching for primitives intended for end-user use <em>as functions</em> is done in the same way as for interpreted functions except for the six exceptions where positional matching is required.
+</p>
+<hr />
+<p>
+<a href="" id="Special-primitives"></a> <a href="" id="Special-primitives-1"></a>
+</p>
+<h3 id="special-primitives" class="section">
+2.1 Special primitives
+</h3>
+<p>
+A small number of primitives are <em>specials</em> rather than <em>builtins</em>, that is they are entered with unevaluated arguments. This is clearly necessary for the language constructs and the assignment operators, as well as for <code class="calibre2">&amp;&amp;</code> and <code class="calibre2">||</code> which conditionally evaluate their second argument, and <code class="calibre2">~</code>, <code class="calibre2">.Internal</code>, <code class="calibre2">call</code>, <code class="calibre2">expression</code>, <code class="calibre2">missing</code>, <code class="calibre2">on.exit</code>, <code class="calibre2">quote</code> and <code class="calibre2">substitute</code> which do not evaluate some of their arguments.
+</p>
+<p>
+<code class="calibre2">rep</code> and <code class="calibre2">seq.int</code> are special as they evaluate some of their arguments conditional on which are non-missing.
+</p>
+<p>
+<code class="calibre2">log</code>, <code class="calibre2">round</code> and <code class="calibre2">signif</code> are special to allow default values to be given to missing arguments.
+</p>
+<p>
+The subsetting, subassignment and <code class="calibre2">@</code> operators are all special. (For both extraction and replacement forms, <code class="calibre2">$</code> and <code class="calibre2">@</code> take a symbol argument, and <code class="calibre2">[</code> and <code class="calibre2">[[</code> allow missing arguments.)
+</p>
+<p>
+<code class="calibre2">UseMethod</code> is special to avoid the additional contexts added to calls to builtins.
+</p>
+<hr />
+<p>
+<a href="" id="Special-internals"></a> <a href="" id="Special-internals-1"></a>
+</p>
+<h3 id="special-internals" class="section">
+2.2 Special internals
+</h3>
+<p>
+There are also special <code class="calibre2">.Internal</code> functions: <code class="calibre2">NextMethod</code>, <code class="calibre2">Recall</code>, <code class="calibre2">withVisible</code>, <code class="calibre2">cbind</code>, <code class="calibre2">rbind</code> (to allow for the <code class="calibre2">deparse.level</code> argument), <code class="calibre2">eapply</code>, <code class="calibre2">lapply</code> and <code class="calibre2">vapply</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Prototypes-for-primitives"></a> <a href="" id="Prototypes-for-primitives-1"></a>
+</p>
+<h3 id="prototypes-for-primitives" class="section">
+2.3 Prototypes for primitives
+</h3>
+<p>
+Prototypes are available for the primitive functions and operators, and these are used for printing, <code class="calibre2">args</code> and package checking (e.g. by <code class="calibre2">tools::checkS3methods</code> and by package <a href="https://CRAN.R-project.org/package=codetools"><strong>codetools</strong></a>). There are two environments in the <strong>base</strong> package (and namespace), ‘.GenericArgsEnv’ for those primitives which are internal S3 generics, and ‘.ArgsEnv’ for the rest. Those environments contain closures with the same names as the primitives, formal arguments derived (manually) from the help pages, a body which is a suitable call to <code class="calibre2">UseMethod</code> or <code class="calibre2">NULL</code> and environment the base namespace.
+</p>
+<p>
+The C code for <code class="calibre2">print.default</code> and <code class="calibre2">args</code> uses the closures in these environments in preference to the definitions in base (as primitives).
+</p>
+<p>
+The QC function <code class="calibre2">undoc</code> checks that all the functions prototyped in these environments are currently primitive, and that the primitives not included are better thought of as language elements (at the time of writing
+</p>
+<div class="example">
+<pre class="example1"><code>&#36;  &#36;&lt;-  &amp;&amp;  (  :  @  @&lt;-  [  [[  [[&lt;-  [&lt;-  {  ||  ~  &lt;-  &lt;&lt;-  =
+break  for function  if  next  repeat  return  while</code></pre>
+</div>
+<p>
+). One could argue about <code class="calibre2">~</code>, but it is known to the parser and has semantics quite unlike a normal function. And <code class="calibre2">:</code> is documented with different argument names in its two meanings.
+</p>
+<p>
+The QC functions <code class="calibre2">codoc</code> and <code class="calibre2">checkS3methods</code> also make use of these environments (effectively placing them in front of base in the search path), and hence the formals of the functions they contain are checked against the help pages by <code class="calibre2">codoc</code>. However, there are two problems with the generic primitives. The first is that many of the operators are part of the S3 group generic <code class="calibre2">Ops</code> and that defines their arguments to be <code class="calibre2">e1</code> and <code class="calibre2">e2</code>: although it would be very unusual, an operator could be called as e.g. <code class="calibre2">“+”(e1=a, e2=b)</code> and if method dispatch occurred to a closure, there would be an argument name mismatch. So the definitions in environment <code class="calibre2">.GenericArgsEnv</code> have to use argument names <code class="calibre2">e1</code> and <code class="calibre2">e2</code> even though the traditional documentation is in terms of <code class="calibre2">x</code> and <code class="calibre2">y</code>: <code class="calibre2">codoc</code> makes the appropriate adjustment via <code class="calibre2">tools:::.make_S3_primitive_generic_env</code>. The second discrepancy is with the <code class="calibre2">Math</code> group generics, where the group generic is defined with argument list <code class="calibre2">(x, …)</code>, but most of the members only allow one argument when used as the default method (and <code class="calibre2">round</code> and <code class="calibre2">signif</code> allow two as default methods): again fix-ups are used.
+</p>
+<p>
+Those primitives which are in <code class="calibre2">.GenericArgsEnv</code> are checked (via tests/primitives.R) to be generic <em>via</em> defining methods for them, and a check is made that the remaining primitives are probably not generic, by setting a method and checking it is not dispatched to (but this can fail for other reasons). However, there is no certain way to know that if other <code class="calibre2">.Internal</code> or primitive functions are not internally generic except by reading the source code.
+</p>
+<hr />
+<p>
+<a href="" id="Adding-a-primitive"></a> <a href="" id="Adding-a-primitive-1"></a>
+</p>
+<h3 id="adding-a-primitive" class="section">
+2.4 Adding a primitive
+</h3>
+<p>
+[For R-core use: reverse this procedure to remove a primitive. Most commonly this is done by changing a <code class="calibre2">.Internal</code> to a primitive or <em>vice versa</em>.]
+</p>
+<p>
+Primitives are listed in the table <code class="calibre2">R_FunTab</code> in src/main/names.c: primitives have ‘Y = 0’ in the ‘eval’ field.
+</p>
+<p>
+There needs to be an ‘\alias’ entry in a help file in the <strong>base</strong> package, and the primitive needs to be added to one of the lists at the start of this section.
+</p>
+<p>
+Some primitives are regarded as language elements (the current ones are listed above). These need to be added to two lists of exceptions, <code class="calibre2">langElts</code> in <code class="calibre2">undoc()</code> (in file src/library/tools/R/QC.R) and <code class="calibre2">lang_elements</code> in tests/primitives.R.
+</p>
+<p>
+All other primitives are regarded as functions and should be listed in one of the environments defined in src/library/base/R/zzz.R, either <code class="calibre2">.ArgsEnv</code> or <code class="calibre2">.GenericArgsEnv</code>: internal generics also need to be listed in the character vector <code class="calibre2">.S3PrimitiveGenerics</code>. Note too the discussion about argument matching above: if you add a primitive function with more than one argument by converting a <code class="calibre2">.Internal</code> you need to add argument matching to the C code, and for those with a single argument, add argument-name checking.
+</p>
+<p>
+Do ensure that <code class="calibre2">make check-devel</code> has been run: that tests most of these requirements.
+</p>
+<hr />
+<p>
+<a href="" id="Internationalization-in-the-R-sources"></a> <a href="" id="Internationalization-in-the-R-sources-1"></a>
+</p>
+<div id="calibre_pb_7" class="calibre6">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="r-internal-structures.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="internationalization-in-the-r-sources.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

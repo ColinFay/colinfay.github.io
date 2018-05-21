@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Data Import/Export</title>
+  <meta name="description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Data Import/Export" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  <meta name="github-repo" content="ColinFay/r-data-import-export" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Data Import/Export" />
+  
+  <meta name="twitter:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="relational-databases.html">
+<link rel="next" href="image-files.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Data Import/Export</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Data Import/Export</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="spreadsheet-like-data.html"><a href="spreadsheet-like-data.html"><i class="fa fa-check"></i><b>2</b> Spreadsheet-like data</a></li>
+<li class="chapter" data-level="3" data-path="importing-from-other-statistical-systems.html"><a href="importing-from-other-statistical-systems.html"><i class="fa fa-check"></i><b>3</b> Importing from other statistical systems</a></li>
+<li class="chapter" data-level="4" data-path="relational-databases.html"><a href="relational-databases.html"><i class="fa fa-check"></i><b>4</b> Relational databases</a></li>
+<li class="chapter" data-level="5" data-path="binary-files.html"><a href="binary-files.html"><i class="fa fa-check"></i><b>5</b> Binary files</a></li>
+<li class="chapter" data-level="6" data-path="image-files.html"><a href="image-files.html"><i class="fa fa-check"></i><b>6</b> Image files</a></li>
+<li class="chapter" data-level="7" data-path="connections.html"><a href="connections.html"><i class="fa fa-check"></i><b>7</b> Connections</a></li>
+<li class="chapter" data-level="8" data-path="network-interfaces.html"><a href="network-interfaces.html"><i class="fa fa-check"></i><b>8</b> Network interfaces</a></li>
+<li class="chapter" data-level="9" data-path="reading-excel-spreadsheets.html"><a href="reading-excel-spreadsheets.html"><i class="fa fa-check"></i><b>9</b> Reading Excel spreadsheets</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>10</b> Appendix A References</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and variable index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Import/Export</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="binary-files" class="section level1">
+<h1><span class="header-section-number">Chapter 5</span> Binary files</h1>
+<p>
+<a href="" id="index-Binary-files"></a>
+</p>
+<p>
+Binary connections (<a href="connections.html">Connections</a>) are now the preferred way to handle binary files.
+</p>
+<hr />
+<p>
+<a href="" id="Binary-data-formats"></a> <a href="" id="Binary-data-formats-1"></a>
+</p>
+<h3 id="binary-data-formats" class="section">
+5.1 Binary data formats
+</h3>
+<p>
+<a href="" id="index-hdf5"></a> <a href="" id="index-Hierarchical-Data-Format"></a> <a href="" id="index-netCDF"></a> <a href="" id="index-network-Common-Data-Form"></a>
+</p>
+<p>
+Packages <a href="https://CRAN.R-project.org/package=h5"><strong>h5</strong></a>, Bioconductor’s <strong>rhdf5</strong>, <a href="https://CRAN.R-project.org/package=RNetCDF"><strong>RNetCDF</strong></a> and <a href="https://CRAN.R-project.org/package=ncdf4"><strong>ncdf4</strong></a> on CRAN provide interfaces to NASA’s HDF5 (Hierarchical Data Format, see <a href="https://www.hdfgroup.org/HDF5/" class="uri">https://www.hdfgroup.org/HDF5/</a>) and to UCAR’s netCDF data files (network Common Data Form, see <a href="http://www.unidata.ucar.edu/software/netcdf/" class="uri">http://www.unidata.ucar.edu/software/netcdf/</a>).
+</p>
+<p>
+Both of these are systems to store scientific data in array-oriented ways, including descriptions, labels, formats, units, …. HDF5 also allows <em>groups</em> of arrays, and the R interface maps lists to HDF5 groups, and can write numeric and character vectors and matrices.
+</p>
+<p>
+NetCDF’s version 4 format (confusingly, implemented in netCDF 4.1.1 and later, but not in 4.0.1) includes the use of various HDF5 formats. This is handled by package <a href="https://CRAN.R-project.org/package=ncdf4"><strong>ncdf4</strong></a> whereas <a href="https://CRAN.R-project.org/package=RNetCDF"><strong>RNetCDF</strong></a> handles version 3 files.
+</p>
+<p>
+The availability of software to support these formats is somewhat limited by platform, especially on Windows.
+</p>
+<hr />
+<p>
+<a href="" id="dBase-files-_0028DBF_0029"></a> <a href="" id="dBase-files-_0028DBF_0029-1"></a>
+</p>
+<h3 id="dbase-files-dbf" class="section">
+5.2 dBase files (DBF)
+</h3>
+<p>
+<a href="" id="index-dBase"></a> <a href="" id="index-DBF-files"></a>
+</p>
+<p>
+<code class="calibre2">dBase</code> was a DOS program written by Ashton-Tate and later owned by Borland which has a binary flat-file format that became popular, with file extension .dbf. It has been adopted for the ’Xbase’ family of databases, covering dBase, Clipper, FoxPro and their Windows equivalents Visual dBase, Visual Objects and Visual FoxPro (see <a href="http://www.e-bachmann.dk/docs/xbase.htm" class="uri">http://www.e-bachmann.dk/docs/xbase.htm</a>). A dBase file contains a header and then a series of fields and so is most similar to an R data frame. The data itself is stored in text format, and can include character, logical and numeric fields, and other types in later versions (see for example <a href="http://www.digitalpreservation.gov/formats/fdd/fdd000325.shtml" class="uri">http://www.digitalpreservation.gov/formats/fdd/fdd000325.shtml</a> and <a href="http://www.clicketyclick.dk/databases/xbase/format/index.html" class="uri">http://www.clicketyclick.dk/databases/xbase/format/index.html</a>).
+</p>
+<p>
+<a href="" id="index-read_002edbf"></a> <a href="" id="index-write_002edbf"></a>
+</p>
+<p>
+Functions <code class="calibre2">read.dbf</code> and <code class="calibre2">write.dbf</code> provide ways to read and write basic DBF files on all R platforms. For Windows users <code class="calibre2">odbcConnectDbase</code> in package <a href="https://CRAN.R-project.org/package=RODBC"><strong>RODBC</strong></a> provides more comprehensive facilities to read DBF files <em>via</em> Microsoft’s dBase ODBC driver (and the Visual FoxPro driver can also be used via <code class="calibre2">odbcDriverConnect</code>). <a href="" id="index-odbcConnectDbase"></a>
+</p>
+<hr />
+<p>
+<a href="" id="Image-files"></a> <a href="" id="Image-files-1"></a>
+</p>
+<div id="calibre_pb_14" class="calibre11">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="relational-databases.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="image-files.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

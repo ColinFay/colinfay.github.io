@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="ordered-and-unordered-factors.html">
+<link rel="next" href="lists-and-data-frames.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="arrays-and-matrices" class="section level1">
+<h1><span class="header-section-number">Chapter 5</span> Arrays and matrices</h1>
+<hr />
+<p>
+<a href="" id="Arrays"></a> <a href="" id="Arrays-1"></a>
+</p>
+<h3 id="arrays" class="section">
+5.1 Arrays
+</h3>
+<p>
+<a href="" id="index-Arrays"></a> <a href="" id="index-Matrices"></a>
+</p>
+<p>
+An array can be considered as a multiply subscripted collection of data entries, for example numeric. R allows simple facilities for creating and handling arrays, and in particular the special case of matrices.
+</p>
+<p>
+A dimension vector is a vector of non-negative integers. If its length is <em>k</em> then the array is <em>k</em>-dimensional, e.g. a matrix is a <em>2</em>-dimensional array. The dimensions are indexed from one up to the values given in the dimension vector.
+</p>
+<p>
+A vector can be used by R as an array only if it has a dimension vector as its <em>dim</em> attribute. Suppose, for example, <code class="calibre2">z</code> is a vector of 1500 elements. The assignment
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; dim(z) &lt;- c(3,5,100)</code></pre>
+</div>
+<p>
+<a href="" id="index-dim"></a>
+</p>
+<p>
+gives it the <em>dim</em> attribute that allows it to be treated as a <em>3</em> by <em>5</em> by <em>100</em> array.
+</p>
+<p>
+Other functions such as <code class="calibre2">matrix()</code> and <code class="calibre2">array()</code> are available for simpler and more natural looking assignments, as we shall see in <a href="arrays-and-matrices.html#The-array_0028_0029-function">The array() function</a>.
+</p>
+<p>
+The values in the data vector give the values in the array in the same order as they would occur in FORTRAN, that is “column major order,” with the first subscript moving fastest and the last subscript slowest.
+</p>
+<p>
+For example if the dimension vector for an array, say <code class="calibre2">a</code>, is <code class="calibre2">c(3,4,2)</code> then there are 3 * 4 * 2 = 24 entries in <code class="calibre2">a</code> and the data vector holds them in the order <code class="calibre2">a[1,1,1], a[2,1,1], …, a[2,4,2], a[3,4,2]</code>.
+</p>
+<p>
+Arrays can be one-dimensional: such arrays are usually treated in the same way as vectors (including when printing), but the exceptions can cause confusion.
+</p>
+<hr />
+<p>
+<a href="" id="Array-indexing"></a> <a href="" id="Array-indexing_002e-Subsections-of-an-array"></a>
+</p>
+<h3 id="array-indexing.-subsections-of-an-array" class="section">
+5.2 Array indexing. Subsections of an array
+</h3>
+<p>
+<a href="" id="index-Indexing-of-and-by-arrays"></a>
+</p>
+<p>
+Individual elements of an array may be referenced by giving the name of the array followed by the subscripts in square brackets, separated by commas.
+</p>
+<p>
+More generally, subsections of an array may be specified by giving a sequence of <em>index vectors</em> in place of subscripts; however <em>if any index position is given an empty index vector, then the full range of that subscript is taken</em>.
+</p>
+<p>
+Continuing the previous example, <code class="calibre2">a[2,,]</code> is a 4 * 2 array with dimension vector <code class="calibre2">c(4,2)</code> and data vector containing the values
+</p>
+<div class="example">
+<pre class="example1"><code>c(a[2,1,1], a[2,2,1], a[2,3,1], a[2,4,1],
+  a[2,1,2], a[2,2,2], a[2,3,2], a[2,4,2])</code></pre>
+</div>
+<p>
+in that order. <code class="calibre2">a[,,]</code> stands for the entire array, which is the same as omitting the subscripts entirely and using <code class="calibre2">a</code> alone.
+</p>
+<p>
+For any array, say <code class="calibre2">Z</code>, the dimension vector may be referenced explicitly as <code class="calibre2">dim(Z)</code> (on either side of an assignment).
+</p>
+<p>
+Also, if an array name is given with just <em>one subscript or index vector</em>, then the corresponding values of the data vector only are used; in this case the dimension vector is ignored. This is not the case, however, if the single index is not a vector but itself an array, as we next discuss.
+</p>
+<hr />
+<p>
+<a href="" id="Index-matrices"></a> <a href="" id="Index-matrices-1"></a>
+</p>
+<h3 id="index-matrices" class="section">
+5.3 Index matrices
+</h3>
+<p>
+As well as an index vector in any subscript position, a matrix may be used with a single <em>index matrix</em> in order either to assign a vector of quantities to an irregular collection of elements in the array, or to extract an irregular collection as a vector.
+</p>
+<p>
+A matrix example makes the process clear. In the case of a doubly indexed array, an index matrix may be given consisting of two columns and as many rows as desired. The entries in the index matrix are the row and column indices for the doubly indexed array. Suppose for example we have a <em>4</em> by <em>5</em> array <code class="calibre2">X</code> and we wish to do the following:
+</p>
+<ul>
+<li>
+Extract elements <code class="calibre2">X[1,3]</code>, <code class="calibre2">X[2,2]</code> and <code class="calibre2">X[3,1]</code> as a vector structure, and
+</li>
+<li>
+Replace these entries in the array <code class="calibre2">X</code> by zeroes.
+</li>
+</ul>
+<p>
+In this case we need a <em>3</em> by <em>2</em> subscript array, as in the following example.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; x &lt;- array(1:20, dim=c(4,5))   # Generate a 4 by 5 array.
+&gt; x
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    5    9   13   17
+[2,]    2    6   10   14   18
+[3,]    3    7   11   15   19
+[4,]    4    8   12   16   20
+&gt; i &lt;- array(c(1:3,3:1), dim=c(3,2))
+&gt; i                             # i is a 3 by 2 index array.
+     [,1] [,2]
+[1,]    1    3
+[2,]    2    2
+[3,]    3    1
+&gt; x[i]                          # Extract those elements
+[1] 9 6 3
+&gt; x[i] &lt;- 0                     # Replace those elements by zeros.
+&gt; x
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    5    0   13   17
+[2,]    2    0   10   14   18
+[3,]    0    7   11   15   19
+[4,]    4    8   12   16   20
+&gt;</code></pre>
+</div>
+<p>
+Negative indices are not allowed in index matrices. <code class="calibre2">NA</code> and zero values are allowed: rows in the index matrix containing a zero are ignored, and rows containing an <code class="calibre2">NA</code> produce an <code class="calibre2">NA</code> in the result.
+</p>
+<p>
+As a less trivial example, suppose we wish to generate an (unreduced) design matrix for a block design defined by factors <code class="calibre2">blocks</code> (<code class="calibre2">b</code> levels) and <code class="calibre2">varieties</code> (<code class="calibre2">v</code> levels). Further suppose there are <code class="calibre2">n</code> plots in the experiment. We could proceed as follows:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; Xb &lt;- matrix(0, n, b)
+&gt; Xv &lt;- matrix(0, n, v)
+&gt; ib &lt;- cbind(1:n, blocks)
+&gt; iv &lt;- cbind(1:n, varieties)
+&gt; Xb[ib] &lt;- 1
+&gt; Xv[iv] &lt;- 1
+&gt; X &lt;- cbind(Xb, Xv)</code></pre>
+</div>
+<p>
+To construct the incidence matrix, <code class="calibre2">N</code> say, we could use
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; N &lt;- crossprod(Xb, Xv)</code></pre>
+</div>
+<p>
+<a href="" id="index-crossprod"></a>
+</p>
+<p>
+However a simpler direct way of producing this matrix is to use <code class="calibre2">table()</code>: <a href="" id="index-table"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; N &lt;- table(blocks, varieties)</code></pre>
+</div>
+<p>
+Index matrices must be numerical: any other form of matrix (e.g. a logical or character matrix) supplied as a matrix is treated as an indexing vector.
+</p>
+<hr />
+<p>
+<a href="" id="The-array_0028_0029-function"></a> <a href="" id="The-array_0028_0029-function-1"></a>
+</p>
+<h3 id="the-array-function" class="section">
+5.4 The <code class="calibre14">array()</code> function
+</h3>
+<p>
+<a href="" id="index-array"></a>
+</p>
+<p>
+As well as giving a vector structure a <code class="calibre2">dim</code> attribute, arrays can be constructed from vectors by the <code class="calibre2">array</code> function, which has the form
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; Z &lt;- array(data_vector, dim_vector)</code></pre>
+</div>
+<p>
+For example, if the vector <code class="calibre2">h</code> contains 24 or fewer, numbers then the command
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; Z &lt;- array(h, dim=c(3,4,2))</code></pre>
+</div>
+<p>
+would use <code class="calibre2">h</code> to set up <em>3</em> by <em>4</em> by <em>2</em> array in <code class="calibre2">Z</code>. If the size of <code class="calibre2">h</code> is exactly 24 the result is the same as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; Z &lt;- h ; dim(Z) &lt;- c(3,4,2)</code></pre>
+</div>
+<p>
+However if <code class="calibre2">h</code> is shorter than 24, its values are recycled from the beginning again to make it up to size 24 (see <a href="arrays-and-matrices.html#The-recycling-rule">The recycling rule</a>) but <code class="calibre2">dim(h) &lt;- c(3,4,2)</code> would signal an error about mismatching length. As an extreme but common example
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; Z &lt;- array(0, c(3,4,2))</code></pre>
+</div>
+<p>
+makes <code class="calibre2">Z</code> an array of all zeros.
+</p>
+<p>
+At this point <code class="calibre2">dim(Z)</code> stands for the dimension vector <code class="calibre2">c(3,4,2)</code>, and <code class="calibre2">Z[1:24]</code> stands for the data vector as it was in <code class="calibre2">h</code>, and <code class="calibre2">Z[]</code> with an empty subscript or <code class="calibre2">Z</code> with no subscript stands for the entire array as an array.
+</p>
+<p>
+Arrays may be used in arithmetic expressions and the result is an array formed by element-by-element operations on the data vector. The <code class="calibre2">dim</code> attributes of operands generally need to be the same, and this becomes the dimension vector of the result. So if <code class="calibre2">A</code>, <code class="calibre2">B</code> and <code class="calibre2">C</code> are all similar arrays, then
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; D &lt;- 2*A*B + C + 1</code></pre>
+</div>
+<p>
+makes <code class="calibre2">D</code> a similar array with its data vector being the result of the given element-by-element operations. However the precise rule concerning mixed array and vector calculations has to be considered a little more carefully.
+</p>
+<hr />
+<p>
+<a href="" id="The-recycling-rule"></a> <a href="" id="Mixed-vector-and-array-arithmetic_002e-The-recycling-rule"></a>
+</p>
+<h4 id="mixed-vector-and-array-arithmetic.-the-recycling-rule" class="subheading">
+5.4.1 Mixed vector and array arithmetic. The recycling rule
+</h4>
+<p>
+<a href="" id="index-Recycling-rule-1"></a>
+</p>
+<p>
+The precise rule affecting element by element mixed calculations with vectors and arrays is somewhat quirky and hard to find in the references. From experience we have found the following to be a reliable guide.
+</p>
+<ul>
+<li>
+The expression is scanned from left to right.
+</li>
+<li>
+Any short vector operands are extended by recycling their values until they match the size of any other operands.
+</li>
+<li>
+As long as short vectors and arrays <em>only</em> are encountered, the arrays must all have the same <code class="calibre2">dim</code> attribute or an error results.
+</li>
+<li>
+Any vector operand longer than a matrix or array operand generates an error.
+</li>
+<li>
+If array structures are present and no error or coercion to vector has been precipitated, the result is an array structure with the common <code class="calibre2">dim</code> attribute of its array operands.
+</li>
+</ul>
+<hr />
+<p>
+<a href="" id="The-outer-product-of-two-arrays"></a> <a href="" id="The-outer-product-of-two-arrays-1"></a>
+</p>
+<h3 id="the-outer-product-of-two-arrays" class="section">
+5.5 The outer product of two arrays
+</h3>
+<p>
+<a href="" id="index-Outer-products-of-arrays"></a>
+</p>
+<p>
+An important operation on arrays is the <em>outer product</em>. If <code class="calibre2">a</code> and <code class="calibre2">b</code> are two numeric arrays, their outer product is an array whose dimension vector is obtained by concatenating their two dimension vectors (order is important), and whose data vector is got by forming all possible products of elements of the data vector of <code class="calibre2">a</code> with those of <code class="calibre2">b</code>. The outer product is formed by the special operator <code class="calibre2">%o%</code>: <a href="" id="index-_0025o_0025"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ab &lt;- a %o% b</code></pre>
+</div>
+<p>
+An alternative is
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ab &lt;- outer(a, b, &quot;*&quot;)</code></pre>
+</div>
+<p>
+<a href="" id="index-outer"></a>
+</p>
+<p>
+The multiplication function can be replaced by an arbitrary function of two variables. For example if we wished to evaluate the function f(x; y) = cos(y)/(1 + x^2) over a regular grid of values with <em>x</em>- and <em>y</em>-coordinates defined by the R vectors <code class="calibre2">x</code> and <code class="calibre2">y</code> respectively, we could proceed as follows:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; f &lt;- function(x, y) cos(y)/(1 + x^2)
+&gt; z &lt;- outer(x, y, f)</code></pre>
+</div>
+<p>
+In particular the outer product of two ordinary vectors is a doubly subscripted array (that is a matrix, of rank at most 1). Notice that the outer product operator is of course non-commutative. Defining your own R functions will be considered further in <a href="012-R-intro.html#Writing-your-own-functions">Writing your own functions</a>.
+</p>
+<p>
+<a href="" id="An-example_003a-Determinants-of-2-by-2-single_002ddigit-matrices"></a>
+</p>
+<h4 id="an-example-determinants-of-2-by-2-single-digit-matrices" class="subheading">
+An example: Determinants of 2 by 2 single-digit matrices
+</h4>
+<p>
+As an artificial but cute example, consider the determinants of <em>2</em> by <em>2</em> matrices <em>[a, b; c, d]</em> where each entry is a non-negative integer in the range <em>0, 1, …, 9</em>, that is a digit.
+</p>
+<p>
+The problem is to find the determinants, <em>ad - bc</em>, of all possible matrices of this form and represent the frequency with which each value occurs as a <em>high density</em> plot. This amounts to finding the probability distribution of the determinant if each digit is chosen independently and uniformly at random.
+</p>
+<p>
+A neat way of doing this uses the <code class="calibre2">outer()</code> function twice:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; d &lt;- outer(0:9, 0:9)
+&gt; fr &lt;- table(outer(d, d, &quot;-&quot;))
+&gt; plot(fr, xlab=&quot;Determinant&quot;, ylab=&quot;Frequency&quot;)</code></pre>
+</div>
+<p>
+Notice that <code class="calibre2">plot()</code> here uses a histogram like plot method, because it “sees” that <code class="calibre2">fr</code> is of class <code class="calibre2">“table”</code>. The “obvious” way of doing this problem with <code class="calibre2">for</code> loops, to be discussed in <a href="011-R-intro.html#Loops-and-conditional-execution">Loops and conditional execution</a>, is so inefficient as to be impractical.
+</p>
+<p>
+It is also perhaps surprising that about 1 in 20 such matrices is singular.
+</p>
+<hr />
+<p>
+<a href="" id="Generalized-transpose-of-an-array"></a> <a href="" id="Generalized-transpose-of-an-array-1"></a>
+</p>
+<h3 id="generalized-transpose-of-an-array" class="section">
+5.6 Generalized transpose of an array
+</h3>
+<p>
+<a href="" id="index-Generalized-transpose-of-an-array"></a>
+</p>
+<p>
+The function <code class="calibre2">aperm(a, perm)</code> <a href="" id="index-aperm"></a> may be used to permute an array, <code class="calibre2">a</code>. The argument <code class="calibre2">perm</code> must be a permutation of the integers <em>{1, …, k}</em>, where <em>k</em> is the number of subscripts in <code class="calibre2">a</code>. The result of the function is an array of the same size as <code class="calibre2">a</code> but with old dimension given by <code class="calibre2">perm[j]</code> becoming the new <code class="calibre2">j</code>-th dimension. The easiest way to think of this operation is as a generalization of transposition for matrices. Indeed if <code class="calibre2">A</code> is a matrix, (that is, a doubly subscripted array) then <code class="calibre2">B</code> given by
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; B &lt;- aperm(A, c(2,1))</code></pre>
+</div>
+<p>
+is just the transpose of <code class="calibre2">A</code>. For this special case a simpler function <code class="calibre2">t()</code> <a href="" id="index-t"></a> is available, so we could have used <code class="calibre2">B &lt;- t(A)</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Matrix-facilities"></a> <a href="" id="Matrix-facilities-1"></a>
+</p>
+<h3 id="matrix-facilities" class="section">
+5.7 Matrix facilities
+</h3>
+<p>
+As noted above, a matrix is just an array with two subscripts. However it is such an important special case it needs a separate discussion. R contains many operators and functions that are available only for matrices. For example <code class="calibre2">t(X)</code> is the matrix transpose function, as noted above. The functions <code class="calibre2">nrow(A)</code> and <code class="calibre2">ncol(A)</code> give the number of rows and columns in the matrix <code class="calibre2">A</code> respectively. <a href="" id="index-nrow"></a> <a href="" id="index-ncol"></a>
+</p>
+<hr />
+<p>
+<a href="" id="Multiplication"></a> <a href="" id="Matrix-multiplication"></a>
+</p>
+<h4 id="matrix-multiplication" class="subheading">
+5.7.1 Matrix multiplication
+</h4>
+<p>
+<a href="" id="index-Matrix-multiplication"></a>
+</p>
+<p>
+The operator <code class="calibre2">%*%</code> is used for matrix multiplication. <a href="" id="index-_0025_002a_0025"></a> An <em>n</em> by <em>1</em> or <em>1</em> by <em>n</em> matrix may of course be used as an <em>n</em>-vector if in the context such is appropriate. Conversely, vectors which occur in matrix multiplication expressions are automatically promoted either to row or column vectors, whichever is multiplicatively coherent, if possible, (although this is not always unambiguously possible, as we see later).
+</p>
+<p>
+If, for example, <code class="calibre2">A</code> and <code class="calibre2">B</code> are square matrices of the same size, then
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; A * B</code></pre>
+</div>
+<p>
+is the matrix of element by element products and
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; A %*% B</code></pre>
+</div>
+<p>
+is the matrix product. If <code class="calibre2">x</code> is a vector, then
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; x %*% A %*% x</code></pre>
+</div>
+<p>
+is a quadratic form.<a href="023-R-intro.html#FOOT16" id="DOCF16"><sup>16</sup></a>
+</p>
+<p>
+<a href="" id="index-crossprod-1"></a>
+</p>
+<p>
+The function <code class="calibre2">crossprod()</code> forms “crossproducts”, meaning that <code class="calibre2">crossprod(X, y)</code> is the same as <code class="calibre2">t(X) %*% y</code> but the operation is more efficient. If the second argument to <code class="calibre2">crossprod()</code> is omitted it is taken to be the same as the first.
+</p>
+<p>
+<a href="" id="index-diag"></a>
+</p>
+<p>
+The meaning of <code class="calibre2">diag()</code> depends on its argument. <code class="calibre2">diag(v)</code>, where <code class="calibre2">v</code> is a vector, gives a diagonal matrix with elements of the vector as the diagonal entries. On the other hand <code class="calibre2">diag(M)</code>, where <code class="calibre2">M</code> is a matrix, gives the vector of main diagonal entries of <code class="calibre2">M</code>. This is the same convention as that used for <code class="calibre2">diag()</code> in MATLAB. Also, somewhat confusingly, if <code class="calibre2">k</code> is a single numeric value then <code class="calibre2">diag(k)</code> is the <code class="calibre2">k</code> by <code class="calibre2">k</code> identity matrix!
+</p>
+<hr />
+<p>
+<a href="" id="Linear-equations-and-inversion"></a> <a href="" id="Linear-equations-and-inversion-1"></a>
+</p>
+<h4 id="linear-equations-and-inversion" class="subheading">
+5.7.2 Linear equations and inversion
+</h4>
+<p>
+<a href="" id="index-Linear-equations"></a> <a href="" id="index-solve"></a>
+</p>
+<p>
+Solving linear equations is the inverse of matrix multiplication. When after
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; b &lt;- A %*% x</code></pre>
+</div>
+<p>
+only <code class="calibre2">A</code> and <code class="calibre2">b</code> are given, the vector <code class="calibre2">x</code> is the solution of that linear equation system. In R,
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; solve(A,b)</code></pre>
+</div>
+<p>
+solves the system, returning <code class="calibre2">x</code> (up to some accuracy loss). Note that in linear algebra, formally <code class="calibre2">x = A^{-1} %*% b</code> where <code class="calibre2">A^{-1}</code> denotes the <em>inverse</em> of <code class="calibre2">A</code>, which can be computed by
+</p>
+<div class="example">
+<pre class="example1"><code>solve(A)</code></pre>
+</div>
+<p>
+but rarely is needed. Numerically, it is both inefficient and potentially unstable to compute <code class="calibre2">x &lt;- solve(A) %*% b</code> instead of <code class="calibre2">solve(A,b)</code>.
+</p>
+<p>
+The quadratic form  <code class="calibre2">x %<em>% A^{-1} %</em>% x</code>   which is used in multivariate computations, should be computed by something like<a href="023-R-intro.html#FOOT17" id="DOCF17"><sup>17</sup></a> <code class="calibre2">x %*% solve(A,x)</code>, rather than computing the inverse of <code class="calibre2">A</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Eigenvalues-and-eigenvectors"></a> <a href="" id="Eigenvalues-and-eigenvectors-1"></a>
+</p>
+<h4 id="eigenvalues-and-eigenvectors" class="subheading">
+5.7.3 Eigenvalues and eigenvectors
+</h4>
+<p>
+<a href="" id="index-Eigenvalues-and-eigenvectors"></a> <a href="" id="index-eigen"></a>
+</p>
+<p>
+The function <code class="calibre2">eigen(Sm)</code> calculates the eigenvalues and eigenvectors of a symmetric matrix <code class="calibre2">Sm</code>. The result of this function is a list of two components named <code class="calibre2">values</code> and <code class="calibre2">vectors</code>. The assignment
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ev &lt;- eigen(Sm)</code></pre>
+</div>
+<p>
+will assign this list to <code class="calibre2">ev</code>. Then <code class="calibre2">ev<span class="math inline">\(val&lt;/code&gt; is the vector of eigenvalues of &lt;code class=&quot;calibre2&quot;&gt;Sm&lt;/code&gt; and &lt;code class=&quot;calibre2&quot;&gt;ev\)</span>vec</code> is the matrix of corresponding eigenvectors. Had we only needed the eigenvalues we could have used the assignment:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; evals &lt;- eigen(Sm)$values</code></pre>
+</div>
+<p>
+<code class="calibre2">evals</code> now holds the vector of eigenvalues and the second component is discarded. If the expression
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; eigen(Sm)</code></pre>
+</div>
+<p>
+is used by itself as a command the two components are printed, with their names. For large matrices it is better to avoid computing the eigenvectors if they are not needed by using the expression
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; evals &lt;- eigen(Sm, only.values = TRUE)$values</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Singular-value-decomposition-and-determinants"></a> <a href="" id="Singular-value-decomposition-and-determinants-1"></a>
+</p>
+<h4 id="singular-value-decomposition-and-determinants" class="subheading">
+5.7.4 Singular value decomposition and determinants
+</h4>
+<p>
+<a href="" id="index-Singular-value-decomposition"></a> <a href="" id="index-svd"></a>
+</p>
+<p>
+The function <code class="calibre2">svd(M)</code> takes an arbitrary matrix argument, <code class="calibre2">M</code>, and calculates the singular value decomposition of <code class="calibre2">M</code>. This consists of a matrix of orthonormal columns <code class="calibre2">U</code> with the same column space as <code class="calibre2">M</code>, a second matrix of orthonormal columns <code class="calibre2">V</code> whose column space is the row space of <code class="calibre2">M</code> and a diagonal matrix of positive entries <code class="calibre2">D</code> such that <code class="calibre2">M = U %<em>% D %</em>% t(V)</code>. <code class="calibre2">D</code> is actually returned as a vector of the diagonal elements. The result of <code class="calibre2">svd(M)</code> is actually a list of three components named <code class="calibre2">d</code>, <code class="calibre2">u</code> and <code class="calibre2">v</code>, with evident meanings.
+</p>
+<p>
+If <code class="calibre2">M</code> is in fact square, then, it is not hard to see that
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; absdetM &lt;- prod(svd(M)$d)</code></pre>
+</div>
+<p>
+calculates the absolute value of the determinant of <code class="calibre2">M</code>. If this calculation were needed often with a variety of matrices it could be defined as an R function
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; absdet &lt;- function(M) prod(svd(M)$d)</code></pre>
+</div>
+<p>
+<a href="" id="index-Determinants"></a>
+</p>
+<p>
+after which we could use <code class="calibre2">absdet()</code> as just another R function. As a further trivial but potentially useful example, you might like to consider writing a function, say <code class="calibre2">tr()</code>, to calculate the trace of a square matrix. [Hint: You will not need to use an explicit loop. Look again at the <code class="calibre2">diag()</code> function.]
+</p>
+<p>
+<a href="" id="index-det"></a> <a href="" id="index-determinant"></a>
+</p>
+<p>
+R has a builtin function <code class="calibre2">det</code> to calculate a determinant, including the sign, and another, <code class="calibre2">determinant</code>, to give the sign and modulus (optionally on log scale),
+</p>
+<hr />
+<p>
+<a href="" id="Least-squares-fitting-and-the-QR-decomposition"></a> <a href="" id="Least-squares-fitting-and-the-QR-decomposition-1"></a>
+</p>
+<h4 id="least-squares-fitting-and-the-qr-decomposition" class="subheading">
+5.7.5 Least squares fitting and the QR decomposition
+</h4>
+<p>
+<a href="" id="index-Least-squares-fitting"></a> <a href="" id="index-QR-decomposition"></a>
+</p>
+<p>
+The function <code class="calibre2">lsfit()</code> returns a list giving results of a least squares fitting procedure. An assignment such as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ans &lt;- lsfit(X, y)</code></pre>
+</div>
+<p>
+<a href="" id="index-lsfit"></a>
+</p>
+<p>
+gives the results of a least squares fit where <code class="calibre2">y</code> is the vector of observations and <code class="calibre2">X</code> is the design matrix. See the help facility for more details, and also for the follow-up function <code class="calibre2">ls.diag()</code> for, among other things, regression diagnostics. Note that a grand mean term is automatically included and need not be included explicitly as a column of <code class="calibre2">X</code>. Further note that you almost always will prefer using <code class="calibre2">lm(.)</code> (see <a href="014-R-intro.html#Linear-models">Linear models</a>) to <code class="calibre2">lsfit()</code> for regression modelling.
+</p>
+<p>
+<a href="" id="index-qr"></a>
+</p>
+<p>
+Another closely related function is <code class="calibre2">qr()</code> and its allies. Consider the following assignments
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; Xplus &lt;- qr(X)
+&gt; b &lt;- qr.coef(Xplus, y)
+&gt; fit &lt;- qr.fitted(Xplus, y)
+&gt; res &lt;- qr.resid(Xplus, y)</code></pre>
+</div>
+<p>
+These compute the orthogonal projection of <code class="calibre2">y</code> onto the range of <code class="calibre2">X</code> in <code class="calibre2">fit</code>, the projection onto the orthogonal complement in <code class="calibre2">res</code> and the coefficient vector for the projection in <code class="calibre2">b</code>, that is, <code class="calibre2">b</code> is essentially the result of the MATLAB ‘backslash’ operator.
+</p>
+<p>
+It is not assumed that <code class="calibre2">X</code> has full column rank. Redundancies will be discovered and removed as they are found.
+</p>
+<p>
+This alternative is the older, low-level way to perform least squares calculations. Although still useful in some contexts, it would now generally be replaced by the statistical models features, as will be discussed in <a href="013-R-intro.html#Statistical-models-in-R">Statistical models in R</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Forming-partitioned-matrices"></a> <a href="" id="Forming-partitioned-matrices_002c-cbind_0028_0029-and-rbind_0028_0029"></a>
+</p>
+<h3 id="forming-partitioned-matrices-cbind-and-rbind" class="section">
+5.8 Forming partitioned matrices, <code class="calibre14">cbind()</code> and <code class="calibre14">rbind()</code>
+</h3>
+<p>
+<a href="" id="index-cbind"></a> <a href="" id="index-rbind"></a>
+</p>
+<p>
+As we have already seen informally, matrices can be built up from other vectors and matrices by the functions <code class="calibre2">cbind()</code> and <code class="calibre2">rbind()</code>. Roughly <code class="calibre2">cbind()</code> forms matrices by binding together matrices horizontally, or column-wise, and <code class="calibre2">rbind()</code> vertically, or row-wise.
+</p>
+<p>
+In the assignment
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; X &lt;- cbind(arg_1, arg_2, arg_3, …)</code></pre>
+</div>
+<p>
+the arguments to <code class="calibre2">cbind()</code> must be either vectors of any length, or matrices with the same column size, that is the same number of rows. The result is a matrix with the concatenated arguments arg_1, arg_2, … forming the columns.
+</p>
+<p>
+If some of the arguments to <code class="calibre2">cbind()</code> are vectors they may be shorter than the column size of any matrices present, in which case they are cyclically extended to match the matrix column size (or the length of the longest vector if no matrices are given).
+</p>
+<p>
+The function <code class="calibre2">rbind()</code> does the corresponding operation for rows. In this case any vector argument, possibly cyclically extended, are of course taken as row vectors.
+</p>
+<p>
+Suppose <code class="calibre2">X1</code> and <code class="calibre2">X2</code> have the same number of rows. To combine these by columns into a matrix <code class="calibre2">X</code>, together with an initial column of <code class="calibre2">1</code>s we can use
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; X &lt;- cbind(1, X1, X2)</code></pre>
+</div>
+<p>
+The result of <code class="calibre2">rbind()</code> or <code class="calibre2">cbind()</code> always has matrix status. Hence <code class="calibre2">cbind(x)</code> and <code class="calibre2">rbind(x)</code> are possibly the simplest ways explicitly to allow the vector <code class="calibre2">x</code> to be treated as a column or row matrix respectively.
+</p>
+<hr />
+<p>
+<a href="" id="The-concatenation-function-c_0028_0029-with-arrays"></a> <a href="" id="The-concatenation-function_002c-c_0028_0029_002c-with-arrays"></a>
+</p>
+<h3 id="the-concatenation-function-c-with-arrays" class="section">
+5.9 The concatenation function, <code class="calibre14">c()</code>, with arrays
+</h3>
+<p>
+It should be noted that whereas <code class="calibre2">cbind()</code> and <code class="calibre2">rbind()</code> are concatenation functions that respect <code class="calibre2">dim</code> attributes, the basic <code class="calibre2">c()</code> function does not, but rather clears numeric objects of all <code class="calibre2">dim</code> and <code class="calibre2">dimnames</code> attributes. This is occasionally useful in its own right.
+</p>
+<p>
+The official way to coerce an array back to a simple vector object is to use <code class="calibre2">as.vector()</code>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; vec &lt;- as.vector(X)</code></pre>
+</div>
+<p>
+<a href="" id="index-as_002evector"></a>
+</p>
+<p>
+However a similar result can be achieved by using <code class="calibre2">c()</code> with just one argument, simply for this side-effect:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; vec &lt;- c(X)</code></pre>
+</div>
+<p>
+<a href="" id="index-c-2"></a>
+</p>
+<p>
+There are slight differences between the two, but ultimately the choice between them is largely a matter of style (with the former being preferable).
+</p>
+<hr />
+<p>
+<a href="" id="Frequency-tables-from-factors"></a> <a href="" id="Frequency-tables-from-factors-1"></a>
+</p>
+<h3 id="frequency-tables-from-factors" class="section">
+5.10 Frequency tables from factors
+</h3>
+<p>
+<a href="" id="index-Tabulation"></a>
+</p>
+<p>
+Recall that a factor defines a partition into groups. Similarly a pair of factors defines a two way cross classification, and so on. <a href="" id="index-table-1"></a> The function <code class="calibre2">table()</code> allows frequency tables to be calculated from equal length factors. If there are <em>k</em> factor arguments, the result is a <em>k</em>-way array of frequencies.
+</p>
+<p>
+Suppose, for example, that <code class="calibre2">statef</code> is a factor giving the state code for each entry in a data vector. The assignment
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; statefr &lt;- table(statef)</code></pre>
+</div>
+<p>
+gives in <code class="calibre2">statefr</code> a table of frequencies of each state in the sample. The frequencies are ordered and labelled by the <code class="calibre2">levels</code> attribute of the factor. This simple case is equivalent to, but more convenient than,
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; statefr &lt;- tapply(statef, statef, length)</code></pre>
+</div>
+<p>
+Further suppose that <code class="calibre2">incomef</code> is a factor giving a suitably defined “income class” for each entry in the data vector, for example with the <code class="calibre2">cut()</code> function:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; factor(cut(incomes, breaks = 35+10*(0:7))) -&gt; incomef</code></pre>
+</div>
+<p>
+<a href="" id="index-cut"></a>
+</p>
+<p>
+Then to calculate a two-way table of frequencies:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; table(incomef,statef)
+         statef
+incomef   act nsw nt qld sa tas vic wa
+  (35,45]   1   1  0   1  0   0   1  0
+  (45,55]   1   1  1   1  2   0   1  3
+  (55,65]   0   3  1   3  2   2   2  1
+  (65,75]   0   1  0   0  0   0   1  0</code></pre>
+</div>
+<p>
+Extension to higher-way frequency tables is immediate.
+</p>
+<hr />
+<p>
+<a href="" id="Lists-and-data-frames"></a> <a href="" id="Lists-and-data-frames-1"></a>
+</p>
+<div id="calibre_pb_14" class="calibre8">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ordered-and-unordered-factors.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="lists-and-data-frames.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

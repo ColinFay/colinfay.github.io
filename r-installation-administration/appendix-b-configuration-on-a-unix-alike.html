@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html">
+<link rel="next" href="appendix-c-platform-notes.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix-b-configuration-on-a-unix-alike" class="section level1">
+<h1><span class="header-section-number">Chapter 11</span> Appendix B Configuration on a Unix-alike</h1>
+<hr />
+<p>
+<a href="" id="Configuration-options"></a> <a href="" id="Configuration-options-1"></a>
+</p>
+<h3 id="b.1-configuration-options" class="section">
+B.1 Configuration options
+</h3>
+<p>
+<code class="calibre6">configure</code> has many options: running
+</p>
+<div class="example">
+<pre class="example1"><code>./configure --help</code></pre>
+</div>
+<p>
+will give a list. Probably the most important ones not covered elsewhere are (defaults in brackets)
+</p>
+<dl>
+<dt>
+–with-x
+</dt>
+<dd>
+<p>
+use the X Window System [yes]
+</p>
+</dd>
+<dt>
+–x-includes=DIR
+</dt>
+<dd>
+<p>
+X include files are in DIR
+</p>
+</dd>
+<dt>
+–x-libraries=DIR
+</dt>
+<dd>
+<p>
+X library files are in DIR
+</p>
+</dd>
+<dt>
+–with-readline
+</dt>
+<dd>
+<p>
+use readline library (if available) [yes]
+</p>
+</dd>
+<dt>
+–enable-R-profiling
+</dt>
+<dd>
+<p>
+attempt to compile support for <code class="calibre6">Rprof()</code> [yes]
+</p>
+</dd>
+<dt>
+–enable-memory-profiling
+</dt>
+<dd>
+<p>
+attempt to compile support for <code class="calibre6">Rprofmem()</code> and <code class="calibre6">tracemem()</code> [no]
+</p>
+</dd>
+<dt>
+–enable-R-shlib
+</dt>
+<dd>
+<p>
+build R as a shared/dynamic library [no]
+</p>
+</dd>
+<dt>
+–enable-BLAS-shlib
+</dt>
+<dd>
+<p>
+build the BLAS as a shared/dynamic library [yes, except on AIX]
+</p>
+</dd>
+</dl>
+<p>
+You can use –without-foo or –disable-foo for the negatives.
+</p>
+<p>
+You will want to use –disable-R-profiling if you are building a profiled executable of R (e.g. with ‘-pg)’.
+</p>
+<p>
+Flag –enable-R-shlib causes the make process to build R as a dynamic (shared) library, typically called libR.so, and link the main R executable R.bin against that library. This can only be done if all the code (including system libraries) can be compiled into a dynamic library, and there may be a performance<a href="environment-variable-index.html#FOOT57" id="DOCF57"><sup>57</sup></a> penalty. So you probably only want this if you will be using an application which embeds R. Note that C code in packages installed on an R system linked with –enable-R-shlib is linked against the dynamic library and so such packages cannot be used from an R system built in the default way. Also, because packages are linked against R they are on some OSes also linked against the dynamic libraries R itself is linked against, and this can lead to symbol conflicts.
+</p>
+<p>
+For maximally effective use of <code class="calibre6">valgrind</code>, R should be compiled with valgrind instrumentation. The <code class="calibre6">configure</code> option is –with-valgrind-instrumentation=level, where level is 0, 1 or 2. (Level 0 is the default and does not add anything.) The system headers for <code class="calibre6">valgrind</code> can be requested by option –with-system-valgrind-headers: they will be used if present (on Linux they may be in a separate package such as <strong>valgrind-devel</strong>). Note though that there is no guarantee that the code in R will be compatible with very old<a href="environment-variable-index.html#FOOT58" id="DOCF58"><sup>58</sup></a> or future <code class="calibre6">valgrind</code> headers.
+</p>
+<p>
+If you need to re-configure R with different options you may need to run <code class="calibre6">make clean</code> or even <code class="calibre6">make distclean</code> before doing so.
+</p>
+<p>
+The configure script has other generic options added by <code class="calibre6">autoconf</code> and which are not supported for R: in particular building for one architecture on a different host is not possible.
+</p>
+<hr />
+<p>
+<a href="" id="Internationalization-support"></a> <a href="" id="Internationalization-support-1"></a>
+</p>
+<h3 id="b.2-internationalization-support" class="section">
+B.2 Internationalization support
+</h3>
+<p>
+Translation of messages is supported via GNU <code class="calibre6">gettext</code> unless disabled by the configure option –disable-nls. The <code class="calibre6">configure</code> report will show <code class="calibre6">NLS</code> as one of the ‘Additional capabilities’ if support has been compiled in, and running in an English locale (but not the <code class="calibre6">C</code> locale) will include
+</p>
+<div class="example">
+<pre class="example1"><code>  Natural language support but running in an English locale</code></pre>
+</div>
+<p>
+in the greeting on starting R.
+</p>
+<hr />
+<p>
+<a href="" id="Configuration-variables"></a> <a href="" id="Configuration-variables-1"></a>
+</p>
+<h3 id="b.3-configuration-variables" class="section">
+B.3 Configuration variables
+</h3>
+<p>
+<a href="" id="index-configure-4"></a>
+</p>
+<p>
+If you need or want to set certain configure variables to something other than their default, you can do that by either editing the file config.site (which documents many of the variables you might want to set: others can be seen in file etc/Renviron.in) or on the command line as
+</p>
+<div class="example">
+<pre class="example1"><code>./configure VAR=value</code></pre>
+</div>
+<p>
+If you are building in a directory different from the sources, there can be copies of config.site in the source and the build directories, and both will be read (in that order). In addition, if there is a file ~/.R/config, it is read between the config.site files in the source and the build directories.
+</p>
+<p>
+There is also a general <code class="calibre6">autoconf</code> mechanism for config.site files, which are read before any of those mentioned in the previous paragraph. This looks first at a file specified by the <a href="" id="index-CONFIG_005fSITE"></a> environment variable <code class="calibre6">CONFIG_SITE</code>, and if not is set at files such as /usr/local/share/config.site and /usr/local/etc/config.site in the area (exemplified by /usr/local) where R would be installed.
+</p>
+<p>
+These variables are <em>precious</em>, implying that they do not have to be exported to the environment, are kept in the cache even if not specified on the command line, checked for consistency between two configure runs (provided that caching is used), and are kept during automatic reconfiguration as if having been passed as command line arguments, even if no cache is used.
+</p>
+<p>
+See the variable output section of <code class="calibre6">configure –help</code> for a list of all these variables.
+</p>
+<p>
+If you find you need to alter configure variables, it is worth noting that some settings may be cached in the file config.cache, and it is a good idea to remove that file (if it exists) before re-configuring. Note that caching is turned <em>off</em> by default: use the command line option –config-cache (or -C) to enable caching.
+</p>
+<hr />
+<p>
+<a href="" id="Setting-paper-size"></a> <a href="" id="Setting-paper-size-1"></a>
+</p>
+<h4 id="b.3.1-setting-paper-size" class="subsection">
+B.3.1 Setting paper size
+</h4>
+<p>
+<a href="" id="index-R_005fPAPERSIZE-2"></a>
+</p>
+<p>
+One common variable to change is <code class="calibre6">R_PAPERSIZE</code>, which defaults to ‘a4’, not ‘letter’. (Valid values are ‘a4’, ‘letter’, ‘legal’ and ‘executive’.)
+</p>
+<p>
+This is used both when configuring R to set the default, and when running R to override the default. It is also used to set the paper size when making PDF manuals.
+</p>
+<p>
+The configure default will most often be ‘a4’ if <code class="calibre6">R_PAPERSIZE</code> is unset. (If the (Debian Linux) program <code class="calibre6">paperconf</code> is found <a href="" id="index-PAPERSIZE"></a> or the environment variable <code class="calibre6">PAPERSIZE</code> is set, these are used to produce the default.)
+</p>
+<hr />
+<p>
+<a href="" id="Setting-the-browsers"></a> <a href="" id="Setting-the-browsers-1"></a>
+</p>
+<h4 id="b.3.2-setting-the-browsers" class="subsection">
+B.3.2 Setting the browsers
+</h4>
+<p>
+<a href="" id="index-R_005fBROWSER"></a>
+</p>
+<p>
+Another precious variable is <code class="calibre6">R_BROWSER</code>, the default HTML browser, which should take a value of an executable in the user’s path or specify a full path.
+</p>
+<p>
+<a href="" id="index-R_005fPDFVIEWER"></a>
+</p>
+<p>
+Its counterpart for PDF files is <code class="calibre6">R_PDFVIEWER</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Compilation-flags"></a> <a href="" id="Compilation-flags-1"></a>
+</p>
+<h4 id="b.3.3-compilation-flags" class="subsection">
+B.3.3 Compilation flags
+</h4>
+<p>
+If you have libraries and header files, e.g., for GNU readline, in non-system directories, use the variables <code class="calibre6">LDFLAGS</code> (for libraries, using ‘-L’ flags to be passed to the linker) and <code class="calibre6">CPPFLAGS</code> (for header files, using ‘-I’ flags to be passed to the C/C++ preprocessors), respectively, to specify these locations. These default to ‘-L/usr/local/lib’ (<code class="calibre6">LDFLAGS</code>, ‘-L/usr/local/lib64’ on most 64-bit Linux OSes) and ‘-I/usr/local/include’ (<code class="calibre6">CPPFLAGS</code>, but note that on most systems /usr/local/include is regarded as a system include directory and so instances in that macro will be skipped) to catch the most common cases. If libraries are still not found, then maybe your compiler/linker does not support re-ordering of -L and -l flags (years ago this was reported to be a problem on HP-UX with the native <code class="calibre6">cc</code>). In this case, use a different compiler (or a front-end shell script which does the re-ordering).
+</p>
+<p>
+These flags can also be used to build a faster-running version of R. On most platforms using <code class="calibre6">gcc</code>, having ‘-O3’ in <code class="calibre6">CFLAGS</code> and <code class="calibre6">FFLAGS</code> produces worthwhile performance gains with <code class="calibre6">gcc</code> and <code class="calibre6">gfortran</code>, but may result in a less reliable build (both segfaults and incorrect numeric computations have been seen). On systems using the GNU linker (especially those using R as a shared library), it is likely that including ‘-Wl,-O1’ in <code class="calibre6">LDFLAGS</code> is worthwhile, and ‘’-Bdirect,–hash-style=both,-Wl,-O1’’ is recommended at <a href="https://lwn.net/Articles/192624/" class="uri">https://lwn.net/Articles/192624/</a>. Tuning compilation to a specific CPU family (e.g. ‘-mtune=native’ for <code class="calibre6">gcc</code>) can give worthwhile performance gains, especially on older architectures such as ‘ix86’.
+</p>
+<hr />
+<p>
+<a href="" id="Making-manuals"></a> <a href="" id="Making-manuals-1"></a>
+</p>
+<h4 id="b.3.4-making-manuals" class="subsection">
+B.3.4 Making manuals
+</h4>
+<p>
+<a href="" id="index-R_005fRD4PDF-1"></a> <a href="" id="index-R_005fPAPERSIZE-3"></a>
+</p>
+<p>
+The default settings for making the manuals are controlled by <code class="calibre6">R_RD4PDF</code> and <code class="calibre6">R_PAPERSIZE</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Setting-the-shell"></a> <a href="" id="Setting-the-shell-1"></a>
+</p>
+<h3 id="b.4-setting-the-shell" class="section">
+B.4 Setting the shell
+</h3>
+<p>
+By default the shell scripts such as R will be ‘#!/bin/sh’ scripts (or using the <code class="calibre6">SHELL</code> chosen by configure). This is almost always satisfactory, but on a few systems /bin/sh is not a Bourne shell or clone, and the shell to be used can be changed by setting the configure variable <code class="calibre6">R_SHELL</code> to a suitable value (a full path to a shell, e.g. /usr/local/bin/bash).
+</p>
+<hr />
+<p>
+<a href="" id="Using-make"></a> <a href="" id="Using-make-1"></a>
+</p>
+<h3 id="b.5-using-make" class="section">
+B.5 Using make
+</h3>
+<p>
+<a href="" id="index-make"></a>
+</p>
+<p>
+To compile R, you will most likely find it easiest to use GNU <code class="calibre6">make</code>, although the Sun <code class="calibre6">make</code> works on Solaris. The native <code class="calibre6">make</code> has been reported to fail on SGI Irix 6.5 and Alpha/OSF1 (aka Tru64).
+</p>
+<p>
+To build in a separate directory you need a <code class="calibre6">make</code> that supports the <code class="calibre6">VPATH</code> variable, for example GNU <code class="calibre6">make</code> and Sun <code class="calibre6">make</code>.
+</p>
+<p>
+<code class="calibre6">dmake</code> has also been used. e.g, on Solaris 10.
+</p>
+<p>
+If you want to use a <code class="calibre6">make</code> by another name, for example if your GNU <code class="calibre6">make</code> is called ‘gmake’, you need to set the variable <code class="calibre6">MAKE</code> at configure time, for example
+</p>
+<p>
+<a href="" id="index-configure-5"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>./configure MAKE=gmake</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Using-FORTRAN"></a> <a href="" id="Using-FORTRAN-1"></a>
+</p>
+<h3 id="b.6-using-fortran" class="section">
+B.6 Using FORTRAN
+</h3>
+<p>
+<a href="" id="index-FORTRAN"></a>
+</p>
+<p>
+To compile R, you need a FORTRAN compiler. The default is to search for <code class="calibre6">f95</code>, <code class="calibre6">fort</code>, <code class="calibre6">xlf95</code>, <code class="calibre6">ifort</code>, <code class="calibre6">ifc</code>, <code class="calibre6">efc</code>, <code class="calibre6">pgf95</code> <code class="calibre6">lf95</code>, <code class="calibre6">gfortran</code>, <code class="calibre6">ftn</code>, <code class="calibre6">g95</code>, <code class="calibre6">f90</code>, <code class="calibre6">xlf90</code>, <code class="calibre6">pghpf</code>, <code class="calibre6">pgf90</code>, <code class="calibre6">epcf90</code>, <code class="calibre6">g77</code>, <code class="calibre6">f77</code>, <code class="calibre6">xlf</code>, <code class="calibre6">frt</code>, <code class="calibre6">pgf77</code>, <code class="calibre6">cf77</code>, <code class="calibre6">fort77</code>, <code class="calibre6">fl32</code>, <code class="calibre6">af77</code> (in that order)<a href="environment-variable-index.html#FOOT59" id="DOCF59"><sup>59</sup></a>, and use whichever is found first; if none is found, R cannot be compiled. However, if <code class="calibre6">CC</code> is <code class="calibre6">gcc</code>, the matching FORTRAN compiler (<code class="calibre6">g77</code> for <code class="calibre6">gcc</code> 3 and <code class="calibre6">gfortran</code> for <code class="calibre6">gcc</code> 4) is used if available.
+</p>
+<p>
+The search mechanism can be changed using the configure variable <code class="calibre6">F77</code> which specifies the command that runs the FORTRAN 77 compiler. If your FORTRAN compiler is in a non-standard location, you <a href="" id="index-PATH-1"></a> should set the environment variable <code class="calibre6">PATH</code> accordingly before running <code class="calibre6">configure</code>, or use the configure variable <code class="calibre6">F77</code> to specify its full path.
+</p>
+<p>
+If your FORTRAN libraries are in slightly peculiar places, you should <a href="" id="index-LD_005fLIBRARY_005fPATH-2"></a> also look at <code class="calibre6">LD_LIBRARY_PATH</code> or your system’s equivalent to make sure that all libraries are on this path.
+</p>
+<p>
+Note that only FORTRAN compilers which convert identifiers to lower case are supported.
+</p>
+<p>
+You must set whatever compilation flags (if any) are needed to ensure that FORTRAN <code class="calibre6">integer</code> is equivalent to a C <code class="calibre6">int</code> pointer and FORTRAN <code class="calibre6">double precision</code> is equivalent to a C <code class="calibre6">double</code> pointer. This is checked during the configuration process.
+</p>
+<p>
+Some of the FORTRAN code makes use of <code class="calibre6">COMPLEX*16</code> variables, which is a Fortran 90 extension. This is checked for at configure time<a href="environment-variable-index.html#FOOT60" id="DOCF60"><sup>60</sup></a>, but you may need to avoid compiler flags asserting FORTRAN 77 compliance.
+</p>
+<p>
+Compiling the version of LAPACK in the R sources also requires some Fortran 90 extensions, but these are not needed if an external LAPACK is used.
+</p>
+<p>
+It might be possible to use <code class="calibre6">f2c</code>, the FORTRAN-to-C converter (<a href="http://www.netlib.org/f2c" class="uri">http://www.netlib.org/f2c</a>), via a script. (An example script is given in scripts/f77_f2c: this can be customized by setting <a href="" id="index-F2C"></a> <a href="" id="index-F2CLIBS"></a> <a href="" id="index-CC"></a> the environment variables <code class="calibre6">F2C</code>, <code class="calibre6">F2CLIBS</code>, <code class="calibre6">CC</code> and <a href="" id="index-CPP"></a> <code class="calibre6">CPP</code>.) You will need to ensure that the FORTRAN type <code class="calibre6">integer</code> is translated to the C type <code class="calibre6">int</code>. Normally f2c.h contains ‘typedef long int integer;’, which will work on a 32-bit platform but needs to be changed to ‘typedef int integer;’ on a 64-bit platform. If your compiler is not <code class="calibre6">gcc</code> you will need to set <a href="" id="index-FPICFLAGS"></a> <code class="calibre6">FPICFLAGS</code> appropriately. Also, the included LAPACK sources contain constructs that <code class="calibre6">f2c</code> is unlikely to be able to process, so you would need to use an external LAPACK library (such as CLAPACK from <a href="http://www.netlib.org/clapack/" class="uri">http://www.netlib.org/clapack/</a>).
+</p>
+<hr />
+<p>
+<a href="" id="Compile-and-load-flags"></a> <a href="" id="Compile-and-load-flags-1"></a>
+</p>
+<h3 id="b.7-compile-and-load-flags" class="section">
+B.7 Compile and load flags
+</h3>
+<p>
+A wide range of flags can be set in the file config.site or as configure variables on the command line. We have already mentioned
+</p>
+<dl>
+<dt>
+<code class="calibre6">CPPFLAGS</code>
+</dt>
+<dd>
+<p>
+header file search directory (-I) and any other miscellaneous options for the C and C++ preprocessors and compilers
+</p>
+</dd>
+<dt>
+<code class="calibre6">LDFLAGS</code>
+</dt>
+<dd>
+<p>
+path (-L), stripping (-s) and any other miscellaneous options for the linker
+</p>
+</dd>
+</dl>
+<p>
+and others include
+</p>
+<dl>
+<dt>
+<code class="calibre6">CFLAGS</code>
+</dt>
+<dd>
+<p>
+debugging and optimization flags, C
+</p>
+</dd>
+<dt>
+<code class="calibre6">MAIN_CFLAGS</code>
+</dt>
+<dd>
+<p>
+ditto, for compiling the main program
+</p>
+</dd>
+<dt>
+<code class="calibre6">SHLIB_CFLAGS</code>
+</dt>
+<dd>
+<p>
+for shared objects
+</p>
+</dd>
+<dt>
+<code class="calibre6">FFLAGS</code>
+</dt>
+<dd>
+<p>
+debugging and optimization flags, FORTRAN
+</p>
+</dd>
+<dt>
+<code class="calibre6">SAFE_FFLAGS</code>
+</dt>
+<dd>
+<p>
+ditto for source files which need exact floating point behaviour
+</p>
+</dd>
+<dt>
+<code class="calibre6">MAIN_FFLAGS</code>
+</dt>
+<dd>
+<p>
+ditto, for compiling the main program
+</p>
+</dd>
+<dt>
+<code class="calibre6">SHLIB_FFLAGS</code>
+</dt>
+<dd>
+<p>
+for shared objects
+</p>
+</dd>
+<dt>
+<code class="calibre6">MAIN_LDFLAGS</code>
+</dt>
+<dd>
+<p>
+additional flags for the main link
+</p>
+</dd>
+<dt>
+<code class="calibre6">SHLIB_LDFLAGS</code>
+</dt>
+<dd>
+<p>
+additional flags for linking the shared objects
+</p>
+</dd>
+<dt>
+<code class="calibre6">LIBnn</code>
+</dt>
+<dd>
+<p>
+the primary library directory, lib or lib64
+</p>
+</dd>
+<dt>
+<code class="calibre6">CPICFLAGS</code>
+</dt>
+<dd>
+<p>
+special flags for compiling C code to be turned into a shared object
+</p>
+</dd>
+<dt>
+<code class="calibre6">FPICFLAGS</code>
+</dt>
+<dd>
+<p>
+special flags for compiling Fortran code to be turned into a shared object
+</p>
+</dd>
+<dt>
+<code class="calibre6">CXXPICFLAGS</code>
+</dt>
+<dd>
+<p>
+special flags for compiling C++ code to be turned into a shared object
+</p>
+</dd>
+<dt>
+<code class="calibre6">FCPICFLAGS</code>
+</dt>
+<dd>
+<p>
+special flags for compiling Fortran 95 code to be turned into a shared object
+</p>
+</dd>
+<dt>
+<code class="calibre6">DEFS</code>
+</dt>
+<dd>
+<p>
+defines to be used when compiling C code in R itself
+</p>
+</dd>
+</dl>
+<p>
+Library paths specified as -L/lib/path in <code class="calibre6">LDFLAGS</code> are <a href="" id="index-LD_005fLIBRARY_005fPATH-3"></a> collected together and prepended to <code class="calibre6">LD_LIBRARY_PATH</code> (or your system’s equivalent), so there should be no need for -R or -rpath flags.
+</p>
+<p>
+Variables such as <code class="calibre6">CPICFLAGS</code> are determined where possible by <code class="calibre6">configure</code>. Some systems allows two types of PIC flags, for example ‘-fpic’ and ‘-fPIC’, and if they differ the first allows only a limited number of symbols in a shared object. Since R as a shared library has about 6200 symbols, if in doubt use the larger version.
+</p>
+<p>
+To compile a profiling version of R, one might for example want to use ‘MAIN_CFLAGS=-pg’, ‘MAIN_FFLAGS=-pg’, ‘MAIN_LDFLAGS=-pg’ on platforms where ‘-pg’ cannot be used with position-independent code.
+</p>
+<p>
+<strong>Beware</strong>: it may be necessary to set <code class="calibre6">CFLAGS</code> and <code class="calibre6">FFLAGS</code> in ways compatible with the libraries to be used: one possible issue is the alignment of doubles, another is the way structures are passed.
+</p>
+<p>
+On some platforms <code class="calibre6">configure</code> will select additional flags for <code class="calibre6">CFLAGS</code>, <code class="calibre6">CPPFLAGS</code>, <code class="calibre6">FFLAGS</code>, <code class="calibre6">CXXFLAGS</code> and <code class="calibre6">LIBS</code> in <code class="calibre6">R_XTRA_CFLAGS</code> (and so on). These are for options which are always required, for example to force IEC 60559 compliance.
+</p>
+<hr />
+<p>
+<a href="" id="Maintainer-mode"></a> <a href="" id="Maintainer-mode-1"></a>
+</p>
+<h3 id="b.8-maintainer-mode" class="section">
+B.8 Maintainer mode
+</h3>
+<p>
+There are several files that are part of the R sources but can be re-generated from their own sources by configuring with option –enable-maintainer-mode and then running <code class="calibre6">make</code> in the build directory. This requires other tools to be installed, discussed in the rest of this section.
+</p>
+<p>
+File configure is created from configure.ac and the files under m4 by <code class="calibre6">autoconf</code> and <code class="calibre6">aclocal</code> (part of the <strong>automake</strong> package). There is a formal version requirement on <code class="calibre6">autoconf</code> of 2.62 or later, but it is unlikely that anything other than the most recent versions<a href="environment-variable-index.html#FOOT61" id="DOCF61"><sup>61</sup></a> have been thoroughly tested.
+</p>
+<p>
+File src/include/config.h is created by <code class="calibre6">autoheader</code> (part of <strong>autoconf</strong>).
+</p>
+<p>
+Grammar files *.y are converted to C sources by an implementation of <code class="calibre6">yacc</code>, usually <code class="calibre6">bison -y</code>: these are found in src/main and src/library/tools/src. It is known that earlier versions of <code class="calibre6">bison</code> generate code which reads (and in some cases writes) outside array bounds: <code class="calibre6">bison</code> 2.6.1 was found to be satisfactory.
+</p>
+<p>
+The ultimate sources for package <strong>compiler</strong> are in its noweb directory. To re-create the sources from src/library/compiler/noweb/compiler.nw, the command <code class="calibre6">notangle</code> is required. Some Linux distributions include this command in package <strong>noweb</strong>. It can also be installed from the sources at <a href="https://www.cs.tufts.edu/~nr/noweb/" class="uri">https://www.cs.tufts.edu/~nr/noweb/</a><a href="environment-variable-index.html#FOOT62" id="DOCF62"><sup>62</sup></a>. The package sources are only re-created even in maintainer mode if src/library/compiler/noweb/compiler.nw has been updated.
+</p>
+<p>
+It is likely that in future creating <code class="calibre6">configure</code> will need the GNU ‘autoconf archive’ installed. This can be found at <a href="https://www.gnu.org/software/autoconf-archive/" class="uri">https://www.gnu.org/software/autoconf-archive/</a> and as a package (usually called <strong>autoconf-archive</strong>) in most packaged distributions, for example Debian, Fedora, OpenCSW, Homebrew and MacPorts.
+</p>
+<hr />
+<p>
+<a href="" id="Platform-notes"></a> <a href="" id="Platform-notes-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-c-platform-notes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

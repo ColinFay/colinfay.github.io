@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="simple-manipulations-numbers-and-vectors.html">
+<link rel="next" href="ordered-and-unordered-factors.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="objects-their-modes-and-attributes" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Objects, their modes and attributes</h1>
+<p>
+<a href="" id="index-Objects"></a> <a href="" id="index-Attributes"></a>
+</p>
+<hr />
+<p>
+<a href="" id="The-intrinsic-attributes-mode-and-length"></a> <a href="" id="Intrinsic-attributes_003a-mode-and-length"></a>
+</p>
+<h3 id="intrinsic-attributes-mode-and-length" class="section">
+3.1 Intrinsic attributes: mode and length
+</h3>
+<p>
+The entities R operates on are technically known as <em>objects</em>. Examples are vectors of numeric (real) or complex values, vectors of logical values and vectors of character strings. These are known as “atomic” structures since their components are all of the same type, or <em>mode</em>, namely <em>numeric</em><a href="023-R-intro.html#FOOT10" id="DOCF10"><sup>10</sup></a>, <em>complex</em>, <em>logical</em>, <em>character</em> and <em>raw</em>.
+</p>
+<p>
+Vectors must have their values <em>all of the same mode</em>. Thus any given vector must be unambiguously either <em>logical</em>, <em>numeric</em>, <em>complex</em>, <em>character</em> or <em>raw</em>. (The only apparent exception to this rule is the special “value” listed as <code class="calibre2">NA</code> for quantities not available, but in fact there are several types of <code class="calibre2">NA</code>). Note that a vector can be empty and still have a mode. For example the empty character string vector is listed as <code class="calibre2">character(0)</code> and the empty numeric vector as <code class="calibre2">numeric(0)</code>.
+</p>
+<p>
+R also operates on objects called <em>lists</em>, which are of mode <em>list</em>. These are ordered sequences of objects which individually can be of any mode. <em>lists</em> are known as “recursive” rather than atomic structures since their components can themselves be lists in their own right.
+</p>
+<p>
+The other recursive structures are those of mode <em>function</em> and <em>expression</em>. Functions are the objects that form part of the R system along with similar user written functions, which we discuss in some detail later. Expressions as objects form an advanced part of R which will not be discussed in this guide, except indirectly when we discuss <em>formulae</em> used with modeling in R.
+</p>
+<p>
+By the <em>mode</em> of an object we mean the basic type of its fundamental constituents. This is a special case of a “property” of an object. Another property of every object is its <em>length</em>. The functions <code class="calibre2">mode(object)</code> and <code class="calibre2">length(object)</code> can be used to find out the mode and length of any defined structure <a href="023-R-intro.html#FOOT11" id="DOCF11"><sup>11</sup></a>.
+</p>
+<p>
+Further properties of an object are usually provided by <code class="calibre2">attributes(object)</code>, see <a href="objects-their-modes-and-attributes.html#Getting-and-setting-attributes">Getting and setting attributes</a>. Because of this, <em>mode</em> and <em>length</em> are also called “intrinsic attributes” of an object. <a href="" id="index-mode"></a> <a href="" id="index-length-1"></a>
+</p>
+<p>
+For example, if <code class="calibre2">z</code> is a complex vector of length 100, then in an expression <code class="calibre2">mode(z)</code> is the character string <code class="calibre2">“complex”</code> and <code class="calibre2">length(z)</code> is <code class="calibre2">100</code>.
+</p>
+<p>
+R caters for changes of mode almost anywhere it could be considered sensible to do so, (and a few where it might not be). For example with
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; z &lt;- 0:9</code></pre>
+</div>
+<p>
+we could put
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; digits &lt;- as.character(z)</code></pre>
+</div>
+<p>
+after which <code class="calibre2">digits</code> is the character vector <code class="calibre2">c(“0”, “1”, “2”, …, “9”)</code>. A further <em>coercion</em>, or change of mode, reconstructs the numerical vector again:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; d &lt;- as.integer(digits)</code></pre>
+</div>
+<p>
+Now <code class="calibre2">d</code> and <code class="calibre2">z</code> are the same.<a href="023-R-intro.html#FOOT12" id="DOCF12"><sup>12</sup></a> There is a large collection of functions of the form <code class="calibre2">as.something()</code> for either coercion from one mode to another, or for investing an object with some other attribute it may not already possess. The reader should consult the different help files to become familiar with them.
+</p>
+<hr />
+<p>
+<a href="" id="Changing-the-length-of-an-object"></a> <a href="" id="Changing-the-length-of-an-object-1"></a>
+</p>
+<h3 id="changing-the-length-of-an-object" class="section">
+3.2 Changing the length of an object
+</h3>
+<p>
+An “empty” object may still have a mode. For example
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; e &lt;- numeric()</code></pre>
+</div>
+<p>
+makes <code class="calibre2">e</code> an empty vector structure of mode numeric. Similarly <code class="calibre2">character()</code> is a empty character vector, and so on. Once an object of any size has been created, new components may be added to it simply by giving it an index value outside its previous range. Thus
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; e[3] &lt;- 17</code></pre>
+</div>
+<p>
+now makes <code class="calibre2">e</code> a vector of length 3, (the first two components of which are at this point both <code class="calibre2">NA</code>). This applies to any structure at all, provided the mode of the additional component(s) agrees with the mode of the object in the first place.
+</p>
+<p>
+This automatic adjustment of lengths of an object is used often, for example in the <code class="calibre2">scan()</code> function for input. (see <a href="010-R-intro.html#The-scan_0028_0029-function">The scan() function</a>.)
+</p>
+<p>
+Conversely to truncate the size of an object requires only an assignment to do so. Hence if <code class="calibre2">alpha</code> is an object of length 10, then
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; alpha &lt;- alpha[2 * 1:5]</code></pre>
+</div>
+<p>
+makes it an object of length 5 consisting of just the former components with even index. (The old indices are not retained, of course.) We can then retain just the first three values by
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; length(alpha) &lt;- 3</code></pre>
+</div>
+<p>
+and vectors can be extended (by missing values) in the same way.
+</p>
+<hr />
+<p>
+<a href="" id="Getting-and-setting-attributes"></a> <a href="" id="Getting-and-setting-attributes-1"></a>
+</p>
+<h3 id="getting-and-setting-attributes" class="section">
+3.3 Getting and setting attributes
+</h3>
+<p>
+<a href="" id="index-attr"></a> <a href="" id="index-attributes"></a>
+</p>
+<p>
+The function <code class="calibre2">attributes(object)</code> <a href="" id="index-attributes-1"></a> returns a list of all the non-intrinsic attributes currently defined for that object. The function <code class="calibre2">attr(object, name)</code> <a href="" id="index-attr-1"></a> can be used to select a specific attribute. These functions are rarely used, except in rather special circumstances when some new attribute is being created for some particular purpose, for example to associate a creation date or an operator with an R object. The concept, however, is very important.
+</p>
+<p>
+Some care should be exercised when assigning or deleting attributes since they are an integral part of the object system used in R.
+</p>
+<p>
+When it is used on the left hand side of an assignment it can be used either to associate a new attribute with <code class="calibre2">object</code> or to change an existing one. For example
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; attr(z, &quot;dim&quot;) &lt;- c(10,10)</code></pre>
+</div>
+<p>
+allows R to treat <code class="calibre2">z</code> as if it were a 10-by-10 matrix.
+</p>
+<hr />
+<p>
+<a href="" id="The-class-of-an-object"></a> <a href="" id="The-class-of-an-object-1"></a>
+</p>
+<h3 id="the-class-of-an-object" class="section">
+3.4 The class of an object
+</h3>
+<p>
+<a href="" id="index-Classes"></a>
+</p>
+<p>
+All objects in R have a <em>class</em>, reported by the function <code class="calibre2">class</code>. For simple vectors this is just the mode, for example <code class="calibre2">“numeric”</code>, <code class="calibre2">“logical”</code>, <code class="calibre2">“character”</code> or <code class="calibre2">“list”</code>, but <code class="calibre2">“matrix”</code>, <code class="calibre2">“array”</code>, <code class="calibre2">“factor”</code> and <code class="calibre2">“data.frame”</code> are other possible values.
+</p>
+<p>
+A special attribute known as the <em>class</em> of the object is used to allow for an object-oriented style<a href="023-R-intro.html#FOOT13" id="DOCF13"><sup>13</sup></a> of programming in R. For example if an object has class <code class="calibre2">“data.frame”</code>, it will be printed in a certain way, the <code class="calibre2">plot()</code> function will display it graphically in a certain way, and other so-called generic functions such as <code class="calibre2">summary()</code> will react to it as an argument in a way sensitive to its class.
+</p>
+<p>
+To remove temporarily the effects of class, use the function <code class="calibre2">unclass()</code>. <a href="" id="index-unclass"></a> For example if <code class="calibre2">winter</code> has the class <code class="calibre2">“data.frame”</code> then
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; winter</code></pre>
+</div>
+<p>
+will print it in data frame form, which is rather like a matrix, whereas
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; unclass(winter)</code></pre>
+</div>
+<p>
+will print it as an ordinary list. Only in rather special situations do you need to use this facility, but one is when you are learning to come to terms with the idea of class and generic functions.
+</p>
+<p>
+Generic functions and classes will be discussed further in <a href="013-R-intro.html#Object-orientation">Object orientation</a>, but only briefly.
+</p>
+<hr />
+<p>
+<a href="" id="Factors"></a> <a href="" id="Ordered-and-unordered-factors"></a>
+</p>
+<div id="calibre_pb_10" class="calibre8">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="simple-manipulations-numbers-and-vectors.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ordered-and-unordered-factors.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

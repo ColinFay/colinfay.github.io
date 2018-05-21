@@ -1,0 +1,178 @@
+---
+title: "A Crazy Little Thing Called {purrr} - Part 6 : doing statistics"
+
+post_date: 2017-12-28
+layout: single
+permalink: /purrr-statistics/
+tags:
+  - purrr
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+This is gonna be the last time I make this Queen reference in 2017. 
+
+<!--more-->
+
+I've been sharing some "stats with {purrr}" recipes on my [Twitter account](https://twitter.com/_ColinFay) lately. Twitter being what it is (a source of infinite temporary content), here's the post gathering some statistics tricks you can do with {purrr}.
+
+## Looking for normality
+
+If your data are in a data.frame, you can simply map a shapiro.test on all the columns, keeping the one with a `p.value` > to 0.05 (remember, the shapiro tests for non-normality) :
+
+```{r}
+library(purrr)
+map(airquality, shapiro.test) %>% keep(~ .x$p.value > 0.05)
+```
+
+Of course, you can do the same on a non-tabular list: 
+
+```{r}
+# rdunif is from purrr
+l <- list(a = rnorm(10), b = rdunif(1000, 10))
+map(l, shapiro.test) %>% keep(~ .x$p.value > 0.05)
+```
+
+Also, `map_if` allows you to map only on numeric variables in your data.frame:
+
+```{r}
+map_if(iris, is.numeric, shapiro.test)
+```
+
+## Bulk cor.test
+
+As said on Twitter, this might be [p.hacking](https://twitter.com/HBossier/status/943480783288889344), but here's how you can do a `cor.test` for all columns in a data.frame, with a little help from `tidystringdist` and `broom` : 
+
+```{r}
+library(tidystringdist) # Works since v0.1.2 
+comb <- tidy_comb_all(names(airquality))
+knitr::kable(comb)
+```
+
+
+```{r}
+bulk_cor <- pmap(comb, ~ cor.test(airquality[[.x]], airquality[[.y]])) %>% 
+  map_df(broom::tidy) %>% 
+  cbind(comb, .)
+
+knitr::kable(bulk_cor, digits = 3)
+```
+
+## Some Machine Learning 
+
+### lm 
+
+Let's build a linear model of all possible iris combinations: 
+
+```{r warning = FALSE, message = FALSE}
+res <- pmap(comb, ~ lm(airquality[[.x]] ~ airquality[[.y]]))
+get_rsquared <- compose(as_mapper(~ .x$r.squared), summary)
+map_dbl(res, get_rsquared)
+```
+
+Any chance there's a r.squared above 0.5 ? 
+
+```{r warning = FALSE, message = FALSE}
+map(res, get_rsquared) %>% some(~ .x > 0.5)
+```
+
+### rpart 
+
+We'll build 20 `rpart` to find the better model. Yes, this will be better to do it with a random forest, but we're here for the example :)  
+
+#### Training and validation
+
+Let's do the train / validation.
+
+```{r warning = FALSE, message = FALSE}
+library(dplyr)
+library(readr)
+titanic <- read_csv("http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.csv")
+train <- rerun(20, sample_frac(titanic, size = 0.8))
+validation <- map(train, ~ anti_join(titanic, .x))
+```
+
+Check if the sizes of all validation datasets are the same: 
+
+```{r}
+map_int(validation, nrow) %>% every(~ .x == 262)
+```
+
+### Create a model builder 
+
+We'll create a simple model to predict survival based on sex. 
+
+```{r}
+library(rpart)
+rpart_pimped <- partial(rpart, formula = survived ~ sex, method = "class")
+res <- map(train, ~ rpart_pimped(data = .x))
+```
+
+### Make prediction 
+
+```{r}
+prediction <- map2(validation, res, ~ predict(.y, .x, type = "class"))
+w_prediction <- map2(validation, prediction, ~ mutate(.x, prediction = .y))
+```
+
+### Confusion matrix 
+
+Now let's map a conf matrix on all these results:
+
+```{r message= FALSE, warning=FALSE}
+library(caret)
+conf_mats <- map(w_prediction, ~ confusionMatrix(.x$prediction, .x$survived))
+```
+
+Is the "Sensivity" for all models above 0.8?
+
+```{r}
+map_dbl(conf_mats, ~ .x$byClass["Sensitivity"]) %>% every(~ .x > 0.8)
+```
+
+Is the "Specificity" for all models above 0.8?
+
+```{r}
+map_dbl(conf_mats, ~ .x$byClass["Specificity"]) %>% every(~ .x > 0.8)
+```
+
+### keep_index
+
+Let's modify `keep` a little bit so we can extract the models we need: 
+
+```{r}
+# Here's the keep source code
+keep
+```
+
+```{r}
+# Let's tweak it a little bit
+keep_index <- function(.x, .p, ...) {
+  sel <- purrr:::probe(.x, .p, ...)
+  which(sel)
+}
+```
+
+So, which are the models with a sensitivity superior to 0.85? 
+
+```{r}
+map_dbl(conf_mats, ~ .x$byClass["Sensitivity"]) %>% keep_index(~ .x > 0.85)
+```
+
+And the models with a specificity superior to 0.7?
+
+```{r}
+map_dbl(conf_mats, ~ .x$byClass["Specificity"]) %>% keep_index(~ .x > 0.7)
+```
+
+Which models are in both?
+
+```{r}
+sens <- map_dbl(conf_mats, ~ .x$byClass["Sensitivity"]) %>% keep_index(~ .x > 0.85)
+spec <- map_dbl(conf_mats, ~ .x$byClass["Specificity"]) %>% keep_index(~ .x > 0.7)
+keep(sens, map_lgl(sens, ~ .x %in% spec))
+```
+
+So, I guess we'll go for model(s) number `r keep(sens, map_lgl(sens, ~ .x %in% spec))`!
+
+![](https://media.giphy.com/media/ohdY5OaQmUmVW/giphy.gif)

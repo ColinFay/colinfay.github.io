@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Data Import/Export</title>
+  <meta name="description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Data Import/Export" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  <meta name="github-repo" content="ColinFay/r-data-import-export" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Data Import/Export" />
+  
+  <meta name="twitter:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="importing-from-other-statistical-systems.html">
+<link rel="next" href="binary-files.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Data Import/Export</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Data Import/Export</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="spreadsheet-like-data.html"><a href="spreadsheet-like-data.html"><i class="fa fa-check"></i><b>2</b> Spreadsheet-like data</a></li>
+<li class="chapter" data-level="3" data-path="importing-from-other-statistical-systems.html"><a href="importing-from-other-statistical-systems.html"><i class="fa fa-check"></i><b>3</b> Importing from other statistical systems</a></li>
+<li class="chapter" data-level="4" data-path="relational-databases.html"><a href="relational-databases.html"><i class="fa fa-check"></i><b>4</b> Relational databases</a></li>
+<li class="chapter" data-level="5" data-path="binary-files.html"><a href="binary-files.html"><i class="fa fa-check"></i><b>5</b> Binary files</a></li>
+<li class="chapter" data-level="6" data-path="image-files.html"><a href="image-files.html"><i class="fa fa-check"></i><b>6</b> Image files</a></li>
+<li class="chapter" data-level="7" data-path="connections.html"><a href="connections.html"><i class="fa fa-check"></i><b>7</b> Connections</a></li>
+<li class="chapter" data-level="8" data-path="network-interfaces.html"><a href="network-interfaces.html"><i class="fa fa-check"></i><b>8</b> Network interfaces</a></li>
+<li class="chapter" data-level="9" data-path="reading-excel-spreadsheets.html"><a href="reading-excel-spreadsheets.html"><i class="fa fa-check"></i><b>9</b> Reading Excel spreadsheets</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>10</b> Appendix A References</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and variable index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Import/Export</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="relational-databases" class="section level1">
+<h1><span class="header-section-number">Chapter 4</span> Relational databases</h1>
+<p>
+<a href="" id="index-Relational-databases"></a> <a href="" id="index-DBMS"></a>
+</p>
+<hr />
+<p>
+<a href="" id="Why-use-a-database_003f"></a> <a href="" id="Why-use-a-database_003f-1"></a>
+</p>
+<h3 id="why-use-a-database" class="section">
+4.1 Why use a database?
+</h3>
+<p>
+There are limitations on the types of data that R handles well. Since all data being manipulated by R are resident in memory, and several copies of the data can be created during execution of a function, R is not well suited to extremely large data sets. Data objects that are more than a (few) hundred megabytes in size can cause R to run out of memory, particularly on a 32-bit operating system.
+</p>
+<p>
+R does not easily support concurrent access to data. That is, if more than one user is accessing, and perhaps updating, the same data, the changes made by one user will not be visible to the others.
+</p>
+<p>
+R does support persistence of data, in that you can save a data object or an entire worksheet from one session and restore it at the subsequent session, but the format of the stored data is specific to R and not easily manipulated by other systems.
+</p>
+<p>
+Database management systems (DBMSs) and, in particular, relational DBMSs (RDBMSs) <em>are</em> designed to do all of these things well. Their strengths are
+</p>
+<ol>
+<li>
+To provide fast access to selected parts of large databases.
+</li>
+<li>
+Powerful ways to summarize and cross-tabulate columns in databases.
+</li>
+<li>
+Store data in more organized ways than the rectangular grid model of spreadsheets and R data frames.
+</li>
+<li>
+Concurrent access from multiple clients running on multiple hosts while enforcing security constraints on access to the data.
+</li>
+<li>
+Ability to act as a server to a wide range of clients.
+</li>
+</ol>
+<p>
+The sort of statistical applications for which DBMS might be used are to extract a 10% sample of the data, to cross-tabulate data to produce a multi-dimensional contingency table, and to extract data group by group from a database for separate analysis.
+</p>
+<p>
+Increasingly OSes are themselves making use of DBMSs for these reasons, so it is nowadays likely that one will be already installed on your (non-Windows) OS. <a href="https://en.wikipedia.org/wiki/Akonadi">Akonadi</a> is used by KDE4 to store personal information. Several macOS applications, including Mail and Address Book, use SQLite.
+</p>
+<hr />
+<p>
+<a href="" id="Overview-of-RDBMSs"></a> <a href="" id="Overview-of-RDBMSs-1"></a>
+</p>
+<h3 id="overview-of-rdbmss" class="section">
+4.2 Overview of RDBMSs
+</h3>
+<p>
+Traditionally there had been large (and expensive) commercial RDBMSs (<a href="http://www.informix.com">Informix</a>; <a href="https://www.oracle.com">Oracle</a>; <a href="http://www.sybase.com">Sybase</a>; <a href="http://www.ibm.com/db2">IBM’s DB2</a>; <a href="https://www.microsoft.com/SQL/default.mspx">Microsoft SQL Server</a> on Windows) and academic and small-system databases (such as MySQL<a href="concept-index.html#FOOT4" id="DOCF4"><sup>4</sup></a>, PostgreSQL, Microsoft Access, …), the former marked out by much greater emphasis on data security features. The line is blurring, with MySQL and PostgreSQL having more and more high-end features, and free ‘express’ versions being made available for the commercial DBMSs.
+</p>
+<p>
+<a href="" id="index-ODBC"></a> <a href="" id="index-Open-Database-Connectivity"></a>
+</p>
+<p>
+There are other commonly used data sources, including spreadsheets, non-relational databases and even text files (possibly compressed). Open Database Connectivity (ODBC) is a standard to use all of these data sources. It originated on Windows (see <a href="https://msdn.microsoft.com/en-us/library/ms710252%28v=vs.85%29.aspx">https://msdn.microsoft.com/en-us/library/ms710252%28v=vs.85%29.aspx</a>) but is also implemented on Linux/Unix/macOS.
+</p>
+<p>
+All of the packages described later in this chapter provide clients to client/server databases. The database can reside on the same machine or (more often) remotely. There is an ISO standard (in fact several: SQL92 is ISO/IEC 9075, also known as ANSI X3.135-1992, and SQL99 is coming into use) for an interface language called SQL (Structured Query Language, sometimes pronounced ‘sequel’: see Bowman <em>et al.</em> 1996 and Kline and Kline 2001) which these DBMSs support to varying degrees.
+</p>
+<hr />
+<p>
+<a href="" id="SQL-queries"></a> <a href="" id="SQL-queries-1"></a>
+</p>
+<h4 id="sql-queries" class="subsection">
+4.2.1 SQL queries
+</h4>
+<p>
+<a href="" id="index-SQL-queries"></a>
+</p>
+<p>
+The more comprehensive R interfaces generate SQL behind the scenes for common operations, but direct use of SQL is needed for complex operations in all. Conventionally SQL is written in upper case, but many users will find it more convenient to use lower case in the R interface functions.
+</p>
+<p>
+A relational DBMS stores data as a database of <em>tables</em> (or <em>relations</em>) which are rather similar to R data frames, in that they are made up of <em>columns</em> or <em>fields</em> of one type (numeric, character, date, currency, …) and <em>rows</em> or <em>records</em> containing the observations for one entity.
+</p>
+<p>
+SQL ‘queries’ are quite general operations on a relational database. The classical query is a SELECT statement of the type
+</p>
+<div class="example">
+<pre class="example1"><code>SELECT State, Murder FROM USArrests WHERE Rape &gt; 30 ORDER BY Murder
+
+SELECT t.sch, c.meanses, t.sex, t.achieve
+  FROM student as t, school as c WHERE t.sch = c.id
+
+SELECT sex, COUNT(*) FROM student GROUP BY sex
+
+SELECT sch, AVG(sestat) FROM student GROUP BY sch LIMIT 10</code></pre>
+</div>
+<p>
+The first of these selects two columns from the R data frame <code class="calibre2">USArrests</code> that has been copied across to a database table, subsets on a third column and asks the results be sorted. The second performs a database <em>join</em> on two tables <code class="calibre2">student</code> and <code class="calibre2">school</code> and returns four columns. The third and fourth queries do some cross-tabulation and return counts or averages. (The five aggregation functions are COUNT(*) and SUM, MAX, MIN and AVG, each applied to a single column.)
+</p>
+<p>
+SELECT queries use FROM to select the table, WHERE to specify a condition for inclusion (or more than one condition separated by AND or OR), and ORDER BY to sort the result. Unlike data frames, rows in RDBMS tables are best thought of as unordered, and without an ORDER BY statement the ordering is indeterminate. You can sort (in lexicographical order) on more than one column by separating them by commas. Placing DESC after an ORDER BY puts the sort in descending order.
+</p>
+<p>
+SELECT DISTINCT queries will only return one copy of each distinct row in the selected table.
+</p>
+<p>
+The GROUP BY clause selects subgroups of the rows according to the criterion. If more than one column is specified (separated by commas) then multi-way cross-classifications can be summarized by one of the five aggregation functions. A HAVING clause allows the select to include or exclude groups depending on the aggregated value.
+</p>
+<p>
+If the SELECT statement contains an ORDER BY statement that produces a unique ordering, a LIMIT clause can be added to select (by number) a contiguous block of output rows. This can be useful to retrieve rows a block at a time. (It may not be reliable unless the ordering is unique, as the LIMIT clause can be used to optimize the query.)
+</p>
+<p>
+There are queries to create a table (CREATE TABLE, but usually one copies a data frame to the database in these interfaces), INSERT or DELETE or UPDATE data. A table is destroyed by a DROP TABLE ‘query’.
+</p>
+<p>
+Kline and Kline (2001) discuss the details of the implementation of SQL in Microsoft SQL Server 2000, Oracle, MySQL and PostgreSQL.
+</p>
+<hr />
+<p>
+<a href="" id="Data-types"></a> <a href="" id="Data-types-1"></a>
+</p>
+<h4 id="data-types" class="subsection">
+4.2.2 Data types
+</h4>
+<p>
+Data can be stored in a database in various data types. The range of data types is DBMS-specific, but the SQL standard defines many types, including the following that are widely implemented (often not by the SQL name).
+</p>
+<dl>
+<dt>
+<code class="calibre2">float(p)</code>
+</dt>
+<dd>
+<p>
+Real number, with optional precision. Often called <code class="calibre2">real</code> or <code class="calibre2">double</code> or <code class="calibre2">double precision</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">integer</code>
+</dt>
+<dd>
+<p>
+32-bit integer. Often called <code class="calibre2">int</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">smallint</code>
+</dt>
+<dd>
+<p>
+16-bit integer
+</p>
+</dd>
+<dt>
+<code class="calibre2">character(n)</code>
+</dt>
+<dd>
+<p>
+fixed-length character string. Often called <code class="calibre2">char</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">character varying(n)</code>
+</dt>
+<dd>
+<p>
+variable-length character string. Often called <code class="calibre2">varchar</code>. Almost always has a limit of 255 chars.
+</p>
+</dd>
+<dt>
+<code class="calibre2">boolean</code>
+</dt>
+<dd>
+<p>
+true or false. Sometimes called <code class="calibre2">bool</code> or <code class="calibre2">bit</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">date</code>
+</dt>
+<dd>
+<p>
+calendar date
+</p>
+</dd>
+<dt>
+<code class="calibre2">time</code>
+</dt>
+<dd>
+<p>
+time of day
+</p>
+</dd>
+<dt>
+<code class="calibre2">timestamp</code>
+</dt>
+<dd>
+<p>
+date and time
+</p>
+</dd>
+</dl>
+<p>
+There are variants on <code class="calibre2">time</code> and <code class="calibre2">timestamp</code>, <code class="calibre2">with timezone</code>. Other types widely implemented are <code class="calibre2">text</code> and <code class="calibre2">blob</code>, for large blocks of text and binary data, respectively.
+</p>
+<p>
+The more comprehensive of the R interface packages hide the type conversion issues from the user.
+</p>
+<hr />
+<p>
+<a href="" id="R-interface-packages"></a> <a href="" id="R-interface-packages-1"></a>
+</p>
+<h3 id="r-interface-packages" class="section">
+4.3 R interface packages
+</h3>
+<p>
+There are several packages available on CRAN to help R communicate with DBMSs. They provide different levels of abstraction. Some provide means to copy whole data frames to and from databases. All have functions to select data within the database via SQL queries, and to retrieve the result as a whole as a data frame or in pieces (usually as groups of rows).
+</p>
+<p>
+All except <a href="https://CRAN.R-project.org/package=RODBC"><strong>RODBC</strong></a> are tied to one DBMS, but there has been a proposal for a unified ‘front-end’ package <a href="https://CRAN.R-project.org/package=DBI"><strong>DBI</strong></a> (<a href="https://developer.r-project.org/db" class="uri">https://developer.r-project.org/db</a>) in conjunction with a ‘back-end’, the most developed of which is <a href="https://CRAN.R-project.org/package=RMySQL"><strong>RMySQL</strong></a>. Also on CRAN are the back-ends <a href="https://CRAN.R-project.org/package=ROracle"><strong>ROracle</strong></a>, <a href="https://CRAN.R-project.org/package=RPostgreSQL"><strong>RPostgreSQL</strong></a> and <a href="https://CRAN.R-project.org/package=RSQLite"><strong>RSQLite</strong></a> (which works with the bundled DBMS <code class="calibre2">SQLite</code>, <a href="https://www.sqlite.org" class="uri">https://www.sqlite.org</a>) and <a href="https://CRAN.R-project.org/package=RJDBC"><strong>RJDBC</strong></a> (which uses Java and can connect to any DBMS that has a JDBC driver).
+</p>
+<p>
+<strong>PL/R</strong> (<a href="http://www.joeconway.com/plr/"><code class="calibre2"><a href="http://www.joeconway.com/plr/" class="uri">http://www.joeconway.com/plr/</a></code></a>) is a project to embed R into PostgreSQL.
+</p>
+<p>
+Package <a href="https://CRAN.R-project.org/package=RMongo"><strong>RMongo</strong></a> provides an R interface to a Java client for ‘MongoDB’ (<a href="https://en.wikipedia.org/wiki/MongoDB" class="uri">https://en.wikipedia.org/wiki/MongoDB</a>) databases, which are queried using JavaScript rather than SQL. Package <a href="https://CRAN.R-project.org/package=mongolite"><strong>mongolite</strong></a> is another client using <strong>mongodb</strong>’s C driver.
+</p>
+<hr />
+<p>
+<a href="" id="DBI"></a> <a href="" id="Packages-using-DBI"></a>
+</p>
+<h4 id="packages-using-dbi" class="subsection">
+4.3.1 Packages using DBI
+</h4>
+<p>
+<a href="" id="index-MySQL-database-system"></a>
+</p>
+<p>
+Package <a href="https://CRAN.R-project.org/package=RMySQL"><strong>RMySQL</strong></a> on CRAN provides an interface to the MySQL database system (see <a href="https://www.mysql.com" class="uri">https://www.mysql.com</a> and Dubois, 2000) or its fork MariaDB (see <a href="https://mariadb.org/" class="uri">https://mariadb.org/</a>). The description here applies to versions <code class="calibre2">0.5-0</code> and later: earlier versions had a substantially different interface. The current version requires the <a href="https://CRAN.R-project.org/package=DBI"><strong>DBI</strong></a> package, and this description will apply with minor changes to all the other back-ends to <a href="https://CRAN.R-project.org/package=DBI"><strong>DBI</strong></a>.
+</p>
+<p>
+MySQL exists on Unix/Linux/macOS and Windows: there is a ‘Community Edition’ released under GPL but commercial licenses are also available. MySQL was originally a ‘light and lean’ database. (It preserves the case of names where the operating file system is case-sensitive, so not on Windows.)
+</p>
+<p>
+<a href="" id="index-dbDriver"></a> <a href="" id="index-dbConnect"></a> <a href="" id="index-dbDisconnect"></a>
+</p>
+<p>
+The call <code class="calibre2">dbDriver(“MySQL”)</code> returns a database connection manager object, and then a call to <code class="calibre2">dbConnect</code> opens a database connection which can subsequently be closed by a call to the generic function <code class="calibre2">dbDisconnect</code>. Use <code class="calibre2">dbDriver(“Oracle”)</code>, <code class="calibre2">dbDriver(“PostgreSQL”)</code> or <code class="calibre2">dbDriver(“SQLite”)</code> with those DBMSs and packages <a href="https://CRAN.R-project.org/package=ROracle"><strong>ROracle</strong></a>, <a href="https://CRAN.R-project.org/package=RPostgreSQL"><strong>RPostgreSQL</strong></a> or <a href="https://CRAN.R-project.org/package=RSQLite"><strong>RSQLite</strong></a> respectively.
+</p>
+<p>
+<a href="" id="index-dbSendQuery"></a> <a href="" id="index-dbClearResult"></a> <a href="" id="index-dbGetQuery"></a>
+</p>
+<p>
+SQL queries can be sent by either <code class="calibre2">dbSendQuery</code> or <code class="calibre2">dbGetQuery</code>. <code class="calibre2">dbGetquery</code> sends the query and retrieves the results as a data frame. <code class="calibre2">dbSendQuery</code> sends the query and returns an object of class inheriting from <code class="calibre2">“DBIResult”</code> which can be used to retrieve the results, and subsequently used in a call to <code class="calibre2">dbClearResult</code> to remove the result.
+</p>
+<p>
+<a href="" id="index-fetch"></a>
+</p>
+<p>
+Function <code class="calibre2">fetch</code> is used to retrieve some or all of the rows in the query result, as a list. The function <code class="calibre2">dbHasCompleted</code> indicates if all the rows have been fetched, and <code class="calibre2">dbGetRowCount</code> returns the number of rows in the result.
+</p>
+<p>
+<a href="" id="index-dbReadTable"></a> <a href="" id="index-dbWriteTable"></a> <a href="" id="index-dbExistsTable"></a> <a href="" id="index-dbRemoveTable"></a>
+</p>
+<p>
+These are convenient interfaces to read/write/test/delete tables in the database. <code class="calibre2">dbReadTable</code> and <code class="calibre2">dbWriteTable</code> copy to and from an R data frame, mapping the row names of the data frame to the field <code class="calibre2">row_names</code> in the <code class="calibre2">MySQL</code> table.
+</p>
+<div class="example">
+<pre class="smallexample"><code>&gt; library(RMySQL) # will load DBI as well
+## open a connection to a MySQL database
+&gt; con &lt;- dbConnect(dbDriver(&quot;MySQL&quot;), dbname = &quot;test&quot;)
+## list the tables in the database
+&gt; dbListTables(con)
+## load a data frame into the database, deleting any existing copy
+&gt; data(USArrests)
+&gt; dbWriteTable(con, &quot;arrests&quot;, USArrests, overwrite = TRUE)
+TRUE
+&gt; dbListTables(con)
+[1] &quot;arrests&quot;
+## get the whole table
+&gt; dbReadTable(con, &quot;arrests&quot;)
+               Murder Assault UrbanPop Rape
+Alabama          13.2     236       58 21.2
+Alaska           10.0     263       48 44.5
+Arizona           8.1     294       80 31.0
+Arkansas          8.8     190       50 19.5
+...
+## Select from the loaded table
+&gt; dbGetQuery(con, paste(&quot;select row_names, Murder from arrests&quot;,
+                        &quot;where Rape &gt; 30 order by Murder&quot;))
+   row_names Murder
+1   Colorado    7.9
+2    Arizona    8.1
+3 California    9.0
+4     Alaska   10.0
+5 New Mexico   11.4
+6   Michigan   12.1
+7     Nevada   12.2
+8    Florida   15.4
+&gt; dbRemoveTable(con, &quot;arrests&quot;)
+&gt; dbDisconnect(con)</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="RODBC"></a> <a href="" id="Package-RODBC"></a>
+</p>
+<h4 id="package-rodbc" class="subsection">
+4.3.2 Package RODBC
+</h4>
+<p>
+<a href="" id="index-ODBC-1"></a> <a href="" id="index-Open-Database-Connectivity-1"></a>
+</p>
+<p>
+Package <a href="https://CRAN.R-project.org/package=RODBC"><strong>RODBC</strong></a> on CRAN provides an interface to database sources supporting an ODBC interface. This is very widely available, and allows the same R code to access different database systems. <a href="https://CRAN.R-project.org/package=RODBC"><strong>RODBC</strong></a> runs on Unix/Linux, Windows and macOS, and almost all database systems provide support for ODBC. We have tested Microsoft SQL Server, Access, MySQL, PostgreSQL, Oracle and IBM DB2 on Windows and MySQL, MariaDB, Oracle, PostgreSQL and SQLite on Linux.
+</p>
+<p>
+ODBC is a client-server system, and we have happily connected to a DBMS running on a Unix server from a Windows client, and <em>vice versa</em>.
+</p>
+<p>
+On Windows ODBC support is part of the OS. On Unix/Linux you will need an ODBC Driver Manager such as unixODBC (<a href="http://www.unixODBC.org" class="uri">http://www.unixODBC.org</a>) or iOBDC (<a href="http://www.iODBC.org" class="uri">http://www.iODBC.org</a>: this is pre-installed in macOS) and an installed driver for your database system.
+</p>
+<p>
+<a href="" id="index-Excel"></a> <a href="" id="index-Dbase"></a> <a href="" id="index-_002edbf"></a>
+</p>
+<p>
+Windows provides drivers not just for DBMSs but also for Excel (.xls) spreadsheets, DBase (.dbf) files and even text files. (The named applications do <em>not</em> need to be installed. Which file formats are supported depends on the versions of the drivers.) There are versions for Excel and Access 2007/2010 (go to <a href="https://www.microsoft.com/en-us/download/default.aspx" class="uri">https://www.microsoft.com/en-us/download/default.aspx</a>, and search for ‘Office ODBC’, which will lead to AccessDatabaseEngine.exe), the ‘2007 Office System Driver’ (the latter has a version for 64-bit Windows, and that will also read earlier versions).
+</p>
+<p>
+On macOS the Actual Technologies (<a href="https://www.actualtech.com/product_access.php" class="uri">https://www.actualtech.com/product_access.php</a>) drivers provide ODBC interfaces to Access databases and to Excel spreadsheets (not including Excel 2007/2010).
+</p>
+<p>
+<a href="" id="index-odbcConnect"></a> <a href="" id="index-odbcDriverConnect"></a> <a href="" id="index-odbcGetInfo"></a>
+</p>
+<p>
+Many simultaneous connections are possible. A connection is opened by a call to <code class="calibre2">odbcConnect</code> or <code class="calibre2">odbcDriverConnect</code> (which on the Windows GUI allows a database to be selected via dialog boxes) which returns a handle used for subsequent access to the database. Printing a connection will provide some details of the ODBC connection, and calling <code class="calibre2">odbcGetInfo</code> will give details on the client and server.
+</p>
+<p>
+<a href="" id="index-odbcClose"></a> <a href="" id="index-close"></a>
+</p>
+<p>
+A connection is closed by a call to <code class="calibre2">close</code> or <code class="calibre2">odbcClose</code>, and also (with a warning) when not R object refers to it and at the end of an R session.
+</p>
+<p>
+<a href="" id="index-sqlTables"></a>
+</p>
+<p>
+Details of the tables on a connection can be found using <code class="calibre2">sqlTables</code>.
+</p>
+<p>
+<a href="" id="index-sqlFetch"></a> <a href="" id="index-sqlSave"></a>
+</p>
+<p>
+Function <code class="calibre2">sqlSave</code> copies an R data frame to a table in the database, and <code class="calibre2">sqlFetch</code> copies a table in the database to an R data frame.
+</p>
+<p>
+<a href="" id="index-sqlQuery"></a> <a href="" id="index-sqlCopy"></a> <a href="" id="index-odbcQuery"></a> <a href="" id="index-sqlGetResults"></a> <a href="" id="index-sqlFetchMore"></a>
+</p>
+<p>
+An SQL query can be sent to the database by a call to <code class="calibre2">sqlQuery</code>. This returns the result in an R data frame. (<code class="calibre2">sqlCopy</code> sends a query to the database and saves the result as a table in the database.) A finer level of control is attained by first calling <code class="calibre2">odbcQuery</code> and then <code class="calibre2">sqlGetResults</code> to fetch the results. The latter can be used within a loop to retrieve a limited number of rows at a time, as can function <code class="calibre2">sqlFetchMore</code>.
+</p>
+<p>
+<a href="" id="index-PostgreSQL-database-system"></a>
+</p>
+<p>
+Here is an example using PostgreSQL, for which the ODBC driver maps column and data frame names to lower case. We use a database <code class="calibre2">testdb</code> we created earlier, and had the DSN (data source name) set up in ~/.odbc.ini under <code class="calibre2">unixODBC</code>. Exactly the same code worked using MyODBC to access a MySQL database under Linux or Windows (where MySQL also maps names to lowercase). Under Windows, DSNs are set up in the ODBC applet in the Control Panel (‘Data Sources (ODBC)’ in the ‘Administrative Tools’ section). <a href="" id="index-MySQL-database-system-1"></a>
+</p>
+<div class="example">
+<pre class="smallexample"><code>&gt; library(RODBC)
+## tell it to map names to l/case
+&gt; channel &lt;- odbcConnect(&quot;testdb&quot;, uid=&quot;ripley&quot;, case=&quot;tolower&quot;)
+## load a data frame into the database
+&gt; data(USArrests)
+&gt; sqlSave(channel, USArrests, rownames = &quot;state&quot;, addPK = TRUE)
+&gt; rm(USArrests)
+## list the tables in the database
+&gt; sqlTables(channel)
+  TABLE_QUALIFIER TABLE_OWNER TABLE_NAME TABLE_TYPE REMARKS
+1                              usarrests      TABLE        
+## list it
+&gt; sqlFetch(channel, &quot;USArrests&quot;, rownames = &quot;state&quot;)
+               murder assault urbanpop rape
+Alabama          13.2     236       58 21.2
+Alaska           10.0     263       48 44.5
+    ...
+## an SQL query, originally on one line
+&gt; sqlQuery(channel, &quot;select state, murder from USArrests
+           where rape &gt; 30 order by murder&quot;)
+       state murder
+1 Colorado      7.9
+2 Arizona       8.1
+3 California    9.0
+4 Alaska       10.0
+5 New Mexico   11.4
+6 Michigan     12.1
+7 Nevada       12.2
+8 Florida      15.4
+## remove the table
+&gt; sqlDrop(channel, &quot;USArrests&quot;)
+## close the connection
+&gt; odbcClose(channel)</code></pre>
+</div>
+<p>
+<a href="" id="index-Excel-1"></a> <a href="" id="index-_002exls"></a> <a href="" id="index-odbcConnectExcel"></a>
+</p>
+<p>
+As a simple example of using ODBC under Windows with a Excel spreadsheet, we can read from a spreadsheet by
+</p>
+<div class="example">
+<pre class="smallexample"><code>&gt; library(RODBC)
+&gt; channel &lt;- odbcConnectExcel(&quot;bdr.xls&quot;)
+## list the spreadsheets
+&gt; sqlTables(channel)
+  TABLE_CAT TABLE_SCHEM        TABLE_NAME   TABLE_TYPE REMARKS
+1 C:&#92;&#92;bdr            NA           Sheet1$ SYSTEM TABLE      NA
+2 C:&#92;&#92;bdr            NA           Sheet2$ SYSTEM TABLE      NA
+3 C:&#92;&#92;bdr            NA           Sheet3$ SYSTEM TABLE      NA
+4 C:&#92;&#92;bdr            NA Sheet1$Print_Area        TABLE      NA
+## retrieve the contents of sheet 1, by either of
+&gt; sh1 &lt;- sqlFetch(channel, &quot;Sheet1&quot;)
+&gt; sh1 &lt;- sqlQuery(channel, &quot;select * from [Sheet1$]&quot;)</code></pre>
+</div>
+<p>
+Notice that the specification of the table is different from the name returned by <code class="calibre2">sqlTables</code>: <code class="calibre2">sqlFetch</code> is able to map the differences.
+</p>
+<hr />
+<p>
+<a href="" id="Binary-files"></a> <a href="" id="Binary-files-1"></a>
+</p>
+<div id="calibre_pb_12" class="calibre11">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="importing-from-other-statistical-systems.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="binary-files.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

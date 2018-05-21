@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The R language definition</title>
+  <meta name="description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="The R language definition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  <meta name="github-repo" content="ColinFay/r-language-definition" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The R language definition" />
+  
+  <meta name="twitter:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="computing-on-the-language.html">
+<link rel="next" href="exception-handling.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">The R language definition</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Language Definition</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="objects.html"><a href="objects.html"><i class="fa fa-check"></i><b>2</b> Objects</a></li>
+<li class="chapter" data-level="3" data-path="evaluation-of-expressions.html"><a href="evaluation-of-expressions.html"><i class="fa fa-check"></i><b>3</b> Evaluation of expressions</a></li>
+<li class="chapter" data-level="4" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>4</b> Functions</a></li>
+<li class="chapter" data-level="5" data-path="object-oriented-programming.html"><a href="object-oriented-programming.html"><i class="fa fa-check"></i><b>5</b> Object-oriented programming</a></li>
+<li class="chapter" data-level="6" data-path="computing-on-the-language.html"><a href="computing-on-the-language.html"><i class="fa fa-check"></i><b>6</b> Computing on the language</a></li>
+<li class="chapter" data-level="7" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>7</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="8" data-path="exception-handling.html"><a href="exception-handling.html"><i class="fa fa-check"></i><b>8</b> Exception handling</a></li>
+<li class="chapter" data-level="9" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>9</b> Debugging</a></li>
+<li class="chapter" data-level="10" data-path="parser.html"><a href="parser.html"><i class="fa fa-check"></i><b>10</b> Parser</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and Variable Index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept Index</a></li>
+<li class="chapter" data-level="13" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>13</b> Appendix A References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The R language definition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="system-and-foreign-language-interfaces" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> System and foreign language interfaces</h1>
+<hr />
+<p>
+<a href="" id="Operating-system-access"></a> <a href="" id="Operating-system-access-1"></a>
+</p>
+<h3 id="operating-system-access" class="section">
+7.1 Operating system access
+</h3>
+<p>
+Access to the operating system shell is via the R function <code class="calibre7">system</code>. <a href="" id="index-system"></a> The details will differ by platform (see the on-line help), and about all that can safely be assumed is that the first argument will be a string <code class="calibre7">command</code> that will be passed for execution (not necessarily by a shell) and the second argument will be <code class="calibre7">internal</code> which if true will collect the output of the command into an R character vector.
+</p>
+<p>
+The functions <code class="calibre7">system.time</code> <a href="" id="index-system_002etime"></a> and <code class="calibre7">proc.time</code> <a href="" id="index-proc_002etime"></a> are available for timing (although the information available may be limited on non-Unix-like platforms).
+</p>
+<p>
+Information from the operating system <a href="" id="index-environment-17"></a> environment can be accessed and manipulated with
+</p>
+<blockquote>
+<code class="calibre7">Sys.getenv</code> OS environment variables <a href="" id="index-Sys_002egetenv"></a> <code class="calibre7">Sys.putenv</code> <a href="" id="index-Sys_002eputenv"></a> <code class="calibre7">Sys.getlocale</code> System locale <a href="" id="index-Sys_002egetlocale"></a> <code class="calibre7">Sys.putlocale</code> <a href="" id="index-Sys_002eputlocale"></a> <code class="calibre7">Sys.localeconv</code> <a href="" id="index-Sys_002elocaleconv"></a> <code class="calibre7">Sys.time</code> Current time <a href="" id="index-Sys_002etime"></a> <code class="calibre7">Sys.timezone</code> Time zone <a href="" id="index-Sys_002etimezone"></a>
+</blockquote>
+<p>
+A uniform set of file access functions is provided on all platforms:
+</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">file.access</code>
+</td>
+<td align="left">
+Ascertain File Accessibility <a href="" id="index-file_002eaccess"></a>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">file.append</code>
+</td>
+<td align="left">
+Concatenate files <a href="" id="index-file_002eappend"></a>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">file.choose</code>
+</td>
+<td align="left">
+Prompt user for file name <a href="" id="index-file_002echoose"></a>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">file.copy</code>
+</td>
+<td align="left">
+Copy files <a href="" id="index-file_002ecopy"></a>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">file.create</code>
+</td>
+<td align="left">
+Create or truncate a files <a href="" id="index-file_002ecreate"></a>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">file.exists</code>
+</td>
+<td align="left">
+Test for existence <a href="" id="index-file_002eexists"></a>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">file.info</code>
+</td>
+<td align="left">
+Miscellaneous file information <a href="" id="index-file_002einfo"></a>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">file.remove</code>
+</td>
+<td align="left">
+remove files <a href="" id="index-file_002eremove"></a>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">file.rename</code>
+</td>
+<td align="left">
+rename files <a href="" id="index-file_002erename"></a>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">file.show</code>
+</td>
+<td align="left">
+Display a text file <a href="" id="index-file_002eshow"></a>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">unlink</code>
+</td>
+<td align="left">
+Remove files or directories. <a href="" id="index-unlink"></a>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+There are also functions for manipulating file names and paths in a platform-independent way.
+</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">basename</code>
+</td>
+<td align="left">
+File name without directory <a href="" id="index-basename"></a>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">dirname</code>
+</td>
+<td align="left">
+Directory name <a href="" id="index-dirname"></a>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">file.path</code>
+</td>
+<td align="left">
+Construct path to file <a href="" id="index-file_002epath"></a>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">path.expand</code>
+</td>
+<td align="left">
+Expand <code class="calibre7">~</code> in Unix path <a href="" id="index-path_002eexpand"></a>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<hr />
+<p>
+<a href="" id="Foreign-language-interfaces"></a> <a href="" id="Foreign-language-interfaces-1"></a>
+</p>
+<h3 id="foreign-language-interfaces" class="section">
+7.2 Foreign language interfaces
+</h3>
+<p>
+<a href="" id="index-_002eC"></a> <a href="" id="index-_002eFortran"></a> <a href="" id="index-_002eCall"></a> <a href="" id="index-_002eExternal"></a>
+</p>
+<p>
+See <a href="http://colinfay.me/writing-r-extensions/system-and-foreign-language-interfaces.html">System and foreign language interfaces</a> in Writing R Extensions for the details of adding functionality to R via compiled code.
+</p>
+<p>
+Functions <code class="calibre7">.C</code> and <code class="calibre7">.Fortran</code> provide a standard interface to compiled code that has been linked into R, either at build time or via <code class="calibre7">dyn.load</code>. They are primarily intended for compiled <strong>C</strong> and FORTRAN code respectively, but the <code class="calibre7">.C</code> function can be used with other languages which can generate C interfaces, for example C++.
+</p>
+<p>
+Functions <code class="calibre7">.Call</code> and <code class="calibre7">.External</code> provide interfaces which allow compiled code (primarily compiled <strong>C</strong> code) to manipulate R objects.
+</p>
+<hr />
+<p>
+<a href="" id="g_t_002eInternal-and-_002ePrimitive"></a> <a href="" id="g_t_002eInternal-and-_002ePrimitive-1"></a>
+</p>
+<h3 id="internal-and-.primitive" class="section">
+7.3 .Internal and .Primitive
+</h3>
+<p>
+<a href="" id="index-_002eInternal-1"></a> <a href="" id="index-_002ePrimitive-1"></a>
+</p>
+<p>
+The <code class="calibre7">.Internal</code> and <code class="calibre7">.Primitive</code> interfaces are used to call <strong>C</strong> code compiled into R at build time. See <a href="./R-ints.html#g_t_002eInternal-vs-_002ePrimitive">.Internal vs .Primitive</a> in R Internals.
+</p>
+<hr />
+<p>
+<a href="" id="Exception-handling"></a> <a href="" id="Exception-handling-1"></a>
+</p>
+<div id="calibre_pb_17" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="computing-on-the-language.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="exception-handling.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

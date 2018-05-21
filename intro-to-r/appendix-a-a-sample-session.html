@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="os-facilities.html">
+<link rel="next" href="appendix-b-invoking-r.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix-a-a-sample-session" class="section level1">
+<h1><span class="header-section-number">Chapter 15</span> Appendix A A sample session</h1>
+<p>
+The following session is intended to introduce to you some features of the R environment by using them. Many features of the system will be unfamiliar and puzzling at first, but this puzzlement will soon disappear.
+</p>
+<dl>
+<dt>
+<code class="calibre2">Start R appropriately for your platform (see Invoking R).</code>
+</dt>
+<dd>
+<p>
+The R program begins, with a banner.
+</p>
+<p>
+(Within R code, the prompt on the left hand side will not be shown to avoid confusion.)
+</p>
+</dd>
+<dt>
+<code class="calibre2">help.start()</code>
+</dt>
+<dd>
+<p>
+Start the HTML interface to on-line help (using a web browser available at your machine). You should briefly explore the features of this facility with the mouse.
+</p>
+<p>
+Iconify the help window and move on to the next part.
+</p>
+</dd>
+<dt>
+<code class="calibre2">x &lt;- rnorm(50)</code><br /> <code class="calibre2">y &lt;- rnorm(x)</code>
+</dt>
+<dd>
+<p>
+Generate two pseudo-random normal vectors of <em>x</em>- and <em>y</em>-coordinates.
+</p>
+</dd>
+<dt>
+<code class="calibre2">plot(x, y)</code>
+</dt>
+<dd>
+<p>
+Plot the points in the plane. A graphics window will appear automatically.
+</p>
+</dd>
+<dt>
+<code class="calibre2">ls()</code>
+</dt>
+<dd>
+<p>
+See which R objects are now in the R workspace.
+</p>
+</dd>
+<dt>
+<code class="calibre2">rm(x, y)</code>
+</dt>
+<dd>
+<p>
+Remove objects no longer needed. (Clean up).
+</p>
+</dd>
+<dt>
+<code class="calibre2">x &lt;- 1:20</code>
+</dt>
+<dd>
+<p>
+Make <em>x = (1, 2, …, 20)</em>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">w &lt;- 1 + sqrt(x)/2</code>
+</dt>
+<dd>
+<p>
+A ‘weight’ vector of standard deviations.
+</p>
+</dd>
+<dt>
+<code class="calibre2">dummy &lt;- data.frame(x=x, y= x + rnorm(x)*w)</code><br /> <code class="calibre2">dummy</code>
+</dt>
+<dd>
+<p>
+Make a <em>data frame</em> of two columns, <em>x</em> and <em>y</em>, and look at it.
+</p>
+</dd>
+<dt>
+<code class="calibre2">fm &lt;- lm(y ~ x, data=dummy)</code><br /> <code class="calibre2">summary(fm)</code>
+</dt>
+<dd>
+<p>
+Fit a simple linear regression and look at the analysis. With <code class="calibre2">y</code> to the left of the tilde, we are modelling <em>y</em> dependent on <em>x</em>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">fm1 &lt;- lm(y ~ x, data=dummy, weight=1/w^2)</code><br /> <code class="calibre2">summary(fm1)</code>
+</dt>
+<dd>
+<p>
+Since we know the standard deviations, we can do a weighted regression.
+</p>
+</dd>
+<dt>
+<code class="calibre2">attach(dummy)</code>
+</dt>
+<dd>
+<p>
+Make the columns in the data frame visible as variables.
+</p>
+</dd>
+<dt>
+<code class="calibre2">lrf &lt;- lowess(x, y)</code>
+</dt>
+<dd>
+<p>
+Make a nonparametric local regression function.
+</p>
+</dd>
+<dt>
+<code class="calibre2">plot(x, y)</code>
+</dt>
+<dd>
+<p>
+Standard point plot.
+</p>
+</dd>
+<dt>
+<code class="calibre2">lines(x, lrf<span class="math inline">\(y)&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;Add in the local regression.&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;abline(0, 1, lty=3)&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;The true regression line: (intercept 0, slope 1).&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;abline(coef(fm))&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;Unweighted regression line.&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;abline(coef(fm1), col = &amp;quot;red&amp;quot;)&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;Weighted regression line.&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;detach()&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;Remove data frame from the search path.&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;plot(fitted(fm), resid(fm),&lt;/code&gt;&lt;br /&gt; &lt;code class=&quot;calibre2&quot;&gt;     xlab=&amp;quot;Fitted values&amp;quot;,&lt;/code&gt;&lt;br /&gt; &lt;code class=&quot;calibre2&quot;&gt;     ylab=&amp;quot;Residuals&amp;quot;,&lt;/code&gt;&lt;br /&gt; &lt;code class=&quot;calibre2&quot;&gt;     main=&amp;quot;Residuals vs Fitted&amp;quot;)&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;A standard regression diagnostic plot to check for heteroscedasticity. Can you see it?&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;qqnorm(resid(fm), main=&amp;quot;Residuals Rankit Plot&amp;quot;)&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;A normal scores plot to check for skewness, kurtosis and outliers. (Not very useful here.)&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;rm(fm, fm1, lrf, x, dummy)&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;Clean up again.&lt;/p&gt; &lt;/dd&gt; &lt;/dl&gt; &lt;p&gt;The next section will look at data from the classical experiment of Michelson to measure the speed of light. This dataset is available in the &lt;code class=&quot;calibre2&quot;&gt;morley&lt;/code&gt; object, but we will read it to illustrate the &lt;code class=&quot;calibre2&quot;&gt;read.table&lt;/code&gt; function.&lt;/p&gt; &lt;dl&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;filepath &amp;lt;- system.file(&amp;quot;data&amp;quot;, &amp;quot;morley.tab&amp;quot; , package=&amp;quot;datasets&amp;quot;)&lt;/code&gt;&lt;br /&gt; &lt;code class=&quot;calibre2&quot;&gt;filepath&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;Get the path to the data file.&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;file.show(filepath)&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;Optional. Look at the file.&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;mm &amp;lt;- read.table(filepath)&lt;/code&gt;&lt;br /&gt; &lt;code class=&quot;calibre2&quot;&gt;mm&lt;/code&gt;&lt;/dt&gt; &lt;dd&gt;&lt;p&gt;Read in the Michelson data as a data frame, and look at it. There are five experiments (column &lt;code class=&quot;calibre2&quot;&gt;Expt&lt;/code&gt;) and each has 20 runs (column &lt;code class=&quot;calibre2&quot;&gt;Run&lt;/code&gt;) and &lt;code class=&quot;calibre2&quot;&gt;sl&lt;/code&gt; is the recorded speed of light, suitably coded.&lt;/p&gt; &lt;/dd&gt; &lt;dt&gt;&lt;code class=&quot;calibre2&quot;&gt;mm\)</span>Expt &lt;- factor(mm<span class="math inline">\(Expt)&lt;/code&gt;&lt;br /&gt; &lt;code class=&quot;calibre2&quot;&gt;mm\)</span>Run &lt;- factor(mm$Run)</code>
+</dt>
+<dd>
+<p>
+Change <code class="calibre2">Expt</code> and <code class="calibre2">Run</code> into factors.
+</p>
+</dd>
+<dt>
+<code class="calibre2">attach(mm)</code>
+</dt>
+<dd>
+<p>
+Make the data frame visible at position 3 (the default).
+</p>
+</dd>
+<dt>
+<code class="calibre2">plot(Expt, Speed, main=“Speed of Light Data”, xlab=“Experiment No.”)</code>
+</dt>
+<dd>
+<p>
+Compare the five experiments with simple boxplots.
+</p>
+</dd>
+<dt>
+<code class="calibre2">fm &lt;- aov(Speed ~ Run + Expt, data=mm)</code><br /> <code class="calibre2">summary(fm)</code>
+</dt>
+<dd>
+<p>
+Analyze as a randomized block, with ‘runs’ and ‘experiments’ as factors.
+</p>
+</dd>
+<dt>
+<code class="calibre2">fm0 &lt;- update(fm, . ~ . - Run)</code><br /> <code class="calibre2">anova(fm0, fm)</code>
+</dt>
+<dd>
+<p>
+Fit the sub-model omitting ‘runs’, and compare using a formal analysis of variance.
+</p>
+</dd>
+<dt>
+<code class="calibre2">detach()</code><br /> <code class="calibre2">rm(fm, fm0)</code>
+</dt>
+<dd>
+<p>
+Clean up before moving on.
+</p>
+</dd>
+</dl>
+<p>
+We now look at some more graphical features: contour and image plots.
+</p>
+<dl>
+<dt>
+<code class="calibre2">x &lt;- seq(-pi, pi, len=50)</code><br /> <code class="calibre2">y &lt;- x</code>
+</dt>
+<dd>
+<p>
+<em>x</em> is a vector of 50 equally spaced values in the interval [-pi, pi]. <em>y</em> is the same.
+</p>
+</dd>
+<dt>
+<code class="calibre2">f &lt;- outer(x, y, function(x, y) cos(y)/(1 + x^2))</code>
+</dt>
+<dd>
+<p>
+<em>f</em> is a square matrix, with rows and columns indexed by <em>x</em> and <em>y</em> respectively, of values of the function cos(y)/(1 + x^2).
+</p>
+</dd>
+<dt>
+<code class="calibre2">oldpar &lt;- par(no.readonly = TRUE)</code><br /> <code class="calibre2">par(pty=“s”)</code>
+</dt>
+<dd>
+<p>
+Save the plotting parameters and set the plotting region to “square”.
+</p>
+</dd>
+<dt>
+<code class="calibre2">contour(x, y, f)</code><br /> <code class="calibre2">contour(x, y, f, nlevels=15, add=TRUE)</code>
+</dt>
+<dd>
+<p>
+Make a contour map of <em>f</em>; add in more lines for more detail.
+</p>
+</dd>
+<dt>
+<code class="calibre2">fa &lt;- (f-t(f))/2</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">fa</code> is the “asymmetric part” of <em>f</em>. (<code class="calibre2">t()</code> is transpose).
+</p>
+</dd>
+<dt>
+<code class="calibre2">contour(x, y, fa, nlevels=15)</code>
+</dt>
+<dd>
+<p>
+Make a contour plot, …
+</p>
+</dd>
+<dt>
+<code class="calibre2">par(oldpar)</code>
+</dt>
+<dd>
+<p>
+… and restore the old graphics parameters.
+</p>
+</dd>
+<dt>
+<code class="calibre2">image(x, y, f)</code><br /> <code class="calibre2">image(x, y, fa)</code>
+</dt>
+<dd>
+<p>
+Make some high density image plots, (of which you can get hardcopies if you wish), …
+</p>
+</dd>
+<dt>
+<code class="calibre2">objects(); rm(x, y, f, fa)</code>
+</dt>
+<dd>
+<p>
+… and clean up before moving on.
+</p>
+</dd>
+</dl>
+<p>
+R can do complex arithmetic, also.
+</p>
+<dl>
+<dt>
+<code class="calibre2">th &lt;- seq(-pi, pi, len=100)</code><br /> <code class="calibre2">z &lt;- exp(1i*th)</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">1i</code> is used for the complex number <em>i</em>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">par(pty=“s”)</code><br /> <code class="calibre2">plot(z, type=“l”)</code>
+</dt>
+<dd>
+<p>
+Plotting complex arguments means plot imaginary versus real parts. This should be a circle.
+</p>
+</dd>
+<dt>
+<code class="calibre2">w &lt;- rnorm(100) + rnorm(100)*1i</code>
+</dt>
+<dd>
+<p>
+Suppose we want to sample points within the unit circle. One method would be to take complex numbers with standard normal real and imaginary parts …
+</p>
+</dd>
+<dt>
+<code class="calibre2">w &lt;- ifelse(Mod(w) &gt; 1, 1/w, w)</code>
+</dt>
+<dd>
+<p>
+… and to map any outside the circle onto their reciprocal.
+</p>
+</dd>
+<dt>
+<code class="calibre2">plot(w, xlim=c(-1,1), ylim=c(-1,1), pch=“+”,xlab=“x”, ylab=“y”)</code><br /> <code class="calibre2">lines(z)</code>
+</dt>
+<dd>
+<p>
+All points are inside the unit circle, but the distribution is not uniform.
+</p>
+</dd>
+<dt>
+<code class="calibre2">w &lt;- sqrt(runif(100))<em>exp(2</em>pi<em>runif(100)</em>1i)</code><br /> <code class="calibre2">plot(w, xlim=c(-1,1), ylim=c(-1,1), pch=“+”, xlab=“x”, ylab=“y”)</code><br /> <code class="calibre2">lines(z)</code>
+</dt>
+<dd>
+<p>
+The second method uses the uniform distribution. The points should now look more evenly spaced over the disc.
+</p>
+</dd>
+<dt>
+<code class="calibre2">rm(th, w, z)</code>
+</dt>
+<dd>
+<p>
+Clean up again.
+</p>
+</dd>
+<dt>
+<code class="calibre2">q()</code>
+</dt>
+<dd>
+<p>
+Quit the R program. You will be asked if you want to save the R workspace, and for an exploratory session like this, you probably do not want to save it.
+</p>
+</dd>
+</dl>
+<hr />
+<p>
+<a href="" id="Invoking-R"></a> <a href="" id="Invoking-R-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="os-facilities.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-b-invoking-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

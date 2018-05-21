@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="choosing-between-32-and-64-bit-builds.html">
+<link rel="next" href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="the-standalone-rmath-library" class="section level1">
+<h1><span class="header-section-number">Chapter 9</span> The standalone Rmath library</h1>
+<p>
+The routines supporting the distribution and special<a href="environment-variable-index.html#FOOT35" id="DOCF35"><sup>35</sup></a> functions in R and a few others are declared in C header file Rmath.h. These can be compiled into a standalone library for linking to other applications. (Note that they are not a separate library when R is built, and the standalone version differs in several ways.)
+</p>
+<p>
+The makefiles and other sources needed are in directory src/nmath/standalone, so the following instructions assume that is the current working directory (in the build directory tree on a Unix-alike if that is separate from the sources).
+</p>
+<p>
+Rmath.h contains ‘R_VERSION_STRING’, which is a character string containing the current R version, for example <code class="calibre6">“3.4.0”</code>.
+</p>
+<p>
+There is full access to R’s handling of <code class="calibre6">NaN</code>, <code class="calibre6">Inf</code> and <code class="calibre6">-Inf</code> via special versions of the macros and functions
+</p>
+<div class="example">
+<pre class="example1"><code>    ISNAN, R_FINITE, R_log, R_pow and R_pow_di</code></pre>
+</div>
+<p>
+and (extern) constants <code class="calibre6">R_PosInf</code>, <code class="calibre6">R_NegInf</code> and <code class="calibre6">NA_REAL</code>.
+</p>
+<p>
+There is no support for R’s notion of missing values, in particular not for <code class="calibre6">NA_INTEGER</code> nor the distinction between <code class="calibre6">NA</code> and <code class="calibre6">NaN</code> for doubles.
+</p>
+<p>
+A little care is needed to use the random-number routines. You will need to supply the uniform random number generator
+</p>
+<div class="example">
+<pre class="example1"><code>    double unif_rand(void)</code></pre>
+</div>
+<p>
+or use the one supplied (and with a shared library or DLL you may have to use the one supplied, which is the Marsaglia-multicarry with an entry point
+</p>
+<div class="example">
+<pre class="example1"><code>    set_seed(unsigned int, unsigned int)</code></pre>
+</div>
+<p>
+to set its seeds).
+</p>
+<p>
+The facilities to change the normal random number generator are available through the constant N01_kind. This takes values from the enumeration type
+</p>
+<div class="example">
+<pre class="example1"><code>typedef enum {
+    BUGGY_KINDERMAN_RAMAGE,
+    AHRENS_DIETER,
+    BOX_MULLER,
+    USER_NORM,
+    INVERSION,
+    KINDERMAN_RAMAGE
+} N01type;</code></pre>
+</div>
+<p>
+(and ‘USER_NORM’ is not available).
+</p>
+<hr />
+<p>
+<a href="" id="Unix_002dalike-standalone"></a> <a href="" id="Unix_002dalikes"></a>
+</p>
+<h3 id="unix-alikes" class="section">
+9.1 Unix-alikes
+</h3>
+<p>
+If R has not already been made in the directory tree, <code class="calibre6">configure</code> must be run as described in the main build instructions.
+</p>
+<p>
+Then (in src/nmath/standalone)
+</p>
+<div class="example">
+<pre class="example1"><code>make</code></pre>
+</div>
+<p>
+will make standalone libraries libRmath.a and libRmath.so (libRmath.dylib on macOS): ‘make static’ and ‘make shared’ will create just one of them.
+</p>
+<p>
+To use the routines in your own C or C++ programs, include
+</p>
+<div class="example">
+<pre class="example1"><code>#define MATHLIB_STANDALONE
+#include &lt;Rmath.h&gt;</code></pre>
+</div>
+<p>
+and link against ‘-lRmath’ (and ‘-lm’ if needed on your OS). The example file test.c does nothing useful, but is provided to test the process (via <code class="calibre6">make test</code>). Note that you will probably not be able to run it unless you add the directory containing <a href="" id="index-LD_005fLIBRARY_005fPATH"></a> libRmath.so to the <code class="calibre6">LD_LIBRARY_PATH</code> environment variable (libRmath.dylib, <code class="calibre6">DYLD_FALLBACK_LIBRARY_PATH</code> on macOS).
+</p>
+<p>
+The targets
+</p>
+<div class="example">
+<pre class="example1"><code>make install
+make uninstall</code></pre>
+</div>
+<p>
+will (un)install the header Rmath.h and shared and static <a href="" id="index-DESTDIR-1"></a> libraries (if built). Both <code class="calibre6">prefix=</code> and <code class="calibre6">DESTDIR</code> are supported, together with more precise control as described for the main build.
+</p>
+<p>
+‘make install’ installs a file for <code class="calibre6">pkg-config</code> to use by e.g.
+</p>
+<div class="example">
+<pre class="example1"><code>$(CC) `pkg-config --cflags libRmath` -c test.c
+$(CC) `pkg-config --libs libRmath` test.o -o test</code></pre>
+</div>
+<p>
+On some systems ‘make install-strip’ will install a stripped shared library.
+</p>
+<hr />
+<p>
+<a href="" id="Windows-standalone"></a> <a href="" id="Windows-1"></a>
+</p>
+<h3 id="windows" class="section">
+9.2 Windows
+</h3>
+<p>
+You need to set up<a href="environment-variable-index.html#FOOT36" id="DOCF36"><sup>36</sup></a> almost all the tools to make R and then run (in a Unix-like shell)
+</p>
+<div class="example">
+<pre class="example1"><code>(cd ../../gnuwin32; make MkRules)
+(cd ../../include; make -f Makefile.win config.h Rconfig.h Rmath.h)
+make -f Makefile.win</code></pre>
+</div>
+<p>
+Alternatively, in a cmd.exe shell use
+</p>
+<div class="example">
+<pre class="example1"><code>cd ../../include
+make -f Makefile.win config.h Rconfig.h Rmath.h
+cd ../nmath/standalone
+make -f Makefile.win</code></pre>
+</div>
+<p>
+This creates a static library libRmath.a and a DLL Rmath.dll. If you want an import library libRmath.dll.a (you don’t need one), use
+</p>
+<div class="example">
+<pre class="example1"><code>make -f Makefile.win shared implib</code></pre>
+</div>
+<p>
+To use the routines in your own C or C++ programs using MinGW-w64, include
+</p>
+<div class="example">
+<pre class="example1"><code>#define MATHLIB_STANDALONE
+#include &lt;Rmath.h&gt;</code></pre>
+</div>
+<p>
+and link against ‘-lRmath’. This will use the first found of libRmath.dll.a, libRmath.a and Rmath.dll in that order, so the result depends on which files are present. You should be able to force static or dynamic linking <em>via</em>
+</p>
+<div class="example">
+<pre class="example1"><code>-Wl,-Bstatic -lRmath -Wl,Bdynamic
+-Wl,-Bdynamic -lRmath</code></pre>
+</div>
+<p>
+or by linking to explicit files (as in the ‘test’ target in Makefile.win: this makes two executables, test.exe which is dynamically linked, and test-static.exe, which is statically linked).
+</p>
+<p>
+It is possible to link to Rmath.dll using other compilers, either directly or via an import library: if you make a MinGW-w64 import library as above, you will create a file Rmath.def which can be used (possibly after editing) to create an import library for other systems such as Visual C++.
+</p>
+<p>
+If you make use of dynamic linking you should use
+</p>
+<div class="example">
+<pre class="example1"><code>#define MATHLIB_STANDALONE
+#define RMATH_DLL
+#include &lt;Rmath.h&gt;</code></pre>
+</div>
+<p>
+to ensure that the constants like <code class="calibre6">NA_REAL</code> are linked correctly. (Auto-import will probably work with MinGW-w64, but it is better to be sure. This is likely to also work with VC++, Borland and similar compilers.)
+</p>
+<hr />
+<p>
+<a href="" id="Essential-and-useful-other-programs-under-a-Unix_002dalike"></a> <a href="" id="Essential-and-useful-other-programs-under-a-Unix_002dalike-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="choosing-between-32-and-64-bit-builds.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

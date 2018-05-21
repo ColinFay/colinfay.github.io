@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="appendix-d-function-and-variable-index.html">
+<link rel="next" href="appendix-f-references.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix-e-concept-index" class="section level1">
+<h1><span class="header-section-number">Chapter 19</span> Appendix E Concept index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="appendix-e-concept-index.html#Concept-index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-K" class="summary-letter"><strong>K</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-V" class="summary-letter"><strong>V</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-W" class="summary-letter"><strong>W</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-A">A</a>
+</p>
+<p>
+<a href="010-R-intro.html#index-Accessing-builtin-datasets">Accessing builtin datasets</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="010-R-intro.html#Accessing-builtin-datasets">Accessing builtin datasets</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Additive-models">Additive models</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Analysis-of-variance">Analysis of variance</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Analysis-of-variance-and-model-comparison">Analysis of variance and model comparison</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-Arithmetic-functions-and-operators">Arithmetic functions and operators</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Arrays">Arrays</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Arrays">Arrays</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-Assignment">Assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vectors-and-assignment">Vectors and assignment</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-Attributes">Attributes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Objects">Objects</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-B">B</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-Binary-operators">Binary operators</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Defining-new-binary-operators">Defining new binary operators</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-Box-plots">Box plots</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#One_002d-and-two_002dsample-tests">One- and two-sample tests</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-C">C</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-Character-vectors">Character vectors</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Character-vectors">Character vectors</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-Classes">Classes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#The-class-of-an-object">The class of an object</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-Classes-1">Classes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Object-orientation">Object orientation</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-Concatenating-lists">Concatenating lists</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Concatenating-lists">Concatenating lists</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Contrasts">Contrasts</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Contrasts">Contrasts</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-Control-statements">Control statements</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Control-statements">Control statements</a>
+</p>
+<p>
+<a href="016-R-intro.html#index-CRAN">CRAN</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="016-R-intro.html#Contributed-packages-and-CRAN">Contributed packages and CRAN</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-Customizing-the-environment">Customizing the environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Customizing-the-environment">Customizing the environment</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-D">D</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-Data-frames">Data frames</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Data-frames">Data frames</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-Default-values">Default values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Named-arguments-and-defaults">Named arguments and defaults</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-Density-estimation">Density estimation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Determinants">Determinants</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Singular-value-decomposition-and-determinants">Singular value decomposition and determinants</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-Diverting-input-and-output">Diverting input and output</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Executing-commands-from-or-diverting-output-to-a-file">Executing commands from or diverting output to a file</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-Dynamic-graphics">Dynamic graphics</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Dynamic-graphics">Dynamic graphics</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-E">E</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Eigenvalues-and-eigenvectors">Eigenvalues and eigenvectors</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Eigenvalues-and-eigenvectors">Eigenvalues and eigenvectors</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-Empirical-CDFs">Empirical CDFs</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-F">F</a>
+</p>
+<p>
+<a href="007-R-intro.html#index-Factors">Factors</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#Factors">Factors</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Factors-1">Factors</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Contrasts">Contrasts</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Families">Families</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Families">Families</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Formulae">Formulae</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Formulae-for-statistical-models">Formulae for statistical models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-G">G</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Generalized-linear-models">Generalized linear models</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generalized-linear-models">Generalized linear models</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Generalized-transpose-of-an-array">Generalized transpose of an array</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Generalized-transpose-of-an-array">Generalized transpose of an array</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-Generic-functions">Generic functions</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Object-orientation">Object orientation</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-Graphics-device-drivers">Graphics device drivers</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Device-drivers">Device drivers</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-Graphics-parameters">Graphics parameters</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#The-par_0028_0029-function">The par() function</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-Grouped-expressions">Grouped expressions</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Grouped-expressions">Grouped expressions</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-I">I</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Indexing-of-and-by-arrays">Indexing of and by arrays</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Array-indexing">Array indexing</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-Indexing-vectors">Indexing vectors</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Index-vectors">Index vectors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-K">K</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-Kolmogorov_002dSmirnov-test">Kolmogorov-Smirnov test</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-L">L</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Least-squares-fitting">Least squares fitting</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Least-squares-fitting-and-the-QR-decomposition">Least squares fitting and the QR decomposition</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Linear-equations">Linear equations</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Linear-equations-and-inversion">Linear equations and inversion</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Linear-models">Linear models</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Linear-models">Linear models</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-Lists">Lists</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Lists">Lists</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Local-approximating-regressions">Local approximating regressions</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-Loops-and-conditional-execution">Loops and conditional execution</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Loops-and-conditional-execution">Loops and conditional execution</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-M">M</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Matrices">Matrices</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Arrays">Arrays</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Matrix-multiplication">Matrix multiplication</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Multiplication">Multiplication</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Maximum-likelihood">Maximum likelihood</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Maximum-likelihood">Maximum likelihood</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-Missing-values">Missing values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Missing-values">Missing values</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Mixed-models">Mixed models</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-N">N</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-Named-arguments">Named arguments</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Named-arguments-and-defaults">Named arguments and defaults</a>
+</p>
+<p>
+<a href="016-R-intro.html#index-Namespace">Namespace</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="016-R-intro.html#Namespaces">Namespaces</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Nonlinear-least-squares">Nonlinear least squares</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Nonlinear-least-squares-and-maximum-likelihood-models">Nonlinear least squares and maximum likelihood models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-O">O</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-Object-orientation">Object orientation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Object-orientation">Object orientation</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-Objects">Objects</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Objects">Objects</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-One_002d-and-two_002dsample-tests">One- and two-sample tests</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#One_002d-and-two_002dsample-tests">One- and two-sample tests</a>
+</p>
+<p>
+<a href="007-R-intro.html#index-Ordered-factors">Ordered factors</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#Factors">Factors</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Ordered-factors-1">Ordered factors</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Contrasts">Contrasts</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Outer-products-of-arrays">Outer products of arrays</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#The-outer-product-of-two-arrays">The outer product of two arrays</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-P">P</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-Packages">Packages</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#R-and-statistics">R and statistics</a>
+</p>
+<p>
+<a href="016-R-intro.html#index-Packages-1">Packages</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Packages">Packages</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-Probability-distributions">Probability distributions</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="010-R-intro.html#Probability-distributions">Probability distributions</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-Q">Q</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-QR-decomposition">QR decomposition</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Least-squares-fitting-and-the-QR-decomposition">Least squares fitting and the QR decomposition</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-Quantile_002dquantile-plots">Quantile-quantile plots</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-R">R</a>
+</p>
+<p>
+<a href="010-R-intro.html#index-Reading-data-from-files">Reading data from files</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Reading-data-from-files">Reading data from files</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-Recycling-rule">Recycling rule</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Recycling-rule-1">Recycling rule</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#The-recycling-rule">The recycling rule</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-Regular-sequences">Regular sequences</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Generating-regular-sequences">Generating regular sequences</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-Removing-objects">Removing objects</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Data-permanency-and-removing-objects">Data permanency and removing objects</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Robust-regression">Robust regression</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-S">S</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-Scope">Scope</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Scope">Scope</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-Search-path">Search path</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Managing-the-search-path">Managing the search path</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-Shapiro_002dWilk-test">Shapiro-Wilk test</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Singular-value-decomposition">Singular value decomposition</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Singular-value-decomposition-and-determinants">Singular value decomposition and determinants</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Statistical-models">Statistical models</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Statistical-models-in-R">Statistical models in R</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-Student_0027s-t-test">Student’s <em>t</em> test</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#One_002d-and-two_002dsample-tests">One- and two-sample tests</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-T">T</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-Tabulation">Tabulation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Frequency-tables-from-factors">Frequency tables from factors</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Tree_002dbased-models">Tree-based models</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-U">U</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Updating-fitted-models">Updating fitted models</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Updating-fitted-models">Updating fitted models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-V">V</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-Vectors">Vectors</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Simple-manipulations-numbers-and-vectors">Simple manipulations numbers and vectors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-W">W</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-Wilcoxon-test">Wilcoxon test</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#One_002d-and-two_002dsample-tests">One- and two-sample tests</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-Workspace">Workspace</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Data-permanency-and-removing-objects">Data permanency and removing objects</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-Writing-functions">Writing functions</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Writing-your-own-functions">Writing your own functions</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="appendix-e-concept-index.html#Concept-index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-K" class="summary-letter"><strong>K</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-V" class="summary-letter"><strong>V</strong></a>   <a href="appendix-e-concept-index.html#Concept-index_cp_letter-W" class="summary-letter"><strong>W</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>
+<a href="" id="References"></a> <a href="" id="References-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="appendix-d-function-and-variable-index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-f-references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

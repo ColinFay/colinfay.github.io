@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The R language definition</title>
+  <meta name="description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="The R language definition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  <meta name="github-repo" content="ColinFay/r-language-definition" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The R language definition" />
+  
+  <meta name="twitter:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="function-and-variable-index.html">
+<link rel="next" href="appendix-a-references.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">The R language definition</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Language Definition</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="objects.html"><a href="objects.html"><i class="fa fa-check"></i><b>2</b> Objects</a></li>
+<li class="chapter" data-level="3" data-path="evaluation-of-expressions.html"><a href="evaluation-of-expressions.html"><i class="fa fa-check"></i><b>3</b> Evaluation of expressions</a></li>
+<li class="chapter" data-level="4" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>4</b> Functions</a></li>
+<li class="chapter" data-level="5" data-path="object-oriented-programming.html"><a href="object-oriented-programming.html"><i class="fa fa-check"></i><b>5</b> Object-oriented programming</a></li>
+<li class="chapter" data-level="6" data-path="computing-on-the-language.html"><a href="computing-on-the-language.html"><i class="fa fa-check"></i><b>6</b> Computing on the language</a></li>
+<li class="chapter" data-level="7" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>7</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="8" data-path="exception-handling.html"><a href="exception-handling.html"><i class="fa fa-check"></i><b>8</b> Exception handling</a></li>
+<li class="chapter" data-level="9" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>9</b> Debugging</a></li>
+<li class="chapter" data-level="10" data-path="parser.html"><a href="parser.html"><i class="fa fa-check"></i><b>10</b> Parser</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and Variable Index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept Index</a></li>
+<li class="chapter" data-level="13" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>13</b> Appendix A References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The R language definition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="concept-index" class="section level1">
+<h1><span class="header-section-number">Chapter 12</span> Concept Index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="concept-index.html#Concept-Index_cp_symbol-1" class="summary-letter"><strong>#</strong></a>   <a href="concept-index.html#Concept-Index_cp_symbol-2" class="summary-letter"><strong>.</strong></a>  <br /> <a href="concept-index.html#Concept-Index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-V" class="summary-letter"><strong>V</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_symbol-1">#</a>
+</p>
+<p>
+<a href="parser.html#index-_0023line">#line</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Directives">Directives</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_symbol-2">.</a>
+</p>
+<p>
+<a href="objects.html#index-_002eInternal">.Internal</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Builtin-objects-and-special-forms">Builtin objects and special forms</a>
+</p>
+<p>
+<a href="objects.html#index-_002ePrimitive">.Primitive</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Builtin-objects-and-special-forms">Builtin objects and special forms</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-A">A</a>
+</p>
+<p>
+<a href="objects.html#index-argument">argument</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="functions.html#index-argument-1">argument</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Syntax-and-examples">Syntax and examples</a>
+</p>
+<p>
+<a href="functions.html#index-argument_002c-default-values">argument, default values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Arguments">Arguments</a>
+</p>
+<p>
+<a href="objects.html#index-assignment">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-assignment-1">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Function-calls">Function calls</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-assignment-2">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Operators">Operators</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-assignment-3">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Subset-assignment">Subset assignment</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-assignment-4">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Global-environment">Global environment</a>
+</p>
+<p>
+<a href="functions.html#index-assignment-5">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="functions.html#index-assignment-6">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-assignment-7">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#UseMethod">UseMethod</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-assignment-8">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#UseMethod">UseMethod</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-assignment-9">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#More-on-evaluation">More on evaluation</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-assignment-10">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-function-calls">Manipulation of function calls</a>
+</p>
+<p>
+<a href="parser.html#index-assignment-11">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Infix-and-prefix-operators">Infix and prefix operators</a>
+</p>
+<p>
+<a href="parser.html#index-assignment-12">assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Infix-and-prefix-operators">Infix and prefix operators</a>
+</p>
+<p>
+<a href="objects.html#index-atomic">atomic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Vector-objects">Vector objects</a>
+</p>
+<p>
+<a href="objects.html#index-attributes">attributes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Attributes">Attributes</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-B">B</a>
+</p>
+<p>
+<a href="functions.html#index-binding">binding</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="functions.html#index-binding-1">binding</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-C">C</a>
+</p>
+<p>
+<a href="objects.html#index-call">call</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Language-objects">Language objects</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-call-stack">call stack</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Stacks">Stacks</a>
+</p>
+<p>
+<a href="objects.html#index-coercion">coercion</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<p>
+<a href="objects.html#index-coercion-1">coercion</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Symbol-objects">Symbol objects</a>
+</p>
+<p>
+<a href="objects.html#index-coercion-2">coercion</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Any_002dtype">Any-type</a>
+</p>
+<p>
+<a href="objects.html#index-coercion-3">coercion</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Classes">Classes</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-coercion-4">coercion</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#NA-handling">NA handling</a>
+</p>
+<p>
+<a href="parser.html#index-comments">comments</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Comments">Comments</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-complex-assignment">complex assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Subset-assignment">Subset assignment</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-E">E</a>
+</p>
+<p>
+<a href="objects.html#index-environment">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="objects.html#index-environment-1">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="objects.html#index-environment-2">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Promise-objects">Promise objects</a>
+</p>
+<p>
+<a href="objects.html#index-environment-3">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Environment-objects">Environment objects</a>
+</p>
+<p>
+<a href="appendix-a-references.html#index-environment-4">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Control-structures">Control structures</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-environment-5">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Global-environment">Global environment</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-environment-6">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Lexical-environment">Lexical environment</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-environment-7">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Stacks">Stacks</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-environment-8">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Search-path">Search path</a>
+</p>
+<p>
+<a href="functions.html#index-environment-9">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Evaluation-environment">Evaluation environment</a>
+</p>
+<p>
+<a href="functions.html#index-environment-10">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="functions.html#index-environment-11">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="functions.html#index-environment-12">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-environment-13">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#UseMethod">UseMethod</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-environment-14">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#UseMethod">UseMethod</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-environment-15">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#More-on-evaluation">More on evaluation</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-environment-16">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-functions">Manipulation of functions</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-environment-17">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="debugging.html#index-environment-18">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="exception-handling.html#Debugging">Debugging</a>
+</p>
+<p>
+<a href="debugging.html#index-environment-19">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="exception-handling.html#Debugging">Debugging</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-environment_002c-evaluation">environment, evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Lexical-environment">Lexical environment</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-environment_002c-evaluation-1">environment, evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Lexical-environment">Lexical environment</a>
+</p>
+<p>
+<a href="functions.html#index-environment_002c-evaluation-2">environment, evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-evaluation">evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Stacks">Stacks</a>
+</p>
+<p>
+<a href="functions.html#index-evaluation-1">evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Evaluation-environment">Evaluation environment</a>
+</p>
+<p>
+<a href="functions.html#index-evaluation-2">evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="functions.html#index-evaluation-3">evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-evaluation-4">evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Inheritance">Inheritance</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-evaluation-5">evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#UseMethod">UseMethod</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-evaluation-6">evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#More-on-evaluation">More on evaluation</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-evaluation-7">evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-function-calls">Manipulation of function calls</a>
+</p>
+<p>
+<a href="functions.html#index-evaluation_002c-argument">evaluation, argument</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="objects.html#index-evaluation_002c-expression">evaluation, expression</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Expression-objects">Expression objects</a>
+</p>
+<p>
+<a href="objects.html#index-evaluation_002c-expression-1">evaluation, expression</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Promise-objects">Promise objects</a>
+</p>
+<p>
+<a href="functions.html#index-evaluation_002c-expression-2">evaluation, expression</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Arguments">Arguments</a>
+</p>
+<p>
+<a href="objects.html#index-evaluation_002c-lazy">evaluation, lazy</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-evaluation_002c-lazy-1">evaluation, lazy</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Substitutions">Substitutions</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-evaluation_002c-lazy-2">evaluation, lazy</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Substitutions">Substitutions</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-evaluation_002c-statement">evaluation, statement</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Control-structures">Control structures</a>
+</p>
+<p>
+<a href="objects.html#index-evaluation_002c-symbol">evaluation, symbol</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-evaluation_002c-symbol-1">evaluation, symbol</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Symbol-lookup">Symbol lookup</a>
+</p>
+<p>
+<a href="functions.html#index-evaluation_002c-symbol-2">evaluation, symbol</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="introduction.html#index-expression">expression</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-language-definition.html#Introduction">Introduction</a>
+</p>
+<p>
+<a href="objects.html#index-expression-1">expression</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Language-objects">Language objects</a>
+</p>
+<p>
+<a href="parser.html#index-expression-2">expression</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Separators">Separators</a>
+</p>
+<p>
+<a href="objects.html#index-expression-object">expression object</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Expression-objects">Expression objects</a>
+</p>
+<p>
+<a href="objects.html#index-expression-object-1">expression object</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Expression-objects">Expression objects</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-F">F</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-frame">frame</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Lexical-environment">Lexical environment</a>
+</p>
+<p>
+<a href="objects.html#index-function">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="objects.html#index-function-1">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="objects.html#index-function-2">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Function-objects">Function objects</a>
+</p>
+<p>
+<a href="objects.html#index-function-3">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Builtin-objects-and-special-forms">Builtin objects and special forms</a>
+</p>
+<p>
+<a href="objects.html#index-function-4">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Builtin-objects-and-special-forms">Builtin objects and special forms</a>
+</p>
+<p>
+<a href="objects.html#index-function-5">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Promise-objects">Promise objects</a>
+</p>
+<p>
+<a href="objects.html#index-function-6">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Dot_002ddot_002ddot">Dot-dot-dot</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-function-7">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Function-calls">Function calls</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-function-8">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Lexical-environment">Lexical environment</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-function-9">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Lexical-environment">Lexical environment</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-function-10">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Stacks">Stacks</a>
+</p>
+<p>
+<a href="functions.html#index-function-11">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Writing-functions">Writing functions</a>
+</p>
+<p>
+<a href="functions.html#index-function-12">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Syntax-and-examples">Syntax and examples</a>
+</p>
+<p>
+<a href="functions.html#index-function-13">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Syntax-and-examples">Syntax and examples</a>
+</p>
+<p>
+<a href="functions.html#index-function-14">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Arguments">Arguments</a>
+</p>
+<p>
+<a href="functions.html#index-function-15">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Evaluation-environment">Evaluation environment</a>
+</p>
+<p>
+<a href="functions.html#index-function-16">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-matching">Argument matching</a>
+</p>
+<p>
+<a href="functions.html#index-function-17">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="functions.html#index-function-18">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="functions.html#index-function-19">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="functions.html#index-function-20">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="functions.html#index-function-21">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="functions.html#index-function-22">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="functions.html#index-function-23">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function-24">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Object_002doriented-programming">Object-oriented programming</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function-25">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Definition">Definition</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-function-26">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-function-calls">Manipulation of function calls</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-function-27">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-functions">Manipulation of functions</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-function-28">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-functions">Manipulation of functions</a>
+</p>
+<p>
+<a href="parser.html#index-function-29">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Internal-representation">Internal representation</a>
+</p>
+<p>
+<a href="parser.html#index-function-30">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Function-calls-_0028expressions_0029">Function calls (expressions)</a>
+</p>
+<p>
+<a href="parser.html#index-function-31">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Function-definitions">Function definitions</a>
+</p>
+<p>
+<a href="objects.html#index-function-argument">function argument</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Promise-objects">Promise objects</a>
+</p>
+<p>
+<a href="objects.html#index-function-argument-1">function argument</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Dot_002ddot_002ddot">Dot-dot-dot</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-function-arguments">function arguments</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Function-calls">Function calls</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-function-invocation">function invocation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Function-calls">Function calls</a>
+</p>
+<p>
+<a href="objects.html#index-function_002c-accessor">function, accessor</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="functions.html#index-function_002c-anonymous">function, anonymous</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Syntax-and-examples">Syntax and examples</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-function_002c-assignment">function, assignment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Function-calls">Function calls</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function_002c-generic">function, generic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Object_002doriented-programming">Object-oriented programming</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function_002c-generic-1">function, generic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Definition">Definition</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function_002c-generic-2">function, generic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Definition">Definition</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function_002c-generic-3">function, generic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Definition">Definition</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function_002c-generic-4">function, generic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Inheritance">Inheritance</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function_002c-generic-5">function, generic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Method-dispatching">Method dispatching</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function_002c-generic-6">function, generic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Writing-methods">Writing methods</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function_002c-generic-7">function, generic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Writing-methods">Writing methods</a>
+</p>
+<p>
+<a href="functions.html#index-function_002c-internal">function, internal</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-function_002c-internal-1">function, internal</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Group-methods">Group methods</a>
+</p>
+<p>
+<a href="objects.html#index-function_002c-modeling">function, modeling</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Factors">Factors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-I">I</a>
+</p>
+<p>
+<a href="parser.html#index-identifier">identifier</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Identifiers">Identifiers</a>
+</p>
+<p>
+<a href="objects.html#index-index">index</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Vector-objects">Vector objects</a>
+</p>
+<p>
+<a href="objects.html#index-index-1">index</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#List-objects">List objects</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-index-2">index</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Indexing">Indexing</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-index-3">index</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Indexing-by-vectors">Indexing by vectors</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-index-4">index</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Indexing-matrices-and-arrays">Indexing matrices and arrays</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-index-5">index</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Indexing-matrices-and-arrays">Indexing matrices and arrays</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-M">M</a>
+</p>
+<p>
+<a href="objects.html#index-mode">mode</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<p>
+<a href="objects.html#index-mode-1">mode</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Vector-objects">Vector objects</a>
+</p>
+<p>
+<a href="objects.html#index-mode-2">mode</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Symbol-objects">Symbol objects</a>
+</p>
+<p>
+<a href="objects.html#index-modeling-function">modeling function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Factors">Factors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-N">N</a>
+</p>
+<p>
+<a href="objects.html#index-name">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Language-objects">Language objects</a>
+</p>
+<p>
+<a href="objects.html#index-name-1">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Symbol-objects">Symbol objects</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-name-2">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Symbol-lookup">Symbol lookup</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-name-3">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Propagation-of-names">Propagation of names</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-name-4">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Scope-of-variables">Scope of variables</a>
+</p>
+<p>
+<a href="functions.html#index-name-5">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Arguments">Arguments</a>
+</p>
+<p>
+<a href="functions.html#index-name-6">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-matching">Argument matching</a>
+</p>
+<p>
+<a href="functions.html#index-name-7">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-name-8">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Method-dispatching">Method dispatching</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-name-9">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#NextMethod">NextMethod</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-name-10">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Direct-manipulation-of-language-objects">Direct manipulation of language objects</a>
+</p>
+<p>
+<a href="debugging.html#index-name-11">name</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="exception-handling.html#Debugging">Debugging</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-namespace">namespace</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Search-path">Search path</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-O">O</a>
+</p>
+<p>
+<a href="objects.html#index-object">object</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<p>
+<a href="objects.html#index-object-1">object</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<p>
+<a href="objects.html#index-object-2">object</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Symbol-objects">Symbol objects</a>
+</p>
+<p>
+<a href="objects.html#index-object-3">object</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-object-4">object</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Method-dispatching">Method dispatching</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-object_002doriented">object-oriented</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Object_002doriented-programming">Object-oriented programming</a>
+</p>
+<p>
+<a href="object-oriented-programming.html#index-object_002doriented-1">object-oriented</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Definition">Definition</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-P">P</a>
+</p>
+<p>
+<a href="objects.html#index-parsing">parsing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Language-objects">Language objects</a>
+</p>
+<p>
+<a href="objects.html#index-parsing-1">parsing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Symbol-objects">Symbol objects</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-parsing-2">parsing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Evaluation-of-expressions">Evaluation of expressions</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-parsing-3">parsing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="object-oriented-programming.html#Computing-on-the-language">Computing on the language</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-parsing-4">parsing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Direct-manipulation-of-language-objects">Direct manipulation of language objects</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-parsing-5">parsing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Substitutions">Substitutions</a>
+</p>
+<p>
+<a href="parser.html#index-parsing-6">parsing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Parser">Parser</a>
+</p>
+<p>
+<a href="parser.html#index-parsing-7">parsing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="parser.html#Internal-representation">Internal representation</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-partial-matching">partial matching</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Indexing-by-vectors">Indexing by vectors</a>
+</p>
+<p>
+<a href="objects.html#index-promise">promise</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Promise-objects">Promise objects</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-S">S</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-scope">scope</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Scope-of-variables">Scope of variables</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-scope-1">scope</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Stacks">Stacks</a>
+</p>
+<p>
+<a href="functions.html#index-scope-2">scope</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="functions.html#index-scope-3">scope</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="functions.html#index-scope-4">scope</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-scope-5">scope</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#More-on-evaluation">More on evaluation</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-search-path">search path</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Search-path">Search path</a>
+</p>
+<p>
+<a href="objects.html#index-statement">statement</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Language-objects">Language objects</a>
+</p>
+<p>
+<a href="objects.html#index-symbol">symbol</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Symbol-objects">Symbol objects</a>
+</p>
+<p>
+<a href="objects.html#index-symbol-1">symbol</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Symbol-objects">Symbol objects</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-symbol-2">symbol</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Symbol-lookup">Symbol lookup</a>
+</p>
+<p>
+<a href="functions.html#index-symbol-3">symbol</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="functions.html#Scope">Scope</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-symbol-4">symbol</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Substitutions">Substitutions</a>
+</p>
+<p>
+<a href="computing-on-the-language.html#index-symbol-5">symbol</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="computing-on-the-language.html#Manipulation-of-function-calls">Manipulation of function calls</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-T">T</a>
+</p>
+<p>
+<a href="objects.html#index-token">token</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Expression-objects">Expression objects</a>
+</p>
+<p>
+<a href="objects.html#index-type">type</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<p>
+<a href="objects.html#index-type-1">type</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<p>
+<a href="objects.html#index-type-2">type</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Basic-types">Basic types</a>
+</p>
+<p>
+<a href="objects.html#index-type-3">type</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Vector-objects">Vector objects</a>
+</p>
+<p>
+<a href="objects.html#index-type-4">type</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Names">Names</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-type-5">type</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#NA-handling">NA handling</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-Index_cp_letter-V">V</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-value">value</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Symbol-lookup">Symbol lookup</a>
+</p>
+<p>
+<a href="objects.html#index-variable">variable</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Objects">Objects</a>
+</p>
+<p>
+<a href="objects.html#index-vector">vector</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Vector-objects">Vector objects</a>
+</p>
+<p>
+<a href="objects.html#index-vector-1">vector</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="objects.html#Dimensions">Dimensions</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-vector-2">vector</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Operators">Operators</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="concept-index.html#Concept-Index_cp_symbol-1" class="summary-letter"><strong>#</strong></a>   <a href="concept-index.html#Concept-Index_cp_symbol-2" class="summary-letter"><strong>.</strong></a>  <br /> <a href="concept-index.html#Concept-Index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="concept-index.html#Concept-Index_cp_letter-V" class="summary-letter"><strong>V</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>
+<a href="" id="References"></a> <a href="" id="References-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="function-and-variable-index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-a-references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
