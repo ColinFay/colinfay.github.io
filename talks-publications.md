@@ -9,6 +9,8 @@ author_profile: true
 
 ## Talks
 
+__2018-05-14__ — ["Workshop - Building a package that lasts"](https://github.com/ColinFay/erum2018), eRum, Budapest. 
+
 __2018-04-19__ — ["R pour le web, mais pour quoi faire ?"](https://github.com/ColinFay/conf/tree/master/2018-04-nantes_R_meetup), Meetup R Nantes. 
 
 __2018-01-24__ — ["R, vous avez dit R ?"](https://github.com/ThinkR-open/meetup-r), Breizh Data Club Meetup. 
