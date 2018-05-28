@@ -6,7 +6,7 @@ header:
   overlay_image: "assets/img/pexels/aboutcolin.jpg"
 ---
 
-## Data Analyst, R trainer, Content & Community Manager
+## Data Scientist & R Hacker
 
 ### ThinkR
 
@@ -17,7 +17,6 @@ _Since 2017-05_
 + R software engineering 
 + Analytics
 + Training 
-+ Social Media
 
 ## Founder and editor in chief
 
