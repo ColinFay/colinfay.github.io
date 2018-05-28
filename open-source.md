@@ -39,12 +39,31 @@ Easy Dockerfile Creation from R :
 + [Official release on CRAN](https://CRAN.R-project.org/package=dockerfiler)
 + [Dev version on GitHub](https://github.com/ColinFay/dockerfiler)
 
+#### debugin
+
+An RStudio Addin for Debugging 
+
++ [Dev version on GitHub](https://github.com/ColinFay/debugin)
+
+#### fryingpane
+
+Serve datasets from a package inside the RStudio Connection Pane.
+
++ [Dev version on GitHub](https://github.com/ColinFay/fryingpane)
+
 #### remedy
 
 RStudio Addins to Simplify Markdown Writing 
 
 + [Dev version on GitHub](https://github.com/ThinkR-open/remedy)
 
+### Neo4J 
+
+#### neo4r
+
+A Modern and Flexible Neo4J Driver
+
++ [Dev version on GitHub](https://github.com/neo4j-rstats/neo4r)
 
 ### Natural Language Processing
 
@@ -91,7 +110,7 @@ An R package to access the Pinterest API
 
 This package requests informations from the french [GéoAPI](https://api.gouv.fr/api/geoapi.html) inside R 
 
-+ ([More infos](https://colinfay.me/rgeoapi-v1/) & [Documentation](https://cran.r-project.org/web/packages/rgeoapi/rgeoapi.pdf)).
++ [More infos](https://colinfay.me/rgeoapi-v1/) & [Documentation](https://cran.r-project.org/web/packages/rgeoapi/rgeoapi.pdf).
 + [Official release on CRAN](https://cran.r-project.org/web/packages/rgeoapi/index.html)
 + [Dev version on GitHub](https://github.com/ColinFay/rgeoapi)
 
@@ -99,9 +118,17 @@ This package requests informations from the french [GéoAPI](https://api.gouv.fr
 
 Access the languagelayer API with R 
 
-+ ([Documentation](https://cran.r-project.org/web/packages/languagelayeR/languagelayeR.pdf)).
++ [Documentation](https://cran.r-project.org/web/packages/languagelayeR/languagelayeR.pdf).
 + [Official release on CRAN](https://cran.r-project.org/web/packages/languagelayeR/index.html)
 + [Dev version on GitHub](https://github.com/ColinFay/languagelayeR)
+
+### Misc 
+
+#### fakir
+
+Create Fake Data in R
+
++ [Dev version on GitHub](https://github.com/ThinkR-open/fakir)
 
 ## Contributor
 
