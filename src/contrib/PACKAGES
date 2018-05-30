@@ -1,0 +1,7 @@
+Package: attempt
+Version: 0.2.1
+Imports: rlang
+Suggests: testthat, knitr,rmarkdown
+License: MIT + file LICENSE
+MD5sum: 6145809341ec7c9b1552fe33d46faa76
+NeedsCompilation: no
