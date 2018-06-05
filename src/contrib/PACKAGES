@@ -34,7 +34,7 @@ Version: 0.4.0
 Imports: attempt, curl, glue, httr, jsonlite, magrittr, purrr
 Suggests: testthat
 License: GPL-3
-MD5sum: 2572f32bf1851383ece925d7e708b19e
+MD5sum: e5d077a6c4b3659539bdaf7307571d9f
 NeedsCompilation: no
 
 Package: rgeoapi
