@@ -6,7 +6,7 @@ layout: single
 permalink: /tidystringdist/
 categories : r-blog-en
 tags: [r, package, cran]
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 
 Compute string distance the tidy way. A package built on top of the {stringdist} package.
@@ -160,3 +160,6 @@ I'll be glad to have some feedback about this package. Feel free to reach me out
 ### To do 
 
 For an up-to-date to-do list about this package, please read the issue section on [GitHub](https://github.com/ColinFay/tidystringdist/issues)!
+
+
+

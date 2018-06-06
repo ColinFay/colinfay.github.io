@@ -10,7 +10,7 @@ published: true
 tags: [r]
 categories: r-blog-fr
 ---
-## Aperçu du vote au second tour en France, via des cartes réalisées avec R. <!--more-->
+## Aperçu du vote au second tour en France, via des cartes réalisées avec R. #----#
 ### Le jeu de données
 Le dataset utilisé ici est disponible sur data.gouv : <a href="https://www.data.gouv.fr/fr/datasets/election-presidentielle-des-23-avril-et-7-mai-2017-resultats-du-2eme-tour-2/" target="_blank" rel="noopener noreferrer">Election présidentielle des 23 avril et 7 mai 2017 - Résultats du 2ème tour</a>. Pour une meilleur compatibilité, j'ai manuellement converti le fichier xls en csv.
 ### Charger les librairies et les données
@@ -121,3 +121,6 @@ ggplot(result_map, aes(long,lat, group = group, fill = pourcentage_lepen)) +
   map_theme
 ```
 <a href="/assets/img/blog/mlp.png"><img class="aligncenter size-full wp-image-1724" src="/assets/img/blog/mlp.png" alt="Votes pour Marine Le Pen au second tour" width="1000" height="500" /></a>
+
+
+

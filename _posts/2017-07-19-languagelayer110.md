@@ -6,12 +6,12 @@ layout: single
 permalink: /languagelayer110/
 categories : r-blog-en
 tags: [r, package, cran]
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 
 I took a studious resolution for this summer: update, clean and create better docs for my old packages which are on the CRAN. `languagelayeR` is the first to go! 
 
-<!--more-->
+#----#
 
 ## languagelayer 
 
@@ -225,3 +225,6 @@ $reliable_result
 ```
 
 I'll be glad to have some feedback about this package. Feel free to reach me out on [Twitter](http://www.twitter.com/_colinfay)! You can also send some PR or open issue on the [GitHub repo](https://github.com/ColinFay/languagelayeR). 
+
+
+

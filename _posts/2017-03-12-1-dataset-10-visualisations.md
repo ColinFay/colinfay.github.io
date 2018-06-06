@@ -10,7 +10,7 @@ published: true
 categories : r-blog-fr
 tags: [talk]
 ---
-## Retour sur l’atelier dataviz de la Fabrique de l’info !<!--more-->
+## Retour sur l’atelier dataviz de la Fabrique de l’info !#----#
 
 ## La fabrique de l’info
 <a href="/assets/img/blog/IMG_2771.jpg"><img class="size-medium wp-image-1412 alignleft" src="/assets/img/blog/IMG_2771-300x225.jpg" alt="" width="300" height="225" /></a>
@@ -177,4 +177,7 @@ prim %>%
   databzhTheme()
 ```
 <a href="/assets/img/blog/Rplot09.jpeg"><img class="aligncenter size-large wp-image-1403" src="/assets/img/blog/Rplot09-1024x512.jpeg" alt="" width="840" height="420" /></a>
+
+
+
 

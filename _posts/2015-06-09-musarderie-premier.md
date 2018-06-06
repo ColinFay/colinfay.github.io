@@ -15,7 +15,7 @@ Souvent, sur le net, ces voix qui nous disent : "À quoi bon encore écrire ?"
 Partout, des mots, des articles et des billets, qui s'accumulent, et qui s'interrogent. Pourquoi encore prendre la peine d'être un son de cloche dans un immense brouhaha ?
 Fallait-il vraiment commencer à écrire ici ?
 
-<!--more-->
+#----#
 <p style="text-align: center;">1.</p>
 Infobésité, _information-overload_ (1), les termes ne manquent pas pour faire référence à cette __pénurie de temps__ qui caractériserait notre monde moderne. À un tel point que naissent les__ mouvements du slow media__ (2) &amp; (3), œuvrant au r__alentissement de nos montres__ et de notre continuelle course à la vitesse, notre besoin de «_ danser de plus en plus vite simplement pour rester en place, ou courir aussi vite que possible pour rester au même endroit_. » (4)
 <p style="text-align: center;">2.</p>
@@ -28,3 +28,6 @@ __Liens :__
 (2) <a href="http://en.slow-media.net/manifesto" target="_blank">Slow media manifesto</a>
 (3) <a href="http://www.oeil-au-carre.fr/le-blog/2015/03/04/guide-slow-media/" target="_blank">Petit guide du slow media à l’usage des lecteurs pressés</a>
 (4) <a href="http://www.cles.com/livre/acceleration-une-critique-sociale-du-temps" target="_blank">Rosa — Accélération : une critique sociale du temps</a>
+
+
+

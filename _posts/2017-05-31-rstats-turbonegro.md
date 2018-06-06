@@ -6,12 +6,12 @@ layout: single
 permalink: /rstats-turbonegro/
 categories : r-blog-en
 tags: [r, justforfun]
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 
 Because sometime, you just need a little bit of punk with your coding. 
 
-<!--more-->
+#----#
 
 ## tuRbonegro
 
@@ -46,3 +46,6 @@ tuRbonegro()
 ![tuRbonegro_pic](https://github.com/ColinFay/tuRbonegro/raw/master/tuRbonegro.png)
 
 And turn the volume on! 
+
+
+

@@ -11,7 +11,7 @@ categories : r-blog-en
 tags: [talk]
 ---
 ## Creating 10 datavisualisations from 1 dataset with R.
-<!--more-->
+#----#
 ### _Back from La fabrique de l’info_
 <a href="/assets/img/blog/IMG_2771.jpg"><img class="size-medium wp-image-1412 alignleft" src="/assets/img/blog/IMG_2771-300x225.jpg" alt="" width="300" height="225" /></a>
 
@@ -165,3 +165,6 @@ prim %>%
 
 ```
 <a href="/assets/img/blog/Rplot09.jpeg"><img class="aligncenter size-large wp-image-1403" src="/assets/img/blog/Rplot09.jpeg" alt="" width="840" height="420" /></a>
+
+
+

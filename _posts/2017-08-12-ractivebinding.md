@@ -6,11 +6,11 @@ layout: single
 permalink: /ractivebinfing/
 categories : r-blog-en
 tags: [r, activebinding]
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 Active binding, also known as "That cool stuff from {R6}".
 
-<!--more-->
+#----#
 
 ## What on earth is binding?
 
@@ -210,3 +210,6 @@ Your special pizza type is Vegetarian
 ```
 
 And... bon appetit ! 
+
+
+

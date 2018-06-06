@@ -11,7 +11,7 @@ categories : r-blog-en
 tags: [r, tidyverse]
 ---
 ## Here a short tutorial for making a heatmap in R with ggplot2, inspired by several articles on databzh.
-<!--more-->
+#----#
 
 This article is inspired by two articles I've written on databzh. These being:
 - <a href="http://data-bzh.fr/trafic-web-site-rennes-metropole-2016/">Trafic du site web de Rennes Metropole en 2016</a>
@@ -95,5 +95,8 @@ name %>%
 <a href="/assets/img/blog/prenom-elisabeth-rstats.png"><img class="aligncenter size-full wp-image-1589" src="/assets/img/blog/prenom-elisabeth-rstats.png" alt="Elisabeth prénom" width="1000" height="500" /></a>
 
 Pretty easy isn't it?
+
+
+
 
 

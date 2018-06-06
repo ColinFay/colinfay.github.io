@@ -8,11 +8,11 @@ tags:
   - purrr
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 This is gonna be the last time I make this Queen reference in 2017. 
 
-<!--more-->
+#----#
 
 I've been sharing some "stats with {purrr}" recipes on my [Twitter account](https://twitter.com/_ColinFay) lately. Twitter being what it is (a source of infinite temporary content), here's the post gathering some statistics tricks you can do with {purrr}.
 
@@ -176,3 +176,6 @@ keep(sens, map_lgl(sens, ~ .x %in% spec))
 So, I guess we'll go for model(s) number `r keep(sens, map_lgl(sens, ~ .x %in% spec))`!
 
 ![](https://media.giphy.com/media/ohdY5OaQmUmVW/giphy.gif)
+
+
+

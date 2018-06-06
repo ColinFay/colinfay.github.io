@@ -11,7 +11,7 @@ categories : r-blog-en
 tags: [r, justforfun]
 ---
 ## Just before Christmas, let's enjoy these two visualisations created with data from the lastfm API.
-<!--more-->
+#----#
 ### Allô LastFM
 First, you need to create an account on <a href="http://www.last.fm/api" target="_blank">lastfm</a>, and get an access key. When you have it, you can start making resquests on the API with R.
 
@@ -142,3 +142,6 @@ ggplot(aes(x = reorder(., Freq), y = Freq)) +
 So now... Merry Christmas!
 
 <a title="" href="/assets/img/blog/b546c88a28a7c2423d2a32bc85d1f106.gif"><img class="aligncenter size-full wp-image-1182" title="" src="/assets/img/blog/b546c88a28a7c2423d2a32bc85d1f106.gif" alt="Nightmare before christmas" width="500" height="301" /></a>
+
+
+

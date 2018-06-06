@@ -8,12 +8,12 @@ tags:
   - purrr
 categories : r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 
 I won’t talk about the Queen reference anymore.
 
-<!--more-->
+#----#
 
 I’ve been working lately on a new package called {attempt}, which is an
 attempt at making try catch and condition handling in R a little bit
@@ -300,3 +300,6 @@ stop_if(10, function(x) sqrt(x) < 100)
     ## Error in stop_if(10, function(x) sqrt(x) < 100): Error!
 
 Aaaaaand that’s it for today :)
+
+
+

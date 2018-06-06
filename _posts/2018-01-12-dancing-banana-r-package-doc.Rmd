@@ -6,11 +6,11 @@ layout: single
 permalink: /dancing-banana-r-package-doc/
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 Having fun playing around with R documentation and HTML.
 
-<!--more-->
+#----#
 
 I found out today that you could [easily insert html and JS](https://twitter.com/_ColinFay/status/951838799918755842) into R help pages, as I walked into Clippy when reading the [{writexl} package documentation](https://twitter.com/_ColinFay/status/951819899248283651). 
 
@@ -62,3 +62,6 @@ But I guess it's still better to get [rickrolled](https://www.youtube.com/watch?
 ```
 
 ![](https://github.com/ColinFay/colinfay.github.io/raw/master/_posts/img/rick-rolled.gif)
+
+
+

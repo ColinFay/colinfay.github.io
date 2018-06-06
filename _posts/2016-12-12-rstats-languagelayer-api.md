@@ -9,7 +9,7 @@ permalink: /rstats-languagelayer-api/
 published: true
 categories : r-blog-fr
 ---
-## Facilitez vos fouilles de textes avec languagelayeR, un package R qui détecte la langue d'une suite de mots.<!--more-->
+## Facilitez vos fouilles de textes avec languagelayeR, un package R qui détecte la langue d'une suite de mots.#----#
 &nbsp;
 
 Ce package accède à l'API <a href="https://languagelayer.com/" target="_blank">languagelayer</a>, un outil de détection de la langue d'un texte.
@@ -63,3 +63,6 @@ Lister toutes les langues disponibles :
 
 ### Contact
 Questions et feedbacks <a href="mailto:contact@colinfay.me" target="_blank">bienvenus</a> !
+
+
+

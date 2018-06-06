@@ -8,7 +8,7 @@ published: true
 categories : r-blog-fr
 tags: [r, package, api]
 ---
-## Accéder aux boards, pins et users de Pinterest directement dans R, tel est l'object de rpinterest, un package destiné à faciliter le dialogue entre l'API du réseau social et votre logiciel favori. <!--more-->
+## Accéder aux boards, pins et users de Pinterest directement dans R, tel est l'object de rpinterest, un package destiné à faciliter le dialogue entre l'API du réseau social et votre logiciel favori. #----#
 
 ### Installer rpinterest
 _Update [17/08/16]_
@@ -59,5 +59,8 @@ Comme son nom l'indique, cette fonction obtient les informations sur l’utilisa
 ```
 ### Contact
 Vos questions et feedbacks <a href="mailto:contact@colinfay.me">sont les bienvenus</a> !
+
+
+
 
 

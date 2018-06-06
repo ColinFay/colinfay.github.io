@@ -7,12 +7,12 @@ permalink: /rtweet-tidytext/
 categories: r-blog-en
 tags: [rtweet, package, tidytext]
 output: jekyllthat::jekylldown
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 
 About keeping your packages up to date.
 
-<!--more-->
+#----#
 
 I’ve received recently some mails and comments asking why the code in :
 
@@ -337,3 +337,6 @@ Selecting by Freq
 9   DataScience    3
 10       rstats    9
 ```
+
+
+

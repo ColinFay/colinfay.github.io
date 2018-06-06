@@ -6,12 +6,12 @@ layout: single
 permalink: /r6-parent-exposure/
 categories : r-blog-en
 tags: [R6]
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 
 About R6 and parent exposure. 
 
-<!--more-->
+#----#
 
 ## Default inheritance
 
@@ -71,4 +71,7 @@ PersonGrandChildExposed$new()
 ```
 
 Works like a charm ;)
+
+
+
 

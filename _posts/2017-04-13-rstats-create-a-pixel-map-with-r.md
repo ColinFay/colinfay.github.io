@@ -10,7 +10,7 @@ published: true
 tags: [r, justforfun]
 categories : r-blog-en
 ---
-## The whole webdesign of <a href="http://data-bzh.fr" target="_blank">Data Bzh</a> has recently been updated. With it,&nbsp;a new header containing a pixelized map of Brittany. Here's how you can replicate it&nbsp;in R, with a map of France, US and the world.<!--more-->
+## The whole webdesign of <a href="http://data-bzh.fr" target="_blank">Data Bzh</a> has recently been updated. With it,&nbsp;a new header containing a pixelized map of Brittany. Here's how you can replicate it&nbsp;in R, with a map of France, US and the world.#----#
 
 ### Load map
 
@@ -115,3 +115,6 @@ theme_void()
 And, of course, you can create your own pixel maps with other shapefiles ;)&nbsp;
 
 The larger the portion of the earth you want to map, the more "imprecise" you need to make your lat and long variables — here, we're just cutting off the decimal part of these number, but you can imagine rounding to the closest decile. Anyone to give it a try?&nbsp;
+
+
+

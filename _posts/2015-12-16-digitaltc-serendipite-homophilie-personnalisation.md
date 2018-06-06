@@ -18,7 +18,7 @@ categories : random
 
 Retour sur une question soulevée lors de la Digital Tech Conférence, le 3 décembre 2015, à l’Opéra de Rennes. Sur la sérendipité, l’homophilie et la personnalisation de la musique en ligne.
 
-<!--more-->
+#----#
 ### 1. __La musique en ligne.__
 
 Comment survivre dans le monde de la musique en ligne ? Quel business model construire pour le streaming ? Ici, une voix semble s’élever à l’unisson : la __priorité est à l’individualisation__. Là où la part des internautes prêts à payer pour du contenu n’est pas majoritaire, l’enjeu majeur reste de convaincre les indécis. En d’autres termes, de transformer les utilisateurs gratuits en abonnés payants, en proposant le produit, le service, l’expérience sur mesure qu’ils souhaitent. Un modèle qui se transpose à la publicité — c’est en __offrant une annonce sur-mesure__ que le service devient pertinent pour tous les partis : l’utilisateur, l’annonceur, la plateforme de support.
@@ -47,3 +47,6 @@ Ainsi, trois profils se dessinent dans le sur-mesure — et personnaliser l’ex
 __Liens :__
 
 (1) <a href="http://arxiv.org/abs/1311.4658" target="_blank">Data Portraits : Connecting People of Opposing Views</a>
+
+
+

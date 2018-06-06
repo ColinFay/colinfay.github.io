@@ -10,7 +10,7 @@ published: true
 tags: [r]
 categories : r-blog-en
 ---
-## Visualising the second round results with maps made with R. <!--more-->
+## Visualising the second round results with maps made with R. #----#
 ### The dataset
 The dataset used here is available on data.gouv: <a href="https://www.data.gouv.fr/fr/datasets/election-presidentielle-des-23-avril-et-7-mai-2017-resultats-du-2eme-tour-2/" target="_blank" rel="noopener noreferrer">Election présidentielle des 23 avril et 7 mai 2017 - Résultats du 2ème tour</a>. In order to make it easier to import, I've manually converted the xls file to csv.
 ### Load libraries and data
@@ -121,3 +121,6 @@ ggplot(result_map, aes(long,lat, group = group, fill = pourcentage_lepen)) +
   map_theme
 ```
 <a href="/assets/img/blog/mlp.png"><img class="aligncenter size-full wp-image-1724" src="/assets/img/blog/mlp.png" alt="Votes pour Marine Le Pen au second tour" width="1000" height="500" /></a>
+
+
+

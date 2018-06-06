@@ -11,7 +11,7 @@ tags: [tidyverse]
 categories : r-blog-fr
 ---
 ## Un court tutorial sur les heatmaps avec R, inspirés d'articles sur databzh.
-<!--more-->
+#----#
 
 L'idée de cet article prend racine dans deux billets sur Data Bzh :
 - <a href="http://data-bzh.fr/trafic-web-site-rennes-metropole-2016/">Trafic du site web de Rennes Metropole en 2016</a>
@@ -96,3 +96,6 @@ name %>%
 <a href="/assets/img/blog/prenom-elisabeth-rstats.png"><img class="aligncenter size-full wp-image-1589" src="/assets/img/blog/prenom-elisabeth-rstats.png" alt="Elisabeth prénom" width="1000" height="500" /></a>
 
 Simple, n'est-ce pas !
+
+
+

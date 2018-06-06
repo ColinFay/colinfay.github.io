@@ -10,7 +10,7 @@ published: true
 categories : r-blog-fr
 ---
 ## Ce package R orienté SIG interroge la base de donnée cartographique française. Il est désormais disponible en version stable sur le CRAN !
-<!--more-->
+#----#
 ### rgeoapi sur le CRAN
 Construisez des cartes plus facilement avec`rgeoapi`, un outil maintenant disponible sur le <a href="https://cran.r-project.org/web/packages/rgeoapi/" target="_blank">CRAN</a>.
 
@@ -28,3 +28,6 @@ Plus d'infos sur la GéoAPI :
 
 ### rgeoapi — version dev
 Pour accéder à la version en développement, et pour proposer des améliorations ou modifications, rendez-vous sur <a href="https://github.com/ColinFay/rgeoapi" target="_blank">GitHub</a> !
+
+
+

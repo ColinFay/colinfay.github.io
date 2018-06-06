@@ -14,7 +14,7 @@ publicize_twitter_user:
 categories : random
 ---
 
-Sur l’usage grandissant de l’emoji : l’écriture, les mots, et le reste. <!--more-->
+Sur l’usage grandissant de l’emoji : l’écriture, les mots, et le reste. #----#
 <p style="text-align: center;">1.</p>
 _De l’emoji_. Selon Wikipédia, l’expression combine deux termes japonais : « e », pour image, et « moji », signifiant lettre. Les emojis sont des symboles, utilisables avec des caractères alphabétiques, au sein de l’écriture. Il s’agit ici bel et bien d’__un avec__ et non pas un « à la place ».
 <p style="text-align: center;">2.</p>
@@ -36,3 +36,6 @@ __Liens__
 (5) voir : <a href="http://colinfay.me/2015/07/27/roland-barthes-1/">Roland Barthes, morceaux choisis #1</a>
 (6) <a href="http://www.seuil.com/livre-9782757839997.htm" target="_blank">Watzlawick — _Une logique de la communication_</a>.
 (7) <a href="http://www.septentrion.com/fr/livre/?GCOI=27574100649900&amp;fa=author&amp;person_ID=7546" target="_blank">Gardiner — _Langage et acte de langage : aux sources de la pragmatique_</a>.
+
+
+

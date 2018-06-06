@@ -13,7 +13,7 @@ categories : r-blog-en
 ---
 
 ## Playing around with the faces of #RStats and Microsoft Computer Vision API.
-<!--more-->
+#----#
 
 This blogpost is inspired by the work of Maelle Salmon with <a href="http://www.masalmon.eu/2017/03/19/facesofr/" target="_blank" rel="noopener noreferrer">Faces of #RStats twitter</a>, and an article on Data Bzh using Microsoft Computer Vision API to look into <a href="http://data-bzh.fr/photographies-fonds-de-la-guerre-14-18-en-bretagne/" target="_blank" rel="noopener noreferrer">old pictures of Brittany</a>.
 ### Microsoft Computer Vision
@@ -169,3 +169,6 @@ A close up of two giraffes near a tree — Confidence mean : 0.0037
 A person wearing glasses looking at the camera
 
 The first and third collages are clearly wrong about the captions. Yet we can see the confidence score is wery low. The second and fourth, though, seems to be more acurate. Maybe we need to try again with other pictures, just to be sure... Maybe another time ;)
+
+
+

@@ -6,12 +6,12 @@ layout: single
 permalink: /r6-shared-objects/
 categories : r-blog-en
 tags: [R6]
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 
 A short tutorial about how to share objects between all instances of an R6 class.
 
-<!--more-->
+#----#
 
 When you create a new object which is an instance of an R6 class, it contains its own data fields — i.e. one change in an object is not reflected inside all the instances of the class. If you made a mistake in the class definition, you can't just change something in the parent and expect the change to be reflected in the children who inherited from your parent class. Or maybe you need to work with the same dataframe all along, and whenever you change something in it, you want the dataframe to be updated for everyone.
 
@@ -117,3 +117,6 @@ papa_shared$name == child_shared$name
 [1] TRUE
 ```
 As you can seen, changes flow all along the family tree! 
+
+
+

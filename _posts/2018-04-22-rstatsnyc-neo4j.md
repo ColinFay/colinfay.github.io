@@ -5,13 +5,13 @@ layout: single
 permalink: /rstatsnyc-neo4j/
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 always_allow_html: yes
 ---
 
 A search on Twitter, some R, and just enough Neo4J.
 
-<!--more-->
+#----#
 
 > Disclaimer: of course everything here could be done in pure R. But
 > hey, where’s the fun in that?
@@ -635,3 +635,6 @@ RETURN u, s, m, r' %>%
 <img src="../assets/img/graph_mentions-1.png" style="display: block; margin: auto;" />
 
 > [{neo4r} on GitHub](https://github.com/neo4j-rstats/neo4r)
+
+
+

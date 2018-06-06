@@ -18,7 +18,7 @@ categories : random
 
 __Du 1er au 30 avril, une guerre des gangs se tiendra dans les rues de Rennes. Mais rassurez vous, uniquement sur Twitter.__
 
-<!--more-->
+#----#
 ### Le principe
 Par équipe de 2 à 4, les community managers de tous les horizons, ainsi que des travailleurs du web (et également les curieux) s'affronteront sur Twitter ! __Chaque team aura 30 jours pour animer un compte portant le nom d'une rue__. Pour cela, trois règles : interdiction d'utiliser son/ses compte(s) perso/pro, de mettre en place des bots, ni de faire de la publicité. À part cela, tous les coups sont permis !
 ### Où s'inscrire ?
@@ -54,3 +54,6 @@ Retrouvez Rennes Social Derby sur :
 <a href="http://www.social-derby.fr/page/mentions-legales-et-reglement" target="_blank">Le site internet</a>
 <a href="https://twitter.com/_SocialDerby" target="_blank">Twitter </a>
 <a href="https://www.facebook.com/social.derby/" target="_blank">Facebook</a>
+
+
+

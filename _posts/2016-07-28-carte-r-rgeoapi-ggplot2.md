@@ -11,7 +11,7 @@ categories : r-blog-fr
 tags: [r, tidyverse]
 ---
 ## Pensé pour simplifier les travaux de cartographie, rgeoapi est un package qui interroge la base de données géographique française. Résultat : des visualisations de cartes, _easy peasy_. Si si.
-<!--more-->
+#----#
 ### rgeoquoi ?
 Disponible sur <a href="https://github.com/ColinFay">Github</a>, `rgeoapi` permet d’effectuer des requêtes sur la base de données cartographique française. Pour quoi faire dites-vous ? Ce package vous permet, entre autres, d’obtenir les coordonnées d’une ville à partir de son nom, de son code INSEE ou encore de son code postal. _How cool is that?_
 
@@ -302,3 +302,6 @@ map + geom_point(data = villes, aes(x = long, y = lat, color= variable2, size = 
 <a href="/assets/img/blog/carte-avec-rgeoapi.jpeg"><img class="aligncenter size-full wp-image-1017" src="/assets/img/blog/carte-avec-rgeoapi.jpeg" alt="Réaliser une carte avec R, ggplot2 et rgeoapi" width="600" height="400" /></a>
 
 Et voilà, c’est presque trop simple ! N’hésitez pas à me faire vos retours sur rgeoapi directement sur GitHub, ou à m’envoyer vos questions sur le package via <a href="mailto:contact@colinfay.me">mail</a>.
+
+
+

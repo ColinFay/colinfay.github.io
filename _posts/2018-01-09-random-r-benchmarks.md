@@ -7,11 +7,11 @@ permalink: /random-r-benchmarks/
 categories: r-blog-en
 tags: [r, package, infrastructure]
 output: jekyllthat::jekylldown
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 
 Some random (one could say useless) benchmarks on R, serious or for fun,
-and some advices to make your code run faster. <!--more-->
+and some advices to make your code run faster. #----#
 
 `disclamer::on()`
 
@@ -322,3 +322,6 @@ Gillespie and Robin Lovelace wrote a nice book about being more efficien
 with R, with a chapter focused on performance: [Efficient
 optimisation](https://csgillespie.github.io/efficientR/performance.html).
 See also [Advanced R - Performant code](http://adv-r.had.co.nz/).
+
+
+

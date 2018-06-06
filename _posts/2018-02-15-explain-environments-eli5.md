@@ -7,7 +7,7 @@ permalink: /explain-environments-eli5/
 categories: r-blog-en
 output: jekyllthat::jekylldown
 tags: [r, environment, explainlikeimfive]
-excerpt_separator: <!--more-->
+excerpt_separator: #----#
 ---
 
 “Can you explain me what are environments in R?”
@@ -15,7 +15,7 @@ excerpt_separator: <!--more-->
 The beginning of a series of blogpost about R concepts, explained to my
 daughter.
 
-<!--more-->
+#----#
 
 > Side note: no, my daughter is not five, and she’s not named Alice. And
 > she doesn’t speak english either ¯\\*(ツ)*/¯.
@@ -161,3 +161,6 @@ free to share it in the comments, or to reach me on Twitter :)
 
 > Ps: this blogpost is inspired by this really cool
 > [\#explainmelikeimfive](https://dev.to/ben/explain-websockets-like-im-five)
+
+
+

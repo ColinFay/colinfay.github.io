@@ -11,7 +11,7 @@ categories : r-blog-en
 tags: [r, tidyverse]
 ---
 ## Improve your mapping with rgeoapi, a package designed to access the french geographic database.
-<!--more-->
+#----#
 
 ### rgeowhat ?
 Developped by Etalab, with La Poste, l’INSEE and OpenStreetMap, the <a href="https://api.gouv.fr/explorer/geoapi/">GeoAPI</a> API is a JSON interface designed to make requests on the French geographic database.
@@ -302,3 +302,6 @@ map + geom_point(data = villes, aes(x = long, y = lat, color= variable2, size = 
 &nbsp;
 
 Easy, isn't it!
+
+
+
