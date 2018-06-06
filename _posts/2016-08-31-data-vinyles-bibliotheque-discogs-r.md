@@ -11,7 +11,7 @@ categories : r-blog-fr
 tags: [r, justforfun]
 ---
 ## Amoureux de données et de vinyles, je me suis amusé à envoyer quelques requêtes sur l’API Discogs avec R, pour en savoir un peu plus sur ma collection.
-#----#
+
 
 Réseau social incontournable des amateurs du disque microsillon, Discogs offre une API permettant de jongler entre musique et données en quelques lignes de code.
 
@@ -385,6 +385,9 @@ ggplot(collection_complete, aes(x = lowest_price, y = average_note)) +
 <a href="/assets/img/blog/prix-et-note-vinyles-collection.jpeg"><img class="aligncenter size-full wp-image-1080" src="/assets/img/blog/prix-et-note-vinyles-collection.jpeg" alt="Prix en fonction des notes" width="800" height="400" /></a>
 ### And to conclude...
 La prochaine étape ? Faire un package pour accéder à l'API... et pourquoi pas ? Je mets ça sur ma to-do !
+
+
+
 
 
 

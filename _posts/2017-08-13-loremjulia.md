@@ -6,12 +6,12 @@ layout: single
 permalink: /loremjulia/
 categories : julia-blog
 tags: [julia, package]
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 An excursion in the world of Julia.
 
-#----#
+
 
 # LoremJulia
 
@@ -59,6 +59,9 @@ lorem_sentences(2)
 ## Credit
 
 The Lorem ipsum text was taken from [lipsum.com](http://lipsum.com/) — generated 100 paragraphs, 8970 words, 60793 bytes of Lorem Ipsum.
+
+
+
 
 
 

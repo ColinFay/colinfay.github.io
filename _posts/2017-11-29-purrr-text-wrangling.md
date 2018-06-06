@@ -7,17 +7,17 @@ permalink: /purrr-text-wrangling/
 tags:
   - purrr
 categories : r-blog-en
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Yes, this title is still a Queen reference. 
 
-#----#
+
 
 I've recently been exchanging DM with Rémi (who writes cool stuffs about data science and SEO on his blog, so here's some [Google Juice](https://remibacha.com/) for him) who was looking for a way to turn this kind of dataframe: 
 
 |Keywords                  |
-|:#----##----##----##----##----##----#-|
+|:-|
 |articlexyz for sale       |
 |cheap articlexyz          |
 |razor articlexyz          |
@@ -31,7 +31,7 @@ I've recently been exchanging DM with Rémi (who writes cool stuffs about data s
 Into something like : 
 
 |Keywords                  |
-|:#----##----##----##----##----##----#-|
+|:-|
 |for sale       |
 |cheap           |
 |razor           |
@@ -299,6 +299,9 @@ df %>%
 And now, let's sell some Google Ads! 
 
 ![](https://i.giphy.com/media/VTxmwaCEwSlZm/200.gif)
+
+
+
 
 
 

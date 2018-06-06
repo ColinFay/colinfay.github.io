@@ -11,7 +11,7 @@ tags: [r]
 categories : r-blog-en
 ---
 ## Let's try a prediction of the french presidential vote, based on the results from the first round.
-#----#
+
 
 Before the second poll of the french election (May 7th), candidates are invited to give voting instructions to their supporters, supporting one of the candidates still in the running. Let’s try to predict the results of the second round, based on these information.
 
@@ -137,6 +137,9 @@ result %>%
 <a href="/assets/img/blog/simulation-second-tour-5.png"><img class="aligncenter size-full wp-image-1675" src="/assets/img/blog/simulation-second-tour-5.png" alt="" width="1000" height="500" /></a>
 
 Ok, still tight, but Emmanuel Macron still wins
+
+
+
 
 
 

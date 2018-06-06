@@ -10,7 +10,7 @@ published: true
 tags: [r, api]
 categories : r-blog-en
 ---
-## Lately, I received a mail concerning my blogpost on Discogs API, saying the code didn't work. Turned out it was due to new API limitations. Here's how to get along with it. #----#
+## Lately, I received a mail concerning my blogpost on Discogs API, saying the code didn't work. Turned out it was due to new API limitations. Here's how to get along with it. 
 ### Discogs calls
 Here is <a href="http://colinfay.me/data-vinyles-discogs-r/">the blog post describing how to make calls on the Discogs API with R</a>.
 
@@ -60,6 +60,9 @@ lapply(1:3, function(x) {
 ```
 
 _Hope this can help!_
+
+
+
 
 
 

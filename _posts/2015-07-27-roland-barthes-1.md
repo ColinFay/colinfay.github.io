@@ -14,7 +14,7 @@ publicize_twitter_user:
 categories : random
 ---
 
-Divagation et commentaires hors contexte sur des morceaux choisis dans l’œuvre de Barthes.#----#
+Divagation et commentaires hors contexte sur des morceaux choisis dans l’œuvre de Barthes.
 ## Introduction à l’analyse structurale des récits (1966)
 « _Du point de vue du récit, ce que nous appelons temps n’existe pas, ou du moins n’existe que fonctionnellement, comme élément d’un système sémiotique_ »
 <p style="text-align: center;">1.</p>
@@ -48,6 +48,9 @@ _Parole et mouvement_. __La__ __parole__, à l’inverse de l’écrit, __est__ 
 _Parole et correction_. Une fois passée, __la parole ne se corrige pas__. La parole ne peut qu’être augmentée, même pour infirmer ce qui vient d’être dit. On ne peut__ qu’en dire plus__ — de même qu’on ne peut revenir sur le temps qui s’est écoulé, mais uniquement regarder les secondes s’accumuler. Une fois une parole lancée, l’interlocuteur ne peut plus y renoncer. Au grand malheur de l’homme qui ne tourne pas sa langue 7 fois dans sa bouche avant de parler.
 <p style="text-align: center;">3.</p>
 _La parole aujourd’hui_. Alors, __la parole enregistrée__ __n’est plus une parole__. Elle devient écriture, et partage avec elle toutes les considérations développées au-dessus. Stockée, elle se décroche du contexte, elle quitte son auteur, son origine s’efface. La parole consignée est mort de l’auteur, puisque, comme dit plus haut, s’il n’y avait pas d’effacement de l’origine, la parole n’aurait pas besoin d’être enregistrée — elle serait entendue directement. Consignée, elle devient sans contexte. __Ainsi en est-il de toutes les traces en mouvement__ (son ou image), se transformant en écriture une fois qu’elles sont numériquement stockées — là où la radio ou encore la télévision dépendent de l’heure à laquelle on les allume, les technologies __désynchronisantes transfigurent la parole qui devient une écriture__.
+
+
+
 
 
 

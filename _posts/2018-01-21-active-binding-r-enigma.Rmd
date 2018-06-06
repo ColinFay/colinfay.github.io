@@ -6,11 +6,11 @@ layout: single
 permalink: /active-binding-r-enigma/
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 A blogpost inspired by a Stackoverflow question: "Can (a==1 && a==2 && a==3) ever evaluate to true?"
 
-#----#
+
 
 Yesterday I run into this [topic on SO](https://stackoverflow.com/questions/48270127/can-a-1-a-2-a-3-ever-evaluate-to-true), about a JavaScript question a user had during a job interview. 
 
@@ -206,6 +206,9 @@ Read more about binding:
 + [Advanced R - Environments](http://adv-r.had.co.nz/Environments.html#binding)
 
 + [Binding and Environment Locking, Active Bindings](https://stat.ethz.ch/R-manual/R-devel/library/base/html/bindenv.html)
+
+
+
 
 
 

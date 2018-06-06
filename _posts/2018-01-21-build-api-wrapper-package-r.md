@@ -6,12 +6,12 @@ layout: single
 permalink: /build-api-wrapper-package-r/
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Well… documentation not included (of course).
 
-#----#
+
 
 API are cool. They allow to retrieve data from the web, and if ever
 you’re familiar with {httr}, {jsonlite} and packages like these,
@@ -330,6 +330,9 @@ use_readme_rmd()
 ```
 
 And now, grab you best pen and write documentation ;)
+
+
+
 
 
 

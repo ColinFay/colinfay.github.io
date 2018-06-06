@@ -18,7 +18,7 @@ categories : random
 
 Courir de plus en plus vite, et pour toujours.
 
-#----#
+
 <p style="text-align: center;">1.</p>
 _L’instantané_. Déjà en 1991, Régis Debray notait : « _toujours plus de monde a accès à toujours plus d’information, car toujours plus légère et mobile_ » (1). Plus de monde, pour plus d’informations, là où les frontières tendent à disparaitre : __se connecter à un site à l’autre bout de la planète prend un temps (sensiblement) égal à celui de la connexion à quelques pas de chez soi__. Ainsi, l’accès global se fait dans l’instant, opacifiant la temporalité de la distance. Il en va de même pour la production du contenu : là où la technique a longtemps était une frontière à l’instantané, puisque demandant du temps, aujourd’hui cette durée s’est massivement réduite. Entre le temps de l’idée, celui de l’écriture, et celui de la lecture, les barrières temporelles se sont effondrées : plus besoin d’attendre l’impression, la diffusion, le transport. Tout est accessible en quelques minutes.
 <p style="text-align: center;">2.</p>
@@ -43,6 +43,9 @@ __Liens :__
 (1) <a href="http://www.gallimard.fr/Catalogue/GALLIMARD/Bibliotheque-des-Idees/Cours-de-mediologie-generale" target="_blank">Régis Debray — Cours de médiologie générale</a>
 (2) <a href="http://qz.com/538256/you-might-want-to-read-snapchats-updated-privacy-policy-before-downloading-its-new-app/" target="_blank">You might want to read Snapchat’s updated privacy policy before downloading its new app</a>
 (3) <a href="https://virographematics.wordpress.com/2011/05/25/signature-evenement-contexte/" target="_blank">Derrida — Signature, événement, contexte</a>
+
+
+
 
 
 

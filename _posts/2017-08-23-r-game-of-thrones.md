@@ -6,12 +6,12 @@ layout: single
 permalink: /game-of-thrones-characters-r/
 categories : r-blog-en
 tags: [r, random]
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 A quick exploration of Game of Thrones characters names, and the beginning of an answer to the question "Why on earth can't I remember them all?"
 
-#----#
+
 
 ## First, get the data
 
@@ -373,6 +373,9 @@ full_char %>%
 Well, Jaro is neither corroborating my initial idea... So, I'll stick with my original though: there are sooooooo many characters in this show :) 
 
 ![](https://media.giphy.com/media/1iAQLpW2DRW2k/giphy.gif)
+
+
+
 
 
 

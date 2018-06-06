@@ -8,11 +8,11 @@ tags:
   - purrr
 categories : r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 This might not be the last time I make this Queen reference. 
 
-#----#
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, error = TRUE)
@@ -130,6 +130,9 @@ clean_lm_iris <- compose(as_mapper(~ arrange(.x, desc(p.value))),
 
 clean_lm_iris(Sepal.Length ~ Sepal.Width)
 ```
+
+
+
 
 
 

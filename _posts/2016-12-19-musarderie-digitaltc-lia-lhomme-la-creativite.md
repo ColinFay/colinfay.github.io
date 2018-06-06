@@ -10,7 +10,7 @@ published: true
 categories : random
 ---
 ## Courte réflexion sur l'IA, l'homme et la créativité, faisant suite à la Digital Tech Conférence 2016.
-#----#
+
 ### La création et l'IA
 Lors de cette journée de conférences, deux speakers sont à retenir sur__ la place de l'intelligence artificielle dans la création artistique__ : John Smith, Directeur Multimédia et Vision à IBM Research, et François Pachet, Chercheur au Sony Computer Science Laboratory de Paris.
 
@@ -27,6 +27,9 @@ De plus, l'intelligence artificielle n'est capable de créer que de façon binai
 Donc, pour l'heure, pas de révolution créative de la machine, seulement de la réinterprétation automatisée de ce qui a déjà été produit... car oui, si l'on éludait l'homme de la musique de demain, pas de nouvelle révolution rock, pas de naissance du prochain hip-hop, etc. Si l'on éludait l'homme de l'art de demain, adieu futurs courants cubistes et autres littératures surréalistes. Et ainsi de suite...
 
 En conclusion, cela ne fait pas de doute, l'homme a encore de belles heures devant lui. Car__ comme l'écrivait Antonin Artaud__ : "_c’est le corps d’un écrivain qui tousse, crache, se mouche, éternue, renifle et souffle quand il écrit..._" Et ça, la machine ne pourra jamais nous le reprendre.
+
+
+
 
 
 

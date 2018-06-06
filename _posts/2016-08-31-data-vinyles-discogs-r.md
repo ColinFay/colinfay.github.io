@@ -11,7 +11,7 @@ categories : r-blog-en
 tags: [r, justforfun]
 ---
 ## As a vinyl lover and data addict, I had some fun making requests on the Discogs API with R, in order to know better what is inside my library.
-#----#
+
 
 Every vinyl lover knows about Discogs. But did you know you could easily access the API? Here are the lines of code I used to access my library.
 
@@ -381,6 +381,9 @@ ggplot(collection_complete, aes(x = lowest_price, y = average_note)) +
 <a href="/assets/img/blog/prix-et-note-vinyles-collection.jpeg"><img class="aligncenter size-full wp-image-1080" src="/assets/img/blog/prix-et-note-vinyles-collection.jpeg" alt="Prix en fonction des notes" width="800" height="400" /></a>
 ### And to conclude...
 Next step... create a package to access the Discogs API? Why not! Let's put this on my to-do...
+
+
+
 
 
 

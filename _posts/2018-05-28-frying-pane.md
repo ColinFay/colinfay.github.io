@@ -5,12 +5,12 @@ layout: single
 permalink: /frying-pane/
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Serve the dataset from a package in RStudio Connection Pane.
 
-#----#
+
 
 ## About
 
@@ -56,6 +56,9 @@ Meanwhile if you have any idea for improving the package (I could for
 example put some buttons on top of the Connection Panel), feel free to
 open an issue on the [GitHub
 repo](https://github.com/ColinFay/fryingpane).
+
+
+
 
 
 

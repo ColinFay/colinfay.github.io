@@ -16,7 +16,7 @@ categories : random
 
 _« Il faudrait_, disait-il, _une science qui étudie la vie des signes au sein de la vie sociale.__ (...) Elle nous apprendrait en quoi consistent les signes, quelles lois les régissent_. » Bien, mais à quelle fin ?
 
-#----#
+
 <p style="text-align: center;">1.</p>
 <p style="text-align: left;">_Définir le signe_. Comme l’écrivait Roland Barthes, « _ce terme _signes_, présent dans des vocabulaires très différents (de la théologie à la médecine) et dont l’histoire est très riche (de l’Évangile à la cybernétique), ce terme est par là même ambigu._ » (1) La définition se doit donc d’être large. Un signe est un élément perceptible qui a la particularité de __pouvoir être compris__, de __faire sens__. Tout comme un tatouage de prisonnier est une pièce graphique visible qui, prise dans son entièreté, est __porteuse d’un sens à qui sait le lire__ — et destinée à ne pas être comprise par celui qui ne sait pas la décoder.</p>
 <p style="text-align: center;">2.</p>
@@ -41,6 +41,9 @@ Car __le signe__, à travers le temps, __ne sera jamais fixe__, devenant par là
 
 Citation d’introduction : Ferdinand de Saussure — Cours de linguistique générale
 Photos <a href="https://www.flickr.com/photos/lt-ru/" target="_blank">via</a>
+
+
+
 
 
 

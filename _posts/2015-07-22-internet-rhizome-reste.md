@@ -16,7 +16,7 @@ categories : random
 
 Divagation autour de la hiérarchisation d’Internet. Sur le rhizome, et tout le reste.
 
-#----#
+
 <p style="text-align: center;">1.</p>
 _Un peu d’histoire_. Vannevar Bush et Ted Nelson, premiers penseurs de la toile, imaginaient le futur du web comme une plateforme __sans hiérarchie__, un endroit où chaque document ne serait qu’un lien vers un autre (1). Un modèle sans point central, qui aurait une__ forme de rhizome__, comme le décrivaient __Deleuze et Guattari__ en 1980 — ce système où «_ n’importe quel point peut être connecté avec n’importe quel autre, et doit l’être. C’est très différent de l’arbre ou de la racine qui fixent un point, un ordre_ » (2).
 
@@ -45,6 +45,9 @@ __Liens :__
 (7) <a href="http://qz.com/333313/milliions-of-facebook-users-have-no-idea-theyre-using-the-internet/" target="_blank">Millions of Facebook users have no idea they’re using the internet</a>
 (8) <a href="http://www.oeil-au-carre.fr/le-blog/2015/03/16/serendipite-hasard/" target="_blank">Sérendipité : le hasard fait-il encore les choses ?</a>
 (9) <a href="http://www.morbleu.com/de-la-societe-disciplinaire-a-la-societe-de-controle-du-panoptique-a-lopen-space/" target="_blank">De la société disciplinaire à la société de contrôle, du panoptique à l’open space </a>
+
+
+
 
 
 

@@ -7,7 +7,7 @@ permalink: /attempt-cran/
 categories: r-blog-en
 tags: [r, package, cran]
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 2018 new year resolution: [writing one package a
@@ -16,7 +16,7 @@ month](https://twitter.com/_ColinFay/status/945916988433543168) 🎉
 Let’s launch this with {attempt}, a package which extends and
 facilitates condition handling.
 
-#----#
+
 
 A Friendlier Condition Handler for R, inspired by {purrr} mappers and
 based on {rlang}.
@@ -533,6 +533,9 @@ You want to contribute ? Open a
 [PR](https://github.com/ColinFay/attempt/pulls) :) If you encounter a
 bug or want to suggest an enhancement, please [open an
 issue](https://github.com/ColinFay/attempt/issues).
+
+
+
 
 
 

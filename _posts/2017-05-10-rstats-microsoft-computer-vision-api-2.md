@@ -13,7 +13,7 @@ image: /wp-content/uploads/2017/05/vote-fr.jpg
 
 ## Exploration des photos de profils des twittos #RStats avec l'API Microsoft Computer Vision.
 
-#----#
+
 
 Ce billet de blog s'inspire du travail de Maelle Salmon avec <a href="http://www.masalmon.eu/2017/03/19/facesofr/" target="_blank" rel="noopener noreferrer">Faces of #RStats twitter</a> et d'un article sur Data Bzh utilisant l'API Microsoft Computer Vision pour examiner d'anciennes <a href="http://data-bzh.fr/photographies-fonds-de-la-guerre-14-18-en-bretagne/" target="_blank" rel="noopener noreferrer">photos de Bretagne</a> .
 ### Microsoft Computer Vision
@@ -174,6 +174,9 @@ A close up of two giraffes near a tree — Confidence mean : 0.0037
 <a href="/assets/img/blog/mosaic_glasses.jpg"><img class="size-large wp-image-1557" src="/assets/img/blog/mosaic_glasses-1024x514.jpg" alt="" width="840" height="422" /></a> A person wearing glasses looking at the camera
 
 Les premier et troisième collages sont clairement erronés sur les légendes. Mais, nous pouvons voir que le score de confiance y est très bas. Le deuxième et le quatrième, cependant, semblent être plus précis. Peut-être que nous devons essayer à nouveau avec d'autres images, juste pour être sûr ... Mais ça sera pour une autre fois 😉
+
+
+
 
 
 

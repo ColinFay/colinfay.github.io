@@ -12,7 +12,7 @@ categories : r-blog-fr
 ---
 ## J'ai récemment reçu un mail concernant mon post sur l'API Discogs, disant que le code ne fonctionnait pas.
 ## Il s'est avéré que cela était dû aux nouvelles limitations de l'API. Voici comment contourner ces limites avec R.
-#----#
+
 ### Requête Discogs
 Voici <a href="http://colinfay.me/data-vinyles-bibliotheque-discogs-r/" target="_blank">le billet de blog décrivant comment faire des requêtes sur l'API Discogs avec R</a>.
 
@@ -63,6 +63,9 @@ lapply(1:3, function(x) {
 ```
 
 _Hope this can help!_
+
+
+
 
 
 

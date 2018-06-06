@@ -15,7 +15,7 @@ categories : random
 ---
 Réflexions courtes sur la légèreté et l'usage du terme "dématérialisation".
 
-#----#
+
 <p style="text-align: center;">1.</p>
 _Légèreté _(sens 1) : "_Caractère de ce qui a peu de poids par rapport à un ensemble d'objets de poids comparable_"._
 Dématérialiser_ : v. (sens littéral) de la composition du préfixe _dé_, signifiant la privation ou l’absence, et _matérialiser_, « Donner une nature matérielle, transformer en matière. » (1)
@@ -50,6 +50,9 @@ __Liens :__
 (7) <a href="http://gizmodo.com/5853819/facebook-data-center-goes-arctic-for-chilling-effect" target="_blank">Facebook Data Center Goes Arctic For Chilling Effect</a>
 (8) <a href="https://fr.wikipedia.org/wiki/Pour_comprendre_les_m%C3%A9dias" target="_blank">Mc Luhan — Pour comprendre les médias </a>
 (9) Voir : <a href="http://tempsreel.nouvelobs.com/en-direct/a-chaud/7115-dingueca-google-donnees-apres-serveurs-situe-belgique.html" target="_blank">Google perd des données après que l’un de ses serveurs situé en Belgique a été touché par la foudre à quatre reprises</a> / <a href="http://www.bbc.com/news/technology-33989384" target="_blank">Google loses data as lightning strikes</a> / <a href="https://status.cloud.google.com/incident/compute/15056#5719570367119360" target="_blank">Google Compute Engine Incident #15056</a>
+
+
+
 
 
 

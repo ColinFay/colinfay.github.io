@@ -8,12 +8,12 @@ tags:
   - purrr
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 This is gonna be the last time I make this Queen reference in 2017.
 
-#----#
+
 
 I’ve been sharing some “stats with {purrr}” recipes on my [Twitter
 account](https://twitter.com/_ColinFay) lately. Twitter being what it is
@@ -134,7 +134,7 @@ knitr::kable(comb)
 ```
 
 | V1      | V2      |
-| :#----#-- | :#----#-- |
+| :-- | :-- |
 | Ozone   | Solar.R |
 | Ozone   | Wind    |
 | Ozone   | Temp    |
@@ -160,7 +160,7 @@ knitr::kable(bulk_cor, digits = 3)
 ```
 
 | V1      | V2      | estimate | statistic | p.value | parameter | conf.low | conf.high | method                               | alternative |
-| :#----#-- | :#----#-- | #----#---: | #----##----#: | #----#--: | #----##----#: | #----#---: | #----##----#: | :#----##----##----##----##----##----##----##----#--- | :#----##----#-- |
+| :-- | :-- | ---: | : | --: | : | ---: | : | :--- | :-- |
 | Ozone   | Solar.R |    0.348 |     3.880 |   0.000 |       109 |    0.173 |     0.502 | Pearson’s product-moment correlation | two.sided   |
 | Ozone   | Wind    |  \-0.602 |   \-8.040 |   0.000 |       114 |  \-0.706 |   \-0.471 | Pearson’s product-moment correlation | two.sided   |
 | Ozone   | Temp    |    0.698 |    10.418 |   0.000 |       114 |    0.591 |     0.781 | Pearson’s product-moment correlation | two.sided   |
@@ -323,6 +323,9 @@ keep(sens, map_lgl(sens, ~ .x %in% spec))
 So, I guess we’ll go for model(s) number 13, 14\!
 
 ![](https://media.giphy.com/media/ohdY5OaQmUmVW/giphy.gif)
+
+
+
 
 
 

@@ -15,7 +15,7 @@ categories : random
 ---
 Nos façons d’écrire seraient-elles dictées par les machines ? À l’heure de l’omniprésence du signe, de l’écrit et des moteurs de recherche, les outils d’indexation prendront-ils le pas sur le style ?
 
-#----#
+
 <p style="text-align: center;">1.</p>
 _Écrire pour être trouvé_. Choix de mots-clés, champs lexicaux, vocabulaire précis, tant de questions à bien se poser pour être __concurrentiel__ __dans__ __les__ __SERP__ (Search Engine Result Page). Au-delà de simplement penser à ce que les __lecteurs pourraient comprendre__, il faut imaginer à __ce qu’ils pourraient taper__, ce sur quoi ils pourraient cliquer. Au détriment de la créativité ?
 <p style="text-align: center;">2.</p>
@@ -34,6 +34,9 @@ Alors bien sûr, les machines contraignent l’écriture. Mais elles n’ont pas
 __Liens :__
 (1) <a href="http://archive.wired.com/wired/archive/12.10/tail.html" target="_blank">The Long Tail</a>
 (2) <a href="http://dumas.ccsd.cnrs.fr/dumas-01130211/document" target="_blank">Média, support, temporalité : le cas des pure-players de presse</a>
+
+
+
 
 
 

@@ -6,12 +6,12 @@ layout: single
 permalink: /dockerfiler-cran/
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 {dockerfiler} is a package that comes with a simple, object oriented API for Dockerfile creation, straight from your R session. Now on CRAN.
 
- #----#
+ 
  
 ## Installation
 
@@ -96,6 +96,9 @@ my_dock$write()
 Questions and feedbacks [welcome](mailto:contact@colinfay.me)!
 
 You want to contribute ? Open a [PR](https://github.com/ColinFay/dockerfiler/pulls) :) If you encounter a bug or want to suggest an enhancement, please [open an issue](https://github.com/ColinFay/dockerfiler/issues).
+
+
+
 
 
 

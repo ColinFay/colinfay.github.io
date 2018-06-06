@@ -12,7 +12,7 @@ tags: [talk]
 ---
 Rennes — Rendez-vous dimanche 12 mars 2017 pour un atelier dataviz à la Fabrique de l'info ! 
 
-#----#
+
 
 ### Atelier dataviz — le programme
 
@@ -53,6 +53,9 @@ Programme complet :
 Cette table ronde sera animée par __Arnaud Wassmer __(Producteur sur RCF Alpha et animateur de rencontres publiques)
 
 <a href="http://www.asso-bug.org/2017/02/10/fabrique-de-linfo-reseaux-sociaux-vs-medias/">Plus d'infos </a>
+
+
+
 
 
 

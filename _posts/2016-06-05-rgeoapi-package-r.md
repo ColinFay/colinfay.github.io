@@ -11,7 +11,7 @@ categories : r-blog-en
 tags: [r, package, api]
 ---
 ## rgeoapi connects R to the GéoAPI, in order to get information about french geography.
-#----#
+
 rgeoapi is now on <a href="https://cran.r-project.org/web/packages/rgeoapi/">CRAN</a>
 # <a id="user-content-rgeoapi" class="anchor" href="https://github.com/ColinFay/rgeoapi#rgeoapi"></a>rgeoapi
 This package requests informations from the French GeoAPI inside R — <a href="https://api.gouv.fr/explorer/geoapi/">https://api.gouv.fr/explorer/geoapi/</a>
@@ -52,6 +52,9 @@ In the <a href="https://api.gouv.fr/explorer/geoapi/">GeoAPI</a>, you can reques
 
 ### French Tutorial &amp; contact
 A French tutorial on <a href="http://colinfay.me/rgeoapi-v1/">my website</a>. Questions and feedbacks <a href="mailto:contact@colinfay.me">welcome</a> !
+
+
+
 
 
 

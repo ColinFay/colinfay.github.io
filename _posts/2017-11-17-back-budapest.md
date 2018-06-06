@@ -6,12 +6,12 @@ layout: single
 permalink: /back-budapest/
 categories : r-blog-en
 tags: [talk]
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Back from Budapest!
 
-#----#
+
 
 This week, I had the chance to travel to Budapest to talk about R (obviously), dataviz, networks and text mining at the BudapestBI conference, and during the Budapest Users of R Network meetup. 
 
@@ -43,6 +43,9 @@ More about that: [http://budapestbiforum.hu/2017/hu/eloadasok/a-gentle-introduct
 Special thanks to the team of BudapestBI for inviting me, and to the local meetup team for inviting me to me talk there. 
 
 Thanks also to everybody there, we had such a good time. Hope to see you guys again soon. 
+
+
+
 
 
 

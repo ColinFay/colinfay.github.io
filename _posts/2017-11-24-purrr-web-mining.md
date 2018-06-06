@@ -7,12 +7,12 @@ permalink: /purrr-web-mining/
 tags:
   - purrr
 categories : r-blog-en
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Yes, this title is a Queen reference. 
 
-#----#
+
 
 Yesterday, I presented a talk called "Le Text Mining expliqué à ma grand-mère" at the Breizh Data Club Meetup. As the title suggests ("Text Mining explained to my Grand Mother"), this talk was about explaining text mining to someone that doesn't understand anything about data science. If you want to check the slides, they are [on this GitHub repo](https://github.com/ColinFay/conf/blob/master/2017-11-breizh-data-club/fay_colin_tm_explique_grand_mere.pdf). 
 
@@ -129,6 +129,9 @@ albums_infos <- albums_infos %>%
 ![](h/assets/img/blogsardou.gif)
 
 [*] As stated in the comment section, `bind_rows()` can take a list of data.frames as argument: I chose here to use `reduce` as an example of how this function works, yet this will not be, in practice, the best way to bind a list of data.frames. 
+
+
+
 
 
 

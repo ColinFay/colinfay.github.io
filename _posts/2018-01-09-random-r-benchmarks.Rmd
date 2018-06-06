@@ -6,11 +6,11 @@ layout: single
 permalink: /random-r-benchmarks/
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Some random (one could say useless) benchmarks on R, serious or for fun, and some advices to make your code run faster. 
-#----#
+
 
 `disclamer::on()`
 
@@ -204,6 +204,9 @@ At the end of the day, there are also methods (like the bracket one) that can he
 
 
 If you want to read more about code optimisation for speed, Colin Gillespie and Robin Lovelace wrote a nice book about being more efficien with R, with a chapter focused on performance: [Efficient optimisation](https://csgillespie.github.io/efficientR/performance.html). See also [Advanced R - Performant code](http://adv-r.had.co.nz/).
+
+
+
 
 
 

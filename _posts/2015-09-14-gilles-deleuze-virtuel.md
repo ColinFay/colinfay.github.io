@@ -18,7 +18,7 @@ categories : random
 
 Extraits commentés choisis (presque) aléatoirement dans l’œuvre de Gilles Deleuze.
 
-#----#
+
 ## Différence et Répétition (1968)
 « _Le virtuel ne s’oppose pas au réel, mais seulement à l’actuel. Le virtuel possède une pleine réalité, en tant que virtuel_._ Du virtuel, il faut dire exactement ce que Proust disait des états de résonance : “Réels sans être actuels, idéaux sans être abstraits” ; et symboliques sans être fictifs._ »
 <p style="text-align: center;">1.</p>
@@ -43,6 +43,9 @@ __Liens :__
 (2) <a href="http://dumas.ccsd.cnrs.fr/dumas-01130211/document" target="_blank">Médias, support, temporalité : le cas des pure-players de presse</a>
 
 &nbsp;
+
+
+
 
 
 

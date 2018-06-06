@@ -8,12 +8,12 @@ tags:
   - purrr
 categories : r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 This might not be the last time I make this Queen reference.
 
-#----#
+
 
 There’s a general saying in programming that you should try to write as
 less code as possible. Spoiler: this is not because developers are lazy.
@@ -182,6 +182,9 @@ clean_lm_iris(Sepal.Length ~ Sepal.Width)
 
     ##          term estimate std.error statistic      p.value
     ## 1 (Intercept) 6.526223 0.4788963  13.62763 6.469702e-28
+
+
+
 
 
 

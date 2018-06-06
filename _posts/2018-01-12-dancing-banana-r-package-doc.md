@@ -7,12 +7,12 @@ permalink: /dancing-banana-r-package-doc/
 categories: r-blog-en
 tags: [r, package, justforfun]
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Having fun playing around with R documentation and HTML.
 
-#----#
+
 
 I found out today that you could [easily insert html and
 JS](https://twitter.com/_ColinFay/status/951838799918755842) into R help
@@ -84,6 +84,9 @@ off by changing to `autoplay=0` ;) ):
 ```
 
 ![](https://github.com/ColinFay/colinfay.github.io/raw/master/_posts/img/rick-rolled.gif)
+
+
+
 
 
 

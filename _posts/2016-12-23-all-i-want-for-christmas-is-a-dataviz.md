@@ -11,7 +11,7 @@ categories : r-blog-fr
 tags: [r, justforfun]
 ---
 ## Avant de vous lancer dans le marathon de repas de Noël, deux visualisations de données tirées de l'API lastfm... pour la requête "Christmas" !
-#----#
+
 
 ### Allô LastFM
 La première étape ? Créer un compte sur l’API LastFM, afin d’obtenir une clé d'accès. Une fois cette suite de caractères en poche, direction les requêtes avec R.
@@ -141,6 +141,9 @@ ggplot(aes(x = reorder(., Freq), y = Freq)) +
 Et sur ce… joyeux Noël !
 
 <a title="" href="/assets/img/blog/b546c88a28a7c2423d2a32bc85d1f106.gif"><img class="aligncenter size-full wp-image-1182" title="" src="/assets/img/blog/b546c88a28a7c2423d2a32bc85d1f106.gif" alt="Nightmare before christmas" width="500" height="301" /></a>
+
+
+
 
 
 

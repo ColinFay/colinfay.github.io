@@ -18,7 +18,7 @@ categories : random
 
 Réflexions courtes sur la légèreté, la vitesse et l’attention.
 
-#----#
+
 <p style="text-align: center;">1.</p>
 _Légèreté _(sens 4) : « _Manque de sérieux, de valeur intellectuelle ; inconstance_. »
 _Vitesse_ (sens 1) : « _Fait de se déplacer à une allure établie en fonction d’une valeur étalon explicitement indiquée ou non._ »
@@ -46,6 +46,9 @@ Liens :
 (4) <a href="http://dumas.ccsd.cnrs.fr/dumas-01130211/document" target="_blank">Média, support, temporalité : le cas des pure-players de presse</a>
 (5) <a href="http://blog.hubspot.com/blog/tabid/6307/bid/33815/New-Data-Indicates-Twitter-Users-Don-t-Always-Click-the-Links-They-Retweet-INFOGRAPHIC.aspx" target="_blank">New Data Indicates Twitter Users Don't Always Click the Links They Retweet</a> / <a href="http://www.slate.com/articles/technology/technology/2013/06/how_people_read_online_why_you_won_t_finish_this_article.single.html" target="_blank">You Won’t Finish This Article</a>
 (6) <a href="http://en.slow-media.net/manifesto" target="_blank">The Slow Media Manifesto</a>
+
+
+
 
 
 

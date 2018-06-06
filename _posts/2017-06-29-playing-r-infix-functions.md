@@ -6,12 +6,12 @@ layout: single
 permalink: /playing-r-infix-functions/
 categories : r-blog-en
 tags: [r, justforfun]
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Digging into a not so special type of R functions, in order to make an emoji-pizza-dplyr-slice one.
 
-#----#
+
 
 ## What are infix functions? 
 
@@ -143,6 +143,9 @@ More on infix functions :
 
 + [R language definition](https://cran.r-project.org/doc/manuals/r-release/R-lang.html#Special-operators)
 + [Advanced R - Functions](http://adv-r.had.co.nz/Functions.html)
+
+
+
 
 
 

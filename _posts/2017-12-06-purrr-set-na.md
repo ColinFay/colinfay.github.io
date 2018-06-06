@@ -7,12 +7,12 @@ permalink: /purrr-set-na/
 tags:
   - purrr
 categories : r-blog-en
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Ok, you've got the Queen reference by now. 
 
-#----#
+
 
 I think I've never been that assiduous on my blog. 
 
@@ -210,6 +210,9 @@ replace_to_na_when(small, ~ sqrt(.x) > 5 | .x == 2)
 10    NA      NA   8.6    NA     5    10
 ```
 > Note ter: as said by Romain on [twitter](https://twitter.com/romain_francois/status/938764972003414021), replacing to NA in a data.frame is more of a {dplyr} than a {purrr} job. Yet, the solution with {purrr} is more general, and can be used for all kinds of lists  
+
+
+
 
 
 

@@ -10,7 +10,7 @@ published: true
 categories : r-blog-en
 tags: [r, package, api]
 ---
-## Improve your text analysis with this R package designed to access the languagelayer API.#----#
+## Improve your text analysis with this R package designed to access the languagelayer API.
 LanguagelayeR is now on <a href="https://cran.r-project.org/package=languagelayeR">CRAN</a>
 
 ### languagelayerR
@@ -62,6 +62,9 @@ getSupportedLanguage()
 
 Questions and feedbacks <a href="mailto:contact@colinfay.me">welcome</a> !
 &nbsp;
+
+
+
 
 
 

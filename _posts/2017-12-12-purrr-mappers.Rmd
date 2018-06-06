@@ -8,11 +8,11 @@ tags:
   - purrr
 categories : r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 I won't talk about the Queen reference anymore. 
 
-#----#
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, error = TRUE)
@@ -196,6 +196,9 @@ stop_if(10, function(x) sqrt(x) < 100)
 ```
 
 Aaaaaand that's it for today :) 
+
+
+
 
 
 

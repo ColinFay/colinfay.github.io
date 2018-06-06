@@ -5,11 +5,11 @@ layout: single
 permalink: /purrr-adverb-tidyverse/
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 Create your own `safely`, `compose` and friends!
 
-#----#
+
 
 
 ## What is an adverb 
@@ -188,6 +188,9 @@ readLines("logs")
 ```{r echo = FALSE}
 unlink("logs")
 ```
+
+
+
 
 
 

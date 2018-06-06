@@ -6,7 +6,7 @@ layout: single
 permalink: /proustr-package/
 categories : r-blog-en
 tags: [r, package]
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 `proustr` is now on [CRAN](https://cran.r-project.org/web/packages/proustr/index.html).
@@ -81,6 +81,9 @@ proust_books() %>%
 ### Contact
 
 Questions and feedbacks [welcome](mailto:contact@colinfay.me) !
+
+
+
 
 
 

@@ -10,7 +10,7 @@ published: true
 categories : r-blog-en
 tags: [r, package, api]
 ---
-## Access the Pinterest API with R with rpinterest. #----#
+## Access the Pinterest API with R with rpinterest. 
 This package requests information from the Pinterest API.
 
 rpinterest is now on <a href="https://cran.r-project.org/web/packages/rpinterest/index.html">CRAN</a>
@@ -38,6 +38,9 @@ The version 0.1.0 works with seven functions. Which are :
 ### Contact
 
 Questions and feedbacks <a href="mailto:contact@colinfay.me">welcome</a> !
+
+
+
 
 
 

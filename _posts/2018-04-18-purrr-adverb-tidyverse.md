@@ -5,15 +5,15 @@ layout: single
 permalink: /purrr-adverb-tidyverse/
 categories: r-blog-en
 output: jekyllthat::jekylldown
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Create your own `safely`, `compose` and friends!
 
-#----#
+
 
 What is an adverb
-#----##----##----##----#-
+-
 
 If you read carefully the [purrr documentation](http://purrr.tidyverse.org/reference/index.html#section-adverbs), you'll find this simple explanation :
 
@@ -47,7 +47,7 @@ safe_log("a")
 In computer science, these adverbs are what is called "high-order functions".
 
 How to write your own?
-#----##----##----##----##----#--
+--
 
 I've been playing with adverbs in [{attempt}](https://github.com/ColinFay/attempt), notably through these adverbs :
 
@@ -253,6 +253,9 @@ readLines("logs")
 ```
 
     ## [1] "2018-04-19 10:21:03" "2018-04-19 10:21:03"
+
+
+
 
 
 

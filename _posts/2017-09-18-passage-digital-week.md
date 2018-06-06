@@ -6,12 +6,12 @@ layout: single
 permalink: /nantes-digital-week/
 categories : random
 tags: [talk]
-excerpt_separator: #----#
+excerpt_separator: <--!more--> 
 ---
 
 Cette semaine, j'interviens sur la question de la dataviz à la Nantes Digital Week : mardi au Medialab Speedtraining, et mercredi à Datarama !
 
-#----#
+
 
 ## 2017-09-19
 
@@ -32,6 +32,9 @@ Plus d'infos : [http://www.medialabspeedtraining.fr/de-donnee-brute-a-dataviz/](
 Penser la question de l'éthique en visualisation de données. 
 
 Plus d'infos : [https://www.lecolededesign.com/actualites/datarama-nantes-digital-week-2017-2735](https://www.lecolededesign.com/actualites/datarama-nantes-digital-week-2017-2735)
+
+
+
 
 
 
