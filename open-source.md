@@ -31,25 +31,37 @@ A friendlier condition handler, inspired by 'purrr' mappers and based on 'rlang'
 + [Official release on CRAN](https://CRAN.R-project.org/package=attempt)
 + [Dev version on GitHub](https://github.com/ColinFay/attempt)
 
+#### craneur
+
+Create your own R Archive Network
+
++ [Dev version on GitHub](https://github.com/ColinFay/craneur)
+
+#### debugin
+
+An RStudio Addin for Debugging.
+
++ [Dev version on GitHub](https://github.com/ColinFay/debugin)
+
 #### dockerfiler
 
-Easy Dockerfile Creation from R :
+Easy Dockerfile Creation from R.
 
 + [Documentation](https://cran.r-project.org/web/packages/dockerfiler/dockerfiler.pdf).
 + [Official release on CRAN](https://CRAN.R-project.org/package=dockerfiler)
 + [Dev version on GitHub](https://github.com/ColinFay/dockerfiler)
-
-#### debugin
-
-An RStudio Addin for Debugging 
-
-+ [Dev version on GitHub](https://github.com/ColinFay/debugin)
 
 #### fryingpane
 
 Serve datasets from a package inside the RStudio Connection Pane.
 
 + [Dev version on GitHub](https://github.com/ColinFay/fryingpane)
+
+#### handydandy
+
+Easy CSS Styling for Shiny.
+
++ [Dev version on GitHub](https://github.com/ColinFay/handydandy)
 
 #### remedy
 
@@ -91,6 +103,12 @@ String distance calculation the tidy way.
 + [Dev version on GitHub](https://github.com/ColinFay/tidystringdist)
 
 ### Web and API
+
+#### ariel  
+
+Access the SIRENE API from R.
+
++ [Dev version on GitHub](https://github.com/ColinFay/ariel)
 
 #### wtfismyip
 
