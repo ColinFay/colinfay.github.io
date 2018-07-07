@@ -1,5 +1,5 @@
 ---
-title: "The dependencies conundrum"
+title: "Happy dev with {purrr}"
 post_date: 2018-06-06
 layout: single
 permalink: /dependencies-conundrum/
