@@ -9,6 +9,10 @@ author_profile: true
 
 ## Talks
 
+__2018-07-05__ — ["Vous allez aimer avoir {purrr}"](https://github.com/ColinFay/conf/tree/master/2018-07-rencontresr-rennes), Rencontres R Rennes. 
+
+__2018-06-14__ — ["Quand un langage de datascience se met à faire du web"](https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes), Web2Day Nantes. 
+
 __2018-05-14__ — ["Workshop - Building a package that lasts"](https://github.com/ColinFay/erum2018), eRum, Budapest. 
 
 __2018-04-19__ — ["R pour le web, mais pour quoi faire ?"](https://github.com/ColinFay/conf/tree/master/2018-04-nantes_R_meetup), Meetup R Nantes. 
@@ -24,8 +28,6 @@ __2017-11-15__ — ["Visualising text data with ggplot2"](https://github.com/Col
 __2017-09-20__ — ["Dataviz et éthique"](https://github.com/ColinFay/conf/blob/master/2017-09-Nantes-Digital-Week/Dataviz%20et%20%C3%A9thique.pdf), Datarama, Nantes. 
 
 __2017-09-19__ — ["De la donnée brutes à la dataviz"](https://github.com/ColinFay/conf/blob/master/2017-09-Nantes-Digital-Week/Des%20donne%CC%81es%20brutes%20a%CC%80%20la%20dataviz.pdf), Medialab Speedtraining, Nantes. 
-
-
 __2017-06-30__ — ["Les API, un enfeR ?"](https://github.com/ColinFay/conf/blob/master/2017-06-Anglet/api_enfer_colin_fay_thinkr.pdf), 6e Rencontres R, Anglet. 
 
 __2017-06-29__ — ["1 datasets, 10 dataviz"](https://github.com/ColinFay/conf/blob/master/2017-06-Anglet/1_dataset_10_dataviz_colin_fay.pdf), 6e Rencontres R, Anglet. 
