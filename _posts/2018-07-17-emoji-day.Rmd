@@ -1,0 +1,179 @@
+---
+title: "A quick #WorldEmojiDay exploration"
+post_date: 2018-07-17
+layout: single
+permalink: /worldemojiday
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <--!more--> 
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE)
+```
+
+Let's celebrate #WorldEmojiDay with a quick exploration of my [own twitter account](https://twitter.com/_ColinFay). 
+
+## The 📦
+
+We'll need: 
+
+#### From Github
+
++ `{emo}`
+
+```{r eval = FALSE}
+remote::install_github("hadley/emo")
+```
+
+#### From CRAN
+
++ `{dplyr}`
++ `{tidyr}`
++ `{rtweet}`
++ `{tidytext}`
+
+
+> Note: This page has been created at:
+
+```{r}
+Sys.time()
+```
+
+## The 🔍
+
+Let's get my last 3200 tweets:
+
+```{r}
+library(emo)
+library(rtweet)
+library(dplyr)
+res <- get_timeline(
+  "_ColinFay",
+  n = 3200
+)
+names(res)
+```
+
+Here is what the `text` column looks like: 
+
+```{r}
+res %>% 
+  pull(text) %>%
+  .[1:5]
+```
+
+As you can see, the emojis are not printed in the console, but converted to weird characters like `\U0001f4e6` and such. These are unicode characters: translations of the emojis into a language your machine can understand. I won't go deeper into this, here are two resources you can read if you want to know more about encoding: 
+
++ [The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/)
+
++ [What emojis tell us about encoding](https://www.codenewbie.org/blogs/what-emojis-tell-us-about-encoding)
+
+## The 📊
+
+Let's use the `{emo}` package to extract the emojis from the text. Inspired by `{stringr}`, this package has a `ji_extract_all` function that is designed to __extract all the emojis from a character vector__. We'll use it on out text column, then extract the date and emo column. We then pass the result to `tidyr::unnest` in order to remove the empty emo rows (i.e, the tweets without an emoji). 
+
+```{r}
+library(tidyr)
+emos <- res %>%
+  mutate(
+    emo = ji_extract_all(text)
+  ) %>%
+  select(created_at,emo) %>%
+  unnest(emo)
+
+emos
+
+emos %>%
+  count(emo, sort = TRUE)
+```
+
+So apparently, I use a lot of 🤔. But also talk about 📦, which sounds more appropriate :)
+
+As you can see, `{tibble}` converts elements to emojis when printing. When using a data.frame, you have a simple unicode translation: 
+
+```{r}
+emos %>%
+  as.data.frame() %>%
+  head()
+```
+
+## The 🏷
+
+Let's flag all the emojis with their names: 
+
+```{r}
+emos %>%
+  left_join(
+    data.frame(
+      emo = ji_name, 
+      name = names(ji_name)
+    )
+  ) %>% 
+  count(emo, name, sort = TRUE)
+```
+
+## The 🔠
+
+And finally, let's see what are the most associated words with the emojis we just saw:
+
+```{r}
+library(tidytext)
+emos_with_id <- res %>%
+  mutate(
+    emo = ji_extract_all(text)
+  ) %>% 
+  select(status_id, text, emo) %>%
+  tidyr::unnest(emo)
+
+emos_with_id %>%
+  unnest_tokens(word,text) %>%
+  anti_join(stop_words) %>%
+  anti_join(proustr::stop_words) %>%
+  anti_join(
+    data.frame(
+      word = c("https", "t.co", "https", "gt")
+    )
+  ) %>% 
+  count(emo, word, sort = TRUE)
+```
+
+And what are the most used emojis with "rstats"? 
+
+```{r}
+emos_with_id %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  anti_join(proustr::stop_words) %>%
+  anti_join(
+    data.frame(
+      word = c("https", "t.co", "https", "gt")
+    )
+  ) %>%
+  count(emo, word, sort = TRUE) %>%
+  filter(
+    word == "rstats"
+  )
+```
+
+## Other cool functions
+
+I recently discovered the `ji_glue()` function which allows you to insert an emoji easily into a character vector : 
+
+```{r}
+ji_glue("I love to code :package:")
+ji_glue("Sometimes they make me :scream:")
+ji_glue("Sometimes they make me :cry:")
+ji_glue("Sometimes they make me :fear:")
+ji_glue("But in the end I'm always :tada:")
+```
+
+The `ji()` function can also be used inside your markdown, so you can write: 
+
+"I hate *backtick* r emo::ji("bug") *backtick*", and it will come as: "I hate `r emo::ji("bug")`".
+
+(of course, replace *backtick* by actuwith backticks :) ).
+
+## That's all folks 🎬
+
+That's all for today! Now have a nice emoji day `r emo::ji("tada")`
