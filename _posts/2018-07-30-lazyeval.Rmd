@@ -3,7 +3,7 @@ title: "About lazy evaluation"
 post_date: 2018-07-30
 layout: single
 permalink: /lazyeval/
-categories: cat
+categories: r-blog-en
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---
