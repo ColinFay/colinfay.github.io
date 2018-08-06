@@ -135,7 +135,7 @@ res <- res %>%
   extract(
     value,
     c("date", "user", "text"), 
-    regex = "<([a-zA-Z0-9 ]*)> \\[(.{4}-.{2}-.{2} .{2}:.{2}:.{2})\\] (.*)"
+    regex = "\\[(.{4}-.{2}-.{2} .{2}:.{2}:.{2})\\] <([a-zA-Z0-9 ]*)>  (.*)"
     )
 ```
 
@@ -305,13 +305,13 @@ Here, you can see some new things: footer content, og for open graph data, and n
 
 ### Include the same markdown content several time 
 
-All the pages have the same intro content, so I can use `shiny::includeMarkdown` to include it on each page (this way, I'll only need to update the content once if needed). Put ot between backticks with an `r`, and the markdown is integrated at compilation time as html. 
+All the pages have the same intro content, so I can use `shiny::includeMarkdown` to include it on each page (this way, I'll only need to update the content once if needed). Put it between backticks with an `r`, and the markdown is integrated at compilation time as html. 
 
 See here, line 21: https://raw.githubusercontent.com/ColinFay/wikileaksdm/master/index.Rmd
 
 ### Include font awesome icons
 
-Before every link, there is a: `r fontawesome::fa("download")`. 
+Before every link, there is a: `r fontawesome::fa("download")`
 
 This could have been done with CSS, but I've used the `{fontawesome}` package, also between backticks and with an `r`, to include them. 
 
