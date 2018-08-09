@@ -1,5 +1,5 @@
 ---
-title: "Can (a==1 && a==2 && a==3) ever evaluate to true?"
+title: "Can (a==1 & a==2 & a==3) ever evaluate to TRUE?"
 
 post_date: 2018-01-22
 layout: single
