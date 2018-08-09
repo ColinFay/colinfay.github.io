@@ -5,15 +5,12 @@ post_date: 2018-01-22
 layout: single
 permalink: /active-binding-r-enigma/
 categories: r-blog-en
-tags: [r, activebinding, theory]
 output: jekyllthat::jekylldown
 excerpt_separator: <--!more--> 
 ---
 
 A blogpost inspired by a Stackoverflow question: “Can (a==1 && a==2 &&
 a==3) ever evaluate to true?”
-
-
 
 Yesterday I run into this [topic on
 SO](https://stackoverflow.com/questions/48270127/can-a-1-a-2-a-3-ever-evaluate-to-true),
@@ -24,8 +21,9 @@ The question is quite straightforward:
 > Is it ever possible that (a==1 && a==2 && a==3) could evaluate to
 > true, in JavaScript?
 
-As a little challenge, I asked myself the same question, but with R: can
-it ever evaluate to TRUE? Once I’ve found how to, I [challenged
+As a little challenge, I asked myself the same question, but with R (and
+with a little transformation): can `a==1 & a==2 & a==3` ever evaluate to
+TRUE? Once I’ve found how to, I [challenged
 Twitter](https://twitter.com/_ColinFay/status/955116156666499072), and
 was glad to read some creative answers.
 
@@ -410,9 +408,3 @@ Read more about binding:
 
   - [Binding and Environment Locking, Active
     Bindings](https://stat.ethz.ch/R-manual/R-devel/library/base/html/bindenv.html)
-
-
-
-
-
-
