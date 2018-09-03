@@ -1,0 +1,349 @@
+---
+title: "Wrangling Wikileaks DMs"
+post_date: 2018-07-30
+layout: single
+permalink: /wikileaks/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE)
+```
+ 
+Using R to turn raw data into browsable and reusable content. 
+ 
+ <!--more-->
+ 
+## About
+
+On the 29th of July 2018, Emma Best published on her website the copy of 11k+ wikileaks Twitter DM : <https://emma.best/2018/07/29/11000-messages-from-private-wikileaks-chat-released/>
+
+To be honnest, I'm not really interested in the content of this dataset. What really interested me is that it's __raw data__ (copied and pasted text) waiting to be parsed, and that I could __use R to turn these elements into a reusable and browsable content__. 
+
+## The results
+
+Here are the links to the pages I've created with R from this dataset: 
+
++ [Home](https://colinfay.me/wikileaksdm/index.html) has the full dataset, to search and download.
++ [Timeline](https://colinfay.me/wikileaksdm/timeline.html) has a series of time-related content: notably DMs by years, and daily count of DMs.
++ [Users](https://colinfay.me/wikileaksdm/users.html) holds the dataset for each users.
++ [mentions_urls](https://colinfay.me/wikileaksdm/mention_urls.html) holds the extracted mentions and urls
++ [methodo](https://colinfay.me/wikileaksdm/methodo.html) contains the methodology used for the data wrangling
+
+## Methodology 
+
+### Extracting the content 
+
+As I wanted to use the data offline (and not re-download it each time I compile the outputs), I've first extracted and saved the dataset as a .txt. You can now see it at [https://colinfay.me/wikileaksdm/raw.txt](https://colinfay.me/wikileaksdm/raw.txt). 
+
+Here is the code used:
+
+```{r}
+library(tidyverse)
+library(rvest)
+# Reading the page
+doc <- read_html("https://emma.best/2018/07/29/11000-messages-from-private-wikileaks-chat-released/")
+# Extracting the paragraphs
+doc <- doc %>% 
+  # Getting the p
+  html_nodes("p") %>%
+  # Getting the text
+  html_text()
+
+# Removing the empty lines
+doc <- doc[! nchar(doc)  == 0]
+# Lines 1 to 9 are the content of the blogpost, not the content of the conversation. 
+doc[1:9]
+doc[10]
+# Removing these lines:
+doc <- doc[10:length(doc)]
+```
+ 
+And then simply save it as a txt: 
+
+```{r eval = FALSE}
+write(doc, "raw.txt")
+```
+
+I can now easily reaccess it. 
+
+```{r}
+res_raw <- read.delim("https://colinfay.me/wikileaksdm/raw.txt", 
+                      sep = "\n", header = FALSE) %>% 
+  # Turning the character vector into a tibbe
+  as.tibble() %>% 
+  # Renaming the V1 columné
+  rename(value = V1)
+res_raw
+```
+
+### Cleaning the data
+
+DMs have a specific structure: `[date hour] <author> text`, except for one "author", `<DMConversationEntry>`, which is the meta-information about the conversation (renaming of the channel, user joining and leaving, etc). In order to tidy the format, let's add `<DMConversationEntry>` as an author.
+
+```{r}
+res <- res_raw %>% 
+  mutate(value = str_replace_all(value, 
+                                 "\\[DMConversationEntry\\]",
+                                 "<DMConversationEntry>")) 
+```
+
+Also I'll remove, the last entry of the corpus, which doesn't fit the conversation format: 
+
+```{r}
+res[nrow(res),]
+
+res <- filter(res, ! str_detect(value, "931704226425856001"))
+```
+
+Some messages are splitted between lines. These lines don't start with a date (they are the middle of a DM). I'll then paste the content of these lines at the end of the line before.
+
+Here is an example with lines 93 & 94:
+
+|  value|
+|--:|
+|  "[2015-05-02 14:12:27] <WISE Up Wales> OK, thanks H. Security issues were about who was on the list then?"|
+|  "Never quite know who you’re dealing with online I guess. I don’t, anyway!"|
+
+Here, 94 will be pasted at the end of 93 and removed. 
+
+Let's loop this:
+
+```{r}
+for (i in nrow(res):1){
+  if (!grepl(pattern = "\\[.{4}-.{2}-.{2} .{2}:.{2}:.{2}\\]|DMConversationEntry", res[i,])){
+    res[i-1,] <- paste(res[i-1,], res[i,])
+  }
+}
+# Remove lines with no date or no DMConversationEntry
+res <- res %>% 
+  mutate(has_date = str_detect(value, pattern = "\\[.{4}-.{2}-.{2} .{2}:.{2}:.{2}\\]|DMConversationEntry")) %>%
+  filter(has_date) %>%
+  select(-has_date)
+```
+
+### Extract key elements 
+
+We'll now need to split the content in three: `user`, `date`, and `text`. 
+
+My first try was with :
+
+```{r eval = FALSE}
+res <- res %>%
+  extract(
+    value,
+    c("date", "user", "text"), 
+    regex = "\\[(.{4}-.{2}-.{2} .{2}:.{2}:.{2})\\] <([a-zA-Z0-9 ]*)>  (.*)"
+    )
+```
+
+But that didn't fit well: the `DMConversationEntry` has no date (I will fill them later), so I need a NA here, hence the three steps process:
+
+```{r}
+res <- res %>%
+  extract(value,"user", regex = "<([a-zA-Z0-9 ]*)>", remove = FALSE) %>%
+  extract(value,"date", regex = "\\[(.{4}-.{2}-.{2} .{2}:.{2}:.{2})\\] .*", remove = FALSE) %>%
+  extract(value, "text", regex = "<[a-zA-Z0-9 ]*> (.*)", remove = FALSE) %>%
+  select(-value)
+```
+
+When date is missing, it's because it's a `DMConversationEntry`. Let's verify that:
+
+```{r}
+res %>% 
+  filter(user == "DMConversationEntry") %>%
+  summarize(nas = sum(is.na(date)), 
+            nrow = n())
+```
+
+In order to have a date here, we will fill this with the directly preceeding date: 
+
+```{r}
+res <- fill(res, date)
+```
+
+## Saving data
+
+### Global
+
+```{r eval = FALSE}
+write_csv(res, "wikileaks_dm.csv")
+```
+
+### Year
+
+Find the min and max years: 
+
+```{r}
+range(res$date)
+```
+
+Filter and save a csv for each year:
+
+```{r eval = FALSE}
+walk(2015:2017, 
+    ~ filter(res, lubridate::year(date) == .x) %>%
+    write_csv(glue::glue("{.x}.csv"))
+    )
+```
+
+### User
+
+Filter and save a csv for each user:
+
+```{r eval = FALSE}
+walk(unique(res$user), 
+    ~ filter(res, user == .x) %>%
+    write_csv(glue::glue("user_{make.names(.x)}.csv"))
+    )
+```
+
+### Counting users participation
+
+```{r eval = FALSE}
+res %>%
+  count(user, sort = TRUE) %>%
+  write_csv("user_count.csv")
+```
+
+### Counting activity by days
+
+```{r eval = FALSE}
+res %>%
+  mutate(date = lubridate::ymd_hms(date), 
+         date = lubridate::date(date)) %>% 
+  count(date) %>%
+  write_csv("daily.csv")
+```
+
+### Adding extra info
+
+Extracting all the mentions (`@something`):
+
+```{r eval = FALSE}
+mentions <- res %>% 
+  mutate(mention = str_extract_all(text, "@[a-zA-Z0-9_]+")) %>%
+  unnest(mention) %>% 
+  select(mention, everything())
+write_csv(mentions, "mentions.csv")
+
+# Count them
+
+mentions %>%
+  count(mention, sort = TRUE) %>%
+  write_csv("mentions_count.csv")
+```
+
+Extracting all the urls (`http(s)`something):
+
+```{r eval = FALSE}
+urls <- res %>% 
+  mutate(url = str_extract_all(text, "http.+")) %>%
+  unnest() %>% 
+  select(url, everything())
+write_csv(urls, "urls.csv")
+```
+
+### Adding JSON format
+
+I've also chosen to export JSON format of the csv.
+
+```{r eval = FALSE}
+list.files(pattern = "csv") %>%
+  walk(function(x) {
+    o <- read_csv(x)
+    jsonlite::write_json(
+      o,
+      path = glue::glue("{tools::file_path_sans_ext(x)}.json")
+    )
+  })
+dir.create("json")
+list.files(pattern = "json") %>%
+  walk(function(x){
+    file.copy(x, glue::glue("json/{x}"))
+    unlink(x)
+  })
+```
+
+## Building a website with Markdown and GitHub
+
+Here's a list of random elements from the process of building these pages with R.
+
+### Hosting
+
+My website in hosted on [GitHub](https://github.com/ColinFay/colinfay.github.io), with the home url (colinfay.me) pointing to the root of this repo. If I create a new folder `pouet`, and put inside this folder a file called `index.html`, I can then go to colinfay.me/pouet, and get a new website from there. As the wikileaks extraction already had its own repo, I've chosen to list this repo [https://github.com/ColinFay/wikileaksdm](https://github.com/ColinFay/wikileaksdm) as a submodule of my website's repo. 
+
+More about submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+
+Inside this wikileaksdm project, I gathered all the data, an `index.Rmd` which will be used as a homepage, and other Rmd for other pages. Each are compiled as html. 
+
+### Styling the pages
+
+Markdown default style is nice, but I wanted something different. This is why I used `{markdowntemplates}`, with the skeleton template. The yaml looks like: 
+
+```
+---
+title: "Wikileaks Twitter DM - Home"
+author: '@_colinfay'
+date: "`r Sys.Date()`"
+fig_width: 10
+fig_height: 4 
+navlink: "[Wikileaks Twitter DM](https://colinfay.me/wikileaksdm)"
+og:
+  type: "article"
+  title: "Wikileaks Twitter DM"
+footer:
+  - content: '<a href="https://colinfay.me">colinfay.me</a> • <a href="https://twitter.com/_ColinFay">@_colinfay</a><br/>'
+output: markdowntemplates::skeleton
+---
+
+```
+
+Here, you can see some new things: footer content, og for open graph data, and navlink for the content of the header. 
+
+### Include the same markdown content several time 
+
+All the pages have the same intro content, so I can use `shiny::includeMarkdown` to include it on each page (this way, I'll only need to update the content once if needed). Put it between backticks with an `r`, and the markdown is integrated at compilation time as html. 
+
+See here, line 21: https://raw.githubusercontent.com/ColinFay/wikileaksdm/master/index.Rmd
+
+### Include font awesome icons
+
+Before every link, there is a: `r fontawesome::fa("download")`
+
+This could have been done with CSS, but I've used the `{fontawesome}` package, also between backticks and with an `r`, to include them. 
+
+See here, line 33: https://raw.githubusercontent.com/ColinFay/wikileaksdm/master/index.Rmd
+
+### Page content
+
+All the pages include interactive elements, and a static plot. Interactive tables have been rendered with the `{DT}` package, and the timeline with `{dygraphs}`. Under each dygraph, there is a static plot made with `{ggplot2}`. In order to organise this two plots (interactive and none), the second plot is put inside a `<details>` HTML tag. This allows to create a foldable content inside the page. 
+
+See: https://twitter.com/_ColinFay/status/1022836135452663809
+
+### Prefilling functions
+
+I use `dygraph` and `datatable` several times, with the same defaut arguments (e.g `extensions = "Buttons",options = list(scrollX = TRUE, dom = "Bfrtip", buttons = c("copy", "csv")`). As I didn't want to retype these elements each time, I've called `purrr::partial` on it: 
+
+```{r eval=FALSE}
+dt <- partial(
+  datatable,
+  extensions = "Buttons",
+  options = list(
+    scrollX = TRUE, 
+    dom = "Bfrtip", 
+    buttons = c("copy", "csv")
+    )
+)
+```
+
+This new `dt` function is then used as the defaut `datatable` rendering.
+
+## Read more
+
+If you want to read the code and discover the content, feel free to browse the website and the github repo: 
+
++ [Website](https://colinfay.me/wikileaksdm)
++ [GitHub repo](https://github.com/ColinFay/wikileaksdm)
