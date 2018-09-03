@@ -3,7 +3,7 @@ title: "About lazy evaluation"
 post_date: 2018-07-30
 layout: single
 permalink: /lazyeval/
-categories: cat
+categories: r-blog-en
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE)
 A follow-up on Thomas Lumley [follow-up post](http://notstatschat.rbind.io/2018/07/30/quoting-and-macros-in-r/) on Miles McBain
 [post about quotation](https://milesmcbain.xyz/the-roots-of-quotation/). 
 
-In this post, Thomas is continuing Miles exploration of the concept of quoting and evaluation in R. Thomas speaks a little bit about lazy evaluation, and I decided to continue to explore this concept. Notably I wish to start over from on this quote from the blogpost: 
+In this post, Thomas is continuing Miles exploration of the concept of quoting and evaluation in R. Thomas speaks a little bit about lazy evaluation, and I decided to continue to explore this concept. Notably I wish to start over from on this quote from the blog post: 
 
 > "In reality, to allow for lazy evaluation, R has a special data structure called a promise, which stores the expression until you look at it then evaluates it. R also has substitute() to get the expression out of the promise."
 
@@ -34,7 +34,7 @@ plop <- function(a, b){
 plop(4)
 ```
 
-Here, `b` is defined as a function argument, but never evaluated. So no error here. This strategy is called "lazy" as it does "the strict minimum" of evaluation (remember that evaluation is looking for the value of a symbol).
+Here, `b` is defined as a function argument, but never evaluated. So no error. This strategy is called "lazy" as it does "the strict minimum" of evaluation (remember that evaluation is looking for the value of a symbol).
 
 Lazy evaluation means you can also do: 
 
@@ -84,9 +84,50 @@ if (TRUE | no_variable) {
 
 ### Why lazy eval
 
-Lazy evaluation is implemented in R as it allows a program to be more efficient when used interactively: __when you run a series of calls, only the necessary symbols are evaluated, that is to say that only the needed objects will be loaded in memory__. The downside being that it can make a program less predictable, as you are never 100% sure a symbol will be evaluated (but this is for more advanced use-cases).
+Lazy evaluation is not R-restricted: it is also found in other languages (mainly functional languages). Its opposite is strict/eager evaluation, which is the default in most programming languages. 
 
-Its opposite is strict/eager evaluation, which is the default in most programming languages.
+Lazy evaluation is implemented in R as it allows a program to be more efficient when used interactively: __only the necessary symbols are evaluated, that is to say that only the needed objects will be loaded in memory and/or looked for__. The downside being that it can make a program less predictable, as you are never 100% sure a symbol will be evaluated (but this is for more advanced use-cases).
+
+It's a typical mechanism for functional language, as it allows functions to be defined without any values in it. That means that you can create this object without `a` and `b` having a value. 
+
+```{r}
+ping <- function(a,b){
+  a + b
+}
+```
+
+To quote [R: a language for data analysis and graphics](http://www.aliquote.org/cours/2012_biomed/biblio/Ihaka1996.pdf): 
+
+> The expression given as function arguments are not evaluated before the function is called. Instead, the expressions are packaged together with the environment in which they should be evaluated and it is this package that is passed to the function. Evaluation only takes place when the argument is required. 
+
+In fact, you're already familiar with it, as I'm sure you can predict the output of this function: 
+
+```{r}
+mean_of_that <- function(x, mean_of = mean(x)){
+  # Of course I could use na.rm, it's an example ;)
+  x <- x[!is.na(x)]
+  print(x)
+  cat("The mean of x is", mean_of)
+}
+mean_of_that(c(1,2,3,4,NA))
+```
+
+Here, if the output does not surprise you, it's because you already have understood what is lazy eval (good news, right!): when R tries to access the value of `mean_of`, it looks for the value of `x`. At that exact moment, as the value of `x` has changed (no NA), you have the mean of the new `x`. If `mean_of` had been evaluated as soon as the function was called, the value of `mean_of` would have been `NA`. 
+
+See also : 
+
+```{r}
+ping <- function(a = Sys.time(), b = Sys.time(), c = Sys.time()){
+  print(a)
+  Sys.sleep(1)
+  print(b)
+  Sys.sleep(1)
+  print(c)
+}
+ping()
+```
+
+You can see that each element has a different value. If the elements had been evaluated at the moment the function was called, they would all have the same value (i.e the `Sys.time` of when the function is called). 
 
 ### LazyData, and promises
 
@@ -131,7 +172,7 @@ nrow(txhousing)
 mem_used()
 ```
 
-Here is an example of Non-standard evaluation with `substitute`: even if I'm passing `txhousing` as a symbol, `substitute(txhousing)` does not behave as `nrow(txhousing)`. The symbol is not evaluated in the standard way, the promises is still a promises, and the symbol `txhousing` does not bring the object in the environment. 
+Here is an example of Non-standard evaluation with `substitute`: even if I'm passing `txhousing` as a symbol, `substitute(txhousing)` does not behave as `nrow(txhousing)`. The symbol is not evaluated in the standard way, the promise is still a promise, and the symbol `txhousing` does not bring the object in the environment. 
 
 Let's just put it into a function: 
 
@@ -144,8 +185,7 @@ substiplop <- function(dataset){
 
 library(ggplot2)
 mem_used()
-a <- substiplop(dataset = economics_long)
-a
+substiplop(dataset = economics_long)
 mem_used()
 ```
 
@@ -157,40 +197,39 @@ nrowplop <- function(dataset){
 }
 
 mem_used()
-b <- nrowplop(dataset = economics_long)
-b
+nrowplop(dataset = economics_long)
 mem_used()
 ```
 
 Keep all this in mind, we'll be back to it in a few.
 
-## Learning more about lazy evaluation
+## More about lazy evaluation
 
 Ok, now, now let's dig deeper into lazy evaluation. 
 
 ### RTFM
 
-Let's start with the beginning: the R-Manuals. `promises` and `lazy evaluation` are refered to several times in the [R Language Definition](http://colinfay.me/r-language-definition/). 
+Let's start with the beginning: the R-Manuals. `promises` and `lazy evaluation` are referred to several times in the [R Language Definition](http://colinfay.me/r-language-definition/). 
 
 If we go to [Promise objects](http://colinfay.me/r-language-definition/objects.html#promise-objects), we learn that : 
 
 > Promise objects are part of R’s __lazy evaluation__ mechanism. They contain three slots: a __value__, an __expression__, and an __environment__. When a function is called the arguments are matched and then each of the formal arguments is bound to a promise. The expression that was given for that formal argument and a pointer to the environment the function was called from are stored in the promise.
 
-What that means is that: when calling a function, arguments are turned into `promises`. These `promises` contains: an expression, and an environment (no value at first). In a sense, what this object holds is not a value, but __a recipe for a value__, saying "evaluate this expression in this environment", and this recipe is called only when we need it.
+What that means is that: when calling a function, arguments are turned into `promises`. These `promises` contain: an expression, and an environment (no value at first). In a sense, what this object holds is not a value, but __a recipe for a value__, saying "evaluate this expression in this environment", and this recipe is called only when we need it.
 
 > Until that argument is accessed there is __no value associated with the promise__. When the argument is accessed, the stored expression is evaluated in the stored environment, and the result is returned. The result is also saved by the promise. __The substitute function will extract the content of the expression slot. This allows the programmer to access either the value or the expression associated with the promise__.
 
-So, here's a clear definition for the `substitute` function: an "expression slot content extractor" :) In other words, when passing arguments to a function, they are immediatly turned into a promise, a data structure with an expression, and a recipe for a value. But here's the catch: thanks to lazy evaluation, __you can access this expression without having to actually give an argument a value__ (i.e., without having to look for its value). 
+So, here's a clear definition for the `substitute` function: an "expression slot content extractor" :) In other words, when passing arguments to a function, they are immediately turned into a promise, a data structure with an expression, and a recipe for a value. But here's the thing: thanks to lazy evaluation, __you can access this expression without having to actually give an argument a value__ (i.e., without having to look for its value). 
 
-Remember our fonction `plop`, and : 
+Remember our function `plop`, and : 
 
 ```{r}
 plop(a = 4, b = non_existing_variable)
 ```
 
-With our newly acquired knowledge, we can tell what's happening here: b is created as a promised, containing the expression `non_existing_variable`. It contains no value, but as we never try to actually evaluate it (i.e. try to acess its value), there is no error. 
+With our newly acquired knowledge, we can tell what's happening here: `b` is created as a promise, containing the expression `non_existing_variable`. It contains no value, but as we never try to actually evaluate it (i.e. try to access its value), there is no error. 
 
-Let's continue on that note: `b` is created as a promise, and `substitute` allows to get the expression out of a promise. So we could modify our function to play with the expression contained in `b`:
+Let's continue on that note: `b` is created as a promise (expression + environment), and `substitute` allows to get the expression out of a promise. So we could modify our function to play with the expression contained in `b`:
 
 ```{r}
 plop <- function(a, b) {
@@ -226,16 +265,16 @@ mutator(head(iris), Sepal.Length * 10)
   
 ```
 
-(Of course, the real `dplyr::mutate` does A LOT more, it's juste for the example)
+(Of course, the real `dplyr::mutate` does A LOT more, it's just for the example)
 
 Let's sum up what is happening here : 
 
-+ I give `a` and `new_col` a expressions as inputs
++ I give `a` and `new_col` expressions as inputs
 + Both `a` and `new_col` become promises, linked to the expressions given as inputs. None are evaluated at this point, thanks to lazy evaluation
-+ The function extract the expression contained in `col_name_computation`, puts it in `col_name_computation_sub`, which is at that stage a `call`.
-+ The function changes the rules of evaluation, and this `call` is evaluated in the context of the dataframe given (remember that dataframes are lists, and you can `eval` a symbol inside a list). 
-+ This newly created vector is put inside the dataframe
-+ The modified data.frame is returned. 
++ R extracts the expression contained in `col_name_computation`, puts it in `col_name_computation_sub`, which is at that stage a `call`.
++ I have defined a custom rule for evaluation, and this `call` is evaluated in the context of the dataframe given (remember that dataframes are lists, and you can `eval` a symbol inside a list). 
++ This newly created vector is put inside the dataframe as a column
++ The modified data.frame is returned
 
 To dissect a little bit what is happening:
 
@@ -266,7 +305,7 @@ In case you were wondering how to check if something is a promise... let's conti
 
 > Within the R language, promise objects are almost only seen implicitly: actual function arguments are of this type. There is also a delayedAssign function that will make a promise out of an expression. There is generally __no way in R code to check whether an object is a promise or not__, __nor is there a way to use R code to determine the environment of a promise__.
 
-Well, in a sense there is a way to create a `promise`, through the `delayedAssign` function. Still not sure of a use case, but... 
+There is a way to create a `promise`, through the `delayedAssign` function. At the time of writing I haven't found a use case for that, but I'll be glad to hear about one in the comment!
 
 ```{r error = TRUE}
 delayedAssign("a", this_var)
@@ -281,7 +320,7 @@ From [Argument evaluation](http://colinfay.me/r-language-definition/functions.ht
 
 > The process of filling the value slot of a promise by evaluating the contents of the expression slot in the promise’s environment is called __forcing the promise__. A promise will only be forced once, the value slot content being used directly later on. A promise is forced when its value is needed.
 
-Forcing is "filling" the value slot of a promise. This can be done by simply calling the object, or by using the `force` function (note that `force` is just semantic sugar). Let's see how this can be usefull with a plot (from [Substitutions](http://colinfay.me/r-language-definition/computing-on-the-language.html#substitutions))
+Forcing is "filling" the value slot of a promise. This can be done by simply calling the object, or by using the `force` function (note that `force` is just semantic sugar). Let's see how this can be useful with a plot (from [Substitutions](http://colinfay.me/r-language-definition/computing-on-the-language.html#substitutions))
 
 ```{r}
 logplot <- function(y, ylab = deparse(substitute(y))) {
@@ -304,9 +343,23 @@ logplot(1:10)
 
 As said before: the promise is only forced once, so `ylab` finds its value in the first line of code. 
 
+Remember our `mean_of_that` function from before. Look at how it changes if I force the evaluation of mean_of before changing `x`:
+
+```{r}
+mean_of_that <- function(x, mean_of = mean(x)){
+  force(mean_of)
+  x <- x[!is.na(x)]
+  print(x)
+  cat("The mean of x is", mean_of)
+}
+mean_of_that(c(1,2,3,4,NA))
+```
+
 ## More about lazy evaluation
 
-Here are some random quotes and elements found on the internet: 
+Here are some random quotes and elements found on the internet, not necessarily linked to R: 
+
++ [R: a language for data analysis and graphics](http://www.aliquote.org/cours/2012_biomed/biblio/Ihaka1996.pdf)
 
 + Lazy Evaluation at the [Portland Pattern Repository](http://wiki.c2.com/?LazyEvaluation)
 
@@ -317,3 +370,13 @@ Here are some random quotes and elements found on the internet:
 + [Why Functional Programming Matters](https://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf)
 
 > Since this method of evaluation runs f as little as possible, it is called “lazy evaluation”. It makes it practical to modularize a program as a generator that constructs a large number of possible answers, and a selector that chooses the appropriate one. While some other systems allow programs to be run together in this manner, only functional languages (and not even all of them) use lazy evaluation uniformly for every function call, allowing any part of a program to be modularized in this way. Lazy evaluation is perhaps the most powerful tool for modularization in the functional programmer’s repertoire.
+
++ [A Natural Semantics for Lazy Evaluation](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=B2849D427F1D4ECA34174900D4FC9931?doi=10.1.1.35.2016&rep=rep1&type=pdf) 
+
++ [How Lazy Evaluation Works in Haskell](https://hackhands.com/lazy-evaluation-works-haskell/)
+
++ [LAZY EVALUATION](https://www.gnu.org/software/kawa/Lazy-evaluation.html)
+
+> Lazy evaluation (or call-by-need) delays evaluating an expression until it is actually needed; when it is evaluated, the result is saved so repeated evaluation is not needed. Lazy evaluation is a technique that can make some algorithms easier to express compactly or much more efficiently, or both. It is the normal evaluation mechanism for strict functional (side-effect-free) languages such as Haskell. However, automatic lazy evaluation is awkward to combine with side-effects such as input-output. It can also be difficult to implement lazy evaluation efficiently, as it requires more book-keeping.
+
+
