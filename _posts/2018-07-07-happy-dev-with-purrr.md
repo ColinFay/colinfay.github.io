@@ -2,7 +2,9 @@
 title: "Happy dev with {purrr}"
 post_date: 2018-06-06
 layout: single
-permalink: /happy-dev-purrr/
+permalink: /happy-dev-purrr/ 
+tags:
+  - purrr
 categories: r-blog-en
 output: jekyllthat::jekylldown
 excerpt_separator: <--!more--> 

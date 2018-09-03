@@ -2,31 +2,35 @@
 title: "[How to] Write a purrr-like adverb"
 post_date: 2018-04-18
 layout: single
+tags:
+  - purrr
 permalink: /purrr-adverb-tidyverse/
 categories: r-blog-en
 output: jekyllthat::jekylldown
 excerpt_separator: <--!more--> 
 ---
 
-Create your own `safely`, `compose` and friends!
+Create your own `safely`, `compose` and friends\!
 
+## What is an adverb
 
+If you read carefully the [purrr
+documentation](http://purrr.tidyverse.org/reference/index.html#section-adverbs),
+you’ll find this simple explanation :
 
-What is an adverb
--
+> Adverbs modify the action of a function; taking a function as input
+> and returning a function with modified action as output.
 
-If you read carefully the [purrr documentation](http://purrr.tidyverse.org/reference/index.html#section-adverbs), you'll find this simple explanation :
-
-> Adverbs modify the action of a function; taking a function as input and returning a function with modified action as output.
-
-In other words, adverbs take a function, and return this function modified. Yes, just as an adverb modifies a verb. So if you do :
+In other words, adverbs take a function, and return this function
+modified. Yes, just as an adverb modifies a verb. So if you do :
 
 ``` r
 library(purrr)
 safe_log <- safely(log)
 ```
 
-The returned object is another function that you can use just as a regular one.
+The returned object is another function that you can use just as a
+regular one.
 
 ``` r
 class(safe_log)
@@ -44,12 +48,14 @@ safe_log("a")
     ## $error
     ## <simpleError in log(x = x, base = base): argument non numérique pour une fonction mathématique>
 
-In computer science, these adverbs are what is called "high-order functions".
+In computer science, these adverbs are what is called “high-order
+functions”.
 
-How to write your own?
---
+## How to write your own?
 
-I've been playing with adverbs in [{attempt}](https://github.com/ColinFay/attempt), notably through these adverbs :
+I’ve been playing with adverbs in
+[{attempt}](https://github.com/ColinFay/attempt), notably through these
+adverbs :
 
 ``` r
 library(attempt)
@@ -90,7 +96,9 @@ as_num_warn("1")
 
     ## [1] 1
 
-So, how to implement this kind of behavior? Let's take a simple example with `sleepy`, also shared on [Twitter](https://twitter.com/_ColinFay/status/981435910989533184).
+So, how to implement this kind of behavior? Let’s take a simple example
+with `sleepy`, also shared on
+[Twitter](https://twitter.com/_ColinFay/status/981435910989533184).
 
 ``` r
 sleepy <- function(fun, sleep){
@@ -111,17 +119,18 @@ class(sleep_print)
 Sys.time()
 ```
 
-    ## [1] "2018-04-19 10:20:58 CEST"
+    ## [1] "2018-09-03 21:17:05 CEST"
 
 ``` r
 sleep_print()
 ```
 
-    ## [1] "2018-04-19 10:21:03 CEST"
+    ## [1] "2018-09-03 21:17:10 CEST"
 
-Let's decompose what we've got here.
+Let’s decompose what we’ve got here.
 
-First of all, the function should return another function, so we need to start with :
+First of all, the function should return another function, so we need to
+start with :
 
 ``` r
 talky <- function(){
@@ -131,9 +140,10 @@ talky <- function(){
 }
 ```
 
-What this function will take as a first argument is another function, that will be executed when our future new function is called.
+What this function will take as a first argument is another function,
+that will be executed when our future new function is called.
 
-So let's do this:
+So let’s do this:
 
 ``` r
 talky <- function(fun){
@@ -143,7 +153,8 @@ talky <- function(fun){
 }
 ```
 
-Because you know, with R referential transparency, you can create a variable that is a function:
+Because you know, with R referential transparency, you can create a
+variable that is a function:
 
 ``` r
 plop <- mean
@@ -159,9 +170,10 @@ sys_time <- talky(Sys.time)
 sys_time()
 ```
 
-    ## [1] "2018-04-19 10:21:03 CEST"
+    ## [1] "2018-09-03 21:17:10 CEST"
 
-But hey, this is not what we want: we need this new function to be able to take arguments. So let's use our friend `...`.
+But hey, this is not what we want: we need this new function to be able
+to take arguments. So let’s use our friend `...`.
 
 ``` r
 talky <- function(fun){
@@ -171,7 +183,9 @@ talky <- function(fun){
 }
 ```
 
-Now, our new adverb creates a function that can take arguments. But as you've notice, this is still not really an adverb: we need to **modify** something. Now you're only limited by your imagination ;)
+Now, our new adverb creates a function that can take arguments. But as
+you’ve notice, this is still not really an adverb: we need to **modify**
+something. Now you’re only limited by your imagination ;)
 
 ``` r
 # Print the time
@@ -185,7 +199,7 @@ talky_sqrt <- talky(sqrt)
 talky_sqrt(10)
 ```
 
-    ## [1] "2018-04-19 10:21:03 CEST"
+    ## [1] "2018-09-03 21:17:10 CEST"
 
     ## [1] 3.162278
 
@@ -252,10 +266,4 @@ log_sqrt(13)
 readLines("logs")
 ```
 
-    ## [1] "2018-04-19 10:21:03" "2018-04-19 10:21:03"
-
-
-
-
-
-
+    ## [1] "2018-09-03 21:17:10" "2018-09-03 21:17:10"

@@ -2,6 +2,8 @@
 title: "[How to] Write a purrr-like adverb"
 post_date: 2018-04-18
 layout: single
+tags:
+  - purrr
 permalink: /purrr-adverb-tidyverse/
 categories: r-blog-en
 output: jekyllthat::jekylldown
