@@ -149,7 +149,7 @@ This is what you're going to get:
 
 A `<Promise>`. 
 
-At this point, as I still don't have called the dataset, the symbols (`diamonds`) holds a promise to this dataset, which is sill not in memory: 
+At this point, as I still don't have called the dataset, the symbols (`diamonds`) holds a promise to this dataset, which is still not in memory: 
 
 ```{r}
 library(pryr)
