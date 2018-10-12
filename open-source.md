@@ -2,8 +2,8 @@
 layout: single
 title: Open Source
 permalink: /open-source/
-header: 
-  overlay_image: "assets/img/pexels/opensource.jpg"
+# header: 
+#   overlay_image: "assets/img/pexels/opensource.jpg"
 ---
 
 

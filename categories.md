@@ -2,13 +2,13 @@
 layout: single
 title: Blog
 permalink: /categories/
-header: 
-  overlay_image: "assets/img/pexels/blogcolin.jpg"
+# header: 
+#   overlay_image: "assets/img/pexels/blogcolin.jpg"
 ---
 ## Jump to : 
 
 + [R blog (en)](#r-blog-en) 
-+ [R blog (fr)](#r-blog-en)
++ [R blog (fr)](#r-blog-fr)
 + [Random](#r-blog-en)
 
 <hr>

@@ -2,8 +2,8 @@
 layout: single
 title: About
 permalink: /about/
-header: 
-  overlay_image: "assets/img/pexels/aboutcolin.jpg"
+# header: 
+#   overlay_image: "assets/img/pexels/aboutcolin.jpg"
 ---
 
 ## Data Scientist & R Hacker

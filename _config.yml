@@ -19,7 +19,7 @@ locale                   : "en-US"
 title                    : "Colin Fay"
 title_separator          : "-"
 name                     : "Colin Fay"
-description              : "R, data, code."
+description              : "Mostly R, data, and code."
 url                      : "https://colinfay.me"# the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -98,7 +98,7 @@ analytics:
 author:
   name             : "Colin FAY"
   avatar           : "https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "I do R at ThinkR. Founder of Data Bzh and cofounder of the Breizh Data Club. Part of the RWeekly Team."
+  bio              : "Data Scientist & R Hacker at ThinkR. Founder of Data Bzh and cofounder of the Breizh Data Club. Part of the RWeekly Team."
   location         : "Rennes"
   email            : "contact@colinfay.me"
   uri              :
