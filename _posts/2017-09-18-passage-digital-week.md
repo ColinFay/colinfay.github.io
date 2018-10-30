@@ -4,7 +4,7 @@ title: "De passage à la Nantes Digital Week"
 post_date: 2017-09-18
 layout: single
 permalink: /nantes-digital-week/
-categories : random
+
 tags: [talk]
 excerpt_separator: <--!more--> 
 ---

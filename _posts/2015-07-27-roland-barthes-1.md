@@ -11,7 +11,7 @@ geo_public:
   - "0"
 publicize_twitter_user:
   - _ColinFay
-categories : random
+
 ---
 
 Divagation et commentaires hors contexte sur des morceaux choisis dans l’œuvre de Barthes.

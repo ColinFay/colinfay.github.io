@@ -1,6 +1,6 @@
 ---
 title: "Wrangling Wikileaks DMs"
-post_date: 2018-07-30
+post_date: 2018-08-06
 layout: single
 permalink: /wikileaks/
 categories: r-blog-en

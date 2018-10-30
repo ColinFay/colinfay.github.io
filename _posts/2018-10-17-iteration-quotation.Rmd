@@ -1,0 +1,38 @@
+---
+title: "Using {purrr} and tidyeval"
+post_date: 2018-10-17
+layout: single
+permalink: /r-assignment/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+```
+
+Ok, I admit, this will be a post about iteration and quotation, but that would have made a less attractive title don't you think? ;) 
+
+## Using tidyeval and {purrr}
+
+The question poped on the [ThinkR]() slack lately: why isn't this code working? (Well, it wasn't this code, but something that looked like it).
+
+```{r}
+library(tidyverse)
+
+df <- mtcars %>% 
+  select(mpg:disp)
+
+my_graph <- function(tbl, which){
+  tbl %>% 
+    ggplot()+
+    aes(x = !! enquo(which) ) +
+    geom_density()
+}
+
+map(mtcars, ~ my)
+map( 1:2, )
+
+```
+

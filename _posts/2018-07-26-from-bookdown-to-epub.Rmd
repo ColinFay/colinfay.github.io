@@ -1,0 +1,33 @@
+---
+title: "From bookdown to epub"
+post_date: 2018-07-26
+layout: single
+permalink: /from-bookdown-to-epub/
+categories: r-stats-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+Turning online bookdown into epub with some lines of code. 
+
+So, let's start by stating this: 
+
++ {bookdown} is awesome (like, really awesome)
+ 
++ No one can read on a laptop on the beach
+
++ Everybody likes to read on the beach
+
+How can I read bookdowns on the beach ? The answer is simple: ebook reader. But the thing is, bookdown authors do not always provide there bookdown as a downloadable ebook. So here's a little how to: 
+
+```{r}
+tmp_dir <- file.path(tempdir(), "bd")
+git2r::clone("https://github.com/moderndive/moderndive_book", tmp_dir)
+list.files(tmp_dir)
+lapply(list.files(tmp_dir, full.names = TRUE), 
+       function(x){
+         a <- readLines(x)
+         grep("library", a, value = TRUE)
+       })
+```
+

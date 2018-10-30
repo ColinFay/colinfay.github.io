@@ -9,7 +9,6 @@ permalink:  /musarderie-premier/
 published: false
 geo_public:
   - "0"
-categories : random
 ---
 Souvent, sur le net, ces voix qui nous disent : "À quoi bon encore écrire ?"
 Partout, des mots, des articles et des billets, qui s'accumulent, et qui s'interrogent. Pourquoi encore prendre la peine d'être un son de cloche dans un immense brouhaha ?

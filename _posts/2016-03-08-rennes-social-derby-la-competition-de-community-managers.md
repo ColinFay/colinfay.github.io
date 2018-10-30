@@ -13,7 +13,7 @@ publicize_twitter_user:
   - _ColinFay
 publicize_linkedin_url:
   - 'https://www.linkedin.com/updates?discuss=&scope=216604460&stype=M&topic=6120176387073536000&type=U&a=5P6H'
-categories : random
+
 ---
 
 __Du 1er au 30 avril, une guerre des gangs se tiendra dans les rues de Rennes. Mais rassurez vous, uniquement sur Twitter.__

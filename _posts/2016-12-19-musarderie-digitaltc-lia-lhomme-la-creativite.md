@@ -7,7 +7,7 @@ post_excerpt: ""
 layout: single
 permalink: /musarderie-digitaltc-lia-lhomme-la-creativite/
 published: true
-categories : random
+
 ---
 ## Courte réflexion sur l'IA, l'homme et la créativité, faisant suite à la Digital Tech Conférence 2016.
 

@@ -1,6 +1,6 @@
 ---
 title: "Why do we use arrow as an assignment operator?"
-post_date: 2018-09-24
+post_date: 2018-07-30
 layout: single
 permalink: /r-assignment/
 categories: r-blog-en

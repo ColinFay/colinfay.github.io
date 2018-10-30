@@ -11,7 +11,7 @@ geo_public:
   - "0"
 publicize_twitter_user:
   - _ColinFay
-categories : random
+
 ---
 Nos façons d’écrire seraient-elles dictées par les machines ? À l’heure de l’omniprésence du signe, de l’écrit et des moteurs de recherche, les outils d’indexation prendront-ils le pas sur le style ?
 

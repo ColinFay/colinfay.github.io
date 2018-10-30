@@ -7,7 +7,7 @@ post_excerpt: ""
 layout: single
 permalink: /atelier-dataviz-dimanche-12-mars-fabrique-de-linfo/
 published: true
-categories : random
+
 tags: [talk]
 ---
 Rennes — Rendez-vous dimanche 12 mars 2017 pour un atelier dataviz à la Fabrique de l'info ! 

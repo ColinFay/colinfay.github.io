@@ -13,7 +13,7 @@ publicize_linkedin_url:
   - 'https://www.linkedin.com/updates?discuss=&scope=216604460&stype=M&topic=6059299776145428480&type=U&a=fef4'
 publicize_twitter_user:
   - _ColinFay
-categories : random
+
 ---
 
 Retour en son et en images sur mon intervention au Medialab Speed Training de Ouest Médialab, organisé à Nantes le 22 septembre 2015.

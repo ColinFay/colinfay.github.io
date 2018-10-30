@@ -1,6 +1,6 @@
 ---
 title: "Why do we use arrow as an assignment operator?"
-post_date: 2018-07-30
+post_date: 2018-09-24
 layout: single
 permalink: /r-assignment/
 categories: r-blog-en
@@ -159,7 +159,7 @@ median(x = 1:10)
 x
 ```
 
-    ## Error in eval(expr, envir, enclos): objet 'x' introuvable
+    ## Error in eval(expr, envir, enclos): object 'x' not found
 
 ``` r
 median(x <- 1:10)
@@ -177,14 +177,13 @@ In the first code, you’re passing `x` as the parameter of the `median`
 function, whereas the second one is creating a variable x in the
 environment, and uses it as the first argument of `median`. Note that it
 works because `x` is the name of the parameter of the function, and
-won’t work with
-    `y`:
+won’t work with `y`:
 
 ``` r
 median(y = 12)
 ```
 
-    ## Error in is.factor(x): l'argument "x" est manquant, avec aucune valeur par défaut
+    ## Error in is.factor(x): argument "x" is missing, with no default
 
 ``` r
 median(y <- 12)
@@ -200,7 +199,7 @@ failing and not the other:
 x <- y = 15
 ```
 
-    ## Error in x <- y = 15: impossible de trouver la fonction "<-<-"
+    ## Error in x <- y = 15: could not find function "<-<-"
 
 ``` r
 x = y <- 15
@@ -234,29 +233,29 @@ data.frame(
 ```
 
     ##             a b....rnorm.10.
-    ## 1   0.9885196      1.3809205
-    ## 2  -0.2810080     -1.4165648
-    ## 3  -0.6709831     -1.6203407
-    ## 4  -1.3055656     -1.0713406
-    ## 5   1.2297421      2.2558878
-    ## 6  -1.5333307      0.5194378
-    ## 7  -0.1011028     -0.3651725
-    ## 8  -0.3976268     -1.0814520
-    ## 9  -0.3924576     -0.7030822
-    ## 10 -1.1745994     -0.7090015
+    ## 1   0.6457433     -0.5001296
+    ## 2   0.2073077     -0.4575013
+    ## 3  -0.4758076     -0.2820372
+    ## 4   0.2568369     -0.4271579
+    ## 5   0.4775034     -1.8024830
+    ## 6   0.9281543     -0.2811589
+    ## 7   0.3622706     -1.5172742
+    ## 8   0.5093346     -1.9805609
+    ## 9  -1.7333491      0.5559907
+    ## 10 -2.0203632      1.9717890
 
 ``` r
 a
 ```
 
-    ## Error in eval(expr, envir, enclos): objet 'a' introuvable
+    ## Error in eval(expr, envir, enclos): object 'a' not found
 
 ``` r
 b
 ```
 
-    ##  [1]  1.3809205 -1.4165648 -1.6203407 -1.0713406  2.2558878  0.5194378
-    ##  [7] -0.3651725 -1.0814520 -0.7030822 -0.7090015
+    ##  [1] -0.5001296 -0.4575013 -0.2820372 -0.4271579 -1.8024830 -0.2811589
+    ##  [7] -1.5172742 -1.9805609  0.5559907  1.9717890
 
 ## Little bit unrelated but
 
@@ -295,7 +294,7 @@ the top level:
 a := 12
 ```
 
-    ## Error in `:=`(a, 12): impossible de trouver la fonction ":="
+    ## Error in `:=`(a, 12): could not find function ":="
 
 But as it is still understood by the parser, you can use `:=` as an
 infix without any %%, for assignment, or for anything else:

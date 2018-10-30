@@ -4,14 +4,11 @@ title: "LoremJulia - A lorem ipsum generator made in Julia"
 post_date: 2017-08-12
 layout: single
 permalink: /loremjulia/
-categories : julia-blog
 tags: [julia, package]
 excerpt_separator: <--!more--> 
 ---
 
 An excursion in the world of Julia.
-
-
 
 # LoremJulia
 

@@ -13,7 +13,7 @@ publicize_twitter_user:
   - _ColinFay
 publicize_linkedin_url:
   - 'https://www.linkedin.com/updates?discuss=&scope=216604460&stype=M&topic=6082882150095429632&type=U&a=FTEC'
-categories : random
+
 ---
 
 Retour sur une question soulevée lors de la Digital Tech Conférence, le 3 décembre 2015, à l’Opéra de Rennes. Sur la sérendipité, l’homophilie et la personnalisation de la musique en ligne.

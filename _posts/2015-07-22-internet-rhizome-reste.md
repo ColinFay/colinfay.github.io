@@ -11,7 +11,6 @@ geo_public:
   - "0"
 publicize_twitter_user:
   - _ColinFay
-categories : random
 ---
 
 Divagation autour de la hiérarchisation d’Internet. Sur le rhizome, et tout le reste.

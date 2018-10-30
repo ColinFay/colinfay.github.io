@@ -11,7 +11,7 @@ geo_public:
   - "0"
 publicize_twitter_user:
   - _ColinFay
-categories : random
+
 ---
 
 Sur l’usage grandissant de l’emoji : l’écriture, les mots, et le reste. 

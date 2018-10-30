@@ -1,0 +1,38 @@
+---
+title: "About lazy evaluation"
+post_date: 2018-07-30
+layout: single
+permalink: /lazyeval/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE)
+```
+
+```{r}
+`$.NS` <- function(a, b){
+  a(b)
+}
+
+set_class <- function(x, y){
+  class(x) <- y
+  x
+}
+
+NSS <- getFromNamespace("NS", "shiny")
+
+NS <- function(namespace){
+  set_class(
+    NSS(namespace), 
+    "NS"
+    )
+}
+
+ns <- NS("b")
+ns$this_is
+
+```
+

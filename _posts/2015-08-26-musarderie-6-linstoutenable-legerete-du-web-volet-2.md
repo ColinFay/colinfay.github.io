@@ -13,7 +13,7 @@ publicize_twitter_user:
   - _ColinFay
 publicize_linkedin_url:
   - 'https://www.linkedin.com/updates?discuss=&scope=216604460&stype=M&topic=6042280657923633152&type=U&a=CM6Q'
-categories : random
+
 ---
 
 Réflexions courtes sur la légèreté, la vitesse et l’attention.

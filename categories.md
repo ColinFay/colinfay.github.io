@@ -9,7 +9,6 @@ permalink: /categories/
 
 + [R blog (en)](#r-blog-en) 
 + [R blog (fr)](#r-blog-fr)
-+ [Random](#r-blog-en)
 
 <hr>
 

@@ -13,7 +13,7 @@ publicize_twitter_user:
   - _ColinFay
 publicize_linkedin_url:
   - 'https://www.linkedin.com/updates?discuss=&scope=216604460&stype=M&topic=6075630554609393664&type=U&a=BQyV'
-categories : random
+
 ---
 
 Courir de plus en plus vite, et pour toujours.

@@ -1,6 +1,6 @@
 ---
 title: "Wrangling Wikileaks DMs"
-post_date: 2018-07-30
+post_date: 2018-08-06
 layout: single
 permalink: /wikileaks/
 categories: r-blog-en
@@ -47,21 +47,20 @@ As I wanted to use the data offline (and not re-download it each time I
 compile the outputs), I’ve first extracted and saved the dataset as a
 .txt. You can now see it at <https://colinfay.me/wikileaksdm/raw.txt>.
 
-Here is the code
-    used:
+Here is the code used:
 
 ``` r
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
-    ## ✔ tibble  1.4.2     ✔ dplyr   0.7.5
+    ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
     ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ───────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -398,7 +397,7 @@ yaml looks like:
     ---
     title: "Wikileaks Twitter DM - Home"
     author: '@_colinfay'
-    date: "2018-08-06"
+    date: "2018-10-17"
     fig_width: 10
     fig_height: 4 
     navlink: "[Wikileaks Twitter DM](https://colinfay.me/wikileaksdm)"

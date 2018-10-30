@@ -7,7 +7,7 @@ post_excerpt: ""
 layout: single
 permalink: /data-bzh-apero-storycode-rennes/
 published: true
-categories : random
+
 tags: [talk]
 ---
 ## Le 7 juillet 2016 à la Cordée, je présentais Data Bzh, la plateforme qui raconte la Bretagne par ses données, à l'Apéro StoryCode de Rennes. Retrouvez les slides de mon intervention.

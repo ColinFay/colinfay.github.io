@@ -11,7 +11,7 @@ geo_public:
   - "0"
 publicize_twitter_user:
   - _ColinFay
-categories : random
+
 ---
 
 _« Il faudrait_, disait-il, _une science qui étudie la vie des signes au sein de la vie sociale.__ (...) Elle nous apprendrait en quoi consistent les signes, quelles lois les régissent_. » Bien, mais à quelle fin ?

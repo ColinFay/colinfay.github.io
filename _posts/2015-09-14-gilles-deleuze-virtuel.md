@@ -13,7 +13,7 @@ publicize_twitter_user:
   - _ColinFay
 publicize_linkedin_url:
   - 'https://www.linkedin.com/updates?discuss=&scope=216604460&stype=M&topic=6049144595290292224&type=U&a=wFHv'
-categories : random
+
 ---
 
 Extraits commentés choisis (presque) aléatoirement dans l’œuvre de Gilles Deleuze.
