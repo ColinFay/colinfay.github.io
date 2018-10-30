@@ -12,6 +12,7 @@ author_profile: true
 __2018-10-19__ — "Data Science en production avec R, retour d'expérience", Breizh Data day, Rennes. 
 
 __2018-07-05__ — ["Vous allez aimer avoir {purrr}"](https://github.com/ColinFay/conf/tree/master/2018-07-rencontresr-rennes), Rencontres R Rennes. 
+
 __2018-06-14__ — ["Quand un langage de datascience se met à faire du web"](https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes), Web2Day Nantes. 
 
 __2018-05-14__ — ["Workshop - Building a package that lasts"](https://github.com/ColinFay/erum2018), eRum, Budapest. 
