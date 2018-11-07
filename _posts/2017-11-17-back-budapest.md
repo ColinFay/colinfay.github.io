@@ -23,7 +23,7 @@ If you weren't there, or if you were but want to check my slides again, you can 
 
 > Budapest R Meetup
 
-The slides: [https://github.com/ColinFay/conf/blob/master/2017-11-budapest/fay_colin_text_data_ggplot2.pdf](https://github.com/ColinFay/conf/blob/master/2017-11-budapest/fay_colin_text_data_ggplot2.pdf)
+The slides: [https://speakerdeck.com/colinfay/visualising-textual-data-with-ggplot2-budapest-r-meetup](https://speakerdeck.com/colinfay/visualising-textual-data-with-ggplot2-budapest-r-meetup)
 
 More info about the meetup: [https://www.meetup.com/Budapest-Users-of-R-Network/events/244319651/](https://www.meetup.com/Budapest-Users-of-R-Network/events/244319651/)
 
@@ -33,7 +33,7 @@ More info about the meetup: [https://www.meetup.com/Budapest-Users-of-R-Network/
 
 > BudapestBI 2017
 
-The slides: [https://github.com/ColinFay/conf/blob/master/2017-11-budapest/fay_colin_visualise_network.pdf](https://github.com/ColinFay/conf/blob/master/2017-11-budapest/fay_colin_visualise_network.pdf)
+The slides: [https://speakerdeck.com/colinfay/a-gentle-introduction-to-network-visualisation-budapest-bi](https://speakerdeck.com/colinfay/a-gentle-introduction-to-network-visualisation-budapest-bi)
 
 
 More about that: [http://budapestbiforum.hu/2017/hu/eloadasok/a-gentle-introduction-to-network-visualisation-colin-fay-thinkr/](http://budapestbiforum.hu/2017/hu/eloadasok/a-gentle-introduction-to-network-visualisation-colin-fay-thinkr/)
