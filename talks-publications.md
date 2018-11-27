@@ -9,6 +9,8 @@ author_profile: true
 
 ## Talks
 
+__2018-11-05__ ["Data Science en production avec R — Quels enjeux ? Quelles solutions?"](https://speakerdeck.com/colinfay/data-science-en-production-avec-r-quels-enjeux-quelles-solutions), Lyon Data Science Meetup
+
 __2018-10-19__ — "Data Science en production avec R, retour d'expérience", Breizh Data day, Rennes. 
 
 __2018-07-05__ — ["Vous allez aimer avoir {purrr}"](https://github.com/ColinFay/conf/tree/master/2018-07-rencontresr-rennes), Rencontres R Rennes. 
