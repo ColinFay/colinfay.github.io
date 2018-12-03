@@ -1,0 +1,201 @@
+---
+title: "Solving #AdventOfCode day 1 and 2 with R"
+post_date: 2018-12-02
+layout: single
+permalink: /advent-code-1-2/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+```
+ 
+Solving the first four puzzles of [Advent of Code](https://adventofcode.com) with R.
+
+ <!--more-->
+ 
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code, as it gives solutions for solving day 1 and 2. 
+
+## Advent of Code 
+
+> Advent of Code is an Advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like. [About Advent of Code](https://adventofcode.com/2018/about)
+
+```{r echo = FALSE}
+print.bench_mark <- function(x){
+  print(kable(x[, 1:5]))
+}
+```
+
+## Day one, part one
+
+Let's read the inputs for day one:
+
+```{r}
+inputs <-  read.csv("input.txt", header = FALSE)[, 1]
+```
+
+The story behind this is, to sum up: you've got a frequency of X, and a series of moves to apply to this frequency.
+
+So, here's the challenge: we are starting at 0, then each element of our input vector is a "shift", so the idea is to do `0 + v[1] + v[2] + ... + v[n]`. We need to get the value of the last element. 
+
+```{r}
+head(inputs, 10)
+```
+
+### Function factory
+
+[Disclaimer bis] I've been looking for an opportunity to write a blog post about this for a while. It seems like I finally found one ;) 
+
+Here's a way to do it, using closures, functional programming, and vectorisation. We're going to create a function factory, which is a family of high order functions that takes a vector and returns a function [See there for more info]().
+
+```{r}
+with_start_at <- function(start){
+  start <- start
+  function(x){
+    start <<- start + x
+    start
+  }
+}
+```
+
+Let's test against the example from AoC. 
+
+```{r}
+tail( vapply(c(1, 1, 1), with_start_at(0), numeric(1)), 1) 
+
+tail( vapply(c(1, 1, -2), with_start_at(0), numeric(1)), 1)
+
+tail( vapply(c(-1, -2, -3), with_start_at(0), numeric(1)), 1)
+```
+
+And finally, let's get the answer to the question:
+
+```{r}
+tail( vapply(inputs, with_start_at(0), numeric(1)), 1)
+```
+
+### How does it work
+
+Basically, each function creates its own environment. When you create a function `Y` inside another function `X`, the function `Y`, when returned, carries along the **environment in which it has been created**. In other word, when I create a function `Y` with  `with_start_at`, the `start` object, even if in the parent environment at the time of the function creation, is still accessible to the `Y` function via the `<<-` operator. 
+
+In a conceptual sense, it's like defining a `start` inside your global environment and changing it on each iteration of the `vapply`. The big difference being that you don't mess with the global environment: everything happening inside the function stays inside the function. 
+
+### Benchmark
+
+Let's benchmark a for loop against our functional solution:
+
+```{r}
+bench::mark(
+  iterations = 100,
+  check = FALSE, 
+  `for` = {
+  start <- 0
+  for (i in seq_along(inputs)){
+    start <- start + inputs[i]
+  }
+  start}, 
+  functional = {
+    tail( vapply(inputs, with_start_at(0), numeric(1)), 1)
+  }
+)
+```
+
+### Side note 
+
+Once I had completed this, I looked for other ways to do it, and stumbled upon a solution with `cumsum`, which is basically what my solution does, but faster and more idiomatic (so yes, better). The only difference being (on a more general sense), that the `cumsum` does only one task (totally valid for our case), but on the long run is less flexibile: the functional solution would allow us to start at any entry point, and also to apply any kind of transformation to our `start_object`.
+
+## Day one, part two
+
+Now, the second challenge is: given our list of frequencies and starting at 0, which frequency is encountered twice first? Note: our list of moves can be repeated as many time as possible until we find our answer. 
+
+On this one, I decided to go for the "brute force" solution - the idea is to: 
++ start from the vector of moves
++ apply the `with_start_at` 
++ test if there is any duplicated 
++ if there are, extract the duplicated, get the first element, and `break`
++ if there is none, multiply `i` by 10 and rep the original move `i` times 
++ repeat until I have an answer
+
+```{r}
+i <- 1
+while(TRUE){
+  alls <- sapply( rep(inputs, i), with_start_at(0) )
+  dup <- duplicated(alls)
+  if ( any(dup)){
+    x <- head( alls[dup], 1)
+    break
+  } else {
+    i <- i * 10
+  }
+}
+x
+```
+
+## Day Two
+
+### Day Two, part one
+
+Day two is a string manipulation challenge. 
+
+```{r}
+inputs <-  read.csv("input2.txt", header = FALSE, stringsAsFactors = FALSE)[, 1]
+head(inputs, 10)
+```
+
+Here is the challenge: get the number of words with a letter repeated twice, and the number of words with a letter repeated three time, and multiply these two words. 
+
+Let's use `{purrr}` and `{dplyr}` to do that. 
+
+```{r}
+library(tidyverse)
+
+# Create a splitter and counter
+split_and_count <- compose(
+  table,
+  flatten_chr, 
+  partial(strsplit, split = "")
+)
+
+# Split them all
+map(inputs, split_and_count) %>%
+  map_df(function(x){
+    tibble(
+      two = any(x == 2),
+      three = any(x == 3)
+    )
+  }) %>%
+  # Get the result
+  summarise(
+    res = sum(two) * sum(three)
+  )
+```
+
+### Day Two, part two
+
+The second part of the challenge was to detect, from the inputs, the two "words" with just one different character, and extract from these two the common pattern. 
+
+Good news: I've been working on [`{tidystringdist}`](), a tidy framework for the `{stringdist}` package, which can be used to compute exactly that. We'll use the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance), which (to sum up) compute the number of permutations necessary to move from one string to another. As we are looking for two words with a permutation of one character, the Levenshtein distance should be of one. 
+
+```{r}
+library(tidystringdist)
+res <- tidy_comb_all(inputs) %>%
+  tidy_stringdist(method = "lv") %>%
+  filter(lv == 1)
+res
+```
+
+Now we've got that, we are looking for the common string. Here's a quick and dirty way to do this: 
+
+```{r}
+splt <- compose(
+  flatten_chr, 
+  partial(strsplit, split = "")
+)
+v1 <- splt(res$V1)
+v2 <- splt(res$V2)
+v1[v1 == v2] %>% paste(collapse = "")
+```
+
