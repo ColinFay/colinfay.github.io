@@ -1,0 +1,155 @@
+---
+title: "2018 through {cranlogs}"
+post_date: 2019-01-02
+layout: single
+permalink: /12-months-cranlogs/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+```
+ 
+2018 at glance with `{cranlogs}`.
+
+<!--more-->
+
+Let's load the necessary packages. 
+
+```{r}
+library(cranlogs)
+library(data.table)
+library(lubridate)
+library(ggplot2)
+library(magrittr)
+```
+
+## All downloads
+
+We'll use `{cranlogs}` to retrieve the data from the RStudio CRAN mirror.  
+
+First, the number of package downloads by day in 2018.
+
+```{r}
+total_dl <- cran_downloads(from = "2018-01-01", to = "2018-12-31")
+
+# Turn to a data.table
+setDT(total_dl)
+
+# Round the date to month and week
+total_dl[, `:=`(
+  round_week = floor_date(date, "week" ),
+  round_month = floor_date(date, "month" )
+  ) ]
+```
+
+How many download in total?
+
+```{r}
+total_dl[, .(total = sum(count))]
+```
+
+Let's plot this:
+
+```{r}
+random_viridis <- function(n){
+  sample(viridis::viridis(100), n)
+}
+total_dl[, .(count = sum(count)), round_week] %>%
+  ggplot(aes(round_week, count)) + 
+  geom_col(fill = random_viridis(1)) + 
+  labs(
+    title = "Packages downloads by Week on RStudio CRAN mirror", 
+    subtitle = "data via {cranlogs}", 
+    x = "week"
+  ) + 
+  theme_minimal()
+
+total_dl[, .(count = sum(count)), round_month] %>%
+  ggplot(aes(round_month, count)) + 
+  geom_col(fill = random_viridis(1)) + 
+  labs(
+    title = "Packages downloads by Month on RStudio CRAN mirror", 
+    subtitle = "data via {cranlogs}", 
+    x = "month"
+  ) + 
+  theme_minimal()
+```
+
+## R download
+
+Let's now have a look at the number of downloads for R itself: 
+
+```{r}
+total_r <- cran_downloads("R", from = "2018-01-01", to = "2018-12-31")
+
+setDT(total_r)
+
+total_r[, `:=`(
+  round_week = floor_date(date, "week" ),
+  round_month = floor_date(date, "month" )
+) ]
+
+```
+
+How many download in total?
+
+```{r}
+total_r[, .(total = sum(count))]
+```
+
+Plotting this: 
+
+```{r}
+total_r[, .(count = sum(count)), round_week] %>%
+  ggplot(aes(round_week, count)) + 
+  geom_col(fill = random_viridis(1)) + 
+  labs(
+    title = "R downloads by Week on RStudio CRAN mirror", 
+    subtitle = "data via {cranlogs}", 
+    x = "week"
+  ) + 
+  theme_minimal()
+
+total_r[, .(count = sum(count)), round_month] %>%
+  ggplot(aes(round_month, count)) + 
+  geom_col(fill = random_viridis(1)) + 
+  labs(
+    title = "R downloads by Month on RStudio CRAN mirror", 
+    subtitle = "data via {cranlogs}", 
+    x = "month"
+  ) + 
+  theme_minimal()
+```
+
+Let's have a look to the number of download by R version:
+
+```{r}
+total_r[, .(count = sum(count)), version][order(count, decreasing = TRUE)] %>%
+  head(10)
+
+total_r[, .(count = sum(count)), version][order(count)] %>%
+  head(10)
+
+total_r[, .(count = sum(count)), version][order(count, decreasing = TRUE)] %>%
+  head(10) %>% 
+  ggplot(aes(reorder(version, count), count)) +
+  coord_flip() +
+  geom_col(fill = random_viridis(1)) + 
+  labs(
+    title = "10 most downloaded versions in 2018 RStudio CRAN mirror", 
+    subtitle = "data via {cranlogs}", 
+    x = "version"
+  ) + 
+  theme_minimal()
+```
+
+And by os:
+
+```{r}
+total_r[, .(total = sum(count)), os]
+```
+
+And a happy new year 🎉🎉
