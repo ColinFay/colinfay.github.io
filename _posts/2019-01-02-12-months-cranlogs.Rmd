@@ -139,7 +139,7 @@ total_r[, .(count = sum(count)), version][order(count, decreasing = TRUE)] %>%
   coord_flip() +
   geom_col(fill = random_viridis(1)) + 
   labs(
-    title = "10 most downloaded versions in 2018 RStudio CRAN mirror", 
+    title = "10 most downloaded R versions in 2018 on RStudio CRAN mirror", 
     subtitle = "data via {cranlogs}", 
     x = "version"
   ) + 
