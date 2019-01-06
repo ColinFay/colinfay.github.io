@@ -1,6 +1,6 @@
 ---
 title: "An Introduction to Docker for R Users"
-post_date: 2019-0106
+post_date: 2019-01-06
 layout: single
 permalink: /docker-r-reproducibility/
 categories: r-blog-en
@@ -16,6 +16,8 @@ A quick introduction on using Docker for reproducibility in R.
 > and will takes some shortcuts ;)
 
 ## What is Docker?
+
+![](assets/img/dockerbw.png)
 
 Docker is “a computer program that performs operating-system-level
 virtualization, also known as ‘containerization’”
