@@ -20,8 +20,6 @@ A quick introduction on using Docker for reproducibility in R.
 
 ## What is Docker? 
 
-![](assets/img/dockerbw.png)
-
 Docker is "a computer program that performs operating-system-level virtualization, also known as 'containerization'" [Wikipedia](https://en.wikipedia.org/wiki/Docker_(software)). As any first line of a Wikipedia article about tech, this sentence is obscure to anyone not already familiar with the content of the article. 
 
 So, to put it more simply, __Docker is a program that allows to manipulate (launch and stop) multiple operating systems (called containers) on your machine (your machine will be called the host)__. Just imagine having 10 RaspberryPi with different flavors of Linux, each focused on doing one simple thing, that you can turn on and off whenever you need to ; but all of this happens on your computer. 
