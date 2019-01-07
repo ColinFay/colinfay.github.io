@@ -259,6 +259,9 @@ And other cool stuffs, but that’s for another blog post ;)
 
 Some resources:
 
+  - [rocker official website](https://www.rocker-project.org/)
+  - [An Introduction to Rocker: Docker Containers for
+    R](https://journal.r-project.org/archive/2017/RJ-2017-065/index.html)
   - [Noam Ross - Docker for the
     UseR](https://github.com/noamross/nyhackr-docker-talk)
   - [Production-ready R: Getting started with R and
