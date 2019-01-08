@@ -58,6 +58,10 @@ package: a package is to be downloaded once, while it has to be launched
 every time you need it. And a package can be launched in several R
 sessions at the same time easily.
 
+So to continue with this metaphore: we’re **building** an image when
+we’re `install.packages()`, and we **run** the image when we
+`library()`.
+
 ## Dockerfile
 
 A Docker image is built from a `Dockerfile`. This file is the
@@ -81,6 +85,16 @@ So first, create a folder for your analysis, and a Dockerfile:
     cd ~/mydocker
     touch Dockerfile
 
+And let’s say this is the content of the analysis we want to run, called
+`myscript.R`, and located in the `~/mydocker` folder:
+
+``` r
+library(tidystringdist)
+df <- tidy_comb_all(iris, Species)
+p <- tidy_stringdist(df)
+write.csv(p, "p.csv")
+```
+
 ### `FROM`
 
 Every `Dockerfile` starts with a `FROM`, which describes what image we
@@ -93,75 +107,110 @@ it only the `{base}` package).
 
 If you’re going for an R based image, Dirk Eddelbuettel & Carl Boettiger
 are maintaining [rocker](https://hub.docker.com/u/rocker), a collection
-of Docker images for R you can use. We’ll use the `rocker/r-base` in
-this blogpost.
+of Docker images for R you can use. The basic image is `rocker/r-base`,
+but what we want is our image to be reproducible: that is to say to
+rerun the exact same way anytime we run it. For this, we’ll be using
+`rocker/r-ver`, which are Docker images containing fixed version of R
+(back to 3.1.0), and that you can run as if from a specific date (thanks
+to [Dirk Eddelbuettel](http://dirk.eddelbuettel.com/) for pointing that
+to me).
 
-    FROM rocker/r-base
+So what we’ll do is look up for the image corresponding to the R version
+we want. You can get your current R Version with:
+
+``` r
+R.Version()$version.string
+```
+
+    ## [1] "R version 3.4.4 (2018-03-15)"
+
+So, let’s start the `Dockerfile` with:
+
+    FROM rocker/r-ver:3.4.4
 
 ### `RUN`
 
 Once we’ve got that, we’ll add some `RUN` statements: these are commands
-which mimic command line commands. Remember what we want: an image that
-will, ad vitam aeternam, run an analysis as if we were still today. So
-what we’ll do is use the `{checkpoint}` package.
+which mimic command line commands. we’ll create a directory to receive
+our analysis.
+
+    FROM rocker/r-ver:3.4.4
+    
+    RUN mkdir /home/analysis
+
+### Install our package
 
 The command to make R execute something, from the terminal, is `R -e "my
-code"`. Let’s add a `{checkpoint}` installation.
+code"`. Let’s use it to install our script dependencies, but from a
+specific date. We’ll mimic the way `rocker/r-ver` works when building
+from a specific date: setting the `options("repos")` to this specific
+date, using the MRAN image: in other word, using a repo url like
+`https://mran.microsoft.com/snapshot/1979-01-01`.
 
-    FROM rocker/r-base
+    FROM rocker/r-ver:3.4.4
     
-    RUN R -e "install.packages('checkpoint')"
+    RUN mkdir /home/analysis
+    
+    RUN R -e "options(repos = \
+      list(CRAN = 'http://mran.revolutionanalytics.com/snapshot/2019-01-06/')); \
+      install.packages('tidystringdist')"
 
-We need a `/root/.checkpoint` folder to use `{checkpoint}`, let’s create
-that one with `mkdir` (make directory).
+### Aside : making it more programmable with `ARG`
 
-    FROM rocker/r-base
-    
-    RUN R -e "install.packages('checkpoint')"
-    
-    RUN mkdir /root/.checkpoint
+In our last `Dockerfile`, the date can’t be modified at build time -
+something we can change if we use an `ARG` variable, that will be set
+when we’ll do `docker build`, with `--build-arg WHEN=`
+
+``` 
+FROM rocker/r-ver:3.4.4
+
+ARG WHEN
+
+RUN mkdir /home/analysis
+
+RUN R -e "options(repos = \
+  list(CRAN = 'http://mran.revolutionanalytics.com/snapshot/${WHEN}')); \
+  install.packages('tidystringdist')"
+
+```
+
+Here, the `{tidystringdist}` that will be installed in the machine will
+be the one from the date we will specify when building the container,
+even if we build this image in one year, or two, or four.
 
 ### `COPY`
 
 Now, I need to get the script for my analysis from my machine (host) to
 the container. For that, we’ll need to use `COPY localfile
-pathinthecontainer`. I’ll first create a folder to receive everything,
-with `mkdir`. Note that here, the `myscript.R` has to be in the same
-folder as the `Dockerfile` on your computer.
+pathinthecontainer`. Note that here, the `myscript.R` has to be in the
+same folder as the `Dockerfile` on your computer.
 
-Let’s say this is the content of `myscript.R`:
-
-``` r
-library(checkpoint)
-checkpoint("2019-01-06")
-library(tidystringdist)
-df <- tidy_comb_all(iris, Species)
-p <- tidy_stringdist(df)
-write.csv(p, "p.csv")
-```
-
-Here, the `{tidystringdist}` that will be installed in the machine will
-be the one from the date of today, even if I build this image in one
-year, or two, or four.
-
-    FROM rocker/r-base
+    FROM rocker/r-ver:3.4.4
     
-    RUN R -e "install.packages('checkpoint')"
+    ARG WHEN
     
     RUN mkdir /home/analysis
+    
+    RUN R -e "options(repos = \
+      list(CRAN = 'http://mran.revolutionanalytics.com/snapshot/${WHEN}')); \
+      install.packages('tidystringdist')"
     
     COPY myscript.R /home/analysis/myscript.R
 
 ### `CMD`
 
-`CMD` is the command to be run every time you’ll launch the docker. What
-we want is `myscript.R` to be sourced.
+Now, `CMD`, which the command to be run every time you’ll launch the
+docker. What we want is `myscript.R` to be sourced.
 
-    FROM rocker/r-base
+    FROM rocker/r-ver:3.4.4
     
-    RUN R -e "install.packages('checkpoint')"
+    ARG WHEN
     
     RUN mkdir /home/analysis
+    
+    RUN R -e "options(repos = \
+      list(CRAN = 'http://mran.revolutionanalytics.com/snapshot/${WHEN}')); \
+      install.packages('tidystringdist')"
     
     COPY myscript.R /home/analysis/myscript.R
     
@@ -171,10 +220,15 @@ we want is `myscript.R` to be sourced.
 
 ### Build
 
+Remember what we want: an image that will, ad vitam aeternam, run an
+analysis as if we were still today. To do this, we’ll use the
+`--build-arg WHEN=` argument for the `docker build`. Just after the `=`,
+put the date you want your analysis to be run from.
+
 Now, go and build your image. From your terminal, in the directory where
 the Dockerfile is located, run:
 
-    docker build -t analysis .
+    docker build --build-arg WHEN=2019-01-06 -t analysis .
 
 `-t name` is the name of the image (here analysis), and `.` means it
 will build the `Dockerfile` in the current working directory.
@@ -203,15 +257,21 @@ the -v flag when running the container, with
 `path/from/host:/path/in/container`. Also, create a folder to receive
 the results in both :
 
-    FROM rocker/r-base
+    FROM rocker/r-ver:3.4.4
     
-    RUN R -e "install.packages('checkpoint')"
+    ARG WHEN
     
-    RUN mkdir /home/analysis && mkdir /home/results
+    RUN mkdir /home/analysis
+    
+    RUN R -e "options(repos = \
+      list(CRAN = 'http://mran.revolutionanalytics.com/snapshot/${WHEN}')); \
+      install.packages('tidystringdist')"
     
     COPY myscript.R /home/analysis/myscript.R
     
-    CMD cd /home/analysis && R -e "source('myscript.R')" && mv /home/analysis/p.csv /home/results/p.csv
+    CMD cd /home/analysis \
+      && R -e "source('myscript.R')" \
+      && mv /home/analysis/p.csv /home/results/p.csv
 
     mkdir ~/mydocker/results 
     docker run -v ~/mydocker/results:/home/results  analysis 
@@ -236,17 +296,15 @@ Docker :)
 
 Other things you can do would be:
 
-  - Using [`{packrat}`](https://rstudio.github.io/packrat/), and get the
-    library bundle in the container.
-
   - Use `remotes::install_version()` if you want your analysis to be
     based on package version instead of a time based installation.
 
 <!-- end list -->
 
-    FROM rocker/r-base
+    FROM rocker/r-ver:3.4.4
     
-    RUN R -e "install.packages('remotes'); remotes::install_version('tidystringdist', '0.1.2')"
+    RUN R -e "install.packages('remotes'); \
+      remotes::install_version('tidystringdist', '0.1.2')"
     
     ...
 
