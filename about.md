@@ -12,7 +12,7 @@ permalink: /about/
 
 _Since 2017-05_
 
-[ThinkR](www.thinkr.fr)
+[ThinkR](https://www.thinkr.fr)
 
 + R software engineering 
 + Analytics
