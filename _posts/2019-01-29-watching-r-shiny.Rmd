@@ -12,7 +12,7 @@ excerpt_separator: <!--more-->
 knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
 ```
 
-Today I discovered that the body class of a Shiny app changes every time R is running, and that the `<html>` tag gets the `shiny-busy` class when computation is done in the R process. Which means that you can potentially watch with JavaScript if the R process is running. 
+Today I discovered that the `<html>` tag of a Shiny App gets the `shiny-busy` class when computation is done in the R process. Which means that you can potentially watch with JavaScript if the R process is running. 
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">TIL — Shiny Apps switch to the &#39;shiny-busy&#39; class when R is performing computation in the background. <br>So it&#39;s basically possible to use JavaScript to watch if the R session is doing computation or not. <a href="https://twitter.com/hashtag/RStats?src=hash&amp;ref_src=twsrc%5Etfw">#RStats</a> <a href="https://twitter.com/hashtag/RShiny?src=hash&amp;ref_src=twsrc%5Etfw">#RShiny</a> <a href="https://t.co/dz2XgOXxVQ">pic.twitter.com/dz2XgOXxVQ</a></p>&mdash; Colin Fay 🤘 (@_ColinFay) <a href="https://twitter.com/_ColinFay/status/1090289885108469760?ref_src=twsrc%5Etfw">January 29, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 

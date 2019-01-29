@@ -8,10 +8,10 @@ output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---
 
-Today I discovered that the body class of a Shiny app changes every time
-R is running, and that the `<html>` tag gets the `shiny-busy` class when
-computation is done in the R process. Which means that you can
-potentially watch with JavaScript if the R process is running.
+Today I discovered that the `<html>` tag of a Shiny App gets the
+`shiny-busy` class when computation is done in the R process. Which
+means that you can potentially watch with JavaScript if the R process is
+running.
 
 <blockquote class="twitter-tweet">
 
