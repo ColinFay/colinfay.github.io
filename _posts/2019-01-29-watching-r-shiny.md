@@ -114,7 +114,7 @@ shinyApp(ui, server)
 
 Result:
 
-![](a../ssets/img/shinyspin.gif)
+![](../assets/img/shinyspin.gif)
 
 Why do that? Well, don’t. Here we just have a loader that pops up every
 time R is running, which is kind of brutal (and I’m not 100 % certain we
