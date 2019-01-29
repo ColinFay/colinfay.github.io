@@ -91,7 +91,7 @@ shinyApp(ui, server)
 
 Result:
 
-![](assets/img/shinyspin.gif)
+![](a../ssets/img/shinyspin.gif)
 
 Why do that? Well, don't. Here we just have a loader that pops up every time R is running, which is kind of brutal (and I'm not 100 % certain we can rely on this class change). Also, in my example, the JS code is run every 50 milliseconds... which is even more brutal. But in case it can be useful (or inspiring) to someone, I just wanted to share :). 
 
