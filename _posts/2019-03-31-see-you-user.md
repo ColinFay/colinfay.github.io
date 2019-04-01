@@ -2,7 +2,7 @@
 title: "See you at useR! Toulouse"
 post_date: 2019-03-31
 layout: single
-permalink: /zee-you-user-2019/
+permalink: /see-you-user-2019/
 categories: r-blog-en
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
