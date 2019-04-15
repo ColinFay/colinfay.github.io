@@ -1,0 +1,189 @@
+---
+title: "{attempt} 0.3.0 is now on CRAN"
+post_date: 2019-04-15
+layout: single
+permalink: /attempt-0-3-0/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+```
+
+Last week, a new version of `{attempt}` was published on CRAN. This version includes some improvements in the current code base, and the addition of new functions. 
+
+You can get it with our old friend `install.packages`
+
+```{r eval = FALSE}
+install.packages("attempt")
+```
+
+## News in version 0.3.0
+
+```{r}
+library(attempt)
+packageVersion("attempt")
+```
+
+Newcomers in this version:
+
++ The `is_try_error()` function, that tests if an object is of class "try-error".
+
+```{r}
+x <- attempt(log(letters), silent = TRUE)
+is_try_error(x)
+```
+
++ The `on_error()` function, that behaves as `on.exit()` except it happens only when there is an error in the function, and can for example be used to write logs to a file. 
+
+``` r
+y <- function(x){
+  on_error(~ print("ouch")) # or on_error(~ write("error", "error.logs"))
+  log(x)
+}
+y(12)
+y("a")
+
+[1] 2.484907
+Error in log(x) : non-numeric argument to mathematical function
+[1] "ouch"
+```
+
++ `discretly()`, for removing warnings and message.
+
+```{r}
+y <- function(x){
+  warning("ouch\n")
+  message("bla")
+  x * 10
+}
+y(10)
+
+discrete_y <- discretly(y)
+discrete_y(10)
+```
+
+
+## About `{attempt}`
+
+`{attempt}` is a package that provides a series of tools for defensive programming. It's mainly designed for (package) developers, as it provides easier ways to handle exceptions and to manipulate functions for messages, warnings and errors. It's also a very lightweight package, as it only depends on `{rlang}`, which itself has no dependencies.  
+
+For example, let's say you have a function that needs at least one argument to be not-null. You would be tempted to write something like this:
+
+```{r error = TRUE}
+this <- function(a = NULL, b = NULL, c = NULL){
+  if (all(is.null(a), is.null(b), is.null(c))){
+    stop("a, b and c can't be all NULL")
+  }
+  list(a, b, c)
+}
+this()
+
+# Or
+this <- function(a = NULL, b = NULL, c = NULL){
+  if (all(vapply(c(a, b, c), is.null, logical(1)))){
+    stop("a, b and c can't be all NULL")
+  }
+  list(a, b, c)
+}
+this()
+this(a = 1)
+```
+
+With `{attempt}`, you can refactor your code this way: 
+
+```{r error = TRUE}
+library(attempt)
+this <- function(a = NULL, b = NULL, c = NULL){
+  stop_if_all(c(a, b, c), is.null, "a, b and c can't be all NULL") 
+  list(a, b, c)
+}
+this()
+
+# Mappers can also be used
+this <- function(a){
+  stop_if(a, ~ .x < 5, "a must be over 5")
+}
+this(1)
+```
+
+To handle all cases, there is a series of function combining `stop_if` / `warn_if` / `message_if` & `all`, `any` and `none`. See `?stop_if` for a list of all functions.
+ 
+The idea being of course that if you have a series of tests, this can drastically reduce the amount of code at the beginning of the function, and make it more readable on the long run. So you can refactor this:
+
+```{r}
+this <- function(a = NULL, b = NULL, c = NULL){
+  if (all(is.null(a), is.null(b), is.null(c))){
+    stop("a, b and c can't be all NULL\n")
+  }
+  if (any(vapply(c(a, b, c), function(x) x < 5, logical(1)))){
+    warning("using input below 5 is not recommended\n")
+  }
+  if (!any(c(a == 13, b == 13, c == 13))){
+    message("No input equal to 13\n")
+  }
+  # Do things
+}
+this()
+this(a = 3)
+this(a = 10)
+```
+
+To this:
+
+```{r}
+this <- function(a = NULL, b = NULL, c = NULL){
+  stop_if_all(c(a, b, c), is.null, "a, b and c can't be all NULL")  
+  warn_if_any(c(a, b, c), ~ .x < 5, "using input below 5 is not recommended")  
+  message_if_none(c(a, b, c), ~ .x == 13, "No input equal to 13")
+  # Do things
+}
+```
+
+The `attempt()` function, along with `try_catch`, are friendlier version of `try()` and `tryCatch()`. They behave exactly like the base functions, but provide an easier interface. For example, if you need to try something and throw a message if it fails, with base, you'll do:
+
+```{r}
+x <- try(log("a"), silent = TRUE)
+if (class(x)[1] == "try-error"){
+  stop("There was an error in your code")
+}
+```
+
+`attempt()` provides a concise way to send a message on error: 
+
+```{r}
+attempt(log("a"), "There was an error in your code")
+```
+
+Adverbs, finally, transform functions behavior: 
+
++ `silently` returns nothing unless an error occurs
+
+```{r}
+silent_log <- silently(log)
+silent_log(1)
+silent_log("a")
+```
+
++ `surely` will wrap the function in an `attempt` call: 
+
+```{r}
+sure_log <- surely(log)
+sure_log(1)
+sure_log("a")
+```
+
++ The `with_message()` / `with_warning()` & `without_message()` / `without_warning()` / `discretly()` functions add or remove messages and warnings: 
+
+```{r}
+matrix(1:3, ncol = 2)
+no_warning_matrix <- without_warning(matrix)
+no_warning_matrix(1:3, ncol = 2)
+```
+
+
+## Know more 
+
+See the [GitHub repo](https://github.com/ColinFay/attempt) for more. 
