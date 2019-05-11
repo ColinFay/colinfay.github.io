@@ -6,3 +6,47 @@
 
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
 @import "minimal-mistakes"; // main partials
+
+$paragraph-indent: true;
+
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+:root{
+  --first: #9BADBF;
+  --second: #D1D5DE;
+  --third: #837569;
+  --fourth: #657153;
+  --fifth: #8AAA79;
+}
+
+body {
+      font-family: 'Poppins', sans-serif;
+}
+
+.masthead{
+  background-color: #343a40;
+}
+
+.masthead__inner-wrap {
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0em;
+    padding-bottom: 0em;
+    
+}
+
+.greedy-nav {
+    background-color: #343a40;
+}
+
+.greedy-nav a {
+    color: white;
+}
+
+.sidebar p, .sidebar li{
+font-family: inherit;
+}
+
+.page__footer footer{
+    margin-top: 1em;
+    padding: 0 1em 1em;
+}
