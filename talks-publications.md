@@ -9,6 +9,10 @@ author_profile: true
 
 ## Talks
 
+__2019-04-25__ ["R in Production"](https://speakerdeck.com/colinfay/r-in-production), Lyon Data Science Meetup
+
+__2019-01-16__ ["Building Big Shiny Apps - A Workflow"](https://thinkr-open.github.io/rstudioconf2019/), RStudio Conference 2019 
+
 __2018-11-05__ ["Data Science en production avec R — Quels enjeux ? Quelles solutions?"](https://speakerdeck.com/colinfay/data-science-en-production-avec-r-quels-enjeux-quelles-solutions), Lyon Data Science Meetup
 
 __2018-10-19__ — "Data Science en production avec R, retour d'expérience", Breizh Data day, Rennes. 
