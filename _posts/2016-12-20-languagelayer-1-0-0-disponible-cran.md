@@ -2,7 +2,7 @@
 ID: 1158
 title: 'languagelayeR 1.0.0 disponible sur le CRAN'
 
-post_date: 2016-12-20 13:00:30
+post_date: 2016-12-20 
 post_excerpt: ""
 layout: single
 permalink: /languagelayer-1-0-0-disponible-cran/

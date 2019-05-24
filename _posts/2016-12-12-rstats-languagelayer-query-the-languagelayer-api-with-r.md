@@ -2,7 +2,7 @@
 ID: 1254
 title: "#RStats — languagelayeR : query the languagelayer API with R"
 
-post_date: 2016-12-12 23:07:28
+post_date: 2016-12-12
 post_excerpt: ""
 layout: single
 permalink: /rstats-languagelayer-query-the-languagelayer-api-with-r/
