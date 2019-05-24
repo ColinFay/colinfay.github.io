@@ -2,7 +2,7 @@
 ID: 573
 title: "Musarderie #3 : Internet, le rhizome, et le reste"
 
-post_date: 2015-07-22 19:15:46
+post_date: 2015-07-22 
 post_excerpt: ""
 layout: single
 permalink: /internet-rhizome-reste/

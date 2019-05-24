@@ -2,7 +2,7 @@
 ID: 906
 title: "#RStats — Text mining avec R et gutenbergr"
 
-post_date: 2016-05-24 18:00:32
+post_date: 2016-05-24
 post_excerpt: ""
 layout: single
 permalink: /rstats-text-mining-r-gutenbergr/

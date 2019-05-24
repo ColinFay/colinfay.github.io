@@ -2,7 +2,7 @@
 ID: 1275
 title: "Create a map with R — rgeoapi, ggmap and ggplot2"
 
-post_date: 2016-07-28 13:52:20
+post_date: 2016-07-28 
 post_excerpt: ""
 layout: single
 permalink: /create-map-ggplot2-rgeoapi-ggmap/

@@ -2,7 +2,7 @@
 ID: 1164
 title: 'All I want for Christmas is a #Dataviz'
 
-post_date: 2016-12-23 17:44:55
+post_date: 2016-12-23
 post_excerpt: ""
 layout: single
 permalink: /all-i-want-for-christmas-is-a-dataviz/

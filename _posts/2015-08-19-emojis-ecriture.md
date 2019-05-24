@@ -2,7 +2,7 @@
 ID: 685
 title: "Musarderie #5 : les emojis, l'écriture, et le reste."
 
-post_date: 2015-08-19 12:15:56
+post_date: 2015-08-19 
 post_excerpt: ""
 layout: single
 permalink: /emojis-ecriture/

@@ -2,7 +2,7 @@
 ID: 1425
 title: "#RStats — API calls and Sys.sleep"
 
-post_date: 2017-03-26 14:30:53
+post_date: 2017-03-26 
 post_excerpt: ""
 layout: single
 permalink: /rstats-api-calls-and-sys-sleep/

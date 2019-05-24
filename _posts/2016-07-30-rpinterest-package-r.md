@@ -2,7 +2,7 @@
 ID: 1262
 title: 'rpinterest : acess the Pinterest API with R'
 
-post_date: 2016-07-31 21:00:00
+post_date: 2016-07-31 
 post_excerpt: ""
 layout: single
 permalink: /rpinterest-package-r/

@@ -2,7 +2,7 @@
 ID: 1040
 title: "Data & Vinyles — Exploration d'une bibliothèque Discogs avec R"
 
-post_date: 2016-08-31 12:00:36
+post_date: 2016-08-31 
 post_excerpt: ""
 layout: single
 permalink: /data-vinyles-bibliotheque-discogs-r/

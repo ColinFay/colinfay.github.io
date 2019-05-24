@@ -2,7 +2,7 @@
 ID: 1099
 title: "rgeoapi 1.1.0 disponible sur le CRAN !"
 
-post_date: 2016-10-31 13:59:43
+post_date: 2016-10-31
 post_excerpt: ""
 layout: single
 permalink: /rgeoapi-1-1-0-disponible-cran/

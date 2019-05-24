@@ -2,7 +2,7 @@
 ID: 373
 title: "Musarderie #2 : Les nouvelles machines à écrire"
 
-post_date: 2015-07-19 16:54:30
+post_date: 2015-07-19
 post_excerpt: ""
 layout: single
 permalink: /nouvelles-machines-ecrire/

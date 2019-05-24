@@ -2,7 +2,7 @@
 ID: 551
 title: "Musarderie #4 : la sémiologie par les tatouages de prison"
 
-post_date: 2015-08-07 13:05:58
+post_date: 2015-08-07
 post_excerpt: ""
 layout: single
 permalink: /semiologie-tatouage/

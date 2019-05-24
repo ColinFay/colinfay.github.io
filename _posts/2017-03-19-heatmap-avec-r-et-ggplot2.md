@@ -2,7 +2,7 @@
 ID: 1433
 title: 'Une heatmap avec R et ggplot2'
 
-post_date: 2017-03-19 20:28:24
+post_date: 2017-03-19 
 post_excerpt: ""
 layout: single
 permalink: /heatmap-avec-r-et-ggplot2/

@@ -2,7 +2,7 @@
 ID: 1001
 title: "Créer une carte avec R — rgeoapi et ggplot2"
 
-post_date: 2016-07-28 13:52:20
+post_date: 2016-07-28 
 post_excerpt: ""
 layout: single
 permalink: /carte-r-rgeoapi-ggplot2/

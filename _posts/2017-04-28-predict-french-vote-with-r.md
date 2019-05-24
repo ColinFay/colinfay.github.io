@@ -2,7 +2,7 @@
 ID: 1668
 title: "Predict french vote with R"
 
-post_date: 2017-04-28 15:08:22
+post_date: 2017-04-28 
 post_excerpt: ""
 layout: single
 permalink: /predict-french-vote-with-r/

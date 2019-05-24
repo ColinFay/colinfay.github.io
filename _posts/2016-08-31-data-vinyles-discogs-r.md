@@ -2,7 +2,7 @@
 ID: 1260
 title: "Data & Vinyls — A discogs library exploration with R"
 
-post_date: 2016-08-31 12:00:36
+post_date: 2016-08-31 
 post_excerpt: ""
 layout: single
 permalink: /data-vinyles-discogs-r/

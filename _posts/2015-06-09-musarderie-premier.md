@@ -2,11 +2,11 @@
 ID: 456
 title: "Musarderie #0 — Parce qu'il faut un premier"
 
-post_date: 2015-06-09 20:43:00
+post_date: 2015-06-09 
 post_excerpt: ""
 layout: single
 permalink:  /musarderie-premier/
-published: false
+published: true
 geo_public:
   - "0"
 ---

@@ -2,7 +2,7 @@
 ID: 1388
 title: '1 dataset, 10 visualisations — retour de La Fabrique de l’info'
 
-post_date: 2017-03-12 18:00:45
+post_date: 2017-03-12 
 post_excerpt: ""
 layout: single
 permalink: /1-dataset-10-visualisations/

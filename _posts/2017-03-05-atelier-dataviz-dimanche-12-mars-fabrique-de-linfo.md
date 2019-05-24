@@ -2,7 +2,7 @@
 ID: 1348
 title: "Atelier Dataviz — Dimanche 12 mars, la Fabrique de l'info"
 
-post_date: 2017-03-05 19:50:54
+post_date: 2017-03-05 
 post_excerpt: ""
 layout: single
 permalink: /atelier-dataviz-dimanche-12-mars-fabrique-de-linfo/

@@ -4,7 +4,7 @@ title: "Playing with #RStats and Microsoft Computer Vision API"
 published: true
 
 comments: false
-date: 2017-04-02 21:40:58
+date: 2017-04-02 
 tags: [r, justforfun]
 permalink: /playing-with-rstats-and-microsoft-computer-vision-api/
 image:

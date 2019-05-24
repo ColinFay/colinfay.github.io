@@ -1,7 +1,7 @@
 ---
 title: "[Just for fun] New R package — tuRbonegro"
 
-post_date: 2017-31-00 21:00:00
+post_date: 2017-31-00 
 layout: single
 permalink: /rstats-turbonegro/
 categories : r-blog-en

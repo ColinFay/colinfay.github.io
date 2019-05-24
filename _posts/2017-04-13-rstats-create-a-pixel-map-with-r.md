@@ -2,7 +2,7 @@
 ID: 1604
 title: #RStats — Create a pixel map with R"
 
-post_date: 2017-04-13 21:55:01
+post_date: 2017-04-13 
 post_excerpt: ""
 layout: single
 permalink: /rstats-create-a-pixel-map-with-r/

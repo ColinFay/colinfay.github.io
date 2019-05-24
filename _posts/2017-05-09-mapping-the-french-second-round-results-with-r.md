@@ -2,7 +2,7 @@
 ID: 1731
 title: "Mapping the French second round results with R"
 
-post_date: 2017-05-09 14:00:31
+post_date: 2017-05-09 
 post_excerpt: ""
 layout: single
 permalink: /mapping-the-french-second-round-results-with-r/

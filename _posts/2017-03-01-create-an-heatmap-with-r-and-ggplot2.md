@@ -2,7 +2,7 @@
 ID: 1294
 title: Create an heatmap with R and ggplot2
 
-post_date: 2017-03-01 20:28:24
+post_date: 2017-03-01
 post_excerpt: ""
 layout: single
 permalink: /create-an-heatmap-with-r-and-ggplot2/

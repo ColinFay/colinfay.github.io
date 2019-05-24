@@ -2,7 +2,7 @@
 ID: 1264
 title: "rgeoapi — A package to access the GéoAPI"
 
-post_date: 2016-06-05 19:11:29
+post_date: 2016-06-05 
 post_excerpt: ""
 layout: single
 permalink: /rgeoapi-package-r/

@@ -2,7 +2,7 @@
 ID: 1261
 title: "rpinterest now on CRAN"
 
-post_date: 2016-08-17 13:47:34
+post_date: 2016-08-17
 post_excerpt: ""
 layout: single
 permalink: /rpinterest-cran/

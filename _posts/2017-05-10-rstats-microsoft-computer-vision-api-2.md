@@ -1,7 +1,7 @@
 ---
 title: "#RStats et Microsoft Computer Vision"
 
-post_date: 2017-05-10 14:00:58
+post_date: 2017-05-10 
 post_excerpt: ""
 layout: single
 permalink: /rstats-microsoft-computer-vision-api-2/
