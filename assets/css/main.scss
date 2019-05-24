@@ -54,10 +54,16 @@ font-family: inherit;
 
 a {
     text-decoration: none;
+    color: inherit;
 }
 
 a:hover {
     text-decoration: underline;
+    color:inherit;
+}
+
+a:visited {
+    color: inherit;
 }
 
 h2 {
