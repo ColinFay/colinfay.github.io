@@ -98,7 +98,7 @@ analytics:
 author:
   name             : "Colin FAY"
   avatar           : "https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Data Scientist & R Hacker at ThinkR. Founder of Data Bzh and cofounder of the Breizh Data Club. Part of the RWeekly Team."
+  bio              : "Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team."
   location         : "Rennes"
   email            : "contact@colinfay.me"
   uri              :
@@ -127,6 +127,8 @@ author:
   xing             :
   youtube          : # "https://youtube.com/c/MichaelRoseDesign"
 
+menu: 
+  home : "https://colinfay.me"
 
 # Reading Files
 include:
@@ -195,7 +197,7 @@ sass:
 
 # Outputting
 permalink: /:categories/:title/
-paginate: 5 # amount of posts to show
+paginate: 20 # amount of posts to show
 paginate_path: /page:num/
 timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
