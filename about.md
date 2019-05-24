@@ -8,24 +8,22 @@ permalink: /about/
 
 ## What I'm doing right now
 
-### Data Scientist & R Hacker at [ThinkR](https://www.thinkr.fr)
+### Data Scientist & R Hacker at <u>[ThinkR](https://www.thinkr.fr)</u>
 
 + R software engineering 
 + Data Science Engineering
 + Consulting
 + Training 
 
-### Founder and editor in chief of [Data Bzh](http://data-bzh.fr/)
+### Founder and editor in chief of <u>[Data Bzh](http://data-bzh.fr/)</u>
 
 Data Bzh is a collaborative data-blogging platform that wants to democratize Brittany & data throught data analysis and visualisition.
 
 In 2016, Data Bzh won the Trophée Open Data 2016 ([More on that](http://data-bzh.fr/data-bzh-trophee-open-data/)).
 
-### Cofounder of the Breizh Data Club
+### Cofounder of the <u>[Breizh Data Club](http://breizhdataclub.org/)</u>
 
 The Breizh Data Club is a professionnal association that aims at gathering data lovers from Brittany and beyond. 
-
-[Breizh Data Club](http://breizhdataclub.org/)
 
 ***
 
@@ -34,9 +32,9 @@ The Breizh Data Club is a professionnal association that aims at gathering data 
 ### Programming languages 
 
 + R (expert)
-+ Git, 
 + Docker
 + Bash
++ Git
 + JavaScript
 + HTML, CSS 
 
