@@ -35,7 +35,7 @@ The Breizh Data Club is a professionnal association that aims at gathering data 
 
 <i class="fas fa-terminal"></i> Bash
 
-<i class="fas fa-git"></i> Git
+<i class="fab fa-git-alt"></i> Git
 
 <i class="fab fa-js-square"></i> JavaScript
 
