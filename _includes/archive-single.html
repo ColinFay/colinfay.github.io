@@ -32,8 +32,8 @@
       {% endif %}
       </span>
       <span class="page__meta" >
-        {% if post.read_time %}
-      — <i class="far fa-clock" aria-hidden="true"></i> {% include read-time.html %}</p>
+        {% if post.post_date %}
+      —  <i>{{ post.post_date }}</i>
     {% endif %}
       </span>
     </li>

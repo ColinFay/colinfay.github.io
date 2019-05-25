@@ -2,8 +2,6 @@
 layout: single
 title: Talks & Publications
 permalink: /talks-publications/
-# header: 
-#   overlay_image: assets/img/pexels/talkspubli.jpg
 author_profile: true
 ---
 

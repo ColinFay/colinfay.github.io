@@ -27,8 +27,7 @@ ol {
 }
 
 li.archive__item-title:before {
-    font-family: FontAwesome;
-    content: "> ";
+    content: ">  ";
 }
 
 .sidebar p, .sidebar li{
@@ -53,8 +52,11 @@ font-family: inherit;
 }
 
 a {
-    text-decoration: none;
     color: inherit;
+}
+
+.archive a {
+    text-decoration: none;
 }
 
 a:hover {
@@ -72,4 +74,12 @@ h2 {
 
 .author__content a:hover {
     text-decoration: none;
+}
+
+.sidebar.sticky {
+  position:fixed;
+}
+
+.page .page__inner-wrap .page__meta {
+    float: none; 
 }

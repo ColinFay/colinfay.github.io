@@ -2,8 +2,6 @@
 layout: single
 title: R manuals
 permalink: /r-manuals/
-# header: 
-#   overlay_image: "assets/img/pexels/r-manuals.jpg"
 tags: [opensource, r, rstats]
 hide: true 
 ---
