@@ -61,7 +61,7 @@ echo 'cli::cat_bullet(Sys.time())' >> script.R
 Try your script to see if it works:
 
 ```
-RScript script.R
+Rscript script.R
 ```
 
 Now launch an npm project: 
