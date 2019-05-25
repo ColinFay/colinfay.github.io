@@ -29,12 +29,19 @@ The Breizh Data Club is a professionnal association that aims at gathering data 
 
 ### Programming languages 
 
-+ R (expert)
-+ Docker
-+ Bash
-+ Git
-+ JavaScript
-+ HTML, CSS 
+<i class="fab fa-r-project"></i> R 
+
+<i class="fab fa-docker"></i> Docker
+
+<i class="fas fa-terminal"></i> Bash
+
+<i class="fas fa-git"></i> Git
+
+<i class="fab fa-js-square"></i> JavaScript
+
+<i class="fab fa-html5"></i> HTML
+
+<i class="fab fa-css3-alt"></i> CSS 
 
 ### Data Science Engineering
 
