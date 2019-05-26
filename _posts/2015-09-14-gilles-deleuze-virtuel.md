@@ -6,7 +6,7 @@ post_date: 2015-09-14 12:00:55
 post_excerpt: ""
 layout: single
 permalink: /gilles-deleuze-virtuel/
-published: true
+published: false
 geo_public:
   - "0"
 publicize_twitter_user:

@@ -6,7 +6,7 @@ post_date: 2015-10-12 12:33:59
 post_excerpt: ""
 layout: single
 permalink: /snapchat-medialabst/
-published: true
+published: false
 geo_public:
   - "0"
 publicize_linkedin_url:

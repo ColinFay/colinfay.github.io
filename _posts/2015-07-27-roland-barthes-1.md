@@ -6,7 +6,7 @@ post_date: 2015-07-27
 post_excerpt: ""
 layout: single
 permalink: /roland-barthes-1/
-published: true
+published: false
 geo_public:
   - "0"
 publicize_twitter_user:

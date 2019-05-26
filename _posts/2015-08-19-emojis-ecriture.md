@@ -6,7 +6,7 @@ post_date: 2015-08-19
 post_excerpt: ""
 layout: single
 permalink: /emojis-ecriture/
-published: true
+published: false
 geo_public:
   - "0"
 publicize_twitter_user:

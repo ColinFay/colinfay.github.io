@@ -6,7 +6,7 @@ post_date: 2015-08-26
 post_excerpt: ""
 layout: single
 permalink: /musarderie-6-linstoutenable-legerete-du-web-volet-2/
-published: true
+published: false
 geo_public:
   - "0"
 publicize_twitter_user:

@@ -6,7 +6,7 @@ post_date: 2015-07-22
 post_excerpt: ""
 layout: single
 permalink: /internet-rhizome-reste/
-published: true
+published: false
 geo_public:
   - "0"
 publicize_twitter_user:
