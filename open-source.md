@@ -4,7 +4,7 @@ permalink: /open-source/
 ---
 
 <div class="row"> 
-  <h2> <i class="fab fa-r-project"></i></h2>
+  <h2> <i class="fab fa-r-project"></i> - R Projects</h2>
 </div> 
 
 <div class="row"> 
@@ -30,7 +30,7 @@ permalink: /open-source/
 <hr>
 
 <div class="row"> 
-  <h2> <i class="fab fa-node-js"></i> </h2>
+  <h2> <i class="fab fa-node-js"></i> - JavaScript & NodeJS Projects</h2>
 </div>
 
 
