@@ -327,3 +327,13 @@ Some resources:
   - [Applications with R and
     Docker](https://www.youtube.com/watch?v=JOIKy_89c-o)
   - [Docker for beginners](https://docker-curriculum.com/)
+
+Reading list:
+
+  - [Docker: Up & Running: Shipping Reliable Containers in
+    Production](https://amzn.to/2VWfXs6)
+  - [Docker in Practice](https://amzn.to/2wqpNZ0)
+  - [Using Docker: Developing and Deploying Software with
+    Containers](https://amzn.to/2wqiIaQ)
+  - [Building Microservices: Designing Fine-Grained
+    Systems](https://amzn.to/2WfsoV3)
