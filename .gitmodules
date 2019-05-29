@@ -1,3 +1,6 @@
 [submodule "wikileaksdm"]
 	path = wikileaksdm
 	url = https://github.com/ColinFay/wikileaksdm
+[submodule "osgridfolio"]
+	path = osgridfolio
+	url = https://github.com/ColinFay/osgridfolio.git
