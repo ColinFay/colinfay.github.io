@@ -43,7 +43,7 @@ permalink: /open-source/
       <i class="fab fa-github"></i> /ColinFay 
     </a>
   </h3> 
-  <div id = "nodejsthings"></div>
+  <div id = "jsthings"></div>
 </div>
 
 <div class="row"> 
@@ -100,10 +100,11 @@ add_repos(repos, "thinkrthings")
 /*nodejs*/
 
 var repos = [
-  "ColinFay/ronline"
+  "ColinFay/ronline",
+  "ColinFay/osgridfolio"
   ]
   
-add_repos(repos, "nodejsthings")
+add_repos(repos, "jsthings")
 
 /*docker*/
 var repos = ["ColinFay/r-ci"]
