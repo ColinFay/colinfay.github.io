@@ -1,93 +1,31 @@
----
-# Only the main Sass file needs front matter (the dashes are enough)
----
-
-@charset "utf-8";
-
-@import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
-@import "minimal-mistakes"; // main partials
-
-$paragraph-indent: true;
-
-@import url('https://fonts.googleapis.com/css?family=Poppins');
-:root{
-  --first: #9BADBF;
-  --second: #D1D5DE;
-  --third: #837569;
-  --fourth: #657153;
-  --fifth: #8AAA79;
+/*
+li.package::before {
+   content: "📦 ";
 }
 
-body {
-      font-family: 'system-ui', sans-serif;
+
+li.web::before {
+   content: "🕸 ";
 }
 
-ol {
-    padding-left: inherit;
+*/
+
+li.web {
+    list-style: none;
 }
 
-li.archive__item-title:before {
-    content: ">  ";
+li.package {
+    list-style: none;
 }
-
-.sidebar p, .sidebar li{
-font-family: inherit;
-}
-
-.page__footer footer{
-    margin-top: 1em;
-    padding: 0 1em 1em;
-}
-
-.page .page__inner-wrap {
-    width: 100%;
-}
-
-.archive {
-    padding-right: 1em;
-}
-
-.page {
-    padding-right: 1em;
-}
-
-a {
-    color: inherit;
-}
-
-.archive a {
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-    color:inherit;
-}
-
-a:visited {
-    color: inherit;
-}
-
-h2 {
-  margin-block-start: 0.2em;
-}
-
-.author__content a:hover {
-    text-decoration: none;
-}
-
-.sidebar.sticky {
-  position:fixed;
-}
-
-.page .page__inner-wrap .page__meta {
-    float: none; 
-}
-
 
 .fifty {
     width: 50%;
 }
+
+.column {
+  margin-top: 1em;
+}
+
 
 .row:after {
   content: "";
@@ -99,32 +37,6 @@ h2 {
   padding-top: 1em;
 }
 
-/* sqfolio */
-
-@import url("https://use.fontawesome.com/releases/v5.8.2/css/all.css");
-
-
-li.package {
-    list-style: none;
-}
-
-.column {
-  margin: 1em;
-}
-
-.sqfolio {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 2px solid white;
-  border-radius: 5px;
-}
-
-.sqfolio > div {
-    border: 1px solid #e6e9eb;
-    border-radius: 5px;
-    background-color: white;
-    padding: 1em;
-}
 
 
 /* ------------------------------------------

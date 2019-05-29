@@ -1,9 +1,9 @@
-function get_github(owner, repo) {
+function get_github(repo) {
 
   return new Promise((resolve, reject) => {
   
     const xhr = new XMLHttpRequest();
-    var url = "https://api.github.com/repos/" + owner + "/"+ repo;
+    var url = "https://api.github.com/repos/" + repo;
     xhr.open('GET', url);
 
     xhr.onload = function() {
@@ -18,12 +18,42 @@ function get_github(owner, repo) {
   });
 }
 
-function add_repo(owner, repo, id, cl) {
-  get_github(owner, repo).then(data => {
-    var iDiv = document.createElement('div');
-    iDiv.setAttribute('class', 'column');
-    iDiv.innerHTML = "<li class = '" + cl + "'><b><a href ='" + data.html_url + "'>" + data.name + "</a></b> <br><span class = 'page__meta'> " + data.description + "</span><br><a href='" + data.html_url + "'><button class = 'button'><i class='fas fa-star'></i> " + data.stargazers_count + "</button></a>" + "<a href='" + data.html_url + "'><button class = 'button'><i class= 'fas fa-code-branch'></i> " + data.forks_count + "</button></a>"
-    var target = document.getElementById(id)
-    target.appendChild(iDiv)
+function add_repo(repo, id) {
+  get_github(repo).then(data => {
+    var logo;
+    switch (data.language) {
+      case 'R':
+        logo = '<i class="fab fa-r-project"></i>';
+        break;
+      case 'JavaScript':
+        logo = '<i class="fab fa-js-square"></i>';
+        break;
+      case 'Dockerfile':
+        logo = '<i class="fab fa-docker"></i>';
+        break;
+      default:
+        logo = '<i class="fas fa-archive"></i>';
+        break;
+    }
+    var parent_node = document.createElement('div');
+    parent_node.setAttribute('class', 'column');
+    
+    parent_node.innerHTML = "<li class = 'package'>" + logo + "<b> — <a href ='" + data.html_url + "'>" + data.name + "</a></b> <br><span class = 'page__meta'> " + data.description + "</span><br><a href='" + data.html_url + "'><button class = 'button'><i class='fas fa-star'></i> " + data.stargazers_count + "</button></a>" + "<a href='" + data.html_url + "'><button class = 'button'><i class= 'fas fa-code-branch'></i> " + data.forks_count + "</button></a>";
+    var target = document.getElementById(id);
+    target.appendChild(parent_node);
 })
+}
+
+function add_repos(vec, id){
+  
+  var parent_node = document.createElement('div');
+  parent_node.setAttribute('class', 'sqfolio');
+  parent_node.setAttribute('id', id + "_innerdre");
+  
+  for (var i = 0; i < vec.length; i++){
+    add_repo(vec[i], id + "_innerdre", "package");
+  }
+  
+  var target = document.getElementById(id);
+  target.appendChild(parent_node);
 }
