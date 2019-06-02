@@ -107,7 +107,10 @@ var repos = [
 add_repos(repos, "jsthings")
 
 /*docker*/
-var repos = ["ColinFay/r-ci"]
+var repos = [
+  "ColinFay/r-ci", 
+  "neo4j-rstats/neo4r-docker"
+  ]
 
   
 add_repos(repos, "dockerthings")
