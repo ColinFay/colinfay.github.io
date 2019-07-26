@@ -19,7 +19,7 @@ Data Bzh is a collaborative data-blogging platform that wants to democratize Bri
 
 In 2016, Data Bzh won the Trophée Open Data 2016 ([More on that](http://data-bzh.fr/data-bzh-trophee-open-data/)).
 
-### Cofounder of the <a href = "http://breizhdataclub.org/"></a>
+### Cofounder of the <a href = "http://breizhdataclub.org/">Breizh Data Club</a>
 
 The Breizh Data Club is a professionnal association that aims at gathering data lovers from Brittany and beyond. 
 
