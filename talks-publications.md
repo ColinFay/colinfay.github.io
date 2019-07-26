@@ -5,19 +5,30 @@ permalink: /talks-publications/
 author_profile: true
 ---
 
-## Talks
+<style> 
+.page__content p {
+    margin: 0 0 0em;
+    line-height: 1.5em;
+}
+</style>
 
-__2019-04-25__ ["R in Production"](https://speakerdeck.com/colinfay/r-in-production), R Nantes Meetup
+## I've been talking 
 
-__2019-01-16__ ["Building Big Shiny Apps - A Workflow"](https://thinkr-open.github.io/rstudioconf2019/), RStudio Conference 2019 
+__2019-07-09__ ["Hacking RStudio: Advanced Use of your Favorite IDE"](https://speakerdeck.com/colinfay/hacking-rstudio-advanced-use-of-your-favorite-ide), useR!2019, Toulouse.
 
-__2018-11-05__ ["Data Science en production avec R — Quels enjeux ? Quelles solutions?"](https://speakerdeck.com/colinfay/data-science-en-production-avec-r-quels-enjeux-quelles-solutions), Lyon Data Science Meetup
+__2019-07-08__ ["Contributing to the R ecosystem"](https://speakerdeck.com/colinfay/contributing-to-the-r-ecosystem), useR!2019, Toulouse.
+
+__2019-04-25__ ["R in Production"](https://speakerdeck.com/colinfay/r-in-production), R Nantes Meetup, Nantes.
+
+__2019-01-16__ ["Building Big Shiny Apps - A Workflow"](https://thinkr-open.github.io/rstudioconf2019/), RStudio Conference 2019, Austin, Texas.
+
+__2018-11-05__ ["Data Science en production avec R — Quels enjeux ? Quelles solutions?"](https://speakerdeck.com/colinfay/data-science-en-production-avec-r-quels-enjeux-quelles-solutions), Lyon Data Science Meetup, Lyon.
 
 __2018-10-19__ — "Data Science en production avec R, retour d'expérience", Breizh Data day, Rennes. 
 
 __2018-07-05__ — ["Vous allez aimer avoir {purrr}"](https://github.com/ColinFay/conf/tree/master/2018-07-rencontresr-rennes), Rencontres R Rennes. 
 
-__2018-06-14__ — ["Quand un langage de datascience se met à faire du web"](https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes), Web2Day Nantes. 
+__2018-06-14__ — ["Quand un langage de datascience se met à faire du web"](https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes), Web2Day, Nantes. 
 
 __2018-05-14__ — ["Workshop - Building a package that lasts"](https://github.com/ColinFay/erum2018), eRum, Budapest. 
 
@@ -48,25 +59,31 @@ __2013-05-29__ — "Théorie des jeux, un modèle possible pour les sciences du 
 
 ***
 
-## R Manuals as bookdown
+## I've been writing
 
-The R manuals converted to bookdown:  [R manuals](/r-manuals/)
+### Books
 
-***
++ [WIP] - [Building Big Shiny Apps - A Workflow](https://thinkr-open.github.io/building-shiny-apps-workflow/)
 
-## Publications 
++ [WIP] - [Licensing R](https://thinkr-open.github.io/licensing-r/)
  
 ### Technical reviewer
 
-[Domain-Specific Languages in R - Mailund, Thomas](https://www.apress.com/us/book/9781484235874)
++ [Domain-Specific Languages in R - Mailund, Thomas](https://www.apress.com/us/book/9781484235874)
 
-### Book review 
+### Articles:
 
-“Text Mining with R: A Tidy Approach”. Journal of Statistical Software, Vol 83, 10.18637/jss.v083.b01. [link](https://www.jstatsoft.org/article/view/v083b01)
++ "Text Mining with R: A Tidy Approach". Journal of Statistical Software, Vol 83, 10.18637/jss.v083.b01. [link](https://www.jstatsoft.org/article/view/v083b01)
 
-### As a contributor
+### Books I've contributed to
 
-__Forthcoming__ — [Advanced R - R6](https://adv-r.hadley.nz/r6) — Wickham H. 
++ [Advanced R - R6 Chapter](https://adv-r.hadley.nz/r6) — Wickham H. 
+
+***
+
+## R Manuals as bookdowns
+
++ The R manuals converted to bookdown:  [R manuals](/r-manuals/)
 
 ***
 
