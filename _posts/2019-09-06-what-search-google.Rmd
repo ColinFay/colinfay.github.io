@@ -1,0 +1,141 @@
+---
+title: "One week as a Shiny dev, seen through Google search"
+post_date: 2019-09-08
+layout: single
+permalink: /one-week-shiny-gogole-search/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+```
+
+Some days ago I read an article on [dev.to](https://dev.to/), entitled something like "One week as a Software developer - what did I search?" (I can't find back the link :( ). And then, I thought... hey, I should do that too! 
+
+## Getting the data
+
+You can download your browser data at [takeout.google.com/](https://takeout.google.com/). In a matter of minutes, I had a beautiful JSON which I could bring back in R. 
+
+```{r}
+res <- jsonlite::read_json("~/Downloads/Takeout/Chrome/BrowserHistory.json")
+library(data.table)
+library(magrittr)
+df <- rbindlist(res[[1]], fill = TRUE)  
+setDT(df)
+str(df)
+```
+
+First thing first, get the data from last week.
+
+What about this weird time column?
+
+```{r}
+df[, .(time_usec = as.character(time_usec))] %>% head()
+```
+
+
+When seeing these numbers, one thinks of [Unix timestamp](https://en.wikipedia.org/wiki/Unix_time), which is _"the number of seconds that have elapsed since 00:00:00 Thursday, 1 January 1970"_. So...
+
+```{r}
+df[, .(time_usec = as.POSIXct(time_usec, origin="1970-01-01"))] %>% head()
+```
+
+Well, unless I've been trapped in a weird time machine or that episode of Game of Thrones was very, very long, I don't remember being in year `49677993` :) 
+
+I have no idea why this number are that long: if we look at today's date, we've got a UNIX time stamp of 
+
+```{r}
+as.numeric(Sys.time())
+# versus
+df[, as.character(time_usec)] %>% head(1)
+```
+
+Today's UNIX date, which has a step of one second, is a 10 digits long number. The time stamp in this dataset are `r df[, as.character(time_usec)] %>% head(1) %>% nchar()` digits longs. But we can also notice that the 10 first digits of both are relatively close: ` 156780` and ` 156762`. 
+
+My guess so far is that the data are in microseconds, as one microsecond is `1e-6` second. Let's give this a shot:
+
+```{r}
+df[, time_usec := as.POSIXct(time_usec / 1e6, origin="1970-01-01")][, time_usec] %>% head()
+```
+
+AH! That looks better! Let's filter and turn the title to lowercase.
+
+```{r}
+library(anytime)
+week <- df[
+  time_usec > anytime("2019-08-25") &
+    time_usec < anytime("2019-09-02") 
+  ][,
+    tite := tolower(title)
+    ]
+```
+
+Let's now filter only the Google search:
+
+```{r}
+search <- week[
+  grep("www.google.com/search", url), 
+  ]
+```
+
+And count the number of search by day:
+
+```{r}
+library(ggplot2)
+ggplot(search, aes(as.Date(time_usec))) + 
+  geom_bar() + 
+  labs(
+    title = "Search by day of the week (Monday to Sunday)", 
+    x = "Day of the week"
+  )
+```
+
+## Some extracts
+
+Let's now have a look at some of the search terms:
+
+### Shiny
+
+```{r}
+search[
+    grep("shiny", title), gsub(" - Recherche Google", "", title)
+    ] %>% unique()
+```
+
+You can note that: 
+
+- I can never remember how to set which Viewer Shiny uses
+- I had trouble with Shiny dateRangeInput being able to [end before start](https://github.com/rstudio/shiny/issues/2043) and tried to see for other alternative.
+- Also, this weird one, where I saved some reactiveValue to a MongoDB storage, and when I tried to reuse them, I had an error about the `.graphDependsOnId` function not found. Turns out it's an [old Shiny function](https://rdrr.io/github/ymd526442121/Rproject_shiny/src/R/graph.R), which might have been saved in the RDS saved in the mongo DB (well, that's my guess). My solution was to take this piece of code from the source and put it back in my app. 
+- I had some trouble with the behavior of a restarting app and the `removeUI` function, which in fact does not [remove the input value](https://github.com/rstudio/shiny/issues/2374). Also, it's interesting to note that some input are not fully restored when restarting the app with Firefox, so I wanted to look for a way to (really) delete input from the JS side (unsuccessfully so far). 
+- I also wondered if there was a kind of `shiny::createApp()`, which creates a file with the app skeleton in it. When you use the RStudio interface for creating app, you've got an app skeleton. That must be somewhere.
+
+### R
+
+```{r}
+search[
+    grep(" r ", title), gsub(" - Recherche Google", "", title)
+    ] %>% unique()
+```
+
+Nop, still can't remember how to insert a page break in `{pagedown}`.
+
+Also, still can't write "package" correctly.
+
+### JavaScript
+
+Yes, being a Shiny developer means you do a significant amount of JavaScript / jQuery.
+
+```{r}
+search[
+    grep("javascript|jquery", title), gsub(" - Recherche Google", "", title)
+    ] %>% unique()
+```
+
+Let's admit that: 
+
+- I can never remember the correct syntax for for loops in JavaScript. Like, ever. I always try `for (var i, i < x.length, i++)`. That's `;`, Colin, maybe writing it there will make me remember :)  
+- The "find anywhere in object" and JavaScript launch and reload were still linked to my refresh input in Shiny issue. 
+- And apparently it's more complicated than I had expected to play with symbols and environment in JavaScript
