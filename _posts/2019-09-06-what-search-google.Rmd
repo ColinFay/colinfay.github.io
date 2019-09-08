@@ -82,7 +82,7 @@ search <- week[
 
 And count the number of search by day:
 
-```{r}
+```{r searchweek}
 library(ggplot2)
 ggplot(search, aes(as.Date(time_usec))) + 
   geom_bar() + 

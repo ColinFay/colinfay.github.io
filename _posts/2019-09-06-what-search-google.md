@@ -83,7 +83,7 @@ date, we’ve got a UNIX time stamp of
 as.numeric(Sys.time())
 ```
 
-    ## [1] 1567969463
+    ## [1] 1567969643
 
 ``` r
 # versus
@@ -141,7 +141,7 @@ ggplot(search, aes(as.Date(time_usec))) +
   )
 ```
 
-![](../assets/img/unnamed-chunk-8-1.png)<!-- -->
+![](../assets/img/searchweek-1.png)<!-- -->
 
 ## Some extracts
 
