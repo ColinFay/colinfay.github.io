@@ -2,7 +2,7 @@
 title: "One week as a Shiny dev, seen through Google search"
 post_date: 2019-09-08
 layout: single
-permalink: /one-week-shiny-gogole-search/
+permalink: /one-week-shiny-google-search/
 categories: r-blog-en
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
@@ -85,7 +85,7 @@ date, we’ve got a UNIX time stamp of
 as.numeric(Sys.time())
 ```
 
-    ## [1] 1568037841
+    ## [1] 1568038038
 
 ``` r
 # versus
