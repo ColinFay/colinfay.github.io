@@ -9,9 +9,11 @@ excerpt_separator: <!--more-->
 ---
 
 Some days ago I read an article on [dev.to](https://dev.to/), entitled
-something like “One week as a Software developer - what did I search?”
-(I can’t find back the link :( ). And then, I thought… hey, I should do
-that too\!
+something like “Googling as a Software Engineer”
+[link](https://dev.to/bamboriz/googling-as-a-software-engineer-3a1n)
+which links to [this
+blogpost](https://localghost.dev/2019/09/everything-i-googled-in-a-week-as-a-professional-software-engineer/)
+from Sophie Koonin. And then, I thought… hey, I should do that too\!
 
 ## Getting the data
 
@@ -83,7 +85,7 @@ date, we’ve got a UNIX time stamp of
 as.numeric(Sys.time())
 ```
 
-    ## [1] 1567969643
+    ## [1] 1568037841
 
 ``` r
 # versus
