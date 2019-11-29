@@ -1,0 +1,691 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Collecting tweets with R and {rtweet} - Colin Fay</title>
+<meta name="description" content="Some arguments in favor of {rtweet}, an amazing package by Michael W. Kearney.  Note: this post has been update after recent changes of {rtweet} and {tidytext}. Check this post for more info.For what I remember, I have been scraping web data for as long as I’ve been using R. This, of course, includes Google Analytics, Facebook, raw web pages, and so on and so forth — but most of all, I’ve always loved playing with Twitter data. I’ve been on Twitter for 8 years now, and I know what an insightful place it can be, and also, it’s full of data, so you know, why not going down that rabbit hole!A long time ago, in a far away landMy first encounter with tweet collecting in R has been through the {twitteR} package, which, despite its (sometimes) weird interface and strange functions, has been really useful in many past projects.So, before {rtweet}, the common practice was to mine Twitter with {twitteR}, which was designed as an object oriented package (so not tidy): calls on the API create environments, in which you can use methods for further investigation. Also, results were not in a data.frame format (even if there is a funtion to turn twitter lists to df).Searching for tweets was quite straightforward: setting up oauth, search twitter, convert result to dataframe, dealing with dates… but a drawback was when doing text mining: you had to look for hashtags by subsetting the raw text messages of tweets. That could be kind of a headache. Not to mention when you needed to retrieve followers, timelines, and everything that makes Twitter a richful place to mine for data.Why I used rtweet?I’ve been using rtweet for several projects now, the more recent being:  #BreizhDataDay, revue de Tweetswhich I wrote just after the first Breizh Data Day.So, {rtweet} is a (relatively) young package, as it was first published on CRAN around a year ago (august 2016). It provides a tidy approach to collecting Twitter data: main functions return a data.frame following the tidy data principles.A cool thing also, is that you don’t need to set up a Twitter app in order to search for tweets.{rtweet} worklow  Note : please be sure to have last version of {rtweet} and {tidytext} (respectively 0.6 and 0.1.6)packageVersion(&quot;rtweet&quot;)[1] ‘0.6.0’packageVersion(&quot;tidytext&quot;)[1] ‘0.1.6’So, let’s try searching for 1000 tweets with the hashtag Rennes with {rtweet}.library(rtweet)srch &lt;- search_tweets(&quot;#Rennes&quot;, n = 1000)Searching for tweets...Finished collecting tweets! dplyr::glimpse(srch)Observations: 996Variables: 42$ status_id              &lt;chr&gt; &quot;953255590951899136&quot;, &quot;953255475461677056&quot;, &quot;953254988632993792&quot;, &quot;9532549822157824...$ created_at             &lt;dttm&gt; 2018-01-16 13:20:18, 2018-01-16 13:19:50, 2018-01-16 13:17:54, 2018-01-16 13:17:53...$ user_id                &lt;chr&gt; &quot;2737710932&quot;, &quot;493396070&quot;, &quot;276708676&quot;, &quot;824240805158207489&quot;, &quot;556902767&quot;, &quot;3435794...$ screen_name            &lt;chr&gt; &quot;AtonAha&quot;, &quot;idelestre&quot;, &quot;unidiversmag&quot;, &quot;Rennes1jour&quot;, &quot;M2bliquis&quot;, &quot;OMAddictFR&quot;, &quot;...$ text                   &lt;chr&gt; &quot;RT @Gendarmerie: #Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et l...$ source                 &lt;chr&gt; &quot;Twitter Web Client&quot;, &quot;Twitter Web Client&quot;, &quot;social unidivers&quot;, &quot;Rennes&quot;, &quot;Twitter ...$ reply_to_status_id     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ reply_to_user_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ reply_to_screen_name   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ is_quote               &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,...$ is_retweet             &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE,...$ favorite_count         &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0,...$ retweet_count          &lt;int&gt; 86, 0, 0, 0, 3, 0, 2, 4, 0, 2, 2, 46, 5, 46, 0, 46, 46, 46, 46, 1, 1, 7, 10, 0, 46,...$ hashtags               &lt;list&gt; [&lt;&quot;Bretagne&quot;, &quot;Stups&quot;, &quot;Rennes&quot;, &quot;Brest&quot;&gt;, &lt;&quot;startup&quot;, &quot;Rennes&quot;&gt;, &lt;&quot;QUAND&quot;, &quot;Renne...$ symbols                &lt;list&gt; [NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N...$ urls_url               &lt;list&gt; [NA, &quot;l.leparisien.fr/s/SS6x&quot;, &quot;unidivers.fr/quand-dieu-app…&quot;, &quot;unidivers.fr/quand...$ urls_t.co              &lt;list&gt; [NA, &quot;https://t.co/nEGvrKH3Jb&quot;, &quot;https://t.co/QBVUlmd4DW&quot;, &quot;https://t.co/rGPIycM8X...$ urls_expanded_url      &lt;list&gt; [NA, &quot;http://l.leparisien.fr/s/SS6x&quot;, &quot;https://www.unidivers.fr/quand-dieu-apprena...$ media_url              &lt;list&gt; [NA, NA, &quot;http://pbs.twimg.com/media/DTqkW5sXcAEltYO.jpg&quot;, &quot;http://pbs.twimg.com/m...$ media_t.co             &lt;list&gt; [NA, NA, &quot;https://t.co/5bc1zrBGhh&quot;, &quot;https://t.co/ztCCVEnvHO&quot;, NA, NA, NA, NA, NA,...$ media_expanded_url     &lt;list&gt; [NA, NA, &quot;https://twitter.com/unidiversmag/status/953254988632993792/photo/1&quot;, &quot;ht...$ media_type             &lt;list&gt; [NA, NA, &quot;photo&quot;, &quot;photo&quot;, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ ext_media_url          &lt;list&gt; [NA, NA, &quot;http://pbs.twimg.com/media/DTqkW5sXcAEltYO.jpg&quot;, &quot;http://pbs.twimg.com/m...$ ext_media_t.co         &lt;list&gt; [NA, NA, &quot;https://t.co/5bc1zrBGhh&quot;, &quot;https://t.co/ztCCVEnvHO&quot;, NA, NA, NA, NA, NA,...$ ext_media_expanded_url &lt;list&gt; [NA, NA, &quot;https://twitter.com/unidiversmag/status/953254988632993792/photo/1&quot;, &quot;ht...$ ext_media_type         &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ mentions_user_id       &lt;list&gt; [&quot;2184489764&quot;, &quot;38142665&quot;, NA, NA, &quot;863015893433028608&quot;, NA, &quot;2273783713&quot;, &quot;251269...$ mentions_screen_name   &lt;list&gt; [&quot;Gendarmerie&quot;, &quot;le_Parisien&quot;, NA, NA, &quot;3508CentreNord&quot;, NA, &quot;Skillo1989&quot;, &quot;ren_mu...$ lang                   &lt;chr&gt; &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;it&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;,...$ quoted_status_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ quoted_text            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ retweet_status_id      &lt;chr&gt; &quot;952976442488389636&quot;, NA, NA, NA, &quot;953248780085874688&quot;, NA, &quot;953253824545873920&quot;, &quot;...$ retweet_text           &lt;chr&gt; &quot;#Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et la BR de #Brest : ...$ place_url              &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_name             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_full_name        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_type             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ country                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ country_code           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ geo_coords             &lt;list&gt; [&lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;...$ coords_coords          &lt;list&gt; [&lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;...$ bbox_coords            &lt;list&gt; [&lt;NA, NA, NA, NA, NA, NA, NA, NA&gt;, &lt;NA, NA, NA, NA, NA, NA, NA, NA&gt;, &lt;NA, NA, NA, ...And here it is. Yes, it’s that simple: 1000 tweets in two commands (and one being library()): without specifying any oauth token.So now we have a tidy data.frame with the results, hashtags are in a column we can easily parse and count, as are text, mentions, and everything needed to start mining data.Quick example  Note: the recent version of {rtweet} returns a list column, which is not handled by unnest_tokens.We can write a quick hashtag and sentiment analysis :library(dplyr)library(tidytext)library(proustr)as_vector(srch$hashtags) %&gt;%           table() %&gt;%           as.data.frame() %&gt;%           arrange(Freq) %&gt;%           top_n(5)Selecting by Freq         . Freq1    Stups   762    Brest   823 Bretagne   884   rennes  1165   Rennes  889srch %&gt;%    unnest_tokens(word, text) %&gt;%   select(word) %&gt;%   left_join(proust_sentiments(type = &quot;score&quot;)) %&gt;%   na.omit() %&gt;%   count(sentiment)Joining, by = &quot;word&quot;# A tibble: 6 x 2  sentiment     n      &lt;chr&gt; &lt;int&gt;1     anger   1862   disgust   1353      fear   2794       joy   1255   sadness   2446  surprise   189Of course {rtweet} is full of other features you can try. But that blog post was more of an introduction, and I hope I’ve convinced you to download and use this amazing package!">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Collecting tweets with R and {rtweet}">
+<meta property="og:url" content="http://localhost:4000/collect-rtweet/">
+
+
+  <meta property="og:description" content="Some arguments in favor of {rtweet}, an amazing package by Michael W. Kearney.  Note: this post has been update after recent changes of {rtweet} and {tidytext}. Check this post for more info.For what I remember, I have been scraping web data for as long as I’ve been using R. This, of course, includes Google Analytics, Facebook, raw web pages, and so on and so forth — but most of all, I’ve always loved playing with Twitter data. I’ve been on Twitter for 8 years now, and I know what an insightful place it can be, and also, it’s full of data, so you know, why not going down that rabbit hole!A long time ago, in a far away landMy first encounter with tweet collecting in R has been through the {twitteR} package, which, despite its (sometimes) weird interface and strange functions, has been really useful in many past projects.So, before {rtweet}, the common practice was to mine Twitter with {twitteR}, which was designed as an object oriented package (so not tidy): calls on the API create environments, in which you can use methods for further investigation. Also, results were not in a data.frame format (even if there is a funtion to turn twitter lists to df).Searching for tweets was quite straightforward: setting up oauth, search twitter, convert result to dataframe, dealing with dates… but a drawback was when doing text mining: you had to look for hashtags by subsetting the raw text messages of tweets. That could be kind of a headache. Not to mention when you needed to retrieve followers, timelines, and everything that makes Twitter a richful place to mine for data.Why I used rtweet?I’ve been using rtweet for several projects now, the more recent being:  #BreizhDataDay, revue de Tweetswhich I wrote just after the first Breizh Data Day.So, {rtweet} is a (relatively) young package, as it was first published on CRAN around a year ago (august 2016). It provides a tidy approach to collecting Twitter data: main functions return a data.frame following the tidy data principles.A cool thing also, is that you don’t need to set up a Twitter app in order to search for tweets.{rtweet} worklow  Note : please be sure to have last version of {rtweet} and {tidytext} (respectively 0.6 and 0.1.6)packageVersion(&quot;rtweet&quot;)[1] ‘0.6.0’packageVersion(&quot;tidytext&quot;)[1] ‘0.1.6’So, let’s try searching for 1000 tweets with the hashtag Rennes with {rtweet}.library(rtweet)srch &lt;- search_tweets(&quot;#Rennes&quot;, n = 1000)Searching for tweets...Finished collecting tweets! dplyr::glimpse(srch)Observations: 996Variables: 42$ status_id              &lt;chr&gt; &quot;953255590951899136&quot;, &quot;953255475461677056&quot;, &quot;953254988632993792&quot;, &quot;9532549822157824...$ created_at             &lt;dttm&gt; 2018-01-16 13:20:18, 2018-01-16 13:19:50, 2018-01-16 13:17:54, 2018-01-16 13:17:53...$ user_id                &lt;chr&gt; &quot;2737710932&quot;, &quot;493396070&quot;, &quot;276708676&quot;, &quot;824240805158207489&quot;, &quot;556902767&quot;, &quot;3435794...$ screen_name            &lt;chr&gt; &quot;AtonAha&quot;, &quot;idelestre&quot;, &quot;unidiversmag&quot;, &quot;Rennes1jour&quot;, &quot;M2bliquis&quot;, &quot;OMAddictFR&quot;, &quot;...$ text                   &lt;chr&gt; &quot;RT @Gendarmerie: #Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et l...$ source                 &lt;chr&gt; &quot;Twitter Web Client&quot;, &quot;Twitter Web Client&quot;, &quot;social unidivers&quot;, &quot;Rennes&quot;, &quot;Twitter ...$ reply_to_status_id     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ reply_to_user_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ reply_to_screen_name   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ is_quote               &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,...$ is_retweet             &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE,...$ favorite_count         &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0,...$ retweet_count          &lt;int&gt; 86, 0, 0, 0, 3, 0, 2, 4, 0, 2, 2, 46, 5, 46, 0, 46, 46, 46, 46, 1, 1, 7, 10, 0, 46,...$ hashtags               &lt;list&gt; [&lt;&quot;Bretagne&quot;, &quot;Stups&quot;, &quot;Rennes&quot;, &quot;Brest&quot;&gt;, &lt;&quot;startup&quot;, &quot;Rennes&quot;&gt;, &lt;&quot;QUAND&quot;, &quot;Renne...$ symbols                &lt;list&gt; [NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N...$ urls_url               &lt;list&gt; [NA, &quot;l.leparisien.fr/s/SS6x&quot;, &quot;unidivers.fr/quand-dieu-app…&quot;, &quot;unidivers.fr/quand...$ urls_t.co              &lt;list&gt; [NA, &quot;https://t.co/nEGvrKH3Jb&quot;, &quot;https://t.co/QBVUlmd4DW&quot;, &quot;https://t.co/rGPIycM8X...$ urls_expanded_url      &lt;list&gt; [NA, &quot;http://l.leparisien.fr/s/SS6x&quot;, &quot;https://www.unidivers.fr/quand-dieu-apprena...$ media_url              &lt;list&gt; [NA, NA, &quot;http://pbs.twimg.com/media/DTqkW5sXcAEltYO.jpg&quot;, &quot;http://pbs.twimg.com/m...$ media_t.co             &lt;list&gt; [NA, NA, &quot;https://t.co/5bc1zrBGhh&quot;, &quot;https://t.co/ztCCVEnvHO&quot;, NA, NA, NA, NA, NA,...$ media_expanded_url     &lt;list&gt; [NA, NA, &quot;https://twitter.com/unidiversmag/status/953254988632993792/photo/1&quot;, &quot;ht...$ media_type             &lt;list&gt; [NA, NA, &quot;photo&quot;, &quot;photo&quot;, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ ext_media_url          &lt;list&gt; [NA, NA, &quot;http://pbs.twimg.com/media/DTqkW5sXcAEltYO.jpg&quot;, &quot;http://pbs.twimg.com/m...$ ext_media_t.co         &lt;list&gt; [NA, NA, &quot;https://t.co/5bc1zrBGhh&quot;, &quot;https://t.co/ztCCVEnvHO&quot;, NA, NA, NA, NA, NA,...$ ext_media_expanded_url &lt;list&gt; [NA, NA, &quot;https://twitter.com/unidiversmag/status/953254988632993792/photo/1&quot;, &quot;ht...$ ext_media_type         &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ mentions_user_id       &lt;list&gt; [&quot;2184489764&quot;, &quot;38142665&quot;, NA, NA, &quot;863015893433028608&quot;, NA, &quot;2273783713&quot;, &quot;251269...$ mentions_screen_name   &lt;list&gt; [&quot;Gendarmerie&quot;, &quot;le_Parisien&quot;, NA, NA, &quot;3508CentreNord&quot;, NA, &quot;Skillo1989&quot;, &quot;ren_mu...$ lang                   &lt;chr&gt; &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;it&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;,...$ quoted_status_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ quoted_text            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ retweet_status_id      &lt;chr&gt; &quot;952976442488389636&quot;, NA, NA, NA, &quot;953248780085874688&quot;, NA, &quot;953253824545873920&quot;, &quot;...$ retweet_text           &lt;chr&gt; &quot;#Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et la BR de #Brest : ...$ place_url              &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_name             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_full_name        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_type             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ country                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ country_code           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ geo_coords             &lt;list&gt; [&lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;...$ coords_coords          &lt;list&gt; [&lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;...$ bbox_coords            &lt;list&gt; [&lt;NA, NA, NA, NA, NA, NA, NA, NA&gt;, &lt;NA, NA, NA, NA, NA, NA, NA, NA&gt;, &lt;NA, NA, NA, ...And here it is. Yes, it’s that simple: 1000 tweets in two commands (and one being library()): without specifying any oauth token.So now we have a tidy data.frame with the results, hashtags are in a column we can easily parse and count, as are text, mentions, and everything needed to start mining data.Quick example  Note: the recent version of {rtweet} returns a list column, which is not handled by unnest_tokens.We can write a quick hashtag and sentiment analysis :library(dplyr)library(tidytext)library(proustr)as_vector(srch$hashtags) %&gt;%           table() %&gt;%           as.data.frame() %&gt;%           arrange(Freq) %&gt;%           top_n(5)Selecting by Freq         . Freq1    Stups   762    Brest   823 Bretagne   884   rennes  1165   Rennes  889srch %&gt;%    unnest_tokens(word, text) %&gt;%   select(word) %&gt;%   left_join(proust_sentiments(type = &quot;score&quot;)) %&gt;%   na.omit() %&gt;%   count(sentiment)Joining, by = &quot;word&quot;# A tibble: 6 x 2  sentiment     n      &lt;chr&gt; &lt;int&gt;1     anger   1862   disgust   1353      fear   2794       joy   1255   sadness   2446  surprise   189Of course {rtweet} is full of other features you can try. But that blog post was more of an introduction, and I hope I’ve convinced you to download and use this amazing package!">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Collecting tweets with R and {rtweet}">
+  <meta name="twitter:description" content="Some arguments in favor of {rtweet}, an amazing package by Michael W. Kearney.  Note: this post has been update after recent changes of {rtweet} and {tidytext}. Check this post for more info.For what I remember, I have been scraping web data for as long as I’ve been using R. This, of course, includes Google Analytics, Facebook, raw web pages, and so on and so forth — but most of all, I’ve always loved playing with Twitter data. I’ve been on Twitter for 8 years now, and I know what an insightful place it can be, and also, it’s full of data, so you know, why not going down that rabbit hole!A long time ago, in a far away landMy first encounter with tweet collecting in R has been through the {twitteR} package, which, despite its (sometimes) weird interface and strange functions, has been really useful in many past projects.So, before {rtweet}, the common practice was to mine Twitter with {twitteR}, which was designed as an object oriented package (so not tidy): calls on the API create environments, in which you can use methods for further investigation. Also, results were not in a data.frame format (even if there is a funtion to turn twitter lists to df).Searching for tweets was quite straightforward: setting up oauth, search twitter, convert result to dataframe, dealing with dates… but a drawback was when doing text mining: you had to look for hashtags by subsetting the raw text messages of tweets. That could be kind of a headache. Not to mention when you needed to retrieve followers, timelines, and everything that makes Twitter a richful place to mine for data.Why I used rtweet?I’ve been using rtweet for several projects now, the more recent being:  #BreizhDataDay, revue de Tweetswhich I wrote just after the first Breizh Data Day.So, {rtweet} is a (relatively) young package, as it was first published on CRAN around a year ago (august 2016). It provides a tidy approach to collecting Twitter data: main functions return a data.frame following the tidy data principles.A cool thing also, is that you don’t need to set up a Twitter app in order to search for tweets.{rtweet} worklow  Note : please be sure to have last version of {rtweet} and {tidytext} (respectively 0.6 and 0.1.6)packageVersion(&quot;rtweet&quot;)[1] ‘0.6.0’packageVersion(&quot;tidytext&quot;)[1] ‘0.1.6’So, let’s try searching for 1000 tweets with the hashtag Rennes with {rtweet}.library(rtweet)srch &lt;- search_tweets(&quot;#Rennes&quot;, n = 1000)Searching for tweets...Finished collecting tweets! dplyr::glimpse(srch)Observations: 996Variables: 42$ status_id              &lt;chr&gt; &quot;953255590951899136&quot;, &quot;953255475461677056&quot;, &quot;953254988632993792&quot;, &quot;9532549822157824...$ created_at             &lt;dttm&gt; 2018-01-16 13:20:18, 2018-01-16 13:19:50, 2018-01-16 13:17:54, 2018-01-16 13:17:53...$ user_id                &lt;chr&gt; &quot;2737710932&quot;, &quot;493396070&quot;, &quot;276708676&quot;, &quot;824240805158207489&quot;, &quot;556902767&quot;, &quot;3435794...$ screen_name            &lt;chr&gt; &quot;AtonAha&quot;, &quot;idelestre&quot;, &quot;unidiversmag&quot;, &quot;Rennes1jour&quot;, &quot;M2bliquis&quot;, &quot;OMAddictFR&quot;, &quot;...$ text                   &lt;chr&gt; &quot;RT @Gendarmerie: #Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et l...$ source                 &lt;chr&gt; &quot;Twitter Web Client&quot;, &quot;Twitter Web Client&quot;, &quot;social unidivers&quot;, &quot;Rennes&quot;, &quot;Twitter ...$ reply_to_status_id     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ reply_to_user_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ reply_to_screen_name   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ is_quote               &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,...$ is_retweet             &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE,...$ favorite_count         &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0,...$ retweet_count          &lt;int&gt; 86, 0, 0, 0, 3, 0, 2, 4, 0, 2, 2, 46, 5, 46, 0, 46, 46, 46, 46, 1, 1, 7, 10, 0, 46,...$ hashtags               &lt;list&gt; [&lt;&quot;Bretagne&quot;, &quot;Stups&quot;, &quot;Rennes&quot;, &quot;Brest&quot;&gt;, &lt;&quot;startup&quot;, &quot;Rennes&quot;&gt;, &lt;&quot;QUAND&quot;, &quot;Renne...$ symbols                &lt;list&gt; [NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N...$ urls_url               &lt;list&gt; [NA, &quot;l.leparisien.fr/s/SS6x&quot;, &quot;unidivers.fr/quand-dieu-app…&quot;, &quot;unidivers.fr/quand...$ urls_t.co              &lt;list&gt; [NA, &quot;https://t.co/nEGvrKH3Jb&quot;, &quot;https://t.co/QBVUlmd4DW&quot;, &quot;https://t.co/rGPIycM8X...$ urls_expanded_url      &lt;list&gt; [NA, &quot;http://l.leparisien.fr/s/SS6x&quot;, &quot;https://www.unidivers.fr/quand-dieu-apprena...$ media_url              &lt;list&gt; [NA, NA, &quot;http://pbs.twimg.com/media/DTqkW5sXcAEltYO.jpg&quot;, &quot;http://pbs.twimg.com/m...$ media_t.co             &lt;list&gt; [NA, NA, &quot;https://t.co/5bc1zrBGhh&quot;, &quot;https://t.co/ztCCVEnvHO&quot;, NA, NA, NA, NA, NA,...$ media_expanded_url     &lt;list&gt; [NA, NA, &quot;https://twitter.com/unidiversmag/status/953254988632993792/photo/1&quot;, &quot;ht...$ media_type             &lt;list&gt; [NA, NA, &quot;photo&quot;, &quot;photo&quot;, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ ext_media_url          &lt;list&gt; [NA, NA, &quot;http://pbs.twimg.com/media/DTqkW5sXcAEltYO.jpg&quot;, &quot;http://pbs.twimg.com/m...$ ext_media_t.co         &lt;list&gt; [NA, NA, &quot;https://t.co/5bc1zrBGhh&quot;, &quot;https://t.co/ztCCVEnvHO&quot;, NA, NA, NA, NA, NA,...$ ext_media_expanded_url &lt;list&gt; [NA, NA, &quot;https://twitter.com/unidiversmag/status/953254988632993792/photo/1&quot;, &quot;ht...$ ext_media_type         &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ mentions_user_id       &lt;list&gt; [&quot;2184489764&quot;, &quot;38142665&quot;, NA, NA, &quot;863015893433028608&quot;, NA, &quot;2273783713&quot;, &quot;251269...$ mentions_screen_name   &lt;list&gt; [&quot;Gendarmerie&quot;, &quot;le_Parisien&quot;, NA, NA, &quot;3508CentreNord&quot;, NA, &quot;Skillo1989&quot;, &quot;ren_mu...$ lang                   &lt;chr&gt; &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;it&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;,...$ quoted_status_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ quoted_text            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ retweet_status_id      &lt;chr&gt; &quot;952976442488389636&quot;, NA, NA, NA, &quot;953248780085874688&quot;, NA, &quot;953253824545873920&quot;, &quot;...$ retweet_text           &lt;chr&gt; &quot;#Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et la BR de #Brest : ...$ place_url              &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_name             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_full_name        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_type             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ country                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ country_code           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ geo_coords             &lt;list&gt; [&lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;...$ coords_coords          &lt;list&gt; [&lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;...$ bbox_coords            &lt;list&gt; [&lt;NA, NA, NA, NA, NA, NA, NA, NA&gt;, &lt;NA, NA, NA, NA, NA, NA, NA, NA&gt;, &lt;NA, NA, NA, ...And here it is. Yes, it’s that simple: 1000 tweets in two commands (and one being library()): without specifying any oauth token.So now we have a tidy data.frame with the results, hashtags are in a column we can easily parse and count, as are text, mentions, and everything needed to start mining data.Quick example  Note: the recent version of {rtweet} returns a list column, which is not handled by unnest_tokens.We can write a quick hashtag and sentiment analysis :library(dplyr)library(tidytext)library(proustr)as_vector(srch$hashtags) %&gt;%           table() %&gt;%           as.data.frame() %&gt;%           arrange(Freq) %&gt;%           top_n(5)Selecting by Freq         . Freq1    Stups   762    Brest   823 Bretagne   884   rennes  1165   Rennes  889srch %&gt;%    unnest_tokens(word, text) %&gt;%   select(word) %&gt;%   left_join(proust_sentiments(type = &quot;score&quot;)) %&gt;%   na.omit() %&gt;%   count(sentiment)Joining, by = &quot;word&quot;# A tibble: 6 x 2  sentiment     n      &lt;chr&gt; &lt;int&gt;1     anger   1862   disgust   1353      fear   2794       joy   1255   sadness   2446  surprise   189Of course {rtweet} is full of other features you can try. But that blog post was more of an introduction, and I hope I’ve convinced you to download and use this amazing package!">
+  <meta name="twitter:url" content="http://localhost:4000/collect-rtweet/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-11-01T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/collect-rtweet/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Collecting tweets with R and {rtweet}">
+    <meta itemprop="description" content="Some arguments in favor of {rtweet}, an amazing package by Michael W. Kearney.  Note: this post has been update after recent changes of {rtweet} and {tidytext}. Check this post for more info.For what I remember, I have been scraping web data for as long as I’ve been using R. This, of course, includes Google Analytics, Facebook, raw web pages, and so on and so forth — but most of all, I’ve always loved playing with Twitter data. I’ve been on Twitter for 8 years now, and I know what an insightful place it can be, and also, it’s full of data, so you know, why not going down that rabbit hole!A long time ago, in a far away landMy first encounter with tweet collecting in R has been through the {twitteR} package, which, despite its (sometimes) weird interface and strange functions, has been really useful in many past projects.So, before {rtweet}, the common practice was to mine Twitter with {twitteR}, which was designed as an object oriented package (so not tidy): calls on the API create environments, in which you can use methods for further investigation. Also, results were not in a data.frame format (even if there is a funtion to turn twitter lists to df).Searching for tweets was quite straightforward: setting up oauth, search twitter, convert result to dataframe, dealing with dates… but a drawback was when doing text mining: you had to look for hashtags by subsetting the raw text messages of tweets. That could be kind of a headache. Not to mention when you needed to retrieve followers, timelines, and everything that makes Twitter a richful place to mine for data.Why I used rtweet?I’ve been using rtweet for several projects now, the more recent being:  #BreizhDataDay, revue de Tweetswhich I wrote just after the first Breizh Data Day.So, {rtweet} is a (relatively) young package, as it was first published on CRAN around a year ago (august 2016). It provides a tidy approach to collecting Twitter data: main functions return a data.frame following the tidy data principles.A cool thing also, is that you don’t need to set up a Twitter app in order to search for tweets.{rtweet} worklow  Note : please be sure to have last version of {rtweet} and {tidytext} (respectively 0.6 and 0.1.6)packageVersion(&quot;rtweet&quot;)[1] ‘0.6.0’packageVersion(&quot;tidytext&quot;)[1] ‘0.1.6’So, let’s try searching for 1000 tweets with the hashtag Rennes with {rtweet}.library(rtweet)srch &lt;- search_tweets(&quot;#Rennes&quot;, n = 1000)Searching for tweets...Finished collecting tweets! dplyr::glimpse(srch)Observations: 996Variables: 42$ status_id              &lt;chr&gt; &quot;953255590951899136&quot;, &quot;953255475461677056&quot;, &quot;953254988632993792&quot;, &quot;9532549822157824...$ created_at             &lt;dttm&gt; 2018-01-16 13:20:18, 2018-01-16 13:19:50, 2018-01-16 13:17:54, 2018-01-16 13:17:53...$ user_id                &lt;chr&gt; &quot;2737710932&quot;, &quot;493396070&quot;, &quot;276708676&quot;, &quot;824240805158207489&quot;, &quot;556902767&quot;, &quot;3435794...$ screen_name            &lt;chr&gt; &quot;AtonAha&quot;, &quot;idelestre&quot;, &quot;unidiversmag&quot;, &quot;Rennes1jour&quot;, &quot;M2bliquis&quot;, &quot;OMAddictFR&quot;, &quot;...$ text                   &lt;chr&gt; &quot;RT @Gendarmerie: #Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et l...$ source                 &lt;chr&gt; &quot;Twitter Web Client&quot;, &quot;Twitter Web Client&quot;, &quot;social unidivers&quot;, &quot;Rennes&quot;, &quot;Twitter ...$ reply_to_status_id     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ reply_to_user_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ reply_to_screen_name   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ is_quote               &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,...$ is_retweet             &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE,...$ favorite_count         &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0,...$ retweet_count          &lt;int&gt; 86, 0, 0, 0, 3, 0, 2, 4, 0, 2, 2, 46, 5, 46, 0, 46, 46, 46, 46, 1, 1, 7, 10, 0, 46,...$ hashtags               &lt;list&gt; [&lt;&quot;Bretagne&quot;, &quot;Stups&quot;, &quot;Rennes&quot;, &quot;Brest&quot;&gt;, &lt;&quot;startup&quot;, &quot;Rennes&quot;&gt;, &lt;&quot;QUAND&quot;, &quot;Renne...$ symbols                &lt;list&gt; [NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N...$ urls_url               &lt;list&gt; [NA, &quot;l.leparisien.fr/s/SS6x&quot;, &quot;unidivers.fr/quand-dieu-app…&quot;, &quot;unidivers.fr/quand...$ urls_t.co              &lt;list&gt; [NA, &quot;https://t.co/nEGvrKH3Jb&quot;, &quot;https://t.co/QBVUlmd4DW&quot;, &quot;https://t.co/rGPIycM8X...$ urls_expanded_url      &lt;list&gt; [NA, &quot;http://l.leparisien.fr/s/SS6x&quot;, &quot;https://www.unidivers.fr/quand-dieu-apprena...$ media_url              &lt;list&gt; [NA, NA, &quot;http://pbs.twimg.com/media/DTqkW5sXcAEltYO.jpg&quot;, &quot;http://pbs.twimg.com/m...$ media_t.co             &lt;list&gt; [NA, NA, &quot;https://t.co/5bc1zrBGhh&quot;, &quot;https://t.co/ztCCVEnvHO&quot;, NA, NA, NA, NA, NA,...$ media_expanded_url     &lt;list&gt; [NA, NA, &quot;https://twitter.com/unidiversmag/status/953254988632993792/photo/1&quot;, &quot;ht...$ media_type             &lt;list&gt; [NA, NA, &quot;photo&quot;, &quot;photo&quot;, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ ext_media_url          &lt;list&gt; [NA, NA, &quot;http://pbs.twimg.com/media/DTqkW5sXcAEltYO.jpg&quot;, &quot;http://pbs.twimg.com/m...$ ext_media_t.co         &lt;list&gt; [NA, NA, &quot;https://t.co/5bc1zrBGhh&quot;, &quot;https://t.co/ztCCVEnvHO&quot;, NA, NA, NA, NA, NA,...$ ext_media_expanded_url &lt;list&gt; [NA, NA, &quot;https://twitter.com/unidiversmag/status/953254988632993792/photo/1&quot;, &quot;ht...$ ext_media_type         &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ mentions_user_id       &lt;list&gt; [&quot;2184489764&quot;, &quot;38142665&quot;, NA, NA, &quot;863015893433028608&quot;, NA, &quot;2273783713&quot;, &quot;251269...$ mentions_screen_name   &lt;list&gt; [&quot;Gendarmerie&quot;, &quot;le_Parisien&quot;, NA, NA, &quot;3508CentreNord&quot;, NA, &quot;Skillo1989&quot;, &quot;ren_mu...$ lang                   &lt;chr&gt; &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;it&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;, &quot;fr&quot;,...$ quoted_status_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ quoted_text            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ retweet_status_id      &lt;chr&gt; &quot;952976442488389636&quot;, NA, NA, NA, &quot;953248780085874688&quot;, NA, &quot;953253824545873920&quot;, &quot;...$ retweet_text           &lt;chr&gt; &quot;#Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et la BR de #Brest : ...$ place_url              &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_name             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_full_name        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ place_type             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ country                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ country_code           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...$ geo_coords             &lt;list&gt; [&lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;...$ coords_coords          &lt;list&gt; [&lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;NA, NA&gt;, &lt;...$ bbox_coords            &lt;list&gt; [&lt;NA, NA, NA, NA, NA, NA, NA, NA&gt;, &lt;NA, NA, NA, NA, NA, NA, NA, NA&gt;, &lt;NA, NA, NA, ...And here it is. Yes, it’s that simple: 1000 tweets in two commands (and one being library()): without specifying any oauth token.So now we have a tidy data.frame with the results, hashtags are in a column we can easily parse and count, as are text, mentions, and everything needed to start mining data.Quick example  Note: the recent version of {rtweet} returns a list column, which is not handled by unnest_tokens.We can write a quick hashtag and sentiment analysis :library(dplyr)library(tidytext)library(proustr)as_vector(srch$hashtags) %&gt;%           table() %&gt;%           as.data.frame() %&gt;%           arrange(Freq) %&gt;%           top_n(5)Selecting by Freq         . Freq1    Stups   762    Brest   823 Bretagne   884   rennes  1165   Rennes  889srch %&gt;%    unnest_tokens(word, text) %&gt;%   select(word) %&gt;%   left_join(proust_sentiments(type = &quot;score&quot;)) %&gt;%   na.omit() %&gt;%   count(sentiment)Joining, by = &quot;word&quot;# A tibble: 6 x 2  sentiment     n      &lt;chr&gt; &lt;int&gt;1     anger   1862   disgust   1353      fear   2794       joy   1255   sadness   2446  surprise   189Of course {rtweet} is full of other features you can try. But that blog post was more of an introduction, and I hope I’ve convinced you to download and use this amazing package!">
+    <meta itemprop="datePublished" content="November 01, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Collecting tweets with R and {rtweet}
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  6 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Some arguments in favor of <a href="https://CRAN.R-project.org/package=rtweet">{rtweet}</a>, an amazing package by Michael W. Kearney.</p>
+
+<blockquote>
+  <p>Note: this post has been update after recent changes of {rtweet} and {tidytext}. Check <a href="http://colinfay.me/rtweet-tidytext/">this post</a> for more info.</p>
+</blockquote>
+
+<p>For what I remember, I have been scraping web data for as long as I’ve been using R. This, of course, includes Google Analytics, Facebook, raw web pages, and so on and so forth — but most of all, I’ve always loved playing with Twitter data. I’ve been on Twitter for <a href="https://twitter.com/_ColinFay/status/922304944971173888">8 years now</a>, and I know what an insightful place it can be, and also, it’s full of data, so you know, why not going down that rabbit hole!</p>
+
+<h2 id="a-long-time-ago-in-a-far-away-land">A long time ago, in a far away land</h2>
+
+<p>My first encounter with tweet collecting in R has been through the {twitteR} package, which, despite its (sometimes) weird interface and strange functions, has been really useful in many past projects.</p>
+
+<p>So, before {rtweet}, the common practice was to mine Twitter with {twitteR}, which was designed as an object oriented package (so not tidy): calls on the API create environments, in which you can use methods for further investigation. Also, results were not in a data.frame format (even if there is a funtion to turn twitter lists to df).</p>
+
+<p>Searching for tweets was quite straightforward: setting up oauth, search twitter, convert result to dataframe, dealing with dates… but a drawback was when doing text mining: you had to look for hashtags by subsetting the raw text messages of tweets. That could be kind of a headache. Not to mention when you needed to retrieve followers, timelines, and everything that makes Twitter a richful place to mine for data.</p>
+
+<h2 id="why-i-used-rtweet">Why I used rtweet?</h2>
+
+<p>I’ve been using rtweet for several projects now, the more recent being:</p>
+
+<ul>
+  <li><a href="http://breizhdataclub.org/breizhdataday-revue-de-tweets/">#BreizhDataDay, revue de Tweets</a></li>
+</ul>
+
+<p>which I wrote just after the first <a href="https://breizhdataday.github.io/">Breizh Data Day</a>.</p>
+
+<p>So, {rtweet} is a (relatively) young package, as it was first published on CRAN around a year ago (august 2016). It provides a tidy approach to collecting Twitter data: main functions return a data.frame following the <a href="http://vita.had.co.nz/papers/tidy-data.html">tidy data</a> principles.</p>
+
+<p>A cool thing also, is that you don’t need to set up a Twitter app in order to search for tweets.</p>
+
+<h2 id="rtweet-worklow">{rtweet} worklow</h2>
+
+<blockquote>
+  <p>Note : please be sure to have last version of {rtweet} and {tidytext} (respectively 0.6 and 0.1.6)</p>
+</blockquote>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">packageVersion</span><span class="p">(</span><span class="s2">"rtweet"</span><span class="p">)</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="err">‘</span><span class="m">0.6.0</span><span class="err">’</span><span class="w">
+</span><span class="n">packageVersion</span><span class="p">(</span><span class="s2">"tidytext"</span><span class="p">)</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="err">‘</span><span class="m">0.1.6</span><span class="err">’</span><span class="w">
+</span></code></pre></div></div>
+
+<p>So, let’s try searching for 1000 tweets with the hashtag Rennes with {rtweet}.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">rtweet</span><span class="p">)</span><span class="w">
+</span><span class="n">srch</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">search_tweets</span><span class="p">(</span><span class="s2">"#Rennes"</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">)</span><span class="w">
+</span><span class="n">Searching</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">tweets...</span><span class="w">
+</span><span class="n">Finished</span><span class="w"> </span><span class="n">collecting</span><span class="w"> </span><span class="n">tweets</span><span class="o">!</span><span class="w">
+ </span><span class="n">dplyr</span><span class="o">::</span><span class="n">glimpse</span><span class="p">(</span><span class="n">srch</span><span class="p">)</span><span class="w">
+</span><span class="n">Observations</span><span class="o">:</span><span class="w"> </span><span class="m">996</span><span class="w">
+</span><span class="n">Variables</span><span class="o">:</span><span class="w"> </span><span class="m">42</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">status_id</span><span class="w">              </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="s2">"953255590951899136"</span><span class="p">,</span><span class="w"> </span><span class="s2">"953255475461677056"</span><span class="p">,</span><span class="w"> </span><span class="s2">"953254988632993792"</span><span class="p">,</span><span class="w"> </span><span class="s2">"9532549822157824...
+$ created_at             &lt;dttm&gt; 2018-01-16 13:20:18, 2018-01-16 13:19:50, 2018-01-16 13:17:54, 2018-01-16 13:17:53...
+$ user_id                &lt;chr&gt; "</span><span class="m">2737710932</span><span class="s2">", "</span><span class="m">493396070</span><span class="s2">", "</span><span class="m">276708676</span><span class="s2">", "</span><span class="m">824240805158207489</span><span class="s2">", "</span><span class="m">556902767</span><span class="s2">", "</span><span class="m">3435794</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">screen_name</span><span class="w">            </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="s2">"AtonAha"</span><span class="p">,</span><span class="w"> </span><span class="s2">"idelestre"</span><span class="p">,</span><span class="w"> </span><span class="s2">"unidiversmag"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Rennes1jour"</span><span class="p">,</span><span class="w"> </span><span class="s2">"M2bliquis"</span><span class="p">,</span><span class="w"> </span><span class="s2">"OMAddictFR"</span><span class="p">,</span><span class="w"> </span><span class="s2">"...
+$ text                   &lt;chr&gt; "</span><span class="n">RT</span><span class="w"> </span><span class="o">@</span><span class="n">Gendarmerie</span><span class="o">:</span><span class="w"> </span><span class="c1">#Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et l...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">source</span><span class="w">                 </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="s2">"Twitter Web Client"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Twitter Web Client"</span><span class="p">,</span><span class="w"> </span><span class="s2">"social unidivers"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Rennes"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Twitter ...
+$ reply_to_status_id     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+$ reply_to_user_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+$ reply_to_screen_name   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+$ is_quote               &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,...
+$ is_retweet             &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE,...
+$ favorite_count         &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0,...
+$ retweet_count          &lt;int&gt; 86, 0, 0, 0, 3, 0, 2, 4, 0, 2, 2, 46, 5, 46, 0, 46, 46, 46, 46, 1, 1, 7, 10, 0, 46,...
+$ hashtags               &lt;list&gt; [&lt;"</span><span class="n">Bretagne</span><span class="s2">", "</span><span class="n">Stups</span><span class="s2">", "</span><span class="n">Rennes</span><span class="s2">", "</span><span class="n">Brest</span><span class="s2">"&gt;, &lt;"</span><span class="n">startup</span><span class="s2">", "</span><span class="n">Rennes</span><span class="s2">"&gt;, &lt;"</span><span class="n">QUAND</span><span class="s2">", "</span><span class="n">Renne...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">symbols</span><span class="w">                </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">N...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">urls_url</span><span class="w">               </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="s2">"l.leparisien.fr/s/SS6x"</span><span class="p">,</span><span class="w"> </span><span class="s2">"unidivers.fr/quand-dieu-app…"</span><span class="p">,</span><span class="w"> </span><span class="s2">"unidivers.fr/quand...
+$ urls_t.co              &lt;list&gt; [NA, "</span><span class="n">https</span><span class="o">://</span><span class="n">t.co</span><span class="o">/</span><span class="n">nEGvrKH3Jb</span><span class="s2">", "</span><span class="n">https</span><span class="o">://</span><span class="n">t.co</span><span class="o">/</span><span class="n">QBVUlmd4DW</span><span class="s2">", "</span><span class="n">https</span><span class="o">://</span><span class="n">t.co</span><span class="o">/</span><span class="n">rGPIycM8X...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">urls_expanded_url</span><span class="w">      </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="s2">"http://l.leparisien.fr/s/SS6x"</span><span class="p">,</span><span class="w"> </span><span class="s2">"https://www.unidivers.fr/quand-dieu-apprena...
+$ media_url              &lt;list&gt; [NA, NA, "</span><span class="n">http</span><span class="o">://</span><span class="n">pbs.twimg.com</span><span class="o">/</span><span class="n">media</span><span class="o">/</span><span class="n">DTqkW5sXcAEltYO.jpg</span><span class="s2">", "</span><span class="n">http</span><span class="o">://</span><span class="n">pbs.twimg.com</span><span class="o">/</span><span class="n">m...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">media_t.co</span><span class="w">             </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="s2">"https://t.co/5bc1zrBGhh"</span><span class="p">,</span><span class="w"> </span><span class="s2">"https://t.co/ztCCVEnvHO"</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">media_expanded_url</span><span class="w">     </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="s2">"https://twitter.com/unidiversmag/status/953254988632993792/photo/1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ht...
+$ media_type             &lt;list&gt; [NA, NA, "</span><span class="n">photo</span><span class="s2">", "</span><span class="n">photo</span><span class="s2">", NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+$ ext_media_url          &lt;list&gt; [NA, NA, "</span><span class="n">http</span><span class="o">://</span><span class="n">pbs.twimg.com</span><span class="o">/</span><span class="n">media</span><span class="o">/</span><span class="n">DTqkW5sXcAEltYO.jpg</span><span class="s2">", "</span><span class="n">http</span><span class="o">://</span><span class="n">pbs.twimg.com</span><span class="o">/</span><span class="n">m...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">ext_media_t.co</span><span class="w">         </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="s2">"https://t.co/5bc1zrBGhh"</span><span class="p">,</span><span class="w"> </span><span class="s2">"https://t.co/ztCCVEnvHO"</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">ext_media_expanded_url</span><span class="w"> </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="s2">"https://twitter.com/unidiversmag/status/953254988632993792/photo/1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ht...
+$ ext_media_type         &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+$ mentions_user_id       &lt;list&gt; ["</span><span class="m">2184489764</span><span class="s2">", "</span><span class="m">38142665</span><span class="s2">", NA, NA, "</span><span class="m">863015893433028608</span><span class="s2">", NA, "</span><span class="m">2273783713</span><span class="s2">", "</span><span class="m">251269</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">mentions_screen_name</span><span class="w">   </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="s2">"Gendarmerie"</span><span class="p">,</span><span class="w"> </span><span class="s2">"le_Parisien"</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="s2">"3508CentreNord"</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="s2">"Skillo1989"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ren_mu...
+$ lang                   &lt;chr&gt; "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">it</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">", "</span><span class="n">fr</span><span class="s2">",...
+$ quoted_status_id       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+$ quoted_text            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+$ retweet_status_id      &lt;chr&gt; "</span><span class="m">952976442488389636</span><span class="s2">", NA, NA, NA, "</span><span class="m">953248780085874688</span><span class="s2">", NA, "</span><span class="m">953253824545873920</span><span class="s2">", "</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">retweet_text</span><span class="w">           </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="err">"</span><span class="c1">#Bretagne Un trafic de #Stups démantelé par la SR de #Rennes et la BR de #Brest : ...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">place_url</span><span class="w">              </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">place_name</span><span class="w">             </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">place_full_name</span><span class="w">        </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">place_type</span><span class="w">             </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">country</span><span class="w">                </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">country_code</span><span class="w">           </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">geo_coords</span><span class="w">             </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">coords_coords</span><span class="w">          </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="n">...</span><span class="w">
+</span><span class="o">$</span><span class="w"> </span><span class="n">bbox_coords</span><span class="w">            </span><span class="o">&lt;</span><span class="n">list</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="w">
+</span></code></pre></div></div>
+
+<p>And here it is. Yes, it’s that simple: 1000 tweets in two commands (and one being <code class="highlighter-rouge">library()</code>): <strong>without specifying any oauth token</strong>.</p>
+
+<p>So now we have a tidy data.frame with the results, hashtags are in a column we can easily parse and count, as are text, mentions, and everything needed to start mining data.</p>
+
+<h3 id="quick-example">Quick example</h3>
+
+<blockquote>
+  <p>Note: the recent version of {rtweet} returns a list column, which is not handled by <code class="highlighter-rouge">unnest_tokens</code>.</p>
+</blockquote>
+
+<p>We can write a quick hashtag and sentiment analysis :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidytext</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">proustr</span><span class="p">)</span><span class="w">
+
+</span><span class="n">as_vector</span><span class="p">(</span><span class="n">srch</span><span class="o">$</span><span class="n">hashtags</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+          </span><span class="n">table</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+          </span><span class="n">as.data.frame</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+          </span><span class="n">arrange</span><span class="p">(</span><span class="n">Freq</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+          </span><span class="n">top_n</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w">
+</span><span class="n">Selecting</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">Freq</span><span class="w">
+         </span><span class="n">.</span><span class="w"> </span><span class="n">Freq</span><span class="w">
+</span><span class="m">1</span><span class="w">    </span><span class="n">Stups</span><span class="w">   </span><span class="m">76</span><span class="w">
+</span><span class="m">2</span><span class="w">    </span><span class="n">Brest</span><span class="w">   </span><span class="m">82</span><span class="w">
+</span><span class="m">3</span><span class="w"> </span><span class="n">Bretagne</span><span class="w">   </span><span class="m">88</span><span class="w">
+</span><span class="m">4</span><span class="w">   </span><span class="n">rennes</span><span class="w">  </span><span class="m">116</span><span class="w">
+</span><span class="m">5</span><span class="w">   </span><span class="n">Rennes</span><span class="w">  </span><span class="m">889</span><span class="w">
+
+</span><span class="n">srch</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+   </span><span class="n">unnest_tokens</span><span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+   </span><span class="n">select</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+   </span><span class="n">left_join</span><span class="p">(</span><span class="n">proust_sentiments</span><span class="p">(</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"score"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+   </span><span class="n">na.omit</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+   </span><span class="n">count</span><span class="p">(</span><span class="n">sentiment</span><span class="p">)</span><span class="w">
+</span><span class="n">Joining</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="w">
+</span><span class="c1"># A tibble: 6 x 2</span><span class="w">
+  </span><span class="n">sentiment</span><span class="w">     </span><span class="n">n</span><span class="w">
+      </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">int</span><span class="o">&gt;</span><span class="w">
+</span><span class="m">1</span><span class="w">     </span><span class="n">anger</span><span class="w">   </span><span class="m">186</span><span class="w">
+</span><span class="m">2</span><span class="w">   </span><span class="n">disgust</span><span class="w">   </span><span class="m">135</span><span class="w">
+</span><span class="m">3</span><span class="w">      </span><span class="n">fear</span><span class="w">   </span><span class="m">279</span><span class="w">
+</span><span class="m">4</span><span class="w">       </span><span class="n">joy</span><span class="w">   </span><span class="m">125</span><span class="w">
+</span><span class="m">5</span><span class="w">   </span><span class="n">sadness</span><span class="w">   </span><span class="m">244</span><span class="w">
+</span><span class="m">6</span><span class="w">  </span><span class="n">surprise</span><span class="w">   </span><span class="m">189</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Of course {rtweet} is full of other features you can try. But that blog post was more of an introduction, and I hope I’ve convinced you to download and use this amazing package!</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#r" class="page__taxonomy-item" rel="tag">r</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#rtweet" class="page__taxonomy-item" rel="tag">rtweet</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-11-01T00:00:00+01:00">November 01, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Collecting+tweets+with+R+and+%7Brtweet%7D%20http%3A%2F%2Flocalhost%3A4000%2Fcollect-rtweet%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fcollect-rtweet%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fcollect-rtweet%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcollect-rtweet%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/proustr-0-2-0/" class="pagination--pager" title="{proustr} 0.2.0 is on CRAN
+">←</a>
+    
+    
+      <a href="/coming-budapest/" class="pagination--pager" title="Budapest Here I Come
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/collect-rtweet/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/rtweet"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

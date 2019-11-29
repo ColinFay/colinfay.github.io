@@ -1,0 +1,868 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>A Crazy Little Thing Called {purrr} - Part 2 : Text Wrangling - Colin Fay</title>
+<meta name="description" content="Yes, this title is still a Queen reference.I’ve recently been exchanging DM with Rémi (who writes cool stuffs about data science and SEO on his blog, so here’s some Google Juice for him) who was looking for a way to turn this kind of dataframe:            Keywords                  articlexyz for sale              cheap articlexyz              razor articlexyz              articlexyz walmart              articlexyz games              articlexyz amazon              bluetooth articlexyz              how much is a articlexyz              articlexyz for sale cheap      Into something like :            Keywords                  for sale              cheap              razor              walmart              games              amazon              bluetooth              how much is a              for sale cheap      If ever you’ve been playing with adwords, this may look like something you’re familiar with (I guess this is what Rémi has been playing with).Anyway, the question then is how to write a function that can remove the n most common words out of this data.frame. As you know, I love {purrr}, and this is the kind of exercise I just can’t resist to solve.So basically, here’s the how-to.A little bit of contextThe first thing that came to my mind there (there might be some more straightforward ways to do this, feel free to comment at the bottom of this article if you have another approach) is to build a regex and str_replace the matching patterns (i.e. the top words) with a blank.This is kind of easy if you’ve just want to remove the most common one. But I wanted to have a more flexible function which could remove as many common words as I wanted. More or less, something that takes a n arg and remove the n most commons.Basically, in this example, the most common word is articlexyz, so I want a function that can remove just this one, or articlexyz and the second most common, etc.Oh, and of course, with tidy eval.library(tidyverse)library(magrittr)library(tidytext)# Here&#39;s my example data.framedf &lt;- tribble(  ~Keywords,   &quot;articlexyz for sale&quot;,   &quot;cheap articlexyz for sale&quot;,   &quot;amazon articlexyz&quot;,   &quot;articlexyz walmart cheap&quot;,   &quot;articlexyz games&quot;,   &quot;articlexyz amazon&quot;,   &quot;bluetooth articlexyz&quot;,   &quot;how much is a articlexyz on amazon&quot;,   &quot;articlexyz for sale cheap&quot; )The regex builderSo, here’s how to build a regex builder of the most common words with {purrr}, {dplyr} and {tidytext}.First of all, extract the most commonconcat_commons &lt;- function(df, col, levels){  unnest_tokens(df, word, !! enquo(col)) %&gt;%    count(word) %&gt;%    anti_join(stop_words) %&gt;%    arrange(desc(n)) %&gt;%    slice(1:levels) %&gt;%     pull(word)}Nothing fancy here, just a common words extractor :concat_commons(df, Keywords, 2)[1] &quot;articlexyz&quot; &quot;amazon&quot; The regex builderThe most complex thing here is that my end result should match only words, not letter inside a word: i.e. if “a” is the most common word, articlexyz should be turned into rticlexyz, but ‘ a ’ (space-a-space) should be removed. Here, you can’t go for for space-pattern-space matching, cause “articlexyz bla bla bla” won’t match because there is no blank at the beginning. ^articlexyz$ won’t match “bla articlexyz bla bla” either, as this is a blank-word-blank pattern.So let’s be this xkcd guy :Here’s the regex put at the beginning and the end of the pattern : \\barticlexyz\\b, as \b  will match a word bundary.regex_build &lt;- function(list){  # Make sure only the words are matched  map(list, ~ paste0(&quot;\\b&quot;, .x, &quot;\\b&quot;)) %&gt;%    # Reduce everything    reduce(~ paste(.x, .y, sep = &quot;|&quot;))}So we’ve got our regex with:concat_commons(df, Keywords, 2) %&gt;%  regex_build()[1] &quot;\\barticlexyz\\b|\\bamazon\\b&quot;Let’s bulk replacebulk_replace &lt;- function(regex, vec){    map(vec, ~ stringr::str_replace_all(string = .x, pattern = regex, replacement = &quot;&quot;) ) %&gt;%    # Prevent the &quot;too many spaces&quot; to come    map(~ stringr::str_replace_all(string = .x, pattern = &quot; {2,}&quot;, replacement = &quot; &quot;))}reg &lt;- concat_commons(df, Keywords, 2) %&gt;%  regex_build() bulk_replace(reg, df$Keywords)[[1]][1] &quot; for sale&quot;[[2]][1] &quot;cheap for sale&quot;[[3]][1] &quot; &quot;[[4]][1] &quot; walmart cheap&quot;....The not-so-regex solutionIf you’re not that into regex (nobody’s perfect), let’s do something with less regex and more {purrr}: string split, map, reduce.regex_build &lt;- function(list){    reduce(list, ~ paste(.x, .y, sep = &quot;|&quot;))}Simple regex here:concat_commons(df, Keywords, 2) %&gt;%  regex_build()[1] &quot;articlexyz|amazon&quot;&quot;Bulk replace this with stringsplitHere the trick to forget this “beginning end whitespace” nightmare (not a nightmare, really) is to split and test every element against the regex, so split, replace, unsplit.To do the “unsplit”, as the result is a list of depth one, we need to modify_depth:bulk_replace &lt;- function(regex, vec){  str_split(vec, &quot; &quot;) %&gt;%    map(~ stringr::str_replace_all(string = .x, pattern = regex, replacement = &quot;&quot;) )  %&gt;%    # We need to modify at the first level     modify_depth(1, ~ reduce(.x, ~ paste(.x, .y, sep = &quot; &quot;))) %&gt;%    # Prevent the &quot;too many spaces&quot; to come    map(~ stringr::str_replace_all(string = .x, pattern = &quot; {2,}&quot;, replacement = &quot; &quot;))}reg &lt;- concat_commons(df, Keywords, 2) %&gt;%  regex_build() bulk_replace(reg, df$Keywords)[[1]][1] &quot; for sale&quot;[[2]][1] &quot;cheap for sale&quot;[[3]][1] &quot; &quot;[[4]][1] &quot; walmart cheap&quot;....Yes. The very same result.Remove commonsOk let’s wrap this in a function :remove_commons &lt;- function(df, input, output, levels){  input &lt;- enquo(input)  output &lt;- quo_name(enquo(output))  most_common &lt;- concat_commons(df, !! input, levels)  df %&gt;%    mutate(!! output := bulk_replace( regex_build(most_common), !! input )) %&gt;%    unnest()}So here, we’ve got a function that takes a data.frame, the name of the input and output columns, and the number of common words to remove. Let’s try this:remove_commons(df, Keywords, group, 2)# A tibble: 9 x 2                            Keywords             group                               &lt;chr&gt;             &lt;chr&gt;1                articlexyz for sale          for sale2          cheap articlexyz for sale    cheap for sale3                  amazon articlexyz                  4           articlexyz walmart cheap     walmart cheap5                   articlexyz games             games6                  articlexyz amazon                  7               bluetooth articlexyz        bluetooth 8 how much is a articlexyz on amazon how much is a on 9          articlexyz for sale cheap    for sale cheap🎉 !!Of course we’ve got some blank shere, as two observations are composed of the most common words. Let’s count:remove_commons(df, Keywords, group, 1) %&gt;%  unnest_tokens(word, group) %&gt;%  anti_join(stop_words) %&gt;%  count(word, sort = TRUE) A tibble: 6 x 2       word     n      &lt;chr&gt; &lt;int&gt;1    amazon     32     cheap     33      sale     34 bluetooth     15     games     16   walmart     1LabelsSo now, maybe we want to assign each observation to its “most common label but not the n first”, that is to say, I want “articlexyz for sale on amazon” to be assigned a label “sale” if this is the most common after the n, or amazon, etc.So here comes detect() :which_label &lt;- function(vec, list) {  detect(list, ~ grepl(pattern = .x, vec)) %||% NA }# List of common words :commons_words &lt;- concat_commons(df, Keywords, 2)df %&gt;%   mutate(group = map_chr(df$Keywords,                          ~ which_label(.x, common_words$group))) # A tibble: 9 x 2                            Keywords     group                               &lt;chr&gt;     &lt;chr&gt;1                articlexyz for sale      sale2          cheap articlexyz for sale     cheap3                  amazon articlexyz    amazon4           articlexyz walmart cheap     cheap5                   articlexyz games     games6                  articlexyz amazon    amazon7               bluetooth articlexyz bluetooth8 how much is a articlexyz on amazon    amazon9          articlexyz for sale cheap     cheapAnd now, let’s sell some Google Ads!">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="A Crazy Little Thing Called {purrr} - Part 2 : Text Wrangling">
+<meta property="og:url" content="http://localhost:4000/purrr-text-wrangling/">
+
+
+  <meta property="og:description" content="Yes, this title is still a Queen reference.I’ve recently been exchanging DM with Rémi (who writes cool stuffs about data science and SEO on his blog, so here’s some Google Juice for him) who was looking for a way to turn this kind of dataframe:            Keywords                  articlexyz for sale              cheap articlexyz              razor articlexyz              articlexyz walmart              articlexyz games              articlexyz amazon              bluetooth articlexyz              how much is a articlexyz              articlexyz for sale cheap      Into something like :            Keywords                  for sale              cheap              razor              walmart              games              amazon              bluetooth              how much is a              for sale cheap      If ever you’ve been playing with adwords, this may look like something you’re familiar with (I guess this is what Rémi has been playing with).Anyway, the question then is how to write a function that can remove the n most common words out of this data.frame. As you know, I love {purrr}, and this is the kind of exercise I just can’t resist to solve.So basically, here’s the how-to.A little bit of contextThe first thing that came to my mind there (there might be some more straightforward ways to do this, feel free to comment at the bottom of this article if you have another approach) is to build a regex and str_replace the matching patterns (i.e. the top words) with a blank.This is kind of easy if you’ve just want to remove the most common one. But I wanted to have a more flexible function which could remove as many common words as I wanted. More or less, something that takes a n arg and remove the n most commons.Basically, in this example, the most common word is articlexyz, so I want a function that can remove just this one, or articlexyz and the second most common, etc.Oh, and of course, with tidy eval.library(tidyverse)library(magrittr)library(tidytext)# Here&#39;s my example data.framedf &lt;- tribble(  ~Keywords,   &quot;articlexyz for sale&quot;,   &quot;cheap articlexyz for sale&quot;,   &quot;amazon articlexyz&quot;,   &quot;articlexyz walmart cheap&quot;,   &quot;articlexyz games&quot;,   &quot;articlexyz amazon&quot;,   &quot;bluetooth articlexyz&quot;,   &quot;how much is a articlexyz on amazon&quot;,   &quot;articlexyz for sale cheap&quot; )The regex builderSo, here’s how to build a regex builder of the most common words with {purrr}, {dplyr} and {tidytext}.First of all, extract the most commonconcat_commons &lt;- function(df, col, levels){  unnest_tokens(df, word, !! enquo(col)) %&gt;%    count(word) %&gt;%    anti_join(stop_words) %&gt;%    arrange(desc(n)) %&gt;%    slice(1:levels) %&gt;%     pull(word)}Nothing fancy here, just a common words extractor :concat_commons(df, Keywords, 2)[1] &quot;articlexyz&quot; &quot;amazon&quot; The regex builderThe most complex thing here is that my end result should match only words, not letter inside a word: i.e. if “a” is the most common word, articlexyz should be turned into rticlexyz, but ‘ a ’ (space-a-space) should be removed. Here, you can’t go for for space-pattern-space matching, cause “articlexyz bla bla bla” won’t match because there is no blank at the beginning. ^articlexyz$ won’t match “bla articlexyz bla bla” either, as this is a blank-word-blank pattern.So let’s be this xkcd guy :Here’s the regex put at the beginning and the end of the pattern : \\barticlexyz\\b, as \b  will match a word bundary.regex_build &lt;- function(list){  # Make sure only the words are matched  map(list, ~ paste0(&quot;\\b&quot;, .x, &quot;\\b&quot;)) %&gt;%    # Reduce everything    reduce(~ paste(.x, .y, sep = &quot;|&quot;))}So we’ve got our regex with:concat_commons(df, Keywords, 2) %&gt;%  regex_build()[1] &quot;\\barticlexyz\\b|\\bamazon\\b&quot;Let’s bulk replacebulk_replace &lt;- function(regex, vec){    map(vec, ~ stringr::str_replace_all(string = .x, pattern = regex, replacement = &quot;&quot;) ) %&gt;%    # Prevent the &quot;too many spaces&quot; to come    map(~ stringr::str_replace_all(string = .x, pattern = &quot; {2,}&quot;, replacement = &quot; &quot;))}reg &lt;- concat_commons(df, Keywords, 2) %&gt;%  regex_build() bulk_replace(reg, df$Keywords)[[1]][1] &quot; for sale&quot;[[2]][1] &quot;cheap for sale&quot;[[3]][1] &quot; &quot;[[4]][1] &quot; walmart cheap&quot;....The not-so-regex solutionIf you’re not that into regex (nobody’s perfect), let’s do something with less regex and more {purrr}: string split, map, reduce.regex_build &lt;- function(list){    reduce(list, ~ paste(.x, .y, sep = &quot;|&quot;))}Simple regex here:concat_commons(df, Keywords, 2) %&gt;%  regex_build()[1] &quot;articlexyz|amazon&quot;&quot;Bulk replace this with stringsplitHere the trick to forget this “beginning end whitespace” nightmare (not a nightmare, really) is to split and test every element against the regex, so split, replace, unsplit.To do the “unsplit”, as the result is a list of depth one, we need to modify_depth:bulk_replace &lt;- function(regex, vec){  str_split(vec, &quot; &quot;) %&gt;%    map(~ stringr::str_replace_all(string = .x, pattern = regex, replacement = &quot;&quot;) )  %&gt;%    # We need to modify at the first level     modify_depth(1, ~ reduce(.x, ~ paste(.x, .y, sep = &quot; &quot;))) %&gt;%    # Prevent the &quot;too many spaces&quot; to come    map(~ stringr::str_replace_all(string = .x, pattern = &quot; {2,}&quot;, replacement = &quot; &quot;))}reg &lt;- concat_commons(df, Keywords, 2) %&gt;%  regex_build() bulk_replace(reg, df$Keywords)[[1]][1] &quot; for sale&quot;[[2]][1] &quot;cheap for sale&quot;[[3]][1] &quot; &quot;[[4]][1] &quot; walmart cheap&quot;....Yes. The very same result.Remove commonsOk let’s wrap this in a function :remove_commons &lt;- function(df, input, output, levels){  input &lt;- enquo(input)  output &lt;- quo_name(enquo(output))  most_common &lt;- concat_commons(df, !! input, levels)  df %&gt;%    mutate(!! output := bulk_replace( regex_build(most_common), !! input )) %&gt;%    unnest()}So here, we’ve got a function that takes a data.frame, the name of the input and output columns, and the number of common words to remove. Let’s try this:remove_commons(df, Keywords, group, 2)# A tibble: 9 x 2                            Keywords             group                               &lt;chr&gt;             &lt;chr&gt;1                articlexyz for sale          for sale2          cheap articlexyz for sale    cheap for sale3                  amazon articlexyz                  4           articlexyz walmart cheap     walmart cheap5                   articlexyz games             games6                  articlexyz amazon                  7               bluetooth articlexyz        bluetooth 8 how much is a articlexyz on amazon how much is a on 9          articlexyz for sale cheap    for sale cheap🎉 !!Of course we’ve got some blank shere, as two observations are composed of the most common words. Let’s count:remove_commons(df, Keywords, group, 1) %&gt;%  unnest_tokens(word, group) %&gt;%  anti_join(stop_words) %&gt;%  count(word, sort = TRUE) A tibble: 6 x 2       word     n      &lt;chr&gt; &lt;int&gt;1    amazon     32     cheap     33      sale     34 bluetooth     15     games     16   walmart     1LabelsSo now, maybe we want to assign each observation to its “most common label but not the n first”, that is to say, I want “articlexyz for sale on amazon” to be assigned a label “sale” if this is the most common after the n, or amazon, etc.So here comes detect() :which_label &lt;- function(vec, list) {  detect(list, ~ grepl(pattern = .x, vec)) %||% NA }# List of common words :commons_words &lt;- concat_commons(df, Keywords, 2)df %&gt;%   mutate(group = map_chr(df$Keywords,                          ~ which_label(.x, common_words$group))) # A tibble: 9 x 2                            Keywords     group                               &lt;chr&gt;     &lt;chr&gt;1                articlexyz for sale      sale2          cheap articlexyz for sale     cheap3                  amazon articlexyz    amazon4           articlexyz walmart cheap     cheap5                   articlexyz games     games6                  articlexyz amazon    amazon7               bluetooth articlexyz bluetooth8 how much is a articlexyz on amazon    amazon9          articlexyz for sale cheap     cheapAnd now, let’s sell some Google Ads!">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="A Crazy Little Thing Called {purrr} - Part 2 : Text Wrangling">
+  <meta name="twitter:description" content="Yes, this title is still a Queen reference.I’ve recently been exchanging DM with Rémi (who writes cool stuffs about data science and SEO on his blog, so here’s some Google Juice for him) who was looking for a way to turn this kind of dataframe:            Keywords                  articlexyz for sale              cheap articlexyz              razor articlexyz              articlexyz walmart              articlexyz games              articlexyz amazon              bluetooth articlexyz              how much is a articlexyz              articlexyz for sale cheap      Into something like :            Keywords                  for sale              cheap              razor              walmart              games              amazon              bluetooth              how much is a              for sale cheap      If ever you’ve been playing with adwords, this may look like something you’re familiar with (I guess this is what Rémi has been playing with).Anyway, the question then is how to write a function that can remove the n most common words out of this data.frame. As you know, I love {purrr}, and this is the kind of exercise I just can’t resist to solve.So basically, here’s the how-to.A little bit of contextThe first thing that came to my mind there (there might be some more straightforward ways to do this, feel free to comment at the bottom of this article if you have another approach) is to build a regex and str_replace the matching patterns (i.e. the top words) with a blank.This is kind of easy if you’ve just want to remove the most common one. But I wanted to have a more flexible function which could remove as many common words as I wanted. More or less, something that takes a n arg and remove the n most commons.Basically, in this example, the most common word is articlexyz, so I want a function that can remove just this one, or articlexyz and the second most common, etc.Oh, and of course, with tidy eval.library(tidyverse)library(magrittr)library(tidytext)# Here&#39;s my example data.framedf &lt;- tribble(  ~Keywords,   &quot;articlexyz for sale&quot;,   &quot;cheap articlexyz for sale&quot;,   &quot;amazon articlexyz&quot;,   &quot;articlexyz walmart cheap&quot;,   &quot;articlexyz games&quot;,   &quot;articlexyz amazon&quot;,   &quot;bluetooth articlexyz&quot;,   &quot;how much is a articlexyz on amazon&quot;,   &quot;articlexyz for sale cheap&quot; )The regex builderSo, here’s how to build a regex builder of the most common words with {purrr}, {dplyr} and {tidytext}.First of all, extract the most commonconcat_commons &lt;- function(df, col, levels){  unnest_tokens(df, word, !! enquo(col)) %&gt;%    count(word) %&gt;%    anti_join(stop_words) %&gt;%    arrange(desc(n)) %&gt;%    slice(1:levels) %&gt;%     pull(word)}Nothing fancy here, just a common words extractor :concat_commons(df, Keywords, 2)[1] &quot;articlexyz&quot; &quot;amazon&quot; The regex builderThe most complex thing here is that my end result should match only words, not letter inside a word: i.e. if “a” is the most common word, articlexyz should be turned into rticlexyz, but ‘ a ’ (space-a-space) should be removed. Here, you can’t go for for space-pattern-space matching, cause “articlexyz bla bla bla” won’t match because there is no blank at the beginning. ^articlexyz$ won’t match “bla articlexyz bla bla” either, as this is a blank-word-blank pattern.So let’s be this xkcd guy :Here’s the regex put at the beginning and the end of the pattern : \\barticlexyz\\b, as \b  will match a word bundary.regex_build &lt;- function(list){  # Make sure only the words are matched  map(list, ~ paste0(&quot;\\b&quot;, .x, &quot;\\b&quot;)) %&gt;%    # Reduce everything    reduce(~ paste(.x, .y, sep = &quot;|&quot;))}So we’ve got our regex with:concat_commons(df, Keywords, 2) %&gt;%  regex_build()[1] &quot;\\barticlexyz\\b|\\bamazon\\b&quot;Let’s bulk replacebulk_replace &lt;- function(regex, vec){    map(vec, ~ stringr::str_replace_all(string = .x, pattern = regex, replacement = &quot;&quot;) ) %&gt;%    # Prevent the &quot;too many spaces&quot; to come    map(~ stringr::str_replace_all(string = .x, pattern = &quot; {2,}&quot;, replacement = &quot; &quot;))}reg &lt;- concat_commons(df, Keywords, 2) %&gt;%  regex_build() bulk_replace(reg, df$Keywords)[[1]][1] &quot; for sale&quot;[[2]][1] &quot;cheap for sale&quot;[[3]][1] &quot; &quot;[[4]][1] &quot; walmart cheap&quot;....The not-so-regex solutionIf you’re not that into regex (nobody’s perfect), let’s do something with less regex and more {purrr}: string split, map, reduce.regex_build &lt;- function(list){    reduce(list, ~ paste(.x, .y, sep = &quot;|&quot;))}Simple regex here:concat_commons(df, Keywords, 2) %&gt;%  regex_build()[1] &quot;articlexyz|amazon&quot;&quot;Bulk replace this with stringsplitHere the trick to forget this “beginning end whitespace” nightmare (not a nightmare, really) is to split and test every element against the regex, so split, replace, unsplit.To do the “unsplit”, as the result is a list of depth one, we need to modify_depth:bulk_replace &lt;- function(regex, vec){  str_split(vec, &quot; &quot;) %&gt;%    map(~ stringr::str_replace_all(string = .x, pattern = regex, replacement = &quot;&quot;) )  %&gt;%    # We need to modify at the first level     modify_depth(1, ~ reduce(.x, ~ paste(.x, .y, sep = &quot; &quot;))) %&gt;%    # Prevent the &quot;too many spaces&quot; to come    map(~ stringr::str_replace_all(string = .x, pattern = &quot; {2,}&quot;, replacement = &quot; &quot;))}reg &lt;- concat_commons(df, Keywords, 2) %&gt;%  regex_build() bulk_replace(reg, df$Keywords)[[1]][1] &quot; for sale&quot;[[2]][1] &quot;cheap for sale&quot;[[3]][1] &quot; &quot;[[4]][1] &quot; walmart cheap&quot;....Yes. The very same result.Remove commonsOk let’s wrap this in a function :remove_commons &lt;- function(df, input, output, levels){  input &lt;- enquo(input)  output &lt;- quo_name(enquo(output))  most_common &lt;- concat_commons(df, !! input, levels)  df %&gt;%    mutate(!! output := bulk_replace( regex_build(most_common), !! input )) %&gt;%    unnest()}So here, we’ve got a function that takes a data.frame, the name of the input and output columns, and the number of common words to remove. Let’s try this:remove_commons(df, Keywords, group, 2)# A tibble: 9 x 2                            Keywords             group                               &lt;chr&gt;             &lt;chr&gt;1                articlexyz for sale          for sale2          cheap articlexyz for sale    cheap for sale3                  amazon articlexyz                  4           articlexyz walmart cheap     walmart cheap5                   articlexyz games             games6                  articlexyz amazon                  7               bluetooth articlexyz        bluetooth 8 how much is a articlexyz on amazon how much is a on 9          articlexyz for sale cheap    for sale cheap🎉 !!Of course we’ve got some blank shere, as two observations are composed of the most common words. Let’s count:remove_commons(df, Keywords, group, 1) %&gt;%  unnest_tokens(word, group) %&gt;%  anti_join(stop_words) %&gt;%  count(word, sort = TRUE) A tibble: 6 x 2       word     n      &lt;chr&gt; &lt;int&gt;1    amazon     32     cheap     33      sale     34 bluetooth     15     games     16   walmart     1LabelsSo now, maybe we want to assign each observation to its “most common label but not the n first”, that is to say, I want “articlexyz for sale on amazon” to be assigned a label “sale” if this is the most common after the n, or amazon, etc.So here comes detect() :which_label &lt;- function(vec, list) {  detect(list, ~ grepl(pattern = .x, vec)) %||% NA }# List of common words :commons_words &lt;- concat_commons(df, Keywords, 2)df %&gt;%   mutate(group = map_chr(df$Keywords,                          ~ which_label(.x, common_words$group))) # A tibble: 9 x 2                            Keywords     group                               &lt;chr&gt;     &lt;chr&gt;1                articlexyz for sale      sale2          cheap articlexyz for sale     cheap3                  amazon articlexyz    amazon4           articlexyz walmart cheap     cheap5                   articlexyz games     games6                  articlexyz amazon    amazon7               bluetooth articlexyz bluetooth8 how much is a articlexyz on amazon    amazon9          articlexyz for sale cheap     cheapAnd now, let’s sell some Google Ads!">
+  <meta name="twitter:url" content="http://localhost:4000/purrr-text-wrangling/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-11-29T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/purrr-text-wrangling/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="A Crazy Little Thing Called {purrr} - Part 2 : Text Wrangling">
+    <meta itemprop="description" content="Yes, this title is still a Queen reference.I’ve recently been exchanging DM with Rémi (who writes cool stuffs about data science and SEO on his blog, so here’s some Google Juice for him) who was looking for a way to turn this kind of dataframe:            Keywords                  articlexyz for sale              cheap articlexyz              razor articlexyz              articlexyz walmart              articlexyz games              articlexyz amazon              bluetooth articlexyz              how much is a articlexyz              articlexyz for sale cheap      Into something like :            Keywords                  for sale              cheap              razor              walmart              games              amazon              bluetooth              how much is a              for sale cheap      If ever you’ve been playing with adwords, this may look like something you’re familiar with (I guess this is what Rémi has been playing with).Anyway, the question then is how to write a function that can remove the n most common words out of this data.frame. As you know, I love {purrr}, and this is the kind of exercise I just can’t resist to solve.So basically, here’s the how-to.A little bit of contextThe first thing that came to my mind there (there might be some more straightforward ways to do this, feel free to comment at the bottom of this article if you have another approach) is to build a regex and str_replace the matching patterns (i.e. the top words) with a blank.This is kind of easy if you’ve just want to remove the most common one. But I wanted to have a more flexible function which could remove as many common words as I wanted. More or less, something that takes a n arg and remove the n most commons.Basically, in this example, the most common word is articlexyz, so I want a function that can remove just this one, or articlexyz and the second most common, etc.Oh, and of course, with tidy eval.library(tidyverse)library(magrittr)library(tidytext)# Here&#39;s my example data.framedf &lt;- tribble(  ~Keywords,   &quot;articlexyz for sale&quot;,   &quot;cheap articlexyz for sale&quot;,   &quot;amazon articlexyz&quot;,   &quot;articlexyz walmart cheap&quot;,   &quot;articlexyz games&quot;,   &quot;articlexyz amazon&quot;,   &quot;bluetooth articlexyz&quot;,   &quot;how much is a articlexyz on amazon&quot;,   &quot;articlexyz for sale cheap&quot; )The regex builderSo, here’s how to build a regex builder of the most common words with {purrr}, {dplyr} and {tidytext}.First of all, extract the most commonconcat_commons &lt;- function(df, col, levels){  unnest_tokens(df, word, !! enquo(col)) %&gt;%    count(word) %&gt;%    anti_join(stop_words) %&gt;%    arrange(desc(n)) %&gt;%    slice(1:levels) %&gt;%     pull(word)}Nothing fancy here, just a common words extractor :concat_commons(df, Keywords, 2)[1] &quot;articlexyz&quot; &quot;amazon&quot; The regex builderThe most complex thing here is that my end result should match only words, not letter inside a word: i.e. if “a” is the most common word, articlexyz should be turned into rticlexyz, but ‘ a ’ (space-a-space) should be removed. Here, you can’t go for for space-pattern-space matching, cause “articlexyz bla bla bla” won’t match because there is no blank at the beginning. ^articlexyz$ won’t match “bla articlexyz bla bla” either, as this is a blank-word-blank pattern.So let’s be this xkcd guy :Here’s the regex put at the beginning and the end of the pattern : \\barticlexyz\\b, as \b  will match a word bundary.regex_build &lt;- function(list){  # Make sure only the words are matched  map(list, ~ paste0(&quot;\\b&quot;, .x, &quot;\\b&quot;)) %&gt;%    # Reduce everything    reduce(~ paste(.x, .y, sep = &quot;|&quot;))}So we’ve got our regex with:concat_commons(df, Keywords, 2) %&gt;%  regex_build()[1] &quot;\\barticlexyz\\b|\\bamazon\\b&quot;Let’s bulk replacebulk_replace &lt;- function(regex, vec){    map(vec, ~ stringr::str_replace_all(string = .x, pattern = regex, replacement = &quot;&quot;) ) %&gt;%    # Prevent the &quot;too many spaces&quot; to come    map(~ stringr::str_replace_all(string = .x, pattern = &quot; {2,}&quot;, replacement = &quot; &quot;))}reg &lt;- concat_commons(df, Keywords, 2) %&gt;%  regex_build() bulk_replace(reg, df$Keywords)[[1]][1] &quot; for sale&quot;[[2]][1] &quot;cheap for sale&quot;[[3]][1] &quot; &quot;[[4]][1] &quot; walmart cheap&quot;....The not-so-regex solutionIf you’re not that into regex (nobody’s perfect), let’s do something with less regex and more {purrr}: string split, map, reduce.regex_build &lt;- function(list){    reduce(list, ~ paste(.x, .y, sep = &quot;|&quot;))}Simple regex here:concat_commons(df, Keywords, 2) %&gt;%  regex_build()[1] &quot;articlexyz|amazon&quot;&quot;Bulk replace this with stringsplitHere the trick to forget this “beginning end whitespace” nightmare (not a nightmare, really) is to split and test every element against the regex, so split, replace, unsplit.To do the “unsplit”, as the result is a list of depth one, we need to modify_depth:bulk_replace &lt;- function(regex, vec){  str_split(vec, &quot; &quot;) %&gt;%    map(~ stringr::str_replace_all(string = .x, pattern = regex, replacement = &quot;&quot;) )  %&gt;%    # We need to modify at the first level     modify_depth(1, ~ reduce(.x, ~ paste(.x, .y, sep = &quot; &quot;))) %&gt;%    # Prevent the &quot;too many spaces&quot; to come    map(~ stringr::str_replace_all(string = .x, pattern = &quot; {2,}&quot;, replacement = &quot; &quot;))}reg &lt;- concat_commons(df, Keywords, 2) %&gt;%  regex_build() bulk_replace(reg, df$Keywords)[[1]][1] &quot; for sale&quot;[[2]][1] &quot;cheap for sale&quot;[[3]][1] &quot; &quot;[[4]][1] &quot; walmart cheap&quot;....Yes. The very same result.Remove commonsOk let’s wrap this in a function :remove_commons &lt;- function(df, input, output, levels){  input &lt;- enquo(input)  output &lt;- quo_name(enquo(output))  most_common &lt;- concat_commons(df, !! input, levels)  df %&gt;%    mutate(!! output := bulk_replace( regex_build(most_common), !! input )) %&gt;%    unnest()}So here, we’ve got a function that takes a data.frame, the name of the input and output columns, and the number of common words to remove. Let’s try this:remove_commons(df, Keywords, group, 2)# A tibble: 9 x 2                            Keywords             group                               &lt;chr&gt;             &lt;chr&gt;1                articlexyz for sale          for sale2          cheap articlexyz for sale    cheap for sale3                  amazon articlexyz                  4           articlexyz walmart cheap     walmart cheap5                   articlexyz games             games6                  articlexyz amazon                  7               bluetooth articlexyz        bluetooth 8 how much is a articlexyz on amazon how much is a on 9          articlexyz for sale cheap    for sale cheap🎉 !!Of course we’ve got some blank shere, as two observations are composed of the most common words. Let’s count:remove_commons(df, Keywords, group, 1) %&gt;%  unnest_tokens(word, group) %&gt;%  anti_join(stop_words) %&gt;%  count(word, sort = TRUE) A tibble: 6 x 2       word     n      &lt;chr&gt; &lt;int&gt;1    amazon     32     cheap     33      sale     34 bluetooth     15     games     16   walmart     1LabelsSo now, maybe we want to assign each observation to its “most common label but not the n first”, that is to say, I want “articlexyz for sale on amazon” to be assigned a label “sale” if this is the most common after the n, or amazon, etc.So here comes detect() :which_label &lt;- function(vec, list) {  detect(list, ~ grepl(pattern = .x, vec)) %||% NA }# List of common words :commons_words &lt;- concat_commons(df, Keywords, 2)df %&gt;%   mutate(group = map_chr(df$Keywords,                          ~ which_label(.x, common_words$group))) # A tibble: 9 x 2                            Keywords     group                               &lt;chr&gt;     &lt;chr&gt;1                articlexyz for sale      sale2          cheap articlexyz for sale     cheap3                  amazon articlexyz    amazon4           articlexyz walmart cheap     cheap5                   articlexyz games     games6                  articlexyz amazon    amazon7               bluetooth articlexyz bluetooth8 how much is a articlexyz on amazon    amazon9          articlexyz for sale cheap     cheapAnd now, let’s sell some Google Ads!">
+    <meta itemprop="datePublished" content="November 29, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">A Crazy Little Thing Called {purrr} - Part 2 : Text Wrangling
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  5 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Yes, this title is still a Queen reference.</p>
+
+<p>I’ve recently been exchanging DM with Rémi (who writes cool stuffs about data science and SEO on his blog, so here’s some <a href="https://remibacha.com/">Google Juice</a> for him) who was looking for a way to turn this kind of dataframe:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Keywords</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">articlexyz for sale</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">cheap articlexyz</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">razor articlexyz</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">articlexyz walmart</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">articlexyz games</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">articlexyz amazon</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">bluetooth articlexyz</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">how much is a articlexyz</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">articlexyz for sale cheap</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Into something like :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Keywords</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">for sale</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">cheap</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">razor</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">walmart</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">games</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">amazon</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">bluetooth</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">how much is a</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">for sale cheap</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If ever you’ve been playing with adwords, this may look like something you’re familiar with (I guess this is what Rémi has been playing with).</p>
+
+<p>Anyway, the question then is how to write a function that can remove the n most common words out of this data.frame. As you know, I love {purrr}, and this is the kind of exercise I just can’t resist to solve.</p>
+
+<p>So basically, here’s the how-to.</p>
+
+<h2 id="a-little-bit-of-context">A little bit of context</h2>
+
+<p>The first thing that came to my mind there (there might be some more straightforward ways to do this, feel free to comment at the bottom of this article if you have another approach) is to build a regex and <code class="highlighter-rouge">str_replace</code> the matching patterns (i.e. the top words) with a blank.</p>
+
+<p>This is kind of easy if you’ve just want to remove the most common one. But I wanted to have a more flexible function which could remove as many common words as I wanted. More or less, something that takes a n arg and remove the n most commons.</p>
+
+<p>Basically, in this example, the most common word is articlexyz, so I want a function that can remove just this one, or articlexyz and the second most common, etc.</p>
+
+<p>Oh, and of course, with tidy eval.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">magrittr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidytext</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Here's my example data.frame</span><span class="w">
+</span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tribble</span><span class="p">(</span><span class="w">
+  </span><span class="o">~</span><span class="n">Keywords</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"articlexyz for sale"</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"cheap articlexyz for sale"</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"amazon articlexyz"</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"articlexyz walmart cheap"</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"articlexyz games"</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"articlexyz amazon"</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"bluetooth articlexyz"</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"how much is a articlexyz on amazon"</span><span class="p">,</span><span class="w"> 
+  </span><span class="s2">"articlexyz for sale cheap"</span><span class="w"> 
+</span><span class="p">)</span><span class="w">
+
+</span></code></pre></div></div>
+
+<h2 id="the-regex-builder">The regex builder</h2>
+
+<p>So, here’s how to build a regex builder of the most common words with {purrr}, {dplyr} and {tidytext}.</p>
+
+<h3 id="first-of-all-extract-the-most-common">First of all, extract the most common</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">concat_commons</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="p">){</span><span class="w">
+  </span><span class="n">unnest_tokens</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">word</span><span class="p">,</span><span class="w"> </span><span class="o">!!</span><span class="w"> </span><span class="n">enquo</span><span class="p">(</span><span class="n">col</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">count</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">anti_join</span><span class="p">(</span><span class="n">stop_words</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">arrange</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="n">n</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">slice</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="n">levels</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">pull</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span></code></pre></div></div>
+
+<p>Nothing fancy here, just a common words extractor :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">concat_commons</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Keywords</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"articlexyz"</span><span class="w"> </span><span class="s2">"amazon"</span><span class="w"> 
+</span></code></pre></div></div>
+
+<h3 id="the-regex-builder-1">The regex builder</h3>
+
+<p>The most complex thing here is that my end result should match only words, not letter inside a word: i.e. if “a” is the most common word, <code class="highlighter-rouge">articlexyz</code> should be turned into <code class="highlighter-rouge">rticlexyz</code>, but ‘<code class="highlighter-rouge"> a </code>’ (space-a-space) should be removed. Here, you can’t go for for space-pattern-space matching, cause “articlexyz bla bla bla” won’t match because there is no blank at the beginning. ^articlexyz$ won’t match “bla articlexyz bla bla” either, as this is a blank-word-blank pattern.</p>
+
+<p>So let’s be this xkcd guy :</p>
+
+<p><img src="https://imgs.xkcd.com/comics/regular_expressions.png" alt="" /></p>
+
+<p>Here’s the regex put at the beginning and the end of the pattern : <code class="highlighter-rouge">\\barticlexyz\\b</code>, as <code class="highlighter-rouge">\b</code>  will match a word bundary.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">regex_build</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">list</span><span class="p">){</span><span class="w">
+  </span><span class="c1"># Make sure only the words are matched</span><span class="w">
+  </span><span class="n">map</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"\\b"</span><span class="p">,</span><span class="w"> </span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="s2">"\\b"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="c1"># Reduce everything</span><span class="w">
+    </span><span class="n">reduce</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">paste</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.y</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"|"</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>So we’ve got our regex with:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">concat_commons</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Keywords</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">regex_build</span><span class="p">()</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"\\barticlexyz\\b|\\bamazon\\b"</span><span class="w">
+</span></code></pre></div></div>
+<p>Let’s bulk replace</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bulk_replace</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span><span class="w"> </span><span class="n">vec</span><span class="p">){</span><span class="w">
+    </span><span class="n">map</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="n">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">regex</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="c1"># Prevent the "too many spaces" to come</span><span class="w">
+    </span><span class="n">map</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="n">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" {2,}"</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" "</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">reg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">concat_commons</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Keywords</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">regex_build</span><span class="p">()</span><span class="w"> 
+</span><span class="n">bulk_replace</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Keywords</span><span class="p">)</span><span class="w">
+
+</span><span class="p">[[</span><span class="m">1</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">" for sale"</span><span class="w">
+
+</span><span class="p">[[</span><span class="m">2</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"cheap for sale"</span><span class="w">
+
+</span><span class="p">[[</span><span class="m">3</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">" "</span><span class="w">
+
+</span><span class="p">[[</span><span class="m">4</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">" walmart cheap"</span><span class="w">
+
+</span><span class="n">....</span><span class="w">
+
+</span></code></pre></div></div>
+
+<h3 id="the-not-so-regex-solution">The not-so-regex solution</h3>
+
+<p>If you’re not that into regex (nobody’s perfect), let’s do something with less regex and more {purrr}: string split, map, reduce.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">regex_build</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">list</span><span class="p">){</span><span class="w">
+    </span><span class="n">reduce</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">paste</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.y</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"|"</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Simple regex here:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">concat_commons</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Keywords</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">regex_build</span><span class="p">()</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"articlexyz|amazon"</span><span class="err">"</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="bulk-replace-this-with-stringsplit">Bulk replace this with stringsplit</h3>
+
+<p>Here the trick to forget this “beginning end whitespace” nightmare (not a nightmare, really) is to split and test every element against the regex, so split, replace, unsplit.</p>
+
+<p>To do the “unsplit”, as the result is a list of depth one, we need to <code class="highlighter-rouge">modify_depth</code>:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bulk_replace</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span><span class="w"> </span><span class="n">vec</span><span class="p">){</span><span class="w">
+  </span><span class="n">str_split</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="w"> </span><span class="s2">" "</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">map</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="n">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">regex</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="c1"># We need to modify at the first level </span><span class="w">
+    </span><span class="n">modify_depth</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">reduce</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">paste</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.y</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" "</span><span class="p">)))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="c1"># Prevent the "too many spaces" to come</span><span class="w">
+    </span><span class="n">map</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="n">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" {2,}"</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" "</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">reg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">concat_commons</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Keywords</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">regex_build</span><span class="p">()</span><span class="w"> 
+</span><span class="n">bulk_replace</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">Keywords</span><span class="p">)</span><span class="w">
+
+</span><span class="p">[[</span><span class="m">1</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">" for sale"</span><span class="w">
+
+</span><span class="p">[[</span><span class="m">2</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"cheap for sale"</span><span class="w">
+
+</span><span class="p">[[</span><span class="m">3</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">" "</span><span class="w">
+
+</span><span class="p">[[</span><span class="m">4</span><span class="p">]]</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">" walmart cheap"</span><span class="w">
+
+</span><span class="n">....</span><span class="w">
+
+</span></code></pre></div></div>
+
+<p>Yes. The very same result.</p>
+
+<h3 id="remove-commons">Remove commons</h3>
+
+<p>Ok let’s wrap this in a function :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">remove_commons</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="p">){</span><span class="w">
+  </span><span class="n">input</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">enquo</span><span class="p">(</span><span class="n">input</span><span class="p">)</span><span class="w">
+  </span><span class="n">output</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">quo_name</span><span class="p">(</span><span class="n">enquo</span><span class="p">(</span><span class="n">output</span><span class="p">))</span><span class="w">
+  </span><span class="n">most_common</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">concat_commons</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="o">!!</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="p">)</span><span class="w">
+  </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">mutate</span><span class="p">(</span><span class="o">!!</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">bulk_replace</span><span class="p">(</span><span class="w"> </span><span class="n">regex_build</span><span class="p">(</span><span class="n">most_common</span><span class="p">),</span><span class="w"> </span><span class="o">!!</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">unnest</span><span class="p">()</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>So here, we’ve got a function that takes a data.frame, the name of the input and output columns, and the number of common words to remove. Let’s try this:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">remove_commons</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Keywords</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+</span><span class="c1"># A tibble: 9 x 2</span><span class="w">
+                            </span><span class="n">Keywords</span><span class="w">             </span><span class="n">group</span><span class="w">
+                               </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w">             </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w">
+</span><span class="m">1</span><span class="w">                </span><span class="n">articlexyz</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sale</span><span class="w">          </span><span class="k">for</span><span class="w"> </span><span class="n">sale</span><span class="w">
+</span><span class="m">2</span><span class="w">          </span><span class="n">cheap</span><span class="w"> </span><span class="n">articlexyz</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sale</span><span class="w">    </span><span class="n">cheap</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sale</span><span class="w">
+</span><span class="m">3</span><span class="w">                  </span><span class="n">amazon</span><span class="w"> </span><span class="n">articlexyz</span><span class="w">                  
+</span><span class="m">4</span><span class="w">           </span><span class="n">articlexyz</span><span class="w"> </span><span class="n">walmart</span><span class="w"> </span><span class="n">cheap</span><span class="w">     </span><span class="n">walmart</span><span class="w"> </span><span class="n">cheap</span><span class="w">
+</span><span class="m">5</span><span class="w">                   </span><span class="n">articlexyz</span><span class="w"> </span><span class="n">games</span><span class="w">             </span><span class="n">games</span><span class="w">
+</span><span class="m">6</span><span class="w">                  </span><span class="n">articlexyz</span><span class="w"> </span><span class="n">amazon</span><span class="w">                  
+</span><span class="m">7</span><span class="w">               </span><span class="n">bluetooth</span><span class="w"> </span><span class="n">articlexyz</span><span class="w">        </span><span class="n">bluetooth</span><span class="w"> 
+</span><span class="m">8</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">much</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">articlexyz</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">amazon</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">much</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">on</span><span class="w"> 
+</span><span class="m">9</span><span class="w">          </span><span class="n">articlexyz</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sale</span><span class="w"> </span><span class="n">cheap</span><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">sale</span><span class="w"> </span><span class="n">cheap</span><span class="w">
+</span></code></pre></div></div>
+
+<p>🎉 !!</p>
+
+<p>Of course we’ve got some blank shere, as two observations are composed of the most common words
+. Let’s count:</p>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">remove_commons</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Keywords</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">unnest_tokens</span><span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">anti_join</span><span class="p">(</span><span class="n">stop_words</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">count</span><span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="w"> </span><span class="n">sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+ </span><span class="n">A</span><span class="w"> </span><span class="n">tibble</span><span class="o">:</span><span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="m">2</span><span class="w">
+       </span><span class="n">word</span><span class="w">     </span><span class="n">n</span><span class="w">
+      </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">int</span><span class="o">&gt;</span><span class="w">
+</span><span class="m">1</span><span class="w">    </span><span class="n">amazon</span><span class="w">     </span><span class="m">3</span><span class="w">
+</span><span class="m">2</span><span class="w">     </span><span class="n">cheap</span><span class="w">     </span><span class="m">3</span><span class="w">
+</span><span class="m">3</span><span class="w">      </span><span class="n">sale</span><span class="w">     </span><span class="m">3</span><span class="w">
+</span><span class="m">4</span><span class="w"> </span><span class="n">bluetooth</span><span class="w">     </span><span class="m">1</span><span class="w">
+</span><span class="m">5</span><span class="w">     </span><span class="n">games</span><span class="w">     </span><span class="m">1</span><span class="w">
+</span><span class="m">6</span><span class="w">   </span><span class="n">walmart</span><span class="w">     </span><span class="m">1</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="labels">Labels</h3>
+
+<p>So now, maybe we want to assign each observation to its “most common label but not the n first”, that is to say, I want “articlexyz for sale on amazon” to be assigned a label “sale” if this is the most common after the n, or amazon, etc.</p>
+
+<p>So here comes <code class="highlighter-rouge">detect()</code> :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">which_label</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">detect</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">grepl</span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">vec</span><span class="p">))</span><span class="w"> </span><span class="o">%||%</span><span class="w"> </span><span class="kc">NA</span><span class="w"> 
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># List of common words :</span><span class="w">
+</span><span class="n">commons_words</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">concat_commons</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Keywords</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+
+</span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_chr</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Keywords</span><span class="p">,</span><span class="w"> 
+                         </span><span class="o">~</span><span class="w"> </span><span class="n">which_label</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">common_words</span><span class="o">$</span><span class="n">group</span><span class="p">)))</span><span class="w"> 
+</span><span class="c1"># A tibble: 9 x 2</span><span class="w">
+                            </span><span class="n">Keywords</span><span class="w">     </span><span class="n">group</span><span class="w">
+                               </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w">     </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w">
+</span><span class="m">1</span><span class="w">                </span><span class="n">articlexyz</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sale</span><span class="w">      </span><span class="n">sale</span><span class="w">
+</span><span class="m">2</span><span class="w">          </span><span class="n">cheap</span><span class="w"> </span><span class="n">articlexyz</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sale</span><span class="w">     </span><span class="n">cheap</span><span class="w">
+</span><span class="m">3</span><span class="w">                  </span><span class="n">amazon</span><span class="w"> </span><span class="n">articlexyz</span><span class="w">    </span><span class="n">amazon</span><span class="w">
+</span><span class="m">4</span><span class="w">           </span><span class="n">articlexyz</span><span class="w"> </span><span class="n">walmart</span><span class="w"> </span><span class="n">cheap</span><span class="w">     </span><span class="n">cheap</span><span class="w">
+</span><span class="m">5</span><span class="w">                   </span><span class="n">articlexyz</span><span class="w"> </span><span class="n">games</span><span class="w">     </span><span class="n">games</span><span class="w">
+</span><span class="m">6</span><span class="w">                  </span><span class="n">articlexyz</span><span class="w"> </span><span class="n">amazon</span><span class="w">    </span><span class="n">amazon</span><span class="w">
+</span><span class="m">7</span><span class="w">               </span><span class="n">bluetooth</span><span class="w"> </span><span class="n">articlexyz</span><span class="w"> </span><span class="n">bluetooth</span><span class="w">
+</span><span class="m">8</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">much</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">articlexyz</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">amazon</span><span class="w">    </span><span class="n">amazon</span><span class="w">
+</span><span class="m">9</span><span class="w">          </span><span class="n">articlexyz</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sale</span><span class="w"> </span><span class="n">cheap</span><span class="w">     </span><span class="n">cheap</span><span class="w">
+</span></code></pre></div></div>
+
+<p>And now, let’s sell some Google Ads!</p>
+
+<p><img src="https://i.giphy.com/media/VTxmwaCEwSlZm/200.gif" alt="" /></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#purrr" class="page__taxonomy-item" rel="tag">purrr</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-11-29T00:00:00+01:00">November 29, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=A+Crazy+Little+Thing+Called+%7Bpurrr%7D+-+Part+2+%3A+Text+Wrangling%20http%3A%2F%2Flocalhost%3A4000%2Fpurrr-text-wrangling%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fpurrr-text-wrangling%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fpurrr-text-wrangling%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fpurrr-text-wrangling%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/purrr-web-mining/" class="pagination--pager" title="A Crazy Little Thing Called {purrr} - Part 1 : Web Mining
+">←</a>
+    
+    
+      <a href="/purrr-set-na/" class="pagination--pager" title="A Crazy Little Thing Called {purrr} - Part 3 : Setting NA
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/purrr-text-wrangling/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/purrr-text-wrangling"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

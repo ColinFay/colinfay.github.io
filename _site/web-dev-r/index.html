@@ -1,0 +1,786 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[Web2Day] Producing web content with R - Colin Fay</title>
+<meta name="description" content="Earlier this week, my talk at the Web2Dayconference was put online. Here is an english summary for those whodon’t understand french :)  Disclaimer: this talk has been given during a conference about webtechnologies. In other word,in front of a crowd that has never /hardly heard about R before. If you’re already familiar with R,Rmarkdown, Shiny and {plumber}, you won’t find anything groundbreakinghere.The videoIf ever you understand french, here is thevideo:  Note: the title of the conference can be translated “When a datascience language produces web content.”Doing web content with RWhat is R?The introduction of the talk is about “what is R?”. I won’t redo thisintroduction here, as there are a lot of resources available online todiscover R (and I’m pretty sure that if you’re here, you already knowR ;) ):      Official ‘What is R’ from the r-projectwebsite        Beginner’s guide to R:Introduction        What is R?  Why doing web content with R?There are many reasons why you would want to produce web content with R:      You need to communicate your results        You need to visualise your results dynamically        You need to share R content with others other the internet        You want to make R available through a user interface, so thatpeople can get the full potential of R without writing any line ofcode  Why doing R with a web technology?      Use R computation performances        Call / use the latest datascience methods from a webpage  How?Easy to produce webpages with markdownWith Rmarkdown, you can produce a web page that contains the results ofyour experiment / research / data collection / visualisation, done in R.Markdown is an easy to use, simplified version of html which can becompiled as html. Meaning that you can use any html, css or JavaScriptcontent. For example, a table can be converted as a JS datatable, whichis dynamic.Here is an example of a webpage created with    R:  http://random.colinfay.me/markdown.html  https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/markdown.Rmd(the code that produces this page)Nothing fancy here, but you got the idea.  Read more about Rmarkdown at https://rmarkdown.rstudio.com/An API with {plumber}{plumber} is an R package that can creates API, that is to say aweb-service that runs R, and that you can access through an URL. ThisURL has endpoints, and when you send information to these endpoints, anR function is executed, with the params given to the API.One you’ve got this url, it can be integrated simply to any webpage. Forexample, if my API, at http://127.0.0.1:3953, produces a plot, I cando :&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Yihaaa &lt;/h1&gt;&lt;h2&gt;Ce graphe est généré par R et c&#39;est de la balle.&lt;/h2&gt;&lt;img src = &quot;http://127.0.0.1:3953/whoplot&quot;&gt;&lt;/body&gt;&lt;/html&gt;As {plumber}, by default, produces JSON content (but you can pass alot of other types of content), if can be easily integrated into any webpage. That means you can make R do all the heavy computation, and justget the result as a JSON to be integrated on your webpage.  The API definition :https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.R  Launching the API :https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.RmdAbout ShinyUsing Shiny to produce web appShiny is an amazing framework from RStudio, used to produce web appthat can run R, written with R code: meaning that it can run any Rmodel, use any R dataviz library, take advantage of R file importingpackages, etc etc.Creating Shiny apps has been one of our main area of work atThinkRlately, and we’ve build quite large applications that run complexmodel, which are then visualised in the same app. What’s the point ofthis app? To give access to these models to people who don’t know how tocode (and don’t want to).Basic Shiny DesignsWhen designing a Shiny app, you can use a lot of already implementeddesign libraries and templates. These produce nice results, andeverything can be written in R, which makes it easy to use for Rdevelopers who don’t know html, css and JS (even if we can definitelysay that when it comes to building large applications, you should atsome point learn at least html and css).These basics packages produce contents like the one I’m showing in thetalk:Here, I’m creating a little dashboard that connects to Twitter, anddoes simple dataviz, counting, and text-mining. Everything, here, donein R.  Note: this app will be made open-source one day, when I’ll have foundsome times to finish it :)Advanced Shiny designOr, what I call: Webdev + R = ❤️When doing more advanced Shiny designs, we can use htmlTemplates (afeature which is not known enough). This functionnality allows you tocreate html and css templates as any web developer would do. And ofcourse, with JS in it if you want to.Once you’ve got this template, you can use it straight in Shiny.For example:# styles.cssbody { font-family: &#39;Source SansPro&#39;, Helvetica, sans-serif; background: #121212; color: #999; padding: 20px;}tr { vertical-align: top;}...These html and css templates are “easy” (well, relatively easy) toimplement if you’re a web designer. But, let’s be honnest, they arereally hard to code if you’re a data scientist.From the R point of view, this is as simple as creating a function thatdoes:horizontalBox &lt;- function(title, content){  htmlTemplate(&quot;box.html&quot;, title = title, content = content)}You can recognize here that I am calling the box.html template, with thearguments of the function being the elements between {.Might we work together?I am not a web designer, and web designers are not data scientists, soneither of us can pretend to do a better job than the other. But thegood news is that everything is there for us to work together.So, if ever some web designer is interested to work with me on a Shinyapp (everything open source of course), I’ll be glad to do so, as I’msure we have a lot to learn from each other.Feel free to out to me throught mail or ontwitter!SlidesThe slides from the talk are availablehere:https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/web2day.pdfThe content of the .R, Rmd, etc, are here:https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="[Web2Day] Producing web content with R">
+<meta property="og:url" content="http://localhost:4000/web-dev-r/">
+
+
+  <meta property="og:description" content="Earlier this week, my talk at the Web2Dayconference was put online. Here is an english summary for those whodon’t understand french :)  Disclaimer: this talk has been given during a conference about webtechnologies. In other word,in front of a crowd that has never /hardly heard about R before. If you’re already familiar with R,Rmarkdown, Shiny and {plumber}, you won’t find anything groundbreakinghere.The videoIf ever you understand french, here is thevideo:  Note: the title of the conference can be translated “When a datascience language produces web content.”Doing web content with RWhat is R?The introduction of the talk is about “what is R?”. I won’t redo thisintroduction here, as there are a lot of resources available online todiscover R (and I’m pretty sure that if you’re here, you already knowR ;) ):      Official ‘What is R’ from the r-projectwebsite        Beginner’s guide to R:Introduction        What is R?  Why doing web content with R?There are many reasons why you would want to produce web content with R:      You need to communicate your results        You need to visualise your results dynamically        You need to share R content with others other the internet        You want to make R available through a user interface, so thatpeople can get the full potential of R without writing any line ofcode  Why doing R with a web technology?      Use R computation performances        Call / use the latest datascience methods from a webpage  How?Easy to produce webpages with markdownWith Rmarkdown, you can produce a web page that contains the results ofyour experiment / research / data collection / visualisation, done in R.Markdown is an easy to use, simplified version of html which can becompiled as html. Meaning that you can use any html, css or JavaScriptcontent. For example, a table can be converted as a JS datatable, whichis dynamic.Here is an example of a webpage created with    R:  http://random.colinfay.me/markdown.html  https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/markdown.Rmd(the code that produces this page)Nothing fancy here, but you got the idea.  Read more about Rmarkdown at https://rmarkdown.rstudio.com/An API with {plumber}{plumber} is an R package that can creates API, that is to say aweb-service that runs R, and that you can access through an URL. ThisURL has endpoints, and when you send information to these endpoints, anR function is executed, with the params given to the API.One you’ve got this url, it can be integrated simply to any webpage. Forexample, if my API, at http://127.0.0.1:3953, produces a plot, I cando :&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Yihaaa &lt;/h1&gt;&lt;h2&gt;Ce graphe est généré par R et c&#39;est de la balle.&lt;/h2&gt;&lt;img src = &quot;http://127.0.0.1:3953/whoplot&quot;&gt;&lt;/body&gt;&lt;/html&gt;As {plumber}, by default, produces JSON content (but you can pass alot of other types of content), if can be easily integrated into any webpage. That means you can make R do all the heavy computation, and justget the result as a JSON to be integrated on your webpage.  The API definition :https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.R  Launching the API :https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.RmdAbout ShinyUsing Shiny to produce web appShiny is an amazing framework from RStudio, used to produce web appthat can run R, written with R code: meaning that it can run any Rmodel, use any R dataviz library, take advantage of R file importingpackages, etc etc.Creating Shiny apps has been one of our main area of work atThinkRlately, and we’ve build quite large applications that run complexmodel, which are then visualised in the same app. What’s the point ofthis app? To give access to these models to people who don’t know how tocode (and don’t want to).Basic Shiny DesignsWhen designing a Shiny app, you can use a lot of already implementeddesign libraries and templates. These produce nice results, andeverything can be written in R, which makes it easy to use for Rdevelopers who don’t know html, css and JS (even if we can definitelysay that when it comes to building large applications, you should atsome point learn at least html and css).These basics packages produce contents like the one I’m showing in thetalk:Here, I’m creating a little dashboard that connects to Twitter, anddoes simple dataviz, counting, and text-mining. Everything, here, donein R.  Note: this app will be made open-source one day, when I’ll have foundsome times to finish it :)Advanced Shiny designOr, what I call: Webdev + R = ❤️When doing more advanced Shiny designs, we can use htmlTemplates (afeature which is not known enough). This functionnality allows you tocreate html and css templates as any web developer would do. And ofcourse, with JS in it if you want to.Once you’ve got this template, you can use it straight in Shiny.For example:# styles.cssbody { font-family: &#39;Source SansPro&#39;, Helvetica, sans-serif; background: #121212; color: #999; padding: 20px;}tr { vertical-align: top;}...These html and css templates are “easy” (well, relatively easy) toimplement if you’re a web designer. But, let’s be honnest, they arereally hard to code if you’re a data scientist.From the R point of view, this is as simple as creating a function thatdoes:horizontalBox &lt;- function(title, content){  htmlTemplate(&quot;box.html&quot;, title = title, content = content)}You can recognize here that I am calling the box.html template, with thearguments of the function being the elements between {.Might we work together?I am not a web designer, and web designers are not data scientists, soneither of us can pretend to do a better job than the other. But thegood news is that everything is there for us to work together.So, if ever some web designer is interested to work with me on a Shinyapp (everything open source of course), I’ll be glad to do so, as I’msure we have a lot to learn from each other.Feel free to out to me throught mail or ontwitter!SlidesThe slides from the talk are availablehere:https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/web2day.pdfThe content of the .R, Rmd, etc, are here:https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="[Web2Day] Producing web content with R">
+  <meta name="twitter:description" content="Earlier this week, my talk at the Web2Dayconference was put online. Here is an english summary for those whodon’t understand french :)  Disclaimer: this talk has been given during a conference about webtechnologies. In other word,in front of a crowd that has never /hardly heard about R before. If you’re already familiar with R,Rmarkdown, Shiny and {plumber}, you won’t find anything groundbreakinghere.The videoIf ever you understand french, here is thevideo:  Note: the title of the conference can be translated “When a datascience language produces web content.”Doing web content with RWhat is R?The introduction of the talk is about “what is R?”. I won’t redo thisintroduction here, as there are a lot of resources available online todiscover R (and I’m pretty sure that if you’re here, you already knowR ;) ):      Official ‘What is R’ from the r-projectwebsite        Beginner’s guide to R:Introduction        What is R?  Why doing web content with R?There are many reasons why you would want to produce web content with R:      You need to communicate your results        You need to visualise your results dynamically        You need to share R content with others other the internet        You want to make R available through a user interface, so thatpeople can get the full potential of R without writing any line ofcode  Why doing R with a web technology?      Use R computation performances        Call / use the latest datascience methods from a webpage  How?Easy to produce webpages with markdownWith Rmarkdown, you can produce a web page that contains the results ofyour experiment / research / data collection / visualisation, done in R.Markdown is an easy to use, simplified version of html which can becompiled as html. Meaning that you can use any html, css or JavaScriptcontent. For example, a table can be converted as a JS datatable, whichis dynamic.Here is an example of a webpage created with    R:  http://random.colinfay.me/markdown.html  https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/markdown.Rmd(the code that produces this page)Nothing fancy here, but you got the idea.  Read more about Rmarkdown at https://rmarkdown.rstudio.com/An API with {plumber}{plumber} is an R package that can creates API, that is to say aweb-service that runs R, and that you can access through an URL. ThisURL has endpoints, and when you send information to these endpoints, anR function is executed, with the params given to the API.One you’ve got this url, it can be integrated simply to any webpage. Forexample, if my API, at http://127.0.0.1:3953, produces a plot, I cando :&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Yihaaa &lt;/h1&gt;&lt;h2&gt;Ce graphe est généré par R et c&#39;est de la balle.&lt;/h2&gt;&lt;img src = &quot;http://127.0.0.1:3953/whoplot&quot;&gt;&lt;/body&gt;&lt;/html&gt;As {plumber}, by default, produces JSON content (but you can pass alot of other types of content), if can be easily integrated into any webpage. That means you can make R do all the heavy computation, and justget the result as a JSON to be integrated on your webpage.  The API definition :https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.R  Launching the API :https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.RmdAbout ShinyUsing Shiny to produce web appShiny is an amazing framework from RStudio, used to produce web appthat can run R, written with R code: meaning that it can run any Rmodel, use any R dataviz library, take advantage of R file importingpackages, etc etc.Creating Shiny apps has been one of our main area of work atThinkRlately, and we’ve build quite large applications that run complexmodel, which are then visualised in the same app. What’s the point ofthis app? To give access to these models to people who don’t know how tocode (and don’t want to).Basic Shiny DesignsWhen designing a Shiny app, you can use a lot of already implementeddesign libraries and templates. These produce nice results, andeverything can be written in R, which makes it easy to use for Rdevelopers who don’t know html, css and JS (even if we can definitelysay that when it comes to building large applications, you should atsome point learn at least html and css).These basics packages produce contents like the one I’m showing in thetalk:Here, I’m creating a little dashboard that connects to Twitter, anddoes simple dataviz, counting, and text-mining. Everything, here, donein R.  Note: this app will be made open-source one day, when I’ll have foundsome times to finish it :)Advanced Shiny designOr, what I call: Webdev + R = ❤️When doing more advanced Shiny designs, we can use htmlTemplates (afeature which is not known enough). This functionnality allows you tocreate html and css templates as any web developer would do. And ofcourse, with JS in it if you want to.Once you’ve got this template, you can use it straight in Shiny.For example:# styles.cssbody { font-family: &#39;Source SansPro&#39;, Helvetica, sans-serif; background: #121212; color: #999; padding: 20px;}tr { vertical-align: top;}...These html and css templates are “easy” (well, relatively easy) toimplement if you’re a web designer. But, let’s be honnest, they arereally hard to code if you’re a data scientist.From the R point of view, this is as simple as creating a function thatdoes:horizontalBox &lt;- function(title, content){  htmlTemplate(&quot;box.html&quot;, title = title, content = content)}You can recognize here that I am calling the box.html template, with thearguments of the function being the elements between {.Might we work together?I am not a web designer, and web designers are not data scientists, soneither of us can pretend to do a better job than the other. But thegood news is that everything is there for us to work together.So, if ever some web designer is interested to work with me on a Shinyapp (everything open source of course), I’ll be glad to do so, as I’msure we have a lot to learn from each other.Feel free to out to me throught mail or ontwitter!SlidesThe slides from the talk are availablehere:https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/web2day.pdfThe content of the .R, Rmd, etc, are here:https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes">
+  <meta name="twitter:url" content="http://localhost:4000/web-dev-r/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-07-14T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/web-dev-r/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[Web2Day] Producing web content with R">
+    <meta itemprop="description" content="Earlier this week, my talk at the Web2Dayconference was put online. Here is an english summary for those whodon’t understand french :)  Disclaimer: this talk has been given during a conference about webtechnologies. In other word,in front of a crowd that has never /hardly heard about R before. If you’re already familiar with R,Rmarkdown, Shiny and {plumber}, you won’t find anything groundbreakinghere.The videoIf ever you understand french, here is thevideo:  Note: the title of the conference can be translated “When a datascience language produces web content.”Doing web content with RWhat is R?The introduction of the talk is about “what is R?”. I won’t redo thisintroduction here, as there are a lot of resources available online todiscover R (and I’m pretty sure that if you’re here, you already knowR ;) ):      Official ‘What is R’ from the r-projectwebsite        Beginner’s guide to R:Introduction        What is R?  Why doing web content with R?There are many reasons why you would want to produce web content with R:      You need to communicate your results        You need to visualise your results dynamically        You need to share R content with others other the internet        You want to make R available through a user interface, so thatpeople can get the full potential of R without writing any line ofcode  Why doing R with a web technology?      Use R computation performances        Call / use the latest datascience methods from a webpage  How?Easy to produce webpages with markdownWith Rmarkdown, you can produce a web page that contains the results ofyour experiment / research / data collection / visualisation, done in R.Markdown is an easy to use, simplified version of html which can becompiled as html. Meaning that you can use any html, css or JavaScriptcontent. For example, a table can be converted as a JS datatable, whichis dynamic.Here is an example of a webpage created with    R:  http://random.colinfay.me/markdown.html  https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/markdown.Rmd(the code that produces this page)Nothing fancy here, but you got the idea.  Read more about Rmarkdown at https://rmarkdown.rstudio.com/An API with {plumber}{plumber} is an R package that can creates API, that is to say aweb-service that runs R, and that you can access through an URL. ThisURL has endpoints, and when you send information to these endpoints, anR function is executed, with the params given to the API.One you’ve got this url, it can be integrated simply to any webpage. Forexample, if my API, at http://127.0.0.1:3953, produces a plot, I cando :&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Yihaaa &lt;/h1&gt;&lt;h2&gt;Ce graphe est généré par R et c&#39;est de la balle.&lt;/h2&gt;&lt;img src = &quot;http://127.0.0.1:3953/whoplot&quot;&gt;&lt;/body&gt;&lt;/html&gt;As {plumber}, by default, produces JSON content (but you can pass alot of other types of content), if can be easily integrated into any webpage. That means you can make R do all the heavy computation, and justget the result as a JSON to be integrated on your webpage.  The API definition :https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.R  Launching the API :https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.RmdAbout ShinyUsing Shiny to produce web appShiny is an amazing framework from RStudio, used to produce web appthat can run R, written with R code: meaning that it can run any Rmodel, use any R dataviz library, take advantage of R file importingpackages, etc etc.Creating Shiny apps has been one of our main area of work atThinkRlately, and we’ve build quite large applications that run complexmodel, which are then visualised in the same app. What’s the point ofthis app? To give access to these models to people who don’t know how tocode (and don’t want to).Basic Shiny DesignsWhen designing a Shiny app, you can use a lot of already implementeddesign libraries and templates. These produce nice results, andeverything can be written in R, which makes it easy to use for Rdevelopers who don’t know html, css and JS (even if we can definitelysay that when it comes to building large applications, you should atsome point learn at least html and css).These basics packages produce contents like the one I’m showing in thetalk:Here, I’m creating a little dashboard that connects to Twitter, anddoes simple dataviz, counting, and text-mining. Everything, here, donein R.  Note: this app will be made open-source one day, when I’ll have foundsome times to finish it :)Advanced Shiny designOr, what I call: Webdev + R = ❤️When doing more advanced Shiny designs, we can use htmlTemplates (afeature which is not known enough). This functionnality allows you tocreate html and css templates as any web developer would do. And ofcourse, with JS in it if you want to.Once you’ve got this template, you can use it straight in Shiny.For example:# styles.cssbody { font-family: &#39;Source SansPro&#39;, Helvetica, sans-serif; background: #121212; color: #999; padding: 20px;}tr { vertical-align: top;}...These html and css templates are “easy” (well, relatively easy) toimplement if you’re a web designer. But, let’s be honnest, they arereally hard to code if you’re a data scientist.From the R point of view, this is as simple as creating a function thatdoes:horizontalBox &lt;- function(title, content){  htmlTemplate(&quot;box.html&quot;, title = title, content = content)}You can recognize here that I am calling the box.html template, with thearguments of the function being the elements between {.Might we work together?I am not a web designer, and web designers are not data scientists, soneither of us can pretend to do a better job than the other. But thegood news is that everything is there for us to work together.So, if ever some web designer is interested to work with me on a Shinyapp (everything open source of course), I’ll be glad to do so, as I’msure we have a lot to learn from each other.Feel free to out to me throught mail or ontwitter!SlidesThe slides from the talk are availablehere:https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/web2day.pdfThe content of the .R, Rmd, etc, are here:https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes">
+    <meta itemprop="datePublished" content="July 14, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">[Web2Day] Producing web content with R
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  5 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Earlier this week, my talk at the <a href="https://web2day.co/">Web2Day</a>
+conference was put online. Here is an english summary for those who
+don’t understand french :)</p>
+
+<blockquote>
+  <p>Disclaimer: this talk has been given during a conference about web
+technologies. In other word,in front of a crowd that has never /
+hardly heard about R before. If you’re already familiar with R,
+Rmarkdown, Shiny and {plumber}, you won’t find anything groundbreaking
+here.</p>
+</blockquote>
+
+<h2 id="the-video">The video</h2>
+
+<p>If ever you understand french, here is the
+video:</p>
+
+<div data-align="center">
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8aRmY3A6raU?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">
+
+</iframe>
+
+</div>
+
+<blockquote>
+  <p>Note: the title of the conference can be translated “When a data
+science language produces web content.”</p>
+</blockquote>
+
+<h2 id="doing-web-content-with-r">Doing web content with R</h2>
+
+<p><img src="../assets/img/web2day.png" alt="" /></p>
+
+<h3 id="what-is-r">What is R?</h3>
+
+<p>The introduction of the talk is about “what is R?”. I won’t redo this
+introduction here, as <strong>there are a lot of resources available online to
+discover R</strong> (and I’m pretty sure that if you’re here, you already know
+R ;) ):</p>
+
+<ul>
+  <li>
+    <p><a href="https://www.r-project.org/about.html">Official ‘What is R’ from the r-project
+website</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.computerworld.com/article/2497143/business-intelligence/business-intelligence-beginner-s-guide-to-r-introduction.html">Beginner’s guide to R:
+Introduction</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.quora.com/What-is-R-programming-language">What is R?</a></p>
+  </li>
+</ul>
+
+<h3 id="why-doing-web-content-with-r">Why doing web content with R?</h3>
+
+<p>There are many reasons why you would want to produce web content with R:</p>
+
+<ul>
+  <li>
+    <p>You need to communicate your results</p>
+  </li>
+  <li>
+    <p>You need to visualise your results dynamically</p>
+  </li>
+  <li>
+    <p>You need to share R content with others other the internet</p>
+  </li>
+  <li>
+    <p>You want to make R available through a user interface, so that
+people can get the full potential of R without writing any line of
+code</p>
+  </li>
+</ul>
+
+<h3 id="why-doing-r-with-a-web-technology">Why doing R with a web technology?</h3>
+
+<ul>
+  <li>
+    <p>Use R computation performances</p>
+  </li>
+  <li>
+    <p>Call / use the latest datascience methods from a webpage</p>
+  </li>
+</ul>
+
+<h2 id="how">How?</h2>
+
+<h3 id="easy-to-produce-webpages-with-markdown">Easy to produce webpages with markdown</h3>
+
+<p>With Rmarkdown, you can produce a web page that contains the results of
+your experiment / research / data collection / visualisation, done in R.</p>
+
+<p><strong>Markdown is an easy to use, simplified version of html which can be
+compiled as html</strong>. Meaning that you can use any html, css or JavaScript
+content. For example, a table can be converted as a JS datatable, which
+is dynamic.</p>
+
+<p>Here is an example of a webpage created with
+    R:</p>
+
+<ul>
+  <li><a href="http://random.colinfay.me/markdown.html">http://random.colinfay.me/markdown.html</a></li>
+  <li><a href="https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/markdown.Rmd">https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/markdown.Rmd</a>
+(the code that produces this page)</li>
+</ul>
+
+<p>Nothing fancy here, but you got the idea.</p>
+
+<blockquote>
+  <p>Read more about Rmarkdown at <a href="https://rmarkdown.rstudio.com/">https://rmarkdown.rstudio.com/</a></p>
+</blockquote>
+
+<h3 id="an-api-with-plumber">An API with {plumber}</h3>
+
+<p>{plumber} is <strong>an R package that can creates API, that is to say a
+web-service that runs R</strong>, and that you can access through an URL. This
+URL has endpoints, and when you send information to these endpoints, an
+R function is executed, with the params given to the API.</p>
+
+<p><img src="../assets/img/api_example.png" alt="" /></p>
+
+<p>One you’ve got this url, it can be integrated simply to any webpage. For
+example, if my API, at <a href="http://127.0.0.1:3953">http://127.0.0.1:3953</a>, produces a plot, I can
+do :</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+<span class="nt">&lt;h1&gt;</span>Yihaaa <span class="nt">&lt;/h1&gt;</span>
+
+<span class="nt">&lt;h2&gt;</span>Ce graphe est généré par R et c'est de la balle.<span class="nt">&lt;/h2&gt;</span>
+
+<span class="nt">&lt;img</span> <span class="na">src =</span><span class="err"> </span><span class="s">"http://127.0.0.1:3953/whoplot"</span><span class="nt">&gt;</span>
+
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p><strong>As {plumber}, by default, produces JSON content (but you can pass a
+lot of other types of content), if can be easily integrated into any web
+page</strong>. That means you can make R do all the heavy computation, and just
+get the result as a JSON to be integrated on your webpage.</p>
+
+<ul>
+  <li>The API definition :
+<a href="https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.R">https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.R</a></li>
+  <li>Launching the API :
+<a href="https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.Rmd">https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/api.Rmd</a></li>
+</ul>
+
+<h2 id="about-shiny">About Shiny</h2>
+
+<h3 id="using-shiny-to-produce-web-app">Using Shiny to produce web app</h3>
+
+<p>Shiny is an amazing framework from RStudio, used to <strong>produce web app
+that can run R</strong>, written with R code: meaning that it can run any R
+model, use any R dataviz library, take advantage of R file importing
+packages, etc etc.</p>
+
+<p>Creating Shiny apps has been one of our main area of work at
+<a href="https://rtask.thinkr.fr/design-and-deployment-of-shiny-applications/">ThinkR</a>
+lately, and <strong>we’ve build quite large applications that run complex
+model, which are then visualised in the same app</strong>. What’s the point of
+this app? To give access to these models to people who don’t know how to
+code (and don’t want to).</p>
+
+<h3 id="basic-shiny-designs">Basic Shiny Designs</h3>
+
+<p>When designing a Shiny app, you can use a lot of already implemented
+design libraries and templates. <strong>These produce nice results, and
+everything can be written in R, which makes it easy to use for R
+developers who don’t know html, css and JS</strong> (even if we can definitely
+say that when it comes to building large applications, you should at
+some point learn at least html and css).</p>
+
+<p>These basics packages produce contents like the one I’m showing in the
+talk:</p>
+
+<p><img src="../assets/img/dashboard_example.png" alt="" /></p>
+
+<p>Here, I’m <strong>creating a little dashboard that connects to Twitter, and
+does simple dataviz, counting, and text-mining</strong>. Everything, here, done
+in R.</p>
+
+<blockquote>
+  <p>Note: this app will be made open-source one day, when I’ll have found
+some times to finish it :)</p>
+</blockquote>
+
+<h3 id="advanced-shiny-design">Advanced Shiny design</h3>
+
+<p>Or, what I call: Webdev + R = ❤️</p>
+
+<p>When <strong>doing more advanced Shiny designs</strong>, we can use htmlTemplates (a
+feature which is not known enough). This functionnality allows you to
+create html and css templates as any web developer would do. And of
+course, with JS in it if you want to.</p>
+
+<p>Once you’ve got this template, you can use it straight in Shiny.</p>
+
+<p>For example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># styles.css
+body {
+ font-family: 'Source Sans
+Pro', Helvetica, sans-serif;
+ background: #121212;
+ color: #999;
+ padding: 20px;
+}
+tr {
+ vertical-align: top;
+}
+...
+</code></pre></div></div>
+
+<script src="https://gist.github.com/ColinFay/5e4973c6c691508daa5611f4fd9e9707.js"></script>
+
+<p>These html and css templates are “easy” (well, relatively easy) to
+implement if you’re a web designer. But, let’s be honnest, they are
+really hard to code if you’re a data scientist.</p>
+
+<p>From the R point of view, this is as simple as creating a function that
+does:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">horizontalBox</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">content</span><span class="p">){</span><span class="w">
+  </span><span class="n">htmlTemplate</span><span class="p">(</span><span class="s2">"box.html"</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">content</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>You can recognize here that I am calling the box.html template, with the
+arguments of the function being the elements between {.</p>
+
+<p><img src="../assets/img/horizontal_shiny.png" alt="" /></p>
+
+<h2 id="might-we-work-together">Might we work together?</h2>
+
+<p><strong>I am not a web designer, and web designers are not data scientists, so
+neither of us can pretend to do a better job than the other. But the
+good news is that everything is there for us to work together.</strong></p>
+
+<p>So, if ever some web designer is interested to work with me on a Shiny
+app (everything open source of course), I’ll be glad to do so, as I’m
+sure we have a lot to learn from each other.</p>
+
+<p>Feel free to out to me throught mail or on
+<a href="https://twitter.com/_ColinFay">twitter</a>!</p>
+
+<h2 id="slides">Slides</h2>
+
+<p>The slides from the talk are available
+here:</p>
+
+<p><a href="https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/web2day.pdf">https://github.com/ColinFay/conf/blob/master/2018-06-Web2Day-Nantes/web2day.pdf</a></p>
+
+<p>The content of the .R, Rmd, etc, are here:</p>
+
+<p><a href="https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes">https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-07-14T00:00:00+02:00">July 14, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=%5BWeb2Day%5D+Producing+web+content+with+R%20http%3A%2F%2Flocalhost%3A4000%2Fweb-dev-r%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fweb-dev-r%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fweb-dev-r%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-dev-r%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/happy-dev-purrr/" class="pagination--pager" title="Happy dev with {purrr}
+">←</a>
+    
+    
+      <a href="/worldemojiday" class="pagination--pager" title="A quick #WorldEmojiDay exploration
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/web-dev-r/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/web-dev-r"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

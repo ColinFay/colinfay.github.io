@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Data Import/Export</title>
+  <meta name="description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Data Import/Export" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  <meta name="github-repo" content="ColinFay/r-data-import-export" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Data Import/Export" />
+  
+  <meta name="twitter:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="introduction.html">
+<link rel="next" href="importing-from-other-statistical-systems.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Data Import/Export</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Data Import/Export</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="spreadsheet-like-data.html"><a href="spreadsheet-like-data.html"><i class="fa fa-check"></i><b>2</b> Spreadsheet-like data</a></li>
+<li class="chapter" data-level="3" data-path="importing-from-other-statistical-systems.html"><a href="importing-from-other-statistical-systems.html"><i class="fa fa-check"></i><b>3</b> Importing from other statistical systems</a></li>
+<li class="chapter" data-level="4" data-path="relational-databases.html"><a href="relational-databases.html"><i class="fa fa-check"></i><b>4</b> Relational databases</a></li>
+<li class="chapter" data-level="5" data-path="binary-files.html"><a href="binary-files.html"><i class="fa fa-check"></i><b>5</b> Binary files</a></li>
+<li class="chapter" data-level="6" data-path="image-files.html"><a href="image-files.html"><i class="fa fa-check"></i><b>6</b> Image files</a></li>
+<li class="chapter" data-level="7" data-path="connections.html"><a href="connections.html"><i class="fa fa-check"></i><b>7</b> Connections</a></li>
+<li class="chapter" data-level="8" data-path="network-interfaces.html"><a href="network-interfaces.html"><i class="fa fa-check"></i><b>8</b> Network interfaces</a></li>
+<li class="chapter" data-level="9" data-path="reading-excel-spreadsheets.html"><a href="reading-excel-spreadsheets.html"><i class="fa fa-check"></i><b>9</b> Reading Excel spreadsheets</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>10</b> Appendix A References</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and variable index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Import/Export</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="spreadsheet-like-data" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Spreadsheet-like data</h1>
+<p>
+<a href="" id="index-Spreadsheet_002dlike-data"></a>
+</p>
+<p>
+In <a href="introduction.html#Export-to-text-files">Export to text files</a> we saw a number of variations on the format of a spreadsheet-like text file, in which the data are presented in a rectangular grid, possibly with row and column labels. In this section we consider importing such files into R.
+</p>
+<hr />
+<p>
+<a href="" id="Variations-on-read_002etable"></a> <a href="" id="Variations-on-read_002etable-1"></a>
+</p>
+<h3 id="variations-on-read.table" class="section">
+2.1 Variations on <code class="calibre15">read.table</code>
+</h3>
+<p>
+<a href="" id="index-read_002etable"></a>
+</p>
+<p>
+The function <code class="calibre2">read.table</code> is the most convenient way to read in a rectangular grid of data. Because of the many possibilities, there are several other functions that call <code class="calibre2">read.table</code> but change a group of default arguments.
+</p>
+<p>
+Beware that <code class="calibre2">read.table</code> is an inefficient way to read in very large numerical matrices: see <code class="calibre2">scan</code> below.
+</p>
+<p>
+Some of the issues to consider are:
+</p>
+<ol>
+<li>
+<p>
+<strong>Encoding</strong>
+</p>
+<p>
+If the file contains non-ASCII character fields, ensure that it is read in the correct encoding. This is mainly an issue for reading Latin-1 files in a UTF-8 locale, which can be done by something like
+</p>
+<div class="example">
+<pre class="example1"><code>read.table(&quot;file.dat&quot;, fileEncoding=&quot;latin1&quot;)</code></pre>
+</div>
+<p>
+Note that this will work in any locale which can represent Latin-1 strings, but not many Greek/Russian/Chinese/Japanese … locales.
+</p>
+</li>
+<li>
+<p>
+<strong>Header line</strong>
+</p>
+<p>
+We recommend that you specify the <code class="calibre2">header</code> argument explicitly, Conventionally the header line has entries only for the columns and not for the row labels, so is one field shorter than the remaining lines. (If R sees this, it sets <code class="calibre2">header = TRUE</code>.) If presented with a file that has a (possibly empty) header field for the row labels, read it in by something like
+</p>
+<div class="example">
+<pre class="example1"><code>read.table(&quot;file.dat&quot;, header = TRUE, row.names = 1)</code></pre>
+</div>
+<p>
+Column names can be given explicitly via the <code class="calibre2">col.names</code>; explicit names override the header line (if present).
+</p>
+</li>
+<li>
+<p>
+<strong>Separator</strong>
+</p>
+<p>
+Normally looking at the file will determine the field separator to be used, but with white-space separated files there may be a choice between the default <code class="calibre2">sep = “”</code> which uses any white space (spaces, tabs or newlines) as a separator, <code class="calibre2">sep = &quot; “</code> and <code class="calibre2">sep =”\t“</code>. Note that the choice of separator affects the input of quoted strings.
+</p>
+<p>
+If you have a tab-delimited file containing empty fields be sure to use <code class="calibre2">sep = “\t”</code>.
+</p>
+</li>
+<li>
+<p>
+<strong>Quoting</strong> <a href="" id="index-Quoting-strings-1"></a>
+</p>
+<p>
+By default character strings can be quoted by either ‘“’ or ‘’’, and in each case all the characters up to a matching quote are taken as part of the character string. The set of valid quoting characters (which might be none) is controlled by the <code class="calibre2">quote</code> argument. For <code class="calibre2">sep =”\n“</code> the default is changed to <code class="calibre2">quote =”“</code>.
+</p>
+<p>
+If no separator character is specified, quotes can be escaped within quoted strings by immediately preceding them by ‘\’, C-style.
+</p>
+<p>
+If a separator character is specified, quotes can be escaped within quoted strings by doubling them as is conventional in spreadsheets. For example
+</p>
+<div class="example">
+<pre class="example1"><code>&#39;One string isn&#39;&#39;t two&#39;,&quot;one more&quot;</code></pre>
+</div>
+<p>
+can be read by
+</p>
+<div class="example">
+<pre class="example1"><code>read.table(&quot;testfile&quot;, sep = &quot;,&quot;)</code></pre>
+</div>
+<p>
+This does not work with the default separator.
+</p>
+</li>
+<li>
+<p>
+<strong>Missing values</strong> <a href="" id="index-Missing-values-1"></a>
+</p>
+<p>
+By default the file is assumed to contain the character string <code class="calibre2">NA</code> to represent missing values, but this can be changed by the argument <code class="calibre2">na.strings</code>, which is a vector of one or more character representations of missing values.
+</p>
+<p>
+Empty fields in numeric columns are also regarded as missing values.
+</p>
+<p>
+In numeric columns, the values <code class="calibre2">NaN</code>, <code class="calibre2">Inf</code> and <code class="calibre2">-Inf</code> are accepted.
+</p>
+</li>
+<li>
+<p>
+<strong>Unfilled lines</strong>
+</p>
+<p>
+It is quite common for a file exported from a spreadsheet to have all trailing empty fields (and their separators) omitted. To read such files set <code class="calibre2">fill = TRUE</code>.
+</p>
+</li>
+<li>
+<p>
+<strong>White space in character fields</strong>
+</p>
+<p>
+If a separator is specified, leading and trailing white space in character fields is regarded as part of the field. To strip the space, use argument <code class="calibre2">strip.white = TRUE</code>.
+</p>
+</li>
+<li>
+<p>
+<strong>Blank lines</strong>
+</p>
+<p>
+By default, <code class="calibre2">read.table</code> ignores empty lines. This can be changed by setting <code class="calibre2">blank.lines.skip = FALSE</code>, which will only be useful in conjunction with <code class="calibre2">fill = TRUE</code>, perhaps to use blank rows to indicate missing cases in a regular layout.
+</p>
+</li>
+<li>
+<p>
+<strong>Classes for the variables</strong>
+</p>
+<p>
+Unless you take any special action, <code class="calibre2">read.table</code> reads all the columns as character vectors and then tries to select a suitable class for each variable in the data frame. It tries in turn <code class="calibre2">logical</code>, <code class="calibre2">integer</code>, <code class="calibre2">numeric</code> and <code class="calibre2">complex</code>, moving on if any entry is not missing and cannot be converted.<a href="concept-index.html#FOOT3" id="DOCF3"><sup>3</sup></a> If all of these fail, the variable is converted to a factor.
+</p>
+<p>
+Arguments <code class="calibre2">colClasses</code> and <code class="calibre2">as.is</code> provide greater control. Specifying <code class="calibre2">as.is = TRUE</code> suppresses conversion of character vectors to factors (only). Using <code class="calibre2">colClasses</code> allows the desired class to be set for each column in the input: it will be faster and use less memory.
+</p>
+<p>
+Note that <code class="calibre2">colClasses</code> and <code class="calibre2">as.is</code> are specified <em>per</em> column, not <em>per</em> variable, and so include the column of row names (if any).
+</p>
+</li>
+<li>
+<p>
+<strong>Comments</strong>
+</p>
+<p>
+By default, <code class="calibre2">read.table</code> uses ‘#’ as a comment character, and if this is encountered (except in quoted strings) the rest of the line is ignored. Lines containing only white space and a comment are treated as blank lines.
+</p>
+<p>
+If it is known that there will be no comments in the data file, it is safer (and may be faster) to use <code class="calibre2">comment.char = “”</code>.
+</p>
+</li>
+<li>
+<p>
+<strong>Escapes</strong>
+</p>
+<p>
+Many OSes have conventions for using backslash as an escape character in text files, but Windows does not (and uses backslash in path names). It is optional in R whether such conventions are applied to data files.
+</p>
+<p>
+Both <code class="calibre2">read.table</code> and <code class="calibre2">scan</code> have a logical argument <code class="calibre2">allowEscapes</code>. This is false by default, and backslashes are then only interpreted as (under circumstances described above) escaping quotes. If this set to be true, C-style escapes are interpreted, namely the control characters <code class="calibre2">\a, \b, \f, \n, \r, \t, \v</code> and octal and hexadecimal representations like <code class="calibre2">\040</code> and <code class="calibre2">\0x2A</code>. Any other escaped character is treated as itself, including backslash. Note that Unicode escapes such as <code class="calibre2">\uxxxx</code> are never interpreted.
+</p>
+</li>
+<li>
+<p>
+<strong>Encoding</strong>
+</p>
+<p>
+This can be specified by the <code class="calibre2">fileEncoding</code> argument, for example
+</p>
+<div class="example">
+<pre class="example1"><code>fileEncoding = &quot;UCS-2LE&quot;    # Windows ‘Unicode’ files
+fileEncoding = &quot;UTF-8&quot;</code></pre>
+</div>
+<p>
+If you know (correctly) the file’s encoding this will almost always work. However, we know of one exception, UTF-8 files with a BOM. Some people claim that UTF-8 files should never have a BOM, but some software (apparently including Excel:mac) uses them, and many Unix-alike OSes do not accept them. So faced with a file which <code class="calibre2">file</code> reports as
+</p>
+<div class="example">
+<pre class="example1"><code>intro.dat: UTF-8 Unicode (with BOM) text</code></pre>
+</div>
+<p>
+it can be read on Windows by
+</p>
+<div class="example">
+<pre class="example1"><code>read.table(&quot;intro.dat&quot;, fileEncoding = &quot;UTF-8&quot;)</code></pre>
+</div>
+<p>
+but on a Unix-alike might need
+</p>
+<div class="example">
+<pre class="example1"><code>read.table(&quot;intro.dat&quot;, fileEncoding = &quot;UTF-8-BOM&quot;)</code></pre>
+</div>
+<p>
+(This would most likely work without specifying an encoding in a UTF-8 locale.)
+</p>
+</li>
+</ol>
+<p>
+<a href="" id="index-read_002ecsv"></a> <a href="" id="index-read_002ecsv2"></a> <a href="" id="index-read_002edelim"></a> <a href="" id="index-read_002edelim2"></a> <a href="" id="index-CSV-files-1"></a> <a href="" id="index-Sys_002elocaleconv"></a> <a href="" id="index-locales"></a>
+</p>
+<p>
+Convenience functions <code class="calibre2">read.csv</code> and <code class="calibre2">read.delim</code> provide arguments to <code class="calibre2">read.table</code> appropriate for CSV and tab-delimited files exported from spreadsheets in English-speaking locales. The variations <code class="calibre2">read.csv2</code> and <code class="calibre2">read.delim2</code> are appropriate for use in those locales where the comma is used for the decimal point and (for <code class="calibre2">read.csv2</code>) for spreadsheets which use semicolons to separate fields.
+</p>
+<p>
+If the options to <code class="calibre2">read.table</code> are specified incorrectly, the error message will usually be of the form
+</p>
+<div class="example">
+<pre class="example1"><code>Error in scan(file = file, what = what, sep = sep, : 
+        line 1 did not have 5 elements</code></pre>
+</div>
+<p>
+or
+</p>
+<div class="example">
+<pre class="example1"><code>Error in read.table(&quot;files.dat&quot;, header = TRUE) : 
+        more columns than column names</code></pre>
+</div>
+<p>
+<a href="" id="index-count_002efields"></a>
+</p>
+<p>
+This may give enough information to find the problem, but the auxiliary function <code class="calibre2">count.fields</code> can be useful to investigate further.
+</p>
+<p>
+Efficiency can be important when reading large data grids. It will help to specify <code class="calibre2">comment.char = “”</code>, <code class="calibre2">colClasses</code> as one of the atomic vector types (logical, integer, numeric, complex, character or perhaps raw) for each column, and to give <code class="calibre2">nrows</code>, the number of rows to be read (and a mild over-estimate is better than not specifying this at all). See the examples in later sections.
+</p>
+<hr />
+<p>
+<a href="" id="Fixed_002dwidth_002dformat-files"></a> <a href="" id="Fixed_002dwidth_002dformat-files-1"></a>
+</p>
+<h3 id="fixed-width-format-files" class="section">
+2.2 Fixed-width-format files
+</h3>
+<p>
+<a href="" id="index-Fixed_002dwidth_002dformat-files"></a>
+</p>
+<p>
+Sometimes data files have no field delimiters but have fields in pre-specified columns. This was very common in the days of punched cards, and is still sometimes used to save file space.
+</p>
+<p>
+<a href="" id="index-read_002efwf"></a>
+</p>
+<p>
+Function <code class="calibre2">read.fwf</code> provides a simple way to read such files, specifying a vector of field widths. The function reads the file into memory as whole lines, splits the resulting character strings, writes out a temporary tab-separated file and then calls <code class="calibre2">read.table</code>. This is adequate for small files, but for anything more complicated we recommend using the facilities of a language like <code class="calibre2">perl</code> to pre-process the file. <a href="" id="index-perl-1"></a>
+</p>
+<p>
+<a href="" id="index-read_002efortran"></a>
+</p>
+<p>
+Function <code class="calibre2">read.fortran</code> is a similar function for fixed-format files, using Fortran-style column specifications.
+</p>
+<hr />
+<p>
+<a href="" id="Data-Interchange-Format-_0028DIF_0029"></a> <a href="" id="Data-Interchange-Format-_0028DIF_0029-1"></a>
+</p>
+<h3 id="data-interchange-format-dif" class="section">
+2.3 Data Interchange Format (DIF)
+</h3>
+<p>
+<a href="" id="index-Data-Interchange-Format-_0028DIF_0029"></a>
+</p>
+<p>
+An old format sometimes used for spreadsheet-like data is DIF, or Data Interchange format.
+</p>
+<p>
+<a href="" id="index-read_002eDIF"></a>
+</p>
+<p>
+Function <code class="calibre2">read.DIF</code> provides a simple way to read such files. It takes arguments similar to <code class="calibre2">read.table</code> for assigning types to each of the columns.
+</p>
+<p>
+On Windows, spreadsheet programs often store spreadsheet data copied to the clipboard in this format; <code class="calibre2">read.DIF(“clipboard”)</code> can read it from there directly. It is slightly more robust than <code class="calibre2">read.table(“clipboard”)</code> in handling spreadsheets with empty cells.
+</p>
+<hr />
+<p>
+<a href="" id="Using-scan-directly"></a> <a href="" id="Using-scan-directly-1"></a>
+</p>
+<h3 id="using-scan-directly" class="section">
+2.4 Using <code class="calibre15">scan</code> directly
+</h3>
+<p>
+<a href="" id="index-scan-1"></a>
+</p>
+<p>
+Both <code class="calibre2">read.table</code> and <code class="calibre2">read.fwf</code> use <code class="calibre2">scan</code> to read the file, and then process the results of <code class="calibre2">scan</code>. They are very convenient, but sometimes it is better to use <code class="calibre2">scan</code> directly.
+</p>
+<p>
+Function <code class="calibre2">scan</code> has many arguments, most of which we have already covered under <code class="calibre2">read.table</code>. The most crucial argument is <code class="calibre2">what</code>, which specifies a list of modes of variables to be read from the file. If the list is named, the names are used for the components of the returned list. Modes can be numeric, character or complex, and are usually specified by an example, e.g. <code class="calibre2">0</code>, <code class="calibre2">“”</code> or <code class="calibre2">0i</code>. For example
+</p>
+<div class="example">
+<pre class="example1"><code>cat(&quot;2 3 5 7&quot;, &quot;11 13 17 19&quot;, file=&quot;ex.dat&quot;, sep=&quot;&#92;n&quot;)
+scan(file=&quot;ex.dat&quot;, what=list(x=0, y=&quot;&quot;, z=0), flush=TRUE)</code></pre>
+</div>
+<p>
+returns a list with three components and discards the fourth column in the file.
+</p>
+<p>
+<a href="" id="index-readLines"></a>
+</p>
+<p>
+There is a function <code class="calibre2">readLines</code> which will be more convenient if all you want is to read whole lines into R for further processing.
+</p>
+<p>
+One common use of <code class="calibre2">scan</code> is to read in a large matrix. Suppose file matrix.dat just contains the numbers for a 200 x 2000 matrix. Then we can use
+</p>
+<div class="example">
+<pre class="example1"><code>A &lt;- matrix(scan(&quot;matrix.dat&quot;, n = 200*2000), 200, 2000, byrow = TRUE)</code></pre>
+</div>
+<p>
+On one test this took 1 second (under Linux, 3 seconds under Windows on the same machine) whereas
+</p>
+<div class="example">
+<pre class="example1"><code>A &lt;- as.matrix(read.table(&quot;matrix.dat&quot;))</code></pre>
+</div>
+<p>
+took 10 seconds (and more memory), and
+</p>
+<div class="example">
+<pre class="example1"><code>A &lt;- as.matrix(read.table(&quot;matrix.dat&quot;, header = FALSE, nrows = 200,
+                          comment.char = &quot;&quot;, colClasses = &quot;numeric&quot;))</code></pre>
+</div>
+<p>
+took 7 seconds. The difference is almost entirely due to the overhead of reading 2000 separate short columns: were they of length 2000, <code class="calibre2">scan</code> took 9 seconds whereas <code class="calibre2">read.table</code> took 18 if used efficiently (in particular, specifying <code class="calibre2">colClasses</code>) and 125 if used naively.
+</p>
+<p>
+Note that timings can depend on the type read and the data. Consider reading a million distinct integers:
+</p>
+<div class="example">
+<pre class="example1"><code>writeLines(as.character((1+1e6):2e6), &quot;ints.dat&quot;)
+xi &lt;- scan(&quot;ints.dat&quot;, what=integer(0), n=1e6)   # .77s
+xn &lt;- scan(&quot;ints.dat&quot;, what=numeric(0), n=1e6)   # .93s
+xc &lt;- scan(&quot;ints.dat&quot;, what=character(0), n=1e6) # .85s
+xf &lt;- as.factor(xc)                              # .2s
+DF &lt;- read.table(&quot;ints.dat&quot;)                     # .5s</code></pre>
+</div>
+<p>
+and a million examples of a small set of codes:
+</p>
+<div class="example">
+<pre class="example1"><code>code &lt;- c(&quot;LMH&quot;, &quot;SJC&quot;, &quot;CHCH&quot;, &quot;SPC&quot;, &quot;SOM&quot;)
+writeLines(sample(code, 1e6, replace=TRUE), &quot;code.dat&quot;)
+y &lt;- scan(&quot;code.dat&quot;, what=character(0), n=1e6)  # .44s
+yf &lt;- as.factor(y)                               # .21s
+DF &lt;- read.table(&quot;code.dat&quot;)                     # .9s
+DF &lt;- read.table(&quot;code.dat&quot;, nrows=1e6)          # .6s</code></pre>
+</div>
+<p>
+Note that these timings depend heavily on the operating system (the basic reads in Windows take at least as twice as long as these Linux times) and on the precise state of the garbage collector.
+</p>
+<hr />
+<p>
+<a href="" id="Re_002dshaping-data"></a> <a href="" id="Re_002dshaping-data-1"></a>
+</p>
+<h3 id="re-shaping-data" class="section">
+2.5 Re-shaping data
+</h3>
+<p>
+<a href="" id="index-Re_002dshaping-data"></a>
+</p>
+<p>
+Sometimes spreadsheet data is in a compact format that gives the covariates for each subject followed by all the observations on that subject. R’s modelling functions need observations in a single column. Consider the following sample of data from repeated MRI brain measurements
+</p>
+<div class="example">
+<pre class="example1"><code> Status   Age    V1     V2     V3    V4
+      P 23646 45190  50333  55166 56271
+     CC 26174 35535  38227  37911 41184
+     CC 27723 25691  25712  26144 26398
+     CC 27193 30949  29693  29754 30772
+     CC 24370 50542  51966  54341 54273
+     CC 28359 58591  58803  59435 61292
+     CC 25136 45801  45389  47197 47126</code></pre>
+</div>
+<p>
+There are two covariates and up to four measurements on each subject. The data were exported from Excel as a file mr.csv.
+</p>
+<p>
+<a href="" id="index-stack"></a>
+</p>
+<p>
+We can use <code class="calibre2">stack</code> to help manipulate these data to give a single response.
+</p>
+<div class="example">
+<pre class="example1"><code>zz &lt;- read.csv(&quot;mr.csv&quot;, strip.white = TRUE)
+zzz &lt;- cbind(zz[gl(nrow(zz), 1, 4*nrow(zz)), 1:2], stack(zz[, 3:6]))</code></pre>
+</div>
+<p>
+with result
+</p>
+<div class="example">
+<pre class="example1"><code>      Status   Age values ind
+X1         P 23646  45190  V1
+X2        CC 26174  35535  V1
+X3        CC 27723  25691  V1
+X4        CC 27193  30949  V1
+X5        CC 24370  50542  V1
+X6        CC 28359  58591  V1
+X7        CC 25136  45801  V1
+X11        P 23646  50333  V2
+...</code></pre>
+</div>
+<p>
+<a href="" id="index-unstack_002e"></a>
+</p>
+<p>
+Function <code class="calibre2">unstack</code> goes in the opposite direction, and may be useful for exporting data.
+</p>
+<p>
+<a href="" id="index-reshape"></a>
+</p>
+<p>
+Another way to do this is to use the function <code class="calibre2">reshape</code>, by
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; reshape(zz, idvar=&quot;id&quot;,timevar=&quot;var&quot;,
+  varying=list(c(&quot;V1&quot;,&quot;V2&quot;,&quot;V3&quot;,&quot;V4&quot;)),direction=&quot;long&quot;)
+    Status   Age var    V1 id
+1.1      P 23646   1 45190  1
+2.1     CC 26174   1 35535  2
+3.1     CC 27723   1 25691  3
+4.1     CC 27193   1 30949  4
+5.1     CC 24370   1 50542  5
+6.1     CC 28359   1 58591  6
+7.1     CC 25136   1 45801  7
+1.2      P 23646   2 50333  1
+2.2     CC 26174   2 38227  2
+...</code></pre>
+</div>
+<p>
+The <code class="calibre2">reshape</code> function has a more complicated syntax than <code class="calibre2">stack</code> but can be used for data where the ‘long’ form has more than the one column in this example. With <code class="calibre2">direction=“wide”</code>, <code class="calibre2">reshape</code> can also perform the opposite transformation.
+</p>
+<p>
+Some people prefer the tools in packages <a href="https://CRAN.R-project.org/package=reshape"><strong>reshape</strong></a>, <a href="https://CRAN.R-project.org/package=reshape2"><strong>reshape2</strong></a> and <a href="https://CRAN.R-project.org/package=plyr"><strong>plyr</strong></a>.
+</p>
+<hr />
+<p>
+<a href="" id="Flat-contingency-tables"></a> <a href="" id="Flat-contingency-tables-1"></a>
+</p>
+<h3 id="flat-contingency-tables" class="section">
+2.6 Flat contingency tables
+</h3>
+<p>
+<a href="" id="index-Flat-contingency-tables"></a>
+</p>
+<p>
+Displaying higher-dimensional contingency tables in array form typically is rather inconvenient. In categorical data analysis, such information is often represented in the form of bordered two-dimensional arrays with leading rows and columns specifying the combination of factor levels corresponding to the cell counts. These rows and columns are typically “ragged” in the sense that labels are only displayed when they change, with the obvious convention that rows are read from top to bottom and columns are read from left to right. In R, such “flat” contingency tables can be created using <code class="calibre2">ftable</code>, <a href="" id="index-ftable"></a> which creates objects of class <code class="calibre2">“ftable”</code> with an appropriate print method.
+</p>
+<p>
+As a simple example, consider the R standard data set <code class="calibre2">UCBAdmissions</code> which is a 3-dimensional contingency table resulting from classifying applicants to graduate school at UC Berkeley for the six largest departments in 1973 classified by admission and sex.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; data(UCBAdmissions)
+&gt; ftable(UCBAdmissions)
+                Dept   A   B   C   D   E   F
+Admit    Gender                             
+Admitted Male        512 353 120 138  53  22
+         Female       89  17 202 131  94  24
+Rejected Male        313 207 205 279 138 351
+         Female       19   8 391 244 299 317</code></pre>
+</div>
+<p>
+The printed representation is clearly more useful than displaying the data as a 3-dimensional array.
+</p>
+<p>
+There is also a function <code class="calibre2">read.ftable</code> for reading in flat-like contingency tables from files. <a href="" id="index-read_002eftable"></a> This has additional arguments for dealing with variants on how exactly the information on row and column variables names and levels is represented. The help page for <code class="calibre2">read.ftable</code> has some useful examples. The flat tables can be converted to standard contingency tables in array form using <code class="calibre2">as.table</code>.
+</p>
+<p>
+Note that flat tables are characterized by their “ragged” display of row (and maybe also column) labels. If the full grid of levels of the row variables is given, one should instead use <code class="calibre2">read.table</code> to read in the data, and create the contingency table from this using <code class="calibre2">xtabs</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Importing-from-other-statistical-systems"></a> <a href="" id="Importing-from-other-statistical-systems-1"></a>
+</p>
+<div id="calibre_pb_8" class="calibre11">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="importing-from-other-statistical-systems.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

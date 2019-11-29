@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Data Import/Export</title>
+  <meta name="description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Data Import/Export" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  <meta name="github-repo" content="ColinFay/r-data-import-export" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Data Import/Export" />
+  
+  <meta name="twitter:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="image-files.html">
+<link rel="next" href="network-interfaces.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Data Import/Export</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Data Import/Export</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="spreadsheet-like-data.html"><a href="spreadsheet-like-data.html"><i class="fa fa-check"></i><b>2</b> Spreadsheet-like data</a></li>
+<li class="chapter" data-level="3" data-path="importing-from-other-statistical-systems.html"><a href="importing-from-other-statistical-systems.html"><i class="fa fa-check"></i><b>3</b> Importing from other statistical systems</a></li>
+<li class="chapter" data-level="4" data-path="relational-databases.html"><a href="relational-databases.html"><i class="fa fa-check"></i><b>4</b> Relational databases</a></li>
+<li class="chapter" data-level="5" data-path="binary-files.html"><a href="binary-files.html"><i class="fa fa-check"></i><b>5</b> Binary files</a></li>
+<li class="chapter" data-level="6" data-path="image-files.html"><a href="image-files.html"><i class="fa fa-check"></i><b>6</b> Image files</a></li>
+<li class="chapter" data-level="7" data-path="connections.html"><a href="connections.html"><i class="fa fa-check"></i><b>7</b> Connections</a></li>
+<li class="chapter" data-level="8" data-path="network-interfaces.html"><a href="network-interfaces.html"><i class="fa fa-check"></i><b>8</b> Network interfaces</a></li>
+<li class="chapter" data-level="9" data-path="reading-excel-spreadsheets.html"><a href="reading-excel-spreadsheets.html"><i class="fa fa-check"></i><b>9</b> Reading Excel spreadsheets</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>10</b> Appendix A References</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and variable index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Import/Export</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="connections" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> Connections</h1>
+<p>
+<a href="" id="index-Connections"></a>
+</p>
+<p>
+<em>Connections</em> are used in R in the sense of Chambers (1998) and Ripley (2001), a set of functions to replace the use of file names by a flexible interface to file-like objects.
+</p>
+<hr />
+<p>
+<a href="" id="Types-of-connections"></a> <a href="" id="Types-of-connections-1"></a>
+</p>
+<h3 id="types-of-connections" class="section">
+7.1 Types of connections
+</h3>
+<p>
+<a href="" id="index-Connections-1"></a> <a href="" id="index-file"></a> <a href="" id="index-File-connections"></a>
+</p>
+<p>
+The most familiar type of connection will be a file, and file connections are created by function <code class="calibre2">file</code>. File connections can (if the OS will allow it for the particular file) be opened for reading or writing or appending, in text or binary mode. In fact, files can be opened for both reading and writing, and R keeps a separate file position for reading and writing.
+</p>
+<p>
+<a href="" id="index-open"></a> <a href="" id="index-close-1"></a>
+</p>
+<p>
+Note that by default a connection is not opened when it is created. The rule is that a function using a connection should open a connection (needed) if the connection is not already open, and close a connection after use if it opened it. In brief, leave the connection in the state you found it in. There are generic functions <code class="calibre2">open</code> and <code class="calibre2">close</code> with methods to explicitly open and close connections.
+</p>
+<p>
+<a href="" id="index-gzfile"></a> <a href="" id="index-bzfile"></a> <a href="" id="index-Compressed-files"></a>
+</p>
+<p>
+Files compressed via the algorithm used by <code class="calibre2">gzip</code> can be used as connections created by the function <code class="calibre2">gzfile</code>, whereas files compressed by <code class="calibre2">bzip2</code> can be used via <code class="calibre2">bzfile</code>.
+</p>
+<p>
+<a href="" id="index-Terminal-connections"></a> <a href="" id="index-stdin"></a> <a href="" id="index-stdout"></a> <a href="" id="index-stderr"></a>
+</p>
+<p>
+Unix programmers are used to dealing with special files <code class="calibre2">stdin</code>, <code class="calibre2">stdout</code> and <code class="calibre2">stderr</code>. These exist as <em>terminal connections</em> in R. They may be normal files, but they might also refer to input from and output to a GUI console. (Even with the standard Unix R interface, <code class="calibre2">stdin</code> refers to the lines submitted from <code class="calibre2">readline</code> rather than a file.)
+</p>
+<p>
+The three terminal connections are always open, and cannot be opened or closed. <code class="calibre2">stdout</code> and <code class="calibre2">stderr</code> are conventionally used for normal output and error messages respectively. They may normally go to the same place, but whereas normal output can be re-directed by a call to <code class="calibre2">sink</code>, error output is sent to <code class="calibre2">stderr</code> unless re-directed by <code class="calibre2">sink, type=“message”)</code>. Note carefully the language used here: the connections cannot be re-directed, but output can be sent to other connections.
+</p>
+<p>
+<a href="" id="index-Text-connections"></a> <a href="" id="index-textConnection"></a>
+</p>
+<p>
+<em>Text connections</em> are another source of input. They allow R character vectors to be read as if the lines were being read from a text file. A text connection is created and opened by a call to <code class="calibre2">textConnection</code>, which copies the current contents of the character vector to an internal buffer at the time of creation.
+</p>
+<p>
+Text connections can also be used to capture R output to a character vector. <code class="calibre2">textConnection</code> can be asked to create a new character object or append to an existing one, in both cases in the user’s workspace. The connection is opened by the call to <code class="calibre2">textConnection</code>, and at all times the complete lines output to the connection are available in the R object. Closing the connection writes any remaining output to a final element of the character vector.
+</p>
+<p>
+<a href="" id="index-Pipe-connections"></a> <a href="" id="index-pipe"></a>
+</p>
+<p>
+<em>Pipes</em> are a special form of file that connects to another process, and pipe connections are created by the function <code class="calibre2">pipe</code>. Opening a pipe connection for writing (it makes no sense to append to a pipe) runs an OS command, and connects its standard input to whatever R then writes to that connection. Conversely, opening a pipe connection for input runs an OS command and makes its standard output available for R input from that connection.
+</p>
+<p>
+<a href="" id="index-URL-connections"></a> <a href="" id="index-url"></a>
+</p>
+<p>
+URLs of types ‘<a href="http://" class="uri">http://</a>’, ‘<a href="https://" class="uri">https://</a>’, ‘<a href="ftp://" class="uri">ftp://</a>’ and ‘<a href="file://" class="uri">file://</a>’ can be read from using the function <code class="calibre2">url</code>. For convenience, <code class="calibre2">file</code> will also accept these as the file specification and call <code class="calibre2">url</code>.
+</p>
+<p>
+<a href="" id="index-Sockets"></a> <a href="" id="index-socketConnection"></a>
+</p>
+<p>
+Sockets can also be used as connections via function <code class="calibre2">socketConnection</code> on platforms which support Berkeley-like sockets (most Unix systems, Linux and Windows). Sockets can be written to or read from, and both client and server sockets can be used.
+</p>
+<hr />
+<p>
+<a href="" id="Output-to-connections"></a> <a href="" id="Output-to-connections-1"></a>
+</p>
+<h3 id="output-to-connections" class="section">
+7.2 Output to connections
+</h3>
+<p>
+<a href="" id="index-Connections-2"></a> <a href="" id="index-cat-1"></a> <a href="" id="index-write-1"></a> <a href="" id="index-write_002etable-1"></a> <a href="" id="index-sink-1"></a>
+</p>
+<p>
+We have described functions <code class="calibre2">cat</code>, <code class="calibre2">write</code>, <code class="calibre2">write.table</code> and <code class="calibre2">sink</code> as writing to a file, possibly appending to a file if argument <code class="calibre2">append = TRUE</code>, and this is what they did prior to R version 1.2.0.
+</p>
+<p>
+The current behaviour is equivalent, but what actually happens is that when the <code class="calibre2">file</code> argument is a character string, a file connection is opened (for writing or appending) and closed again at the end of the function call. If we want to repeatedly write to the same file, it is more efficient to explicitly declare and open the connection, and pass the connection object to each call to an output function. This also makes it possible to write to pipes, which was implemented earlier in a limited way via the syntax <code class="calibre2">file = “|cmd”</code> (which can still be used).
+</p>
+<p>
+<a href="" id="index-writeLines"></a>
+</p>
+<p>
+There is a function <code class="calibre2">writeLines</code> to write complete text lines to a connection.
+</p>
+<p>
+Some simple examples are
+</p>
+<div class="example">
+<pre class="example1"><code>zz &lt;- file(&quot;ex.data&quot;, &quot;w&quot;)  # open an output file connection
+cat(&quot;TITLE extra line&quot;, &quot;2 3 5 7&quot;, &quot;&quot;, &quot;11 13 17&quot;, 
+    file = zz, sep = &quot;&#92;n&quot;)
+cat(&quot;One more line&#92;n&quot;, file = zz)
+close(zz)
+
+## convert decimal point to comma in output, using a pipe (Unix)
+## both R strings and (probably) the shell need &#92; doubled
+zz &lt;- pipe(paste(&quot;sed s/&#92;&#92;&#92;&#92;./,/ &gt;&quot;, &quot;outfile&quot;), &quot;w&quot;)
+cat(format(round(rnorm(100), 4)), sep = &quot;&#92;n&quot;, file = zz)
+close(zz)
+## now look at the output file:
+file.show(&quot;outfile&quot;, delete.file = TRUE)
+
+## capture R output: use examples from help(lm)
+zz &lt;- textConnection(&quot;ex.lm.out&quot;, &quot;w&quot;)
+sink(zz)
+example(lm, prompt.echo = &quot;&gt; &quot;)
+sink()
+close(zz)
+## now ‘ex.lm.out’ contains the output for futher processing.
+## Look at it by, e.g.,
+cat(ex.lm.out, sep = &quot;&#92;n&quot;)</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Input-from-connections"></a> <a href="" id="Input-from-connections-1"></a>
+</p>
+<h3 id="input-from-connections" class="section">
+7.3 Input from connections
+</h3>
+<p>
+<a href="" id="index-scan-2"></a> <a href="" id="index-read_002etable-1"></a> <a href="" id="index-readLines-1"></a>
+</p>
+<p>
+The basic functions to read from connections are <code class="calibre2">scan</code> and <code class="calibre2">readLines</code>. These take a character string argument and open a file connection for the duration of the function call, but explicitly opening a file connection allows a file to be read sequentially in different formats.
+</p>
+<p>
+Other functions that call <code class="calibre2">scan</code> can also make use of connections, in particular <code class="calibre2">read.table</code>.
+</p>
+<p>
+Some simple examples are
+</p>
+<div class="example">
+<pre class="example1"><code>## read in file created in last examples
+readLines(&quot;ex.data&quot;)
+unlink(&quot;ex.data&quot;)
+
+## read listing of current directory (Unix)
+readLines(pipe(&quot;ls -1&quot;))
+
+# remove trailing commas from an input file.
+# Suppose we are given a file ‘data’ containing
+450, 390, 467, 654,  30, 542, 334, 432, 421,
+357, 497, 493, 550, 549, 467, 575, 578, 342,
+446, 547, 534, 495, 979, 479
+# Then read this by
+scan(pipe(&quot;sed -e s/,$// data&quot;), sep=&quot;,&quot;)</code></pre>
+</div>
+<p>
+<a href="" id="index-URL-connections-1"></a>
+</p>
+<p>
+For convenience, if the <code class="calibre2">file</code> argument specifies a FTP, HTTP or HTTPS URL, the URL is opened for reading via <code class="calibre2">url</code>. Specifying files via ‘<a href="file://foo.bar" class="uri">file://foo.bar</a>’ is also allowed.
+</p>
+<hr />
+<p>
+<a href="" id="Pushback"></a> <a href="" id="Pushback-1"></a>
+</p>
+<h4 id="pushback" class="subsection">
+7.3.1 Pushback
+</h4>
+<p>
+<a href="" id="index-pushBack_002e"></a> <a href="" id="index-Pushback-on-a-connection"></a>
+</p>
+<p>
+C programmers may be familiar with the <code class="calibre2">ungetc</code> function to push back a character onto a text input stream. R connections have the same idea in a more powerful way, in that an (essentially) arbitrary number of lines of text can be pushed back onto a connection via a call to <code class="calibre2">pushBack</code>.
+</p>
+<p>
+Pushbacks operate as a stack, so a read request first uses each line from the most recently pushbacked text, then those from earlier pushbacks and finally reads from the connection itself. Once a pushbacked line is read completely, it is cleared. The number of pending lines pushed back can be found via a call to <code class="calibre2">pushBackLength</code>. <a href="" id="index-pushBackLength"></a>
+</p>
+<p>
+A simple example will show the idea.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; zz &lt;- textConnection(LETTERS)
+&gt; readLines(zz, 2)
+[1] &quot;A&quot; &quot;B&quot;
+&gt; scan(zz, &quot;&quot;, 4)
+Read 4 items
+[1] &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;F&quot;
+&gt; pushBack(c(&quot;aa&quot;, &quot;bb&quot;), zz)
+&gt; scan(zz, &quot;&quot;, 4)
+Read 4 items
+[1] &quot;aa&quot; &quot;bb&quot; &quot;G&quot;  &quot;H&quot; 
+&gt; close(zz)</code></pre>
+</div>
+<p>
+Pushback is only available for connections opened for input in text mode.
+</p>
+<hr />
+<p>
+<a href="" id="Listing-and-manipulating-connections"></a> <a href="" id="Listing-and-manipulating-connections-1"></a>
+</p>
+<h3 id="listing-and-manipulating-connections" class="section">
+7.4 Listing and manipulating connections
+</h3>
+<p>
+<a href="" id="index-Connections-3"></a> <a href="" id="index-showConnections"></a>
+</p>
+<p>
+A summary of all the connections currently opened by the user can be found by <code class="calibre2">showConnections()</code>, and a summary of all connections, including closed and terminal connections, by <code class="calibre2">showConnections(all = TRUE)</code>
+</p>
+<p>
+<a href="" id="index-seek"></a> <a href="" id="index-isSeekable"></a>
+</p>
+<p>
+The generic function <code class="calibre2">seek</code> can be used to read and (on some connections) reset the current position for reading or writing. Unfortunately it depends on OS facilities which may be unreliable (e.g. with text files under Windows). Function <code class="calibre2">isSeekable</code> reports if <code class="calibre2">seek</code> can change the position on the connection given by its argument.
+</p>
+<p>
+<a href="" id="index-truncate"></a>
+</p>
+<p>
+The function <code class="calibre2">truncate</code> can be used to truncate a file opened for writing at its current position. It works only for <code class="calibre2">file</code> connections, and is not implemented on all platforms.
+</p>
+<hr />
+<p>
+<a href="" id="Binary-connections"></a> <a href="" id="Binary-connections-1"></a>
+</p>
+<h3 id="binary-connections" class="section">
+7.5 Binary connections
+</h3>
+<p>
+<a href="" id="index-Binary-files-1"></a> <a href="" id="index-readBin"></a> <a href="" id="index-writeBin"></a>
+</p>
+<p>
+Functions <code class="calibre2">readBin</code> and <code class="calibre2">writeBin</code> read to and write from binary connections. A connection is opened in binary mode by appending <code class="calibre2">“b”</code> to the mode specification, that is using mode <code class="calibre2">“rb”</code> for reading, and mode <code class="calibre2">“wb”</code> or <code class="calibre2">“ab”</code> (where appropriate) for writing. The functions have arguments
+</p>
+<div class="example">
+<pre class="example1"><code>readBin(con, what, n = 1, size = NA, endian = .Platform$endian) 
+writeBin(object, con, size = NA, endian = .Platform$endian) </code></pre>
+</div>
+<p>
+In each case <code class="calibre2">con</code> is a connection which will be opened if necessary for the duration of the call, and if a character string is given it is assumed to specify a file name.
+</p>
+<p>
+It is slightly simpler to describe writing, so we will do that first. <code class="calibre2">object</code> should be an atomic vector object, that is a vector of mode <code class="calibre2">numeric</code>, <code class="calibre2">integer</code>, <code class="calibre2">logical</code>, <code class="calibre2">character</code>, <code class="calibre2">complex</code> or <code class="calibre2">raw</code>, without attributes. By default this is written to the file as a stream of bytes exactly as it is represented in memory.
+</p>
+<p>
+<code class="calibre2">readBin</code> reads a stream of bytes from the file and interprets them as a vector of mode given by <code class="calibre2">what</code>. This can be either an object of the appropriate mode (e.g. <code class="calibre2">what=integer()</code>) or a character string describing the mode (one of the five given in the previous paragraph or <code class="calibre2">“double”</code> or <code class="calibre2">“int”</code>). Argument <code class="calibre2">n</code> specifies the maximum number of vector elements to read from the connection: if fewer are available a shorter vector will be returned. Argument <code class="calibre2">signed</code> allows 1-byte and 2-byte integers to be read as signed (the default) or unsigned integers.
+</p>
+<p>
+The remaining two arguments are used to write or read data for interchange with another program or another platform. By default binary data is transferred directly from memory to the connection or <em>vice versa</em>. This will not suffice if the data are to be transferred to a machine with a different architecture, but between almost all R platforms the only change needed is that of byte-order. Common PCs (‘ix86’-based and ‘x86_64’-based machines), Compaq Alpha and Vaxen are <em>little-endian</em>, whereas Sun Sparc, mc680x0 series, IBM R6000, SGI and most others are <em>big-endian</em>. (Network byte-order (as used by XDR, eXternal Data Representation) is big-endian.) To transfer to or from other programs we may need to do more, for example to read 16-bit integers or write single-precision real numbers. This can be done using the <code class="calibre2">size</code> argument, which (usually) allows sizes 1, 2, 4, 8 for integers and logicals, and sizes 4, 8 and perhaps 12 or 16 for reals. Transferring at different sizes can lose precision, and should not be attempted for vectors containing <code class="calibre2">NA</code>’s.
+</p>
+<p>
+<a href="" id="index-readChar"></a> <a href="" id="index-writeChar"></a>
+</p>
+<p>
+Character strings are read and written in C format, that is as a string of bytes terminated by a zero byte. Functions <code class="calibre2">readChar</code> and <code class="calibre2">writeChar</code> provide greater flexibility.
+</p>
+<hr />
+<p>
+<a href="" id="Special-values"></a> <a href="" id="Special-values-1"></a>
+</p>
+<h4 id="special-values" class="subsection">
+7.5.1 Special values
+</h4>
+<p>
+Functions <code class="calibre2">readBin</code> and <code class="calibre2">writeBin</code> will pass missing and special values, although this should not be attempted if a size change is involved.
+</p>
+<p>
+The missing value for R logical and integer types is <code class="calibre2">INT_MIN</code>, the smallest representable <code class="calibre2">int</code> defined in the C header limits.h, normally corresponding to the bit pattern <code class="calibre2">0x80000000</code>.
+</p>
+<p>
+The representation of the special values for R numeric and complex types is machine-dependent, and possibly also compiler-dependent. The simplest way to make use of them is to link an external application against the standalone <code class="calibre2">Rmath</code> library which exports double constants <code class="calibre2">NA_REAL</code>, <code class="calibre2">R_PosInf</code> and <code class="calibre2">R_NegInf</code>, and include the header Rmath.h which defines the macros <code class="calibre2">ISNAN</code> and <code class="calibre2">R_FINITE</code>.
+</p>
+<p>
+If that is not possible, on all current platforms IEC 60559 (aka IEEE 754) arithmetic is used, so standard C facilities can be used to test for or set <code class="calibre2">Inf</code>, <code class="calibre2">-Inf</code> and <code class="calibre2">NaN</code> values. On such platforms <code class="calibre2">NA</code> is represented by the <code class="calibre2">NaN</code> value with low-word <code class="calibre2">0x7a2</code> (1954 in decimal).
+</p>
+<p>
+Character missing values are written as <code class="calibre2">NA</code>, and there are no provision to recognize character values as missing (as this can be done by re-assigning them once read).
+</p>
+<hr />
+<p>
+<a href="" id="Network-interfaces"></a> <a href="" id="Network-interfaces-1"></a>
+</p>
+<div id="calibre_pb_18" class="calibre11">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="image-files.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="network-interfaces.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

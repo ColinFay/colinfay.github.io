@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="arrays-and-matrices.html">
+<link rel="next" href="reading-data-from-files.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lists-and-data-frames" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Lists and data frames</h1>
+<hr />
+<p>
+<a href="" id="Lists"></a> <a href="" id="Lists-1"></a>
+</p>
+<h3 id="lists" class="section">
+6.1 Lists
+</h3>
+<p>
+<a href="" id="index-Lists"></a>
+</p>
+<p>
+An R <em>list</em> is an object consisting of an ordered collection of objects known as its <em>components</em>.
+</p>
+<p>
+There is no particular need for the components to be of the same mode or type, and, for example, a list could consist of a numeric vector, a logical value, a matrix, a complex vector, a character array, a function, and so on. Here is a simple example of how to make a list:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; Lst &lt;- list(name=&quot;Fred&quot;, wife=&quot;Mary&quot;, no.children=3,
+              child.ages=c(4,7,9))</code></pre>
+</div>
+<p>
+<a href="" id="index-list"></a>
+</p>
+<p>
+Components are always <em>numbered</em> and may always be referred to as such. Thus if <code class="calibre2">Lst</code> is the name of a list with four components, these may be individually referred to as <code class="calibre2">Lst[[1]]</code>, <code class="calibre2">Lst[[2]]</code>, <code class="calibre2">Lst[[3]]</code> and <code class="calibre2">Lst[[4]]</code>. If, further, <code class="calibre2">Lst[[4]]</code> is a vector subscripted array then <code class="calibre2">Lst[[4]][1]</code> is its first entry.
+</p>
+<p>
+If <code class="calibre2">Lst</code> is a list, then the function <code class="calibre2">length(Lst)</code> gives the number of (top level) components it has.
+</p>
+<p>
+Components of lists may also be <em>named</em>, and in this case the component may be referred to either by giving the component name as a character string in place of the number in double square brackets, or, more conveniently, by giving an expression of the form
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; name$component_name</code></pre>
+</div>
+<p>
+for the same thing.
+</p>
+<p>
+This is a very useful convention as it makes it easier to get the right component if you forget the number.
+</p>
+<p>
+So in the simple example given above:
+</p>
+<p>
+<code class="calibre2">Lst<span class="math inline">\(name&lt;/code&gt; is the same as &lt;code class=&quot;calibre2&quot;&gt;Lst[[1]]&lt;/code&gt; and is the string &lt;code class=&quot;calibre2&quot;&gt;&amp;quot;Fred&amp;quot;&lt;/code&gt;,&lt;/p&gt; &lt;p&gt;&lt;code class=&quot;calibre2&quot;&gt;Lst\)</span>wife</code> is the same as <code class="calibre2">Lst[[2]]</code> and is the string <code class="calibre2">“Mary”</code>,
+</p>
+<p>
+<code class="calibre2">Lst<span class="math inline">\(child.ages[1]&lt;/code&gt; is the same as &lt;code class=&quot;calibre2&quot;&gt;Lst[[4]][1]&lt;/code&gt; and is the number &lt;code class=&quot;calibre2&quot;&gt;4&lt;/code&gt;.&lt;/p&gt; &lt;p&gt;Additionally, one can also use the names of the list components in double square brackets, i.e., &lt;code class=&quot;calibre2&quot;&gt;Lst[[&amp;quot;name&amp;quot;]]&lt;/code&gt; is the same as &lt;code class=&quot;calibre2&quot;&gt;Lst\)</span>name</code>. This is especially useful, when the name of the component to be extracted is stored in another variable as in
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; x &lt;- &quot;name&quot;; Lst[[x]]</code></pre>
+</div>
+<p>
+It is very important to distinguish <code class="calibre2">Lst[[1]]</code> from <code class="calibre2">Lst[1]</code>. ‘<code class="calibre2">[[…]]</code>’ is the operator used to select a single element, whereas ‘<code class="calibre2">[…]</code>’ is a general subscripting operator. Thus the former is the <em>first object in the list</em> <code class="calibre2">Lst</code>, and if it is a named list the name is <em>not</em> included. The latter is a <em>sublist of the list <code class="calibre2">Lst</code> consisting of the first entry only. If it is a named list, the names are transferred to the sublist.</em>
+</p>
+<p>
+The names of components may be abbreviated down to the minimum number of letters needed to identify them uniquely. Thus <code class="calibre2">Lst<span class="math inline">\(coefficients&lt;/code&gt; may be minimally specified as &lt;code class=&quot;calibre2&quot;&gt;Lst\)</span>coe</code> and <code class="calibre2">Lst<span class="math inline">\(covariance&lt;/code&gt; as &lt;code class=&quot;calibre2&quot;&gt;Lst\)</span>cov</code>.
+</p>
+<p>
+The vector of names is in fact simply an attribute of the list like any other and may be handled as such. Other structures besides lists may, of course, similarly be given a <em>names</em> attribute also.
+</p>
+<hr />
+<p>
+<a href="" id="Constructing-and-modifying-lists"></a> <a href="" id="Constructing-and-modifying-lists-1"></a>
+</p>
+<h3 id="constructing-and-modifying-lists" class="section">
+6.2 Constructing and modifying lists
+</h3>
+<p>
+New lists may be formed from existing objects by the function <code class="calibre2">list()</code>. An assignment of the form
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; Lst &lt;- list(name_1=object_1, …, name_m=object_m)</code></pre>
+</div>
+<p>
+sets up a list <code class="calibre2">Lst</code> of <em>m</em> components using object_1, …, object_m for the components and giving them names as specified by the argument names, (which can be freely chosen). If these names are omitted, the components are numbered only. The components used to form the list are <em>copied</em> when forming the new list and the originals are not affected.
+</p>
+<p>
+Lists, like any subscripted object, can be extended by specifying additional components. For example
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; Lst[5] &lt;- list(matrix=Mat)</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Concatenating-lists"></a> <a href="" id="Concatenating-lists-1"></a>
+</p>
+<h4 id="concatenating-lists" class="subheading">
+6.2.1 Concatenating lists
+</h4>
+<p>
+<a href="" id="index-Concatenating-lists"></a> <a href="" id="index-c-3"></a>
+</p>
+<p>
+When the concatenation function <code class="calibre2">c()</code> is given list arguments, the result is an object of mode list also, whose components are those of the argument lists joined together in sequence.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; list.ABC &lt;- c(list.A, list.B, list.C)</code></pre>
+</div>
+<p>
+Recall that with vector objects as arguments the concatenation function similarly joined together all arguments into a single vector structure. In this case all other attributes, such as <code class="calibre2">dim</code> attributes, are discarded.
+</p>
+<hr />
+<p>
+<a href="" id="Data-frames"></a> <a href="" id="Data-frames-1"></a>
+</p>
+<h3 id="data-frames" class="section">
+6.3 Data frames
+</h3>
+<p>
+<a href="" id="index-Data-frames"></a>
+</p>
+<p>
+A <em>data frame</em> is a list with class <code class="calibre2">“data.frame”</code>. There are restrictions on lists that may be made into data frames, namely
+</p>
+<ul>
+<li>
+The components must be vectors (numeric, character, or logical), factors, numeric matrices, lists, or other data frames.
+</li>
+<li>
+Matrices, lists, and data frames provide as many variables to the new data frame as they have columns, elements, or variables, respectively.
+</li>
+<li>
+Numeric vectors, logicals and factors are included as is, and by default<a href="023-R-intro.html#FOOT18" id="DOCF18"><sup>18</sup></a> character vectors are coerced to be factors, whose levels are the unique values appearing in the vector.
+</li>
+<li>
+Vector structures appearing as variables of the data frame must all have the <em>same length</em>, and matrix structures must all have the same <em>row size</em>.
+</li>
+</ul>
+<p>
+A data frame may for many purposes be regarded as a matrix with columns possibly of differing modes and attributes. It may be displayed in matrix form, and its rows and columns extracted using matrix indexing conventions.
+</p>
+<hr />
+<p>
+<a href="" id="Making-data-frames"></a> <a href="" id="Making-data-frames-1"></a>
+</p>
+<h4 id="making-data-frames" class="subheading">
+6.3.1 Making data frames
+</h4>
+<p>
+Objects satisfying the restrictions placed on the columns (components) of a data frame may be used to form one using the function <code class="calibre2">data.frame</code>: <a href="" id="index-data_002eframe"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; accountants &lt;- data.frame(home=statef, loot=incomes, shot=incomef)</code></pre>
+</div>
+<p>
+A list whose components conform to the restrictions of a data frame may be <em>coerced</em> into a data frame using the function <code class="calibre2">as.data.frame()</code> <a href="" id="index-as_002edata_002eframe"></a>
+</p>
+<p>
+The simplest way to construct a data frame from scratch is to use the <code class="calibre2">read.table()</code> function to read an entire data frame from an external file. This is discussed further in <a href="lists-and-data-frames.html#Reading-data-from-files">Reading data from files</a>.
+</p>
+<hr />
+<p>
+<a href="" id="attach_0028_0029-and-detach_0028_0029"></a> <a href="" id="attach_0028_0029-and-detach_0028_0029-1"></a>
+</p>
+<h4 id="attach-and-detach" class="subheading">
+6.3.2 <code class="calibre2">attach()</code> and <code class="calibre2">detach()</code>
+</h4>
+<p>
+<a href="" id="index-attach"></a> <a href="" id="index-detach"></a>
+</p>
+<p>
+The <code class="calibre2"><span class="math inline">\(&lt;/code&gt; notation, such as &lt;code class=&quot;calibre2&quot;&gt;accountants\)</span>home</code>, for list components is not always very convenient. A useful facility would be somehow to make the components of a list or data frame temporarily visible as variables under their component name, without the need to quote the list name explicitly each time.
+</p>
+<p>
+The <code class="calibre2">attach()</code> function takes a ‘database’ such as a list or data frame as its argument. Thus suppose <code class="calibre2">lentils</code> is a data frame with three variables <code class="calibre2">lentils<span class="math inline">\(u&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;lentils\)</span>v</code>, <code class="calibre2">lentils<span class="math inline">\(w&lt;/code&gt;. The attach&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;&amp;gt; attach(lentils)&lt;/code&gt;&lt;/pre&gt; &lt;/div&gt; &lt;p&gt;places the data frame in the search path at position 2, and provided there are no variables &lt;code class=&quot;calibre2&quot;&gt;u&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;v&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;w&lt;/code&gt; in position 1, &lt;code class=&quot;calibre2&quot;&gt;u&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;v&lt;/code&gt; and &lt;code class=&quot;calibre2&quot;&gt;w&lt;/code&gt; are available as variables from the data frame in their own right. At this point an assignment such as&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;&amp;gt; u &amp;lt;- v+w&lt;/code&gt;&lt;/pre&gt; &lt;/div&gt; &lt;p&gt;does not replace the component &lt;code class=&quot;calibre2&quot;&gt;u&lt;/code&gt; of the data frame, but rather masks it with another variable &lt;code class=&quot;calibre2&quot;&gt;u&lt;/code&gt; in the working directory at position 1 on the search path. To make a permanent change to the data frame itself, the simplest way is to resort once again to the &lt;code class=&quot;calibre2&quot;&gt;\)</span></code> notation:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; lentils$u &lt;- v+w</code></pre>
+</div>
+<p>
+However the new value of component <code class="calibre2">u</code> is not visible until the data frame is detached and attached again.
+</p>
+<p>
+To detach a data frame, use the function
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; detach()</code></pre>
+</div>
+<p>
+More precisely, this statement detaches from the search path the entity currently at position 2. Thus in the present context the variables <code class="calibre2">u</code>, <code class="calibre2">v</code> and <code class="calibre2">w</code> would be no longer visible, except under the list notation as <code class="calibre2">lentils<span class="math inline">\(u&lt;/code&gt; and so on. Entities at positions greater than 2 on the search path can be detached by giving their number to &lt;code class=&quot;calibre2&quot;&gt;detach&lt;/code&gt;, but it is much safer to always use a name, for example by &lt;code class=&quot;calibre2&quot;&gt;detach(lentils)&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;detach(&amp;quot;lentils&amp;quot;)&lt;/code&gt;&lt;/p&gt; &lt;blockquote&gt; &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; In R lists and data frames can only be attached at position 2 or above, and what is attached is a &lt;em&gt;copy&lt;/em&gt; of the original object. You can alter the attached values &lt;em&gt;via&lt;/em&gt; &lt;code class=&quot;calibre2&quot;&gt;assign&lt;/code&gt;, but the original list or data frame is unchanged.&lt;/p&gt; &lt;/blockquote&gt; &lt;hr /&gt; &lt;p&gt;&lt;a href=&quot;&quot; id=&quot;Working-with-data-frames&quot;&gt;&lt;/a&gt; &lt;a href=&quot;&quot; id=&quot;Working-with-data-frames-1&quot;&gt;&lt;/a&gt;&lt;/p&gt; &lt;h4 id=&quot;working-with-data-frames&quot; class=&quot;subheading&quot;&gt;6.3.3 Working with data frames&lt;/h4&gt; &lt;p&gt;A useful convention that allows you to work with many different problems comfortably together in the same working directory is&lt;/p&gt; &lt;ul&gt; &lt;li&gt;gather together all variables for any well defined and separate problem in a data frame under a suitably informative name;&lt;/li&gt; &lt;li&gt;when working with a problem attach the appropriate data frame at position 2, and use the working directory at level 1 for operational quantities and temporary variables;&lt;/li&gt; &lt;li&gt;before leaving a problem, add any variables you wish to keep for future reference to the data frame using the &lt;code class=&quot;calibre2&quot;&gt;\)</span></code> form of assignment, and then <code class="calibre2">detach()</code>;
+</li>
+<li>
+finally remove all unwanted variables from the working directory and keep it as clean of left-over temporary variables as possible.
+</li>
+</ul>
+<p>
+In this way it is quite simple to work with many problems in the same directory, all of which have variables named <code class="calibre2">x</code>, <code class="calibre2">y</code> and <code class="calibre2">z</code>, for example.
+</p>
+<hr />
+<p>
+<a href="" id="Attaching-arbitrary-lists"></a> <a href="" id="Attaching-arbitrary-lists-1"></a>
+</p>
+<h4 id="attaching-arbitrary-lists" class="subheading">
+6.3.4 Attaching arbitrary lists
+</h4>
+<p>
+<code class="calibre2">attach()</code> is a generic function that allows not only directories and data frames to be attached to the search path, but other classes of object as well. In particular any object of mode <code class="calibre2">“list”</code> may be attached in the same way:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; attach(any.old.list)</code></pre>
+</div>
+<p>
+Anything that has been attached can be detached by <code class="calibre2">detach</code>, by position number or, preferably, by name.
+</p>
+<hr />
+<p>
+<a href="" id="Managing-the-search-path"></a> <a href="" id="Managing-the-search-path-1"></a>
+</p>
+<h4 id="managing-the-search-path" class="subheading">
+6.3.5 Managing the search path
+</h4>
+<p>
+<a href="" id="index-search"></a> <a href="" id="index-Search-path"></a>
+</p>
+<p>
+The function <code class="calibre2">search</code> shows the current search path and so is a very useful way to keep track of which data frames and lists (and packages) have been attached and detached. Initially it gives
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; search()
+[1] &quot;.GlobalEnv&quot;   &quot;Autoloads&quot;    &quot;package:base&quot;</code></pre>
+</div>
+<p>
+where <code class="calibre2">.GlobalEnv</code> is the workspace.<a href="023-R-intro.html#FOOT19" id="DOCF19"><sup>19</sup></a>
+</p>
+<p>
+After <code class="calibre2">lentils</code> is attached we have
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; search()
+[1] &quot;.GlobalEnv&quot;   &quot;lentils&quot;      &quot;Autoloads&quot;    &quot;package:base&quot;
+&gt; ls(2)
+[1] &quot;u&quot; &quot;v&quot; &quot;w&quot;</code></pre>
+</div>
+<p>
+and as we see <code class="calibre2">ls</code> (or <code class="calibre2">objects</code>) can be used to examine the contents of any position on the search path.
+</p>
+<p>
+Finally, we detach the data frame and confirm it has been removed from the search path.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; detach(&quot;lentils&quot;)
+&gt; search()
+[1] &quot;.GlobalEnv&quot;   &quot;Autoloads&quot;    &quot;package:base&quot;</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Reading-data-from-files"></a> <a href="" id="Reading-data-from-files-1"></a>
+</p>
+<div id="calibre_pb_16" class="calibre8">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="arrays-and-matrices.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="reading-data-from-files.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

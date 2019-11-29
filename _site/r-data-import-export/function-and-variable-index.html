@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Data Import/Export</title>
+  <meta name="description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Data Import/Export" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  <meta name="github-repo" content="ColinFay/r-data-import-export" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Data Import/Export" />
+  
+  <meta name="twitter:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="appendix-a-references.html">
+<link rel="next" href="concept-index.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Data Import/Export</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Data Import/Export</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="spreadsheet-like-data.html"><a href="spreadsheet-like-data.html"><i class="fa fa-check"></i><b>2</b> Spreadsheet-like data</a></li>
+<li class="chapter" data-level="3" data-path="importing-from-other-statistical-systems.html"><a href="importing-from-other-statistical-systems.html"><i class="fa fa-check"></i><b>3</b> Importing from other statistical systems</a></li>
+<li class="chapter" data-level="4" data-path="relational-databases.html"><a href="relational-databases.html"><i class="fa fa-check"></i><b>4</b> Relational databases</a></li>
+<li class="chapter" data-level="5" data-path="binary-files.html"><a href="binary-files.html"><i class="fa fa-check"></i><b>5</b> Binary files</a></li>
+<li class="chapter" data-level="6" data-path="image-files.html"><a href="image-files.html"><i class="fa fa-check"></i><b>6</b> Image files</a></li>
+<li class="chapter" data-level="7" data-path="connections.html"><a href="connections.html"><i class="fa fa-check"></i><b>7</b> Connections</a></li>
+<li class="chapter" data-level="8" data-path="network-interfaces.html"><a href="network-interfaces.html"><i class="fa fa-check"></i><b>8</b> Network interfaces</a></li>
+<li class="chapter" data-level="9" data-path="reading-excel-spreadsheets.html"><a href="reading-excel-spreadsheets.html"><i class="fa fa-check"></i><b>9</b> Reading Excel spreadsheets</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>10</b> Appendix A References</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and variable index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Import/Export</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="function-and-variable-index" class="section level1">
+<h1><span class="header-section-number">Chapter 11</span> Function and variable index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="function-and-variable-index.html#Function-and-variable-index_vr_symbol-1" class="summary-letter"><strong>.</strong></a>  <br /> <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-H" class="summary-letter"><strong>H</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-W" class="summary-letter"><strong>W</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-X" class="summary-letter"><strong>X</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-1">.</a>
+</p>
+<p>
+<a href="relational-databases.html#index-_002edbf"><code class="calibre2">.dbf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-_002exls"><code class="calibre2">.xls</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-_002exls-1"><code class="calibre2">.xls</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-_002exlsx"><code class="calibre2">.xlsx</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-B">B</a>
+</p>
+<p>
+<a href="connections.html#index-bzfile"><code class="calibre2">bzfile</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-C">C</a>
+</p>
+<p>
+<a href="introduction.html#index-cat"><code class="calibre2">cat</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="connections.html#index-cat-1"><code class="calibre2">cat</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Output-to-connections">Output to connections</a>
+</p>
+<p>
+<a href="relational-databases.html#index-close"><code class="calibre2">close</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="connections.html#index-close-1"><code class="calibre2">close</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="network-interfaces.html#index-close_002esocket"><code class="calibre2">close.socket</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-from-sockets">Reading from sockets</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-count_002efields"><code class="calibre2">count.fields</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-D">D</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-data_002erestore"><code class="calibre2">data.restore</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-dataframes2xls"><code class="calibre2">dataframes2xls</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbClearResult"><code class="calibre2">dbClearResult</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbConnect"><code class="calibre2">dbConnect</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbDisconnect"><code class="calibre2">dbDisconnect</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbDriver"><code class="calibre2">dbDriver</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbExistsTable"><code class="calibre2">dbExistsTable</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbGetQuery"><code class="calibre2">dbGetQuery</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbReadTable"><code class="calibre2">dbReadTable</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbRemoveTable"><code class="calibre2">dbRemoveTable</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbSendQuery"><code class="calibre2">dbSendQuery</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-dbWriteTable"><code class="calibre2">dbWriteTable</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-F">F</a>
+</p>
+<p>
+<a href="relational-databases.html#index-fetch"><code class="calibre2">fetch</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="connections.html#index-file"><code class="calibre2">file</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="introduction.html#index-format"><code class="calibre2">format</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-ftable"><code class="calibre2">ftable</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Flat-contingency-tables">Flat contingency tables</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-G">G</a>
+</p>
+<p>
+<a href="connections.html#index-gzfile"><code class="calibre2">gzfile</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-H">H</a>
+</p>
+<p>
+<a href="binary-files.html#index-hdf5"><code class="calibre2">hdf5</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="binary-files.html#Binary-data-formats">Binary data formats</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-I">I</a>
+</p>
+<p>
+<a href="connections.html#index-isSeekable"><code class="calibre2">isSeekable</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Listing-and-manipulating-connections">Listing and manipulating connections</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-M">M</a>
+</p>
+<p>
+<a href="network-interfaces.html#index-make_002esocket"><code class="calibre2">make.socket</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-from-sockets">Reading from sockets</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-N">N</a>
+</p>
+<p>
+<a href="binary-files.html#index-netCDF"><code class="calibre2">netCDF</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="binary-files.html#Binary-data-formats">Binary data formats</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-O">O</a>
+</p>
+<p>
+<a href="relational-databases.html#index-odbcClose"><code class="calibre2">odbcClose</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-odbcConnect"><code class="calibre2">odbcConnect</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="binary-files.html#index-odbcConnectDbase"><code class="calibre2">odbcConnectDbase</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="binary-files.html#dBase-files-_0028DBF_0029">dBase files (DBF)</a>
+</p>
+<p>
+<a href="relational-databases.html#index-odbcConnectExcel"><code class="calibre2">odbcConnectExcel</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-odbcConnectExcel-1"><code class="calibre2">odbcConnectExcel</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-odbcConnectExcel2007"><code class="calibre2">odbcConnectExcel2007</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="relational-databases.html#index-odbcDriverConnect"><code class="calibre2">odbcDriverConnect</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-odbcGetInfo"><code class="calibre2">odbcGetInfo</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-odbcQuery"><code class="calibre2">odbcQuery</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="connections.html#index-open"><code class="calibre2">open</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-P">P</a>
+</p>
+<p>
+<a href="connections.html#index-pipe"><code class="calibre2">pipe</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="connections.html#index-pushBack_002e"><code class="calibre2">pushBack.</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Pushback">Pushback</a>
+</p>
+<p>
+<a href="connections.html#index-pushBackLength"><code class="calibre2">pushBackLength</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Pushback">Pushback</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-R">R</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-read_002ecsv"><code class="calibre2">read.csv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-read_002ecsv-1"><code class="calibre2">read.csv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-read_002ecsv2"><code class="calibre2">read.csv2</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<p>
+<a href="binary-files.html#index-read_002edbf"><code class="calibre2">read.dbf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="binary-files.html#dBase-files-_0028DBF_0029">dBase files (DBF)</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-read_002edelim"><code class="calibre2">read.delim</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-read_002edelim-1"><code class="calibre2">read.delim</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-read_002edelim2"><code class="calibre2">read.delim2</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-read_002eDIF"><code class="calibre2">read.DIF</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Data-Interchange-Format-_0028DIF_0029">Data Interchange Format (DIF)</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-read_002eDIF-1"><code class="calibre2">read.DIF</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-read_002edta"><code class="calibre2">read.dta</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-read_002eepiinfo"><code class="calibre2">read.epiinfo</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-read_002efortran"><code class="calibre2">read.fortran</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Fixed_002dwidth_002dformat-files">Fixed-width-format files</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-read_002eftable"><code class="calibre2">read.ftable</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Flat-contingency-tables">Flat contingency tables</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-read_002efwf"><code class="calibre2">read.fwf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Fixed_002dwidth_002dformat-files">Fixed-width-format files</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-read_002emtp"><code class="calibre2">read.mtp</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-read_002eoctave"><code class="calibre2">read.octave</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#Octave">Octave</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-read_002eS"><code class="calibre2">read.S</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="network-interfaces.html#index-read_002esocket"><code class="calibre2">read.socket</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-from-sockets">Reading from sockets</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-read_002espss"><code class="calibre2">read.spss</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-read_002esystat"><code class="calibre2">read.systat</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-read_002etable"><code class="calibre2">read.table</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<p>
+<a href="connections.html#index-read_002etable-1"><code class="calibre2">read.table</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Input-from-connections">Input from connections</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-read_002etable-2"><code class="calibre2">read.table</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-read_002exls"><code class="calibre2">read.xls</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-read_002export"><code class="calibre2">read.xport</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="connections.html#index-readBin"><code class="calibre2">readBin</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Binary-connections">Binary connections</a>
+</p>
+<p>
+<a href="connections.html#index-readChar"><code class="calibre2">readChar</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Binary-connections">Binary connections</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-readClipboard"><code class="calibre2">readClipboard</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-readLines"><code class="calibre2">readLines</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Using-scan-directly">Using scan directly</a>
+</p>
+<p>
+<a href="connections.html#index-readLines-1"><code class="calibre2">readLines</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Input-from-connections">Input from connections</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-readxl"><code class="calibre2">readxl</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-reshape"><code class="calibre2">reshape</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Re_002dshaping-data">Re-shaping data</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-S">S</a>
+</p>
+<p>
+<a href="introduction.html#index-scan"><code class="calibre2">scan</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Imports">Imports</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-scan-1"><code class="calibre2">scan</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Using-scan-directly">Using scan directly</a>
+</p>
+<p>
+<a href="connections.html#index-scan-2"><code class="calibre2">scan</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Input-from-connections">Input from connections</a>
+</p>
+<p>
+<a href="connections.html#index-seek"><code class="calibre2">seek</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Listing-and-manipulating-connections">Listing and manipulating connections</a>
+</p>
+<p>
+<a href="connections.html#index-showConnections"><code class="calibre2">showConnections</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Listing-and-manipulating-connections">Listing and manipulating connections</a>
+</p>
+<p>
+<a href="introduction.html#index-sink"><code class="calibre2">sink</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="connections.html#index-sink-1"><code class="calibre2">sink</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Output-to-connections">Output to connections</a>
+</p>
+<p>
+<a href="connections.html#index-socketConnection"><code class="calibre2">socketConnection</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="relational-databases.html#index-sqlCopy"><code class="calibre2">sqlCopy</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-sqlFetch"><code class="calibre2">sqlFetch</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-sqlFetchMore"><code class="calibre2">sqlFetchMore</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-sqlGetResults"><code class="calibre2">sqlGetResults</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-sqlQuery"><code class="calibre2">sqlQuery</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-sqlSave"><code class="calibre2">sqlSave</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-sqlTables"><code class="calibre2">sqlTables</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-stack"><code class="calibre2">stack</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Re_002dshaping-data">Re-shaping data</a>
+</p>
+<p>
+<a href="connections.html#index-stderr"><code class="calibre2">stderr</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="connections.html#index-stdin"><code class="calibre2">stdin</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="connections.html#index-stdout"><code class="calibre2">stdout</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-Sys_002elocaleconv"><code class="calibre2">Sys.localeconv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-T">T</a>
+</p>
+<p>
+<a href="connections.html#index-textConnection"><code class="calibre2">textConnection</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="connections.html#index-truncate"><code class="calibre2">truncate</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Listing-and-manipulating-connections">Listing and manipulating connections</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-U">U</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-unstack_002e"><code class="calibre2">unstack.</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Re_002dshaping-data">Re-shaping data</a>
+</p>
+<p>
+<a href="connections.html#index-url"><code class="calibre2">url</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-W">W</a>
+</p>
+<p>
+<a href="introduction.html#index-write"><code class="calibre2">write</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="connections.html#index-write-1"><code class="calibre2">write</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Output-to-connections">Output to connections</a>
+</p>
+<p>
+<a href="introduction.html#index-write_002ecsv"><code class="calibre2">write.csv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="introduction.html#index-write_002ecsv2"><code class="calibre2">write.csv2</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="binary-files.html#index-write_002edbf"><code class="calibre2">write.dbf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="binary-files.html#dBase-files-_0028DBF_0029">dBase files (DBF)</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-write_002edta"><code class="calibre2">write.dta</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="introduction.html#index-write_002eforeign"><code class="calibre2">write.foreign</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="introduction.html#index-write_002ematrix"><code class="calibre2">write.matrix</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="network-interfaces.html#index-write_002esocket"><code class="calibre2">write.socket</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-from-sockets">Reading from sockets</a>
+</p>
+<p>
+<a href="introduction.html#index-write_002etable"><code class="calibre2">write.table</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="connections.html#index-write_002etable-1"><code class="calibre2">write.table</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Output-to-connections">Output to connections</a>
+</p>
+<p>
+<a href="connections.html#index-writeBin"><code class="calibre2">writeBin</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Binary-connections">Binary connections</a>
+</p>
+<p>
+<a href="connections.html#index-writeChar"><code class="calibre2">writeChar</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Binary-connections">Binary connections</a>
+</p>
+<p>
+<a href="connections.html#index-writeLines"><code class="calibre2">writeLines</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Output-to-connections">Output to connections</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-WriteXLS"><code class="calibre2">WriteXLS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-X">X</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-XLConnect"><code class="calibre2">XLConnect</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<p>
+<a href="reading-excel-spreadsheets.html#index-xlsx"><code class="calibre2">xlsx</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="function-and-variable-index.html#Function-and-variable-index_vr_symbol-1" class="summary-letter"><strong>.</strong></a>  <br /> <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-H" class="summary-letter"><strong>H</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-W" class="summary-letter"><strong>W</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-X" class="summary-letter"><strong>X</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>
+<a href="" id="Concept-index"></a> <a href="" id="Concept-index-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="appendix-a-references.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="concept-index.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

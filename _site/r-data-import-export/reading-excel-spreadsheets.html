@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Data Import/Export</title>
+  <meta name="description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Data Import/Export" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  <meta name="github-repo" content="ColinFay/r-data-import-export" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Data Import/Export" />
+  
+  <meta name="twitter:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="network-interfaces.html">
+<link rel="next" href="appendix-a-references.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Data Import/Export</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Data Import/Export</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="spreadsheet-like-data.html"><a href="spreadsheet-like-data.html"><i class="fa fa-check"></i><b>2</b> Spreadsheet-like data</a></li>
+<li class="chapter" data-level="3" data-path="importing-from-other-statistical-systems.html"><a href="importing-from-other-statistical-systems.html"><i class="fa fa-check"></i><b>3</b> Importing from other statistical systems</a></li>
+<li class="chapter" data-level="4" data-path="relational-databases.html"><a href="relational-databases.html"><i class="fa fa-check"></i><b>4</b> Relational databases</a></li>
+<li class="chapter" data-level="5" data-path="binary-files.html"><a href="binary-files.html"><i class="fa fa-check"></i><b>5</b> Binary files</a></li>
+<li class="chapter" data-level="6" data-path="image-files.html"><a href="image-files.html"><i class="fa fa-check"></i><b>6</b> Image files</a></li>
+<li class="chapter" data-level="7" data-path="connections.html"><a href="connections.html"><i class="fa fa-check"></i><b>7</b> Connections</a></li>
+<li class="chapter" data-level="8" data-path="network-interfaces.html"><a href="network-interfaces.html"><i class="fa fa-check"></i><b>8</b> Network interfaces</a></li>
+<li class="chapter" data-level="9" data-path="reading-excel-spreadsheets.html"><a href="reading-excel-spreadsheets.html"><i class="fa fa-check"></i><b>9</b> Reading Excel spreadsheets</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>10</b> Appendix A References</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and variable index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Import/Export</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="reading-excel-spreadsheets" class="section level1">
+<h1><span class="header-section-number">Chapter 9</span> Reading Excel spreadsheets</h1>
+<p>
+<a href="" id="index-_002exls-1"></a> <a href="" id="index-_002exlsx"></a>
+</p>
+<p>
+The most common R data import/export question seems to be ‘how do I read an Excel spreadsheet’. This chapter collects together advice and options given earlier. Note that most of the advice is for pre-Excel 2007 spreadsheets and not the later .xlsx format.
+</p>
+<p>
+<a href="" id="index-read_002ecsv-1"></a> <a href="" id="index-read_002edelim-1"></a> <a href="" id="index-read_002eDIF-1"></a> <a href="" id="index-read_002etable-2"></a> <a href="" id="index-readClipboard"></a>
+</p>
+<p>
+The first piece of advice is to avoid doing so if possible! If you have access to Excel, export the data you want from Excel in tab-delimited or comma-separated form, and use <code class="calibre2">read.delim</code> or <code class="calibre2">read.csv</code> to import it into R. (You may need to use <code class="calibre2">read.delim2</code> or <code class="calibre2">read.csv2</code> in a locale that uses comma as the decimal point.) Exporting a DIF file and reading it using <code class="calibre2">read.DIF</code> is another possibility.
+</p>
+<p>
+If you do not have Excel, many other programs are able to read such spreadsheets and export in a text format on both Windows and Unix, for example Gnumeric (<a href="http://www.gnome.org/projects/gnumeric/" class="uri">http://www.gnome.org/projects/gnumeric/</a>) and OpenOffice (<a href="https://www.openoffice.org" class="uri">https://www.openoffice.org</a>). You can also cut-and-paste between the display of a spreadsheet in such a program and R: <code class="calibre2">read.table</code> will read from the R console or, under Windows, from the clipboard (via <code class="calibre2">file = “clipboard”</code> or <code class="calibre2">readClipboard</code>). The <code class="calibre2">read.DIF</code> function can also read from the clipboard.
+</p>
+<p>
+Note that an Excel .xls file is not just a spreadsheet: such files can contain many sheets, and the sheets can contain formulae, macros and so on. Not all readers can read other than the first sheet, and may be confused by other contents of the file.
+</p>
+<p>
+<a href="" id="index-odbcConnectExcel-1"></a> <a href="" id="index-odbcConnectExcel2007"></a>
+</p>
+<p>
+Windows users (of 32-bit R) can use <code class="calibre2">odbcConnectExcel</code> in package <a href="https://CRAN.R-project.org/package=RODBC"><strong>RODBC</strong></a>. This can select rows and columns from any of the sheets in an Excel spreadsheet file (at least from Excel 97–2003, depending on your ODBC drivers: by calling <code class="calibre2">odbcConnect</code> directly versions back to Excel 3.0 can be read). The version <code class="calibre2">odbcConnectExcel2007</code> will read the Excel 2007 formats as well as earlier ones (provided the drivers are installed, including with 64-bit Windows R: see <a href="relational-databases.html#RODBC">RODBC</a>). macOS users can also use <a href="https://CRAN.R-project.org/package=RODBC"><strong>RODBC</strong></a> if they have a suitable driver (e.g. that from Actual Technologies).
+</p>
+<p>
+<a href="" id="index-read_002exls"></a>
+</p>
+<p>
+<code class="calibre2">Perl</code> users have contributed a module <code class="calibre2">OLE::SpreadSheet::ParseExcel</code> and a program <code class="calibre2">xls2csv.pl</code> to convert Excel 95–2003 spreadsheets to CSV files. Package <a href="https://CRAN.R-project.org/package=gdata"><strong>gdata</strong></a> provides a basic wrapper in its <code class="calibre2">read.xls</code> function. With suitable <code class="calibre2">Perl</code> modules installed this function can also read Excel 2007 spreadsheets.
+</p>
+<p>
+<a href="" id="index-dataframes2xls"></a> <a href="" id="index-WriteXLS"></a>
+</p>
+<p>
+Packages <a href="https://CRAN.R-project.org/package=dataframes2xls"><strong>dataframes2xls</strong></a> and <a href="https://CRAN.R-project.org/package=WriteXLS"><strong>WriteXLS</strong></a> each contain a function to <em>write</em> one or more data frames to an .xls file, using Python and Perl respectively.
+</p>
+<p>
+<a href="" id="index-xlsx"></a>
+</p>
+<p>
+Packages <a href="https://CRAN.R-project.org/package=xlsx"><strong>xlsx</strong></a> can read and and manipulate Excel 2007 and later spreadsheets: it requires Java.
+</p>
+<p>
+<a href="" id="index-XLConnect"></a>
+</p>
+<p>
+Package <a href="https://CRAN.R-project.org/package=XLConnect"><strong>XLConnect</strong></a> can read, write and manipulate both Excel 97–2003 and Excel 2007/10 spreadsheets, using Java.
+</p>
+<p>
+<a href="" id="index-readxl"></a>
+</p>
+<p>
+Package <a href="https://CRAN.R-project.org/package=readxl"><strong>readxl</strong></a> can read both Excel 97–2003 and Excel 2007/10 spreadsheets, using an included C library.
+</p>
+<hr />
+<p>
+<a href="" id="References"></a> <a href="" id="References-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="network-interfaces.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-a-references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

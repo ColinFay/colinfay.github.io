@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="packages.html">
+<link rel="next" href="appendix-a-a-sample-session.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="os-facilities" class="section level1">
+<h1><span class="header-section-number">Chapter 14</span> OS facilities</h1>
+<p>
+R has quite extensive facilities to access the OS under which it is running: this allows it to be used as a scripting language and that ability is much used by R itself, for example to install packages.
+</p>
+<p>
+Because R’s own scripts need to work across all platforms, considerable effort has gone into make the scripting facilities as platform-independent as is feasible.
+</p>
+<hr />
+<p>
+<a href="" id="Files-and-directories"></a> <a href="" id="Files-and-directories-1"></a>
+</p>
+<h3 id="files-and-directories" class="section">
+14.1 Files and directories
+</h3>
+<p>
+There are many functions to manipulate files and directories. Here are pointers to some of the more commonly used ones.
+</p>
+<p>
+To create an (empty) file or directory, use <code class="calibre2">file.create</code> or <code class="calibre2">dir.create</code>. (These are the analogues of the POSIX utilities <code class="calibre2">touch</code> and <code class="calibre2">mkdir</code>.) For temporary files and directories in the R session directory see <code class="calibre2">tempfile</code>.
+</p>
+<p>
+Files can be removed by either <code class="calibre2">file.remove</code> or <code class="calibre2">unlink</code>: the latter can remove directory trees.
+</p>
+<p>
+For directory listings use <code class="calibre2">list.files</code> (also available as <code class="calibre2">dir</code>) or <code class="calibre2">list.dirs</code>. These can select files using a regular expression: to select by wildcards use <code class="calibre2">Sys.glob</code>.
+</p>
+<p>
+Many types of information on a filepath (including for example if it is a file or directory) can be found by <code class="calibre2">file.info</code>.
+</p>
+<p>
+There are several ways to find out if a file ‘exists’ (a file can exist on the filesystem and not be visible to the current user). There are functions <code class="calibre2">file.exists</code>, <code class="calibre2">file.access</code> and <code class="calibre2">file_test</code> with various versions of this test: <code class="calibre2">file_test</code> is a version of the POSIX <code class="calibre2">test</code> command for those familiar with shell scripting.
+</p>
+<p>
+Function <code class="calibre2">file.copy</code> is the R analogue of the POSIX command <code class="calibre2">cp</code>.
+</p>
+<p>
+Choosing files can be done interactively by <code class="calibre2">file.choose</code>: the Windows port has the more versatile functions <code class="calibre2">choose.files</code> and <code class="calibre2">choose.dir</code> and there are similar functions in the <strong>tcltk</strong> package: <code class="calibre2">tk_choose.files</code> and <code class="calibre2">tk_choose.dir</code>.
+</p>
+<p>
+Functions <code class="calibre2">file.show</code> and <code class="calibre2">file.edit</code> will display and edit one or more files in a way appropriate to the R port, using the facilities of a console (such as RGui on Windows or R.app on macOS) if one is in use.
+</p>
+<p>
+There is some support for <em>links</em> in the filesystem: see functions <code class="calibre2">file.link</code> and <code class="calibre2">Sys.readlink</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Filepaths"></a> <a href="" id="Filepaths-1"></a>
+</p>
+<h3 id="filepaths" class="section">
+14.2 Filepaths
+</h3>
+<p>
+With a few exceptions, R relies on the underlying OS functions to manipulate filepaths. Some aspects of this are allowed to depend on the OS, and do, even down to the version of the OS. There are POSIX standards for how OSes should interpret filepaths and many R users assume POSIX compliance: but Windows does not claim to be compliant and other OSes may be less than completely compliant.
+</p>
+<p>
+The following are some issues which have been encountered with filepaths.
+</p>
+<ul>
+<li>
+POSIX filesystems are case-sensitive, so foo.png and Foo.PNG are different files. However, the defaults on Windows and macOS are to be case-insensitive, and FAT filesystems (commonly used on removable storage) are not normally case-sensitive (and all filepaths may be mapped to lower case).
+</li>
+<li>
+Almost all the Windows’ OS services support the use of slash or backslash as the filepath separator, and R converts the known exceptions to the form required by Windows.
+</li>
+<li>
+The behaviour of filepaths with a trailing slash is OS-dependent. Such paths are not valid on Windows and should not be expected to work. POSIX-2008 requires such paths to match only directories, but earlier versions allowed them to also match files. So they are best avoided.
+</li>
+<li>
+Multiple slashes in filepaths such as /abc//def are valid on POSIX filesystems and treated as if there was only one slash. They are <em>usually</em> accepted by Windows’ OS functions. However, leading double slashes may have a different meaning.
+</li>
+<li>
+Windows’ UNC filepaths (such as \server12and \?12) are not supported, but they may work in some R functions. POSIX filesystems are allowed to treat a leading double slash specially.
+</li>
+<li>
+Windows allows filepaths containing drives and relative to the current directory on a drive, e.g. d:foo/bar refers to d:/a/b/c/foo/bar if the current directory <em>on drive d:</em> is /a/b/c. It is intended that these work, but the use of absolute paths is safer.
+</li>
+</ul>
+<p>
+Functions <code class="calibre2">basename</code> and <code class="calibre2">dirname</code> select parts of a file path: the recommended way to assemble a file path from components is <code class="calibre2">file.path</code>. Function <code class="calibre2">pathexpand</code> does ‘tilde expansion’, substituting values for home directories (the current user’s, and perhaps those of other users).
+</p>
+<p>
+On filesystems with links, a single file can be referred to by many filepaths. Function <code class="calibre2">normalizePath</code> will find a canonical filepath.
+</p>
+<p>
+Windows has the concepts of short (‘8.3’) and long file names: <code class="calibre2">normalizePath</code> will return an absolute path using long file names and <code class="calibre2">shortPathName</code> will return a version using short names. The latter does not contain spaces and uses backslash as the separator, so is sometimes useful for exporting names from R.
+</p>
+<p>
+File <em>permissions</em> are a related topic. R has support for the POSIX concepts of read/write/execute permission for owner/group/all but this may be only partially supported on the filesystem, so for example on Windows only read-only files (for the account running the R session) are recognized. Access Control Lists (ACLs) are employed on several filesystems, but do not have an agreed standard and R has no facilities to control them. Use <code class="calibre2">Sys.chmod</code> to change permissions.
+</p>
+<hr />
+<p>
+<a href="" id="System-commands"></a> <a href="" id="System-commands-1"></a>
+</p>
+<h3 id="system-commands" class="section">
+14.3 System commands
+</h3>
+<p>
+Functions <code class="calibre2">system</code> and <code class="calibre2">system2</code> are used to invoke a system command and optionally collect its output. <code class="calibre2">system2</code> is a little more general but its main advantage is that it is easier to write cross-platform code using it.
+</p>
+<p>
+<code class="calibre2">system</code> behaves differently on Windows from other OSes (because the API C call of that name does). Elsewhere it invokes a shell to run the command: the Windows port of R has a function <code class="calibre2">shell</code> to do that.
+</p>
+<p>
+To find out if the OS includes a command, use <code class="calibre2">Sys.which</code>, which attempts to do this in a cross-platform way (unfortunately it is not a standard OS service).
+</p>
+<p>
+Function <code class="calibre2">shQuote</code> will quote filepaths as needed for commands in the current OS.
+</p>
+<hr />
+<p>
+<a href="" id="Compression-and-Archives"></a> <a href="" id="Compression-and-Archives-1"></a>
+</p>
+<h3 id="compression-and-archives" class="section">
+14.4 Compression and Archives
+</h3>
+<p>
+Recent versions of R have extensive facilities to read and write compressed files, often transparently. Reading of files in R is to a vey large extent done by <em>connections</em>, and the <code class="calibre2">file</code> function which is used to open a connection to a file (or a URL) and is able to identify the compression used from the ‘magic’ header of the file.
+</p>
+<p>
+The type of compression which has been supported for longest is <code class="calibre2">gzip</code> compression, and that remains a good general compromise. Files compressed by the earlier Unix <code class="calibre2">compress</code> utility can also be read, but these are becoming rare. Two other forms of compression, those of the <code class="calibre2">bzip2</code> and <code class="calibre2">xz</code> utilities are also available. These generally achieve higher rates of compression (depending on the file, much higher) at the expense of slower decompression and much slower compression.
+</p>
+<p>
+There is some confusion between <code class="calibre2">xz</code> and <code class="calibre2">lzma</code> compression (see <a href="https://en.wikipedia.org/wiki/Xz" class="uri">https://en.wikipedia.org/wiki/Xz</a> and <a href="https://en.wikipedia.org/wiki/LZMA" class="uri">https://en.wikipedia.org/wiki/LZMA</a>): R can read files compressed by most versions of either.
+</p>
+<p>
+File archives are single files which contain a collection of files, the most common ones being ‘tarballs’ and zip files as used to distribute R packages. R can list and unpack both (see functions <code class="calibre2">untar</code> and <code class="calibre2">unzip</code>) and create both (for <code class="calibre2">zip</code> with the help of an external program).
+</p>
+<hr />
+<p>
+<a href="" id="A-sample-session"></a> <a href="" id="A-sample-session-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="packages.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-a-a-sample-session.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

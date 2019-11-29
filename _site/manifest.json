@@ -1,0 +1,3991 @@
+{
+  "version": 1,
+  "locale": "en_US",
+  "platform": "3.6.0",
+  "metadata": {
+    "appmode": "static",
+    "primary_rmd": null,
+    "primary_html": "index.html",
+    "content_category": null,
+    "has_parameters": false
+  },
+  "packages": null,
+  "files": {
+    "1-dataset-10-dataviz-with-r/index.html": {
+      "checksum": "8e00e909030db4c00a0c40c2e770d951"
+    },
+    "1-dataset-10-visualisations/index.html": {
+      "checksum": "58c4c8f0a48ff554b1937f0491d0a016"
+    },
+    "12-months-cranlogs/index.html": {
+      "checksum": "86a1fcdd70db7ecf005e5752774e2ff7"
+    },
+    "404.html": {
+      "checksum": "ec3fa494ff478b21f54095ffc0c72933"
+    },
+    "about/index.html": {
+      "checksum": "7812faa36fc046fe056f8fed7d8e8a78"
+    },
+    "active-binding-r-enigma/index.html": {
+      "checksum": "6c8a2cb591bbe2e17ebab089cbad1616"
+    },
+    "advent-code-1-2/index.html": {
+      "checksum": "58f1b314f612041e833e4f633f41680a"
+    },
+    "advent-code-3-4/index.html": {
+      "checksum": "dd172535c8e949f204f80ddb603176ce"
+    },
+    "advent-code-5-6/index.html": {
+      "checksum": "769a8bacf98ded42856752d6ab82eae1"
+    },
+    "all-i-want-for-christmas-is-a-dataviz-2/index.html": {
+      "checksum": "82549c39d1017d4e10ff61c6944ed1d7"
+    },
+    "all-i-want-for-christmas-is-a-dataviz/index.html": {
+      "checksum": "401f05f21b5ae38b5004133ac4a2e36c"
+    },
+    "assets/css/concrete.css": {
+      "checksum": "d79a8d2368ea942a6bef057c1f3c99fe"
+    },
+    "assets/css/github.css": {
+      "checksum": "e6910282ef82f6941af5c9cc6d0aeb5b"
+    },
+    "assets/css/main.css": {
+      "checksum": "bc5edaff0110f6d7b58657aeca4454f0"
+    },
+    "assets/css/normalize.css": {
+      "checksum": "112272e51c80ffe5bd01becd2ce7d656"
+    },
+    "assets/css/osgridfolio.css": {
+      "checksum": "b04d784feeffdcb882ad9629d4b3e5c6"
+    },
+    "assets/favicon.ico": {
+      "checksum": "f70ba6389758cc2cc53401f6047df937"
+    },
+    "assets/favicon.png": {
+      "checksum": "331828c5d396a44dfceb0375c581f1e1"
+    },
+    "assets/img/api_example.png": {
+      "checksum": "be84506770828769828e5a943e0b14cc"
+    },
+    "assets/img/blog/3046a9adbde177af6ad90590460c7f59-150x150.png": {
+      "checksum": "c11a9cfb2258b3c4db5a7a7ba554c417"
+    },
+    "assets/img/blog/3046a9adbde177af6ad90590460c7f59.png": {
+      "checksum": "5d8ef47fb8f8ec5c83945bf20f3cc2b9"
+    },
+    "assets/img/blog/9mJTF0PO-150x150.jpeg": {
+      "checksum": "e1a57d497a8e558de9880bf079b9f3a1"
+    },
+    "assets/img/blog/9mJTF0PO.jpeg": {
+      "checksum": "17618a9020c62271f5373e292a0c34db"
+    },
+    "assets/img/blog/a-christmas-dataviz-150x150.jpg": {
+      "checksum": "5cad847843a5cafbc38b472ad9de632a"
+    },
+    "assets/img/blog/a-christmas-dataviz-300x133.jpg": {
+      "checksum": "06a5ca82a598af525d95071f9ff88766"
+    },
+    "assets/img/blog/a-christmas-dataviz-768x341.jpg": {
+      "checksum": "a528f2b5f90a40dfff8320e5e8640576"
+    },
+    "assets/img/blog/a-christmas-dataviz.jpg": {
+      "checksum": "95f3a35b851e6fc8f7e44fa9a32ac35e"
+    },
+    "assets/img/blog/abstention-second-tour-1000x500.png": {
+      "checksum": "5379b6c0a41cc0ea840aede3cc5be301"
+    },
+    "assets/img/blog/abstention-second-tour-150x150.png": {
+      "checksum": "a559e68fd2b322e7b3e7f5432cb047a0"
+    },
+    "assets/img/blog/abstention-second-tour-300x150.png": {
+      "checksum": "fe64bd337f02b1916dba1d341a7afe08"
+    },
+    "assets/img/blog/abstention-second-tour-768x384.png": {
+      "checksum": "dda9ad29b960b9da3f332e7909a2b076"
+    },
+    "assets/img/blog/abstention-second-tour.png": {
+      "checksum": "d78f6eaf145b52931447c930b5d8b301"
+    },
+    "assets/img/blog/ai-music-150x150.jpg": {
+      "checksum": "11e3a735967099b37a8f734c15deabce"
+    },
+    "assets/img/blog/ai-music-300x141.jpg": {
+      "checksum": "34f0a74b79b9a48494fa19c62ea11856"
+    },
+    "assets/img/blog/ai-music.jpg": {
+      "checksum": "d326d6a42d2f7ec810a6666f8838179e"
+    },
+    "assets/img/blog/algorithme-big-data-150x150.jpg": {
+      "checksum": "5a3e7fa922c533795b746cbc9802d229"
+    },
+    "assets/img/blog/algorithme-big-data-300x114.jpg": {
+      "checksum": "24c2e1c081f48a18b3a0e0de305248e0"
+    },
+    "assets/img/blog/algorithme-big-data-345x198.jpg": {
+      "checksum": "5952d20298de88c9d567de54564b76ed"
+    },
+    "assets/img/blog/algorithme-big-data-400x243.jpg": {
+      "checksum": "b84f361cd301beb456a1f74d2fd81b9d"
+    },
+    "assets/img/blog/algorithme-big-data-500x243.jpg": {
+      "checksum": "e4a1f04f78127dc74b2e5bf85e0c81dd"
+    },
+    "assets/img/blog/algorithme-big-data-539x243.jpg": {
+      "checksum": "d4ca2ae1848e94febc671d3491ce8fa6"
+    },
+    "assets/img/blog/algorithme-big-data-570x243.jpg": {
+      "checksum": "9ed826c90ca68d19fdc83a14d801d388"
+    },
+    "assets/img/blog/algorithme-big-data-600x243.jpg": {
+      "checksum": "0db2d34e4c3d1e6c5234e3f96ee2e22c"
+    },
+    "assets/img/blog/algorithme-big-data.jpg": {
+      "checksum": "82c344078552d2b497fa025521281aed"
+    },
+    "assets/img/blog/alice-in-wonderland-1000x500.png": {
+      "checksum": "599b99316b8e36797dca6334b8d1f8c1"
+    },
+    "assets/img/blog/alice-in-wonderland-100x40.jpeg": {
+      "checksum": "6971069c2fd7d3d3e6223243b8f0e741"
+    },
+    "assets/img/blog/alice-in-wonderland-1024x410.jpeg": {
+      "checksum": "f7a8d8fef303be815729ba61fd9938fe"
+    },
+    "assets/img/blog/alice-in-wonderland-1200x600.png": {
+      "checksum": "e79abc7c27c652b9b9c8f6384f4f6554"
+    },
+    "assets/img/blog/alice-in-wonderland-150x150.jpeg": {
+      "checksum": "73531493e04479367b93e2d743311d4f"
+    },
+    "assets/img/blog/alice-in-wonderland-150x150.png": {
+      "checksum": "a73d4285449a1d6a031eca5a3f704a27"
+    },
+    "assets/img/blog/alice-in-wonderland-150x60.jpeg": {
+      "checksum": "4175ffd909fd303b427126a763c4a8d6"
+    },
+    "assets/img/blog/alice-in-wonderland-300x120.jpeg": {
+      "checksum": "ebfb92a9fae2c7261af99dc15c0af30b"
+    },
+    "assets/img/blog/alice-in-wonderland-300x150.png": {
+      "checksum": "2b1d73dda379bc6794cdc4258865325d"
+    },
+    "assets/img/blog/alice-in-wonderland-350x250.jpeg": {
+      "checksum": "e27f5c6db447ca06094765f18927c18b"
+    },
+    "assets/img/blog/alice-in-wonderland-400x160.jpeg": {
+      "checksum": "a0263475cb23365e4d6bd12ee1069013"
+    },
+    "assets/img/blog/alice-in-wonderland-430x172.jpeg": {
+      "checksum": "89cad3864b27256e59f2cff14142a056"
+    },
+    "assets/img/blog/alice-in-wonderland-750x300.jpeg": {
+      "checksum": "576813e9dff4757d62f42bc27d3cffdc"
+    },
+    "assets/img/blog/alice-in-wonderland-768x307.jpeg": {
+      "checksum": "92d25b28598bfd02912007f3170c8d2c"
+    },
+    "assets/img/blog/alice-in-wonderland-768x384.png": {
+      "checksum": "7bee5871bbb3eb7ae50c5a93076dcb62"
+    },
+    "assets/img/blog/alice-in-wonderland.jpeg": {
+      "checksum": "494946b7f80f619b82fa26c3b6553c01"
+    },
+    "assets/img/blog/alice-in-wonderland.png": {
+      "checksum": "9b58d75bc862ba8dbed785f7ca474a87"
+    },
+    "assets/img/blog/apero-storycode-rennes-150x150.jpg": {
+      "checksum": "4f6a8183b49df6fec9036163dcbf1be7"
+    },
+    "assets/img/blog/apero-storycode-rennes-300x133.jpg": {
+      "checksum": "20356ca7241dcec560b57d3ff9dd1819"
+    },
+    "assets/img/blog/apero-storycode-rennes-768x341.jpg": {
+      "checksum": "c939573d0520f63531d02bf028293ae2"
+    },
+    "assets/img/blog/apero-storycode-rennes.jpg": {
+      "checksum": "97403ac36981e60700e7462c98eb1275"
+    },
+    "assets/img/blog/apl.jpg": {
+      "checksum": "3f5fbff552ed56375484f3335c8184e8"
+    },
+    "assets/img/blog/artist-christmas-lastfm-1024x512.jpeg": {
+      "checksum": "7e91e5f0fe3a12ad8b0dfe9abedfc639"
+    },
+    "assets/img/blog/artist-christmas-lastfm-150x150.jpeg": {
+      "checksum": "0a65c33ec3f087d881c185bbb3adee39"
+    },
+    "assets/img/blog/artist-christmas-lastfm-300x150.jpeg": {
+      "checksum": "815fee5f15e8a3c55c8826e44157b003"
+    },
+    "assets/img/blog/artist-christmas-lastfm-768x384.jpeg": {
+      "checksum": "e2d0f38e692522df4ee35d5b027a9161"
+    },
+    "assets/img/blog/artist-christmas-lastfm-809x405.jpeg": {
+      "checksum": "3fc7eaf5bbc1ea35ee3e0a2e07745e1f"
+    },
+    "assets/img/blog/artist-christmas-lastfm.jpeg": {
+      "checksum": "910fb52d6aad97682fe221936a88829e"
+    },
+    "assets/img/blog/artistes-150x150.jpeg": {
+      "checksum": "bf7d99a007c7bf9cd248b2a54f0a43ed"
+    },
+    "assets/img/blog/artistes-300x150.jpeg": {
+      "checksum": "a99ec8590107181ebfe6a8b6944cb4af"
+    },
+    "assets/img/blog/artistes-768x384.jpeg": {
+      "checksum": "c0bbdf1ba7a0d5ce885db49628e0149a"
+    },
+    "assets/img/blog/artistes.jpeg": {
+      "checksum": "a40c5a03e6aa892f75f7f66bea6c4dea"
+    },
+    "assets/img/blog/assignmen5.png": {
+      "checksum": "07e5116496c5311087d7583a5a0214ec"
+    },
+    "assets/img/blog/assignment1.png": {
+      "checksum": "a91f209500a7f4d018de6dae3c1080f0"
+    },
+    "assets/img/blog/assignment2.png": {
+      "checksum": "746fbf4190a8fe429ba55769f67869c9"
+    },
+    "assets/img/blog/assignment3.png": {
+      "checksum": "926491397db1792f87ade87cf332815e"
+    },
+    "assets/img/blog/assignment4.png": {
+      "checksum": "b0a461aa813941c28cd0f0e05c04b934"
+    },
+    "assets/img/blog/b546c88a28a7c2423d2a32bc85d1f106-150x150.gif": {
+      "checksum": "9a303b1ca135446289f952874e02e567"
+    },
+    "assets/img/blog/b546c88a28a7c2423d2a32bc85d1f106-300x181.gif": {
+      "checksum": "84f02f7e5a6507de62d674658dd2ad83"
+    },
+    "assets/img/blog/b546c88a28a7c2423d2a32bc85d1f106.gif": {
+      "checksum": "c9c5226740921afaf7ce067f02c2bd56"
+    },
+    "assets/img/blog/badge-usr.JPG": {
+      "checksum": "dac89fd45a9c04eddcb59107682b0620"
+    },
+    "assets/img/blog/barthes-ecc81criture-1000x347.jpg": {
+      "checksum": "58c7138cf3f0901547fcad9d9127bacd"
+    },
+    "assets/img/blog/barthes-ecc81criture-1024x347.jpg": {
+      "checksum": "085aa5b0e038b4368a9a935f37a7ffd3"
+    },
+    "assets/img/blog/barthes-ecc81criture-150x150.jpg": {
+      "checksum": "86eeceeab43b7eb9bb3b34cc33f2ac53"
+    },
+    "assets/img/blog/barthes-ecc81criture-300x102.jpg": {
+      "checksum": "4234497d7abb67ce59af6dc3dedb29e6"
+    },
+    "assets/img/blog/barthes-ecc81criture-345x198.jpg": {
+      "checksum": "3bffa9d22163663a0ab04ff0bad69451"
+    },
+    "assets/img/blog/barthes-ecc81criture-400x260.jpg": {
+      "checksum": "40de8e8a93fad0d1b4dd745db09abd81"
+    },
+    "assets/img/blog/barthes-ecc81criture-500x347.jpg": {
+      "checksum": "c62fe313c0c5fc3318df148e31342274"
+    },
+    "assets/img/blog/barthes-ecc81criture-539x303.jpg": {
+      "checksum": "a8b5ffc450958856841bb21bd033bbb7"
+    },
+    "assets/img/blog/barthes-ecc81criture-570x347.jpg": {
+      "checksum": "4e671f3bc007ec8bf14100f576af092e"
+    },
+    "assets/img/blog/barthes-ecc81criture-600x347.jpg": {
+      "checksum": "48bade3f4615d9868fbaf030b57d56bc"
+    },
+    "assets/img/blog/barthes-ecc81criture-700x237.jpg": {
+      "checksum": "1ca53baca14a059244f24d49898eac58"
+    },
+    "assets/img/blog/barthes-ecc81criture-768x260.jpg": {
+      "checksum": "0862180ddb18bd6925e1b9f5503c34a4"
+    },
+    "assets/img/blog/barthes-ecc81criture-800x347.jpg": {
+      "checksum": "7eb3428866efa7c0b6f1d8516655c5b0"
+    },
+    "assets/img/blog/barthes-ecc81criture.jpg": {
+      "checksum": "d2c9c4f1ad0af066c9cfd5687bebe8ac"
+    },
+    "assets/img/blog/barthes-smoking-150x150.jpg": {
+      "checksum": "888f6811cec310b24fed08452fd849cd"
+    },
+    "assets/img/blog/barthes-smoking-300x117.jpg": {
+      "checksum": "d664ddcd9e717702bb88a7fa5cf481bd"
+    },
+    "assets/img/blog/barthes-smoking-345x198.jpg": {
+      "checksum": "9277eeb2a1f04f61d6d7148187a29322"
+    },
+    "assets/img/blog/barthes-smoking-400x260.jpg": {
+      "checksum": "39766d35d9bbe56ffc08ce3f249901ed"
+    },
+    "assets/img/blog/barthes-smoking-500x315.jpg": {
+      "checksum": "17c03641626abc771fc3fb58b570b355"
+    },
+    "assets/img/blog/barthes-smoking-539x303.jpg": {
+      "checksum": "35715e48ce3e08fa6371224f9eeb577e"
+    },
+    "assets/img/blog/barthes-smoking-570x315.jpg": {
+      "checksum": "984ac187271c3a200cdb57b53a7a7599"
+    },
+    "assets/img/blog/barthes-smoking-600x315.jpg": {
+      "checksum": "46d45a67c2423a81232fec9d63d73b3a"
+    },
+    "assets/img/blog/barthes-smoking-700x272.jpg": {
+      "checksum": "fe14d1c34c182fd5ac1e015e766d98eb"
+    },
+    "assets/img/blog/barthes-smoking-768x299.jpg": {
+      "checksum": "b73e5b41b176a0fdc73cc97c7d9b2f3d"
+    },
+    "assets/img/blog/barthes-smoking-800x315.jpg": {
+      "checksum": "73f5ab70259c4f9e4ecdd7204613957e"
+    },
+    "assets/img/blog/barthes-smoking.jpg": {
+      "checksum": "0b1ed25d64fe8b50337568d956c08a5c"
+    },
+    "assets/img/blog/caption_girafe-1024x514.jpg": {
+      "checksum": "2a256dc13844b4d29b8dabb12ebb5b18"
+    },
+    "assets/img/blog/caption_girafe-1200x602.jpg": {
+      "checksum": "abacf550d49e38c55572e0ba71fe1c9e"
+    },
+    "assets/img/blog/caption_girafe-150x150.jpg": {
+      "checksum": "d27cdbc144588d32f1e161552f1c9aa4"
+    },
+    "assets/img/blog/caption_girafe-300x151.jpg": {
+      "checksum": "76fb29d6cce0f8b340b3148b46e9bd15"
+    },
+    "assets/img/blog/caption_girafe-768x386.jpg": {
+      "checksum": "c39b4606679247a17e3f3ec230bdad76"
+    },
+    "assets/img/blog/caption_girafe.jpg": {
+      "checksum": "122f561acf01a9eff6b44bbb40df6020"
+    },
+    "assets/img/blog/caption_man_skatepark-1024x1024.jpg": {
+      "checksum": "31285055a4c7038de3aeb3784da095f2"
+    },
+    "assets/img/blog/caption_man_skatepark-1200x1200.jpg": {
+      "checksum": "0d8618aa4bf51be8588d9fbbda8c2276"
+    },
+    "assets/img/blog/caption_man_skatepark-150x150.jpg": {
+      "checksum": "4ea6b5a9b6f19fcc0765b7efae415942"
+    },
+    "assets/img/blog/caption_man_skatepark-300x300.jpg": {
+      "checksum": "f32707272ab9baef82d517c16c5d7f20"
+    },
+    "assets/img/blog/caption_man_skatepark-768x768.jpg": {
+      "checksum": "e285ceddbb0593209017b49fa0ded857"
+    },
+    "assets/img/blog/caption_man_skatepark.jpg": {
+      "checksum": "185487c03852a6c21c4e5b632906d5d6"
+    },
+    "assets/img/blog/caption_man_smiling-1024x1024.jpg": {
+      "checksum": "00668babafdabc56ecefeaca9bf82284"
+    },
+    "assets/img/blog/caption_man_smiling-1200x1200.jpg": {
+      "checksum": "61af56fbdfd7633ab112f5ea394e523d"
+    },
+    "assets/img/blog/caption_man_smiling-150x150.jpg": {
+      "checksum": "dd48cd7fb2497015079587ee0f9feb9b"
+    },
+    "assets/img/blog/caption_man_smiling-300x300.jpg": {
+      "checksum": "20092e53520a5a9cc5791d0e1413c3f7"
+    },
+    "assets/img/blog/caption_man_smiling-768x768.jpg": {
+      "checksum": "d486ba43092584cf8500ac2ca21f7cef"
+    },
+    "assets/img/blog/caption_man_smiling.jpg": {
+      "checksum": "b4330ef4b864cadcf00ac8ac24ac78d3"
+    },
+    "assets/img/blog/caption_woman-1024x514.jpg": {
+      "checksum": "e19662b7ff2c37290695ac8a20465ebb"
+    },
+    "assets/img/blog/caption_woman-1200x602.jpg": {
+      "checksum": "5159d8cb9b9f216947bf86077f74143e"
+    },
+    "assets/img/blog/caption_woman-150x150.jpg": {
+      "checksum": "46557fd91f1b6620c74f0e87dd9b46d6"
+    },
+    "assets/img/blog/caption_woman-300x151.jpg": {
+      "checksum": "e6baa70a2e8d03f02723a704a8c9e86b"
+    },
+    "assets/img/blog/caption_woman-768x386.jpg": {
+      "checksum": "79d4737486c11df14b47f401ffcdd87b"
+    },
+    "assets/img/blog/caption_woman.jpg": {
+      "checksum": "a8d51d720a9476c9d5858d17b4fee3f9"
+    },
+    "assets/img/blog/carte-150x150.jpg": {
+      "checksum": "b72e7623ad503a4128980cfd96c839fa"
+    },
+    "assets/img/blog/carte-300x133.jpg": {
+      "checksum": "dc93afba6d45baaa2678e03603929b38"
+    },
+    "assets/img/blog/carte-768x341.jpg": {
+      "checksum": "52b95ce1a5e3904029467882c1f953fc"
+    },
+    "assets/img/blog/carte-avec-rgeoapi-150x150.jpeg": {
+      "checksum": "12afc4a2c1f8eaca79c05afd17cfd642"
+    },
+    "assets/img/blog/carte-avec-rgeoapi-300x200.jpeg": {
+      "checksum": "e372663a6f79731cfcd30b3962cb46eb"
+    },
+    "assets/img/blog/carte-avec-rgeoapi.jpeg": {
+      "checksum": "2870304e1fde620fb77b864a3243c254"
+    },
+    "assets/img/blog/carte.jpg": {
+      "checksum": "baddae4ab76e1eb24bca12f18585d6ea"
+    },
+    "assets/img/blog/cf_logo.png": {
+      "checksum": "868af8363dc7a630527aadc2d99c9580"
+    },
+    "assets/img/blog/chr_shows_game_of_thrones.png": {
+      "checksum": "84b5921a8030a6d994c54348a9670948"
+    },
+    "assets/img/blog/colin_prev.png": {
+      "checksum": "1b2af619efcad084ab47984eac99842e"
+    },
+    "assets/img/blog/colin-fay-150x150.jpg": {
+      "checksum": "69480d78d5f818252e05e522268c19fd"
+    },
+    "assets/img/blog/colin-fay-300x300.jpg": {
+      "checksum": "2b6bcc421c35d566d27d44c03a7146cd"
+    },
+    "assets/img/blog/colin-fay-345x198.jpg": {
+      "checksum": "ce164f605d251bb467b622ecf8ce12b8"
+    },
+    "assets/img/blog/colin-fay-400x260.jpg": {
+      "checksum": "73da91f5565495acc44e86c7276ef2fa"
+    },
+    "assets/img/blog/colin-fay-500x380.jpg": {
+      "checksum": "73bbba2ad351945371cec4156276fba1"
+    },
+    "assets/img/blog/colin-fay-500x500.jpg": {
+      "checksum": "ef10de5c76b5d4d9c8a80ef10286dc19"
+    },
+    "assets/img/blog/colin-fay-500x512.jpg": {
+      "checksum": "2e584658406665ca6f98b0fd85dfb8fc"
+    },
+    "assets/img/blog/colin-fay-512x303.jpg": {
+      "checksum": "e4690d0d5ecbc138d2c5ec31ccd6952e"
+    },
+    "assets/img/blog/colin-fay-512x500.jpg": {
+      "checksum": "e3e3d454a65381fe9194675bddd39762"
+    },
+    "assets/img/blog/colin-fay-mini.jpg": {
+      "checksum": "8b46c3c9a6c73a4cb337827c2797199c"
+    },
+    "assets/img/blog/colin-fay-profile-150x150.jpg": {
+      "checksum": "bec5a119db175353d789d0c3a62edb3a"
+    },
+    "assets/img/blog/colin-fay-profile-200x198.jpg": {
+      "checksum": "f17ec0484e7b0533bc2f263a131ca9b3"
+    },
+    "assets/img/blog/colin-fay-profile.jpg": {
+      "checksum": "11307d2c636dfa98818d4033a1efec69"
+    },
+    "assets/img/blog/colin-fay.jpg": {
+      "checksum": "c872cc1d35d8038f2a68078a03550f34"
+    },
+    "assets/img/blog/colonequal.png": {
+      "checksum": "10abc0e133a8c8cb8e8a2dae8b64ada7"
+    },
+    "assets/img/blog/cropped-barthes-ecc81criture-1024x239.jpg": {
+      "checksum": "a1e8fc408325d6905892aeca4b6ab83f"
+    },
+    "assets/img/blog/cropped-barthes-ecc81criture-1200x280.jpg": {
+      "checksum": "90d820fafaaf16f64632353a2cf70665"
+    },
+    "assets/img/blog/cropped-barthes-ecc81criture-150x150.jpg": {
+      "checksum": "04a42c76872e1ed84eb2ec3940cc0eff"
+    },
+    "assets/img/blog/cropped-barthes-ecc81criture-300x70.jpg": {
+      "checksum": "d2e8d3290e6c94c8356a8653cc6d6cd8"
+    },
+    "assets/img/blog/cropped-barthes-ecc81criture-768x179.jpg": {
+      "checksum": "1abfc486e6cedce318b0bf630d384203"
+    },
+    "assets/img/blog/cropped-barthes-ecc81criture.jpg": {
+      "checksum": "93aa8d4ae3dad58d151a92953cfa0918"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-100x32.jpg": {
+      "checksum": "54ad1ebcaaf6a76fc8fb8784d865cb37"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-1024x330.jpg": {
+      "checksum": "7e3ef0b8899599be43301b5455142f15"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-150x150.jpg": {
+      "checksum": "b8440f79395d4c40ca97e54774d8eac5"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-150x48.jpg": {
+      "checksum": "c1055993ea6733d89de7b05d0ab372bc"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-300x97.jpg": {
+      "checksum": "52d621bc9f6c62654c8f53c6a8beeaee"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-350x250.jpg": {
+      "checksum": "da52878d58b31864aa27db775ef2f0ab"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-400x129.jpg": {
+      "checksum": "b647381c11ffcea491ea9696e04e6d68"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-430x138.jpg": {
+      "checksum": "3902fa6d5b75597cb432536bb1d37cad"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-750x241.jpg": {
+      "checksum": "96e75e9e60c13fb0076ef254750c129b"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay-768x247.jpg": {
+      "checksum": "213f5be5867033f01bf343ae68386706"
+    },
+    "assets/img/blog/cropped-cropped-header_colin_fay.jpg": {
+      "checksum": "e873ceee5b73917de9b0da2d18d42549"
+    },
+    "assets/img/blog/cropped-header_colin_fay-1000x250.jpg": {
+      "checksum": "a12c07536112a213bc00337e81dc76f3"
+    },
+    "assets/img/blog/cropped-header_colin_fay-1024x225.jpg": {
+      "checksum": "5fb5ebf4fd7850d8e69db7a14a74dcd9"
+    },
+    "assets/img/blog/cropped-header_colin_fay-150x150.jpg": {
+      "checksum": "956e940ae264161cb4db825383c945ee"
+    },
+    "assets/img/blog/cropped-header_colin_fay-300x66.jpg": {
+      "checksum": "611f53c8c101882c76be5ea41f6b8e74"
+    },
+    "assets/img/blog/cropped-header_colin_fay-345x198.jpg": {
+      "checksum": "dccb5dc377ce4b086d09e3ed32573ff2"
+    },
+    "assets/img/blog/cropped-header_colin_fay-400x250.jpg": {
+      "checksum": "b016145ee9f40fbf65c72699539f67a3"
+    },
+    "assets/img/blog/cropped-header_colin_fay-500x250.jpg": {
+      "checksum": "42f76c6a53bb196f141e6381badb835e"
+    },
+    "assets/img/blog/cropped-header_colin_fay-539x250.jpg": {
+      "checksum": "fd4fc74403fbff95c35b5603c5b290a9"
+    },
+    "assets/img/blog/cropped-header_colin_fay-570x250.jpg": {
+      "checksum": "d6a8d7cfc77134551dfb083379b6f9c0"
+    },
+    "assets/img/blog/cropped-header_colin_fay-600x250.jpg": {
+      "checksum": "dd098d1877431137853e3424e1ef67d1"
+    },
+    "assets/img/blog/cropped-header_colin_fay-700x154.jpg": {
+      "checksum": "61335184bb4047d680c32cf1dae0cd65"
+    },
+    "assets/img/blog/cropped-header_colin_fay-768x168.jpg": {
+      "checksum": "9320045abca4a6ce6d5bf8a273bc0d35"
+    },
+    "assets/img/blog/cropped-header_colin_fay-800x250.jpg": {
+      "checksum": "d3a425590ad32977d2e56ffd9d0263f4"
+    },
+    "assets/img/blog/cropped-header_colin_fay.jpg": {
+      "checksum": "75cb51d1eb73f9b42c1bd3a06466a812"
+    },
+    "assets/img/blog/cropped-header-1024x239.jpg": {
+      "checksum": "a8fdc7c4c9976bb40fec5e4d13c8b3b4"
+    },
+    "assets/img/blog/cropped-header-1200x280.jpg": {
+      "checksum": "4ef8dae52ffc2f4e698fd1c4dfb92f9d"
+    },
+    "assets/img/blog/cropped-header-150x150.jpg": {
+      "checksum": "767b531d8e9495bb2d12ed8e617a6eee"
+    },
+    "assets/img/blog/cropped-header-300x70.jpg": {
+      "checksum": "aae7f12c8d8d22d7a9eb20eea17890ff"
+    },
+    "assets/img/blog/cropped-header-768x179.jpg": {
+      "checksum": "703c0888dcc1ee5cbc8818768bc9c1fa"
+    },
+    "assets/img/blog/cropped-header.jpg": {
+      "checksum": "b842de57cb4dba2d68a27c8e3d8901f8"
+    },
+    "assets/img/blog/cropped-rhizome-1024x239.jpg": {
+      "checksum": "7c88d82554138cad03186c674e2d11f2"
+    },
+    "assets/img/blog/cropped-rhizome-1200x280.jpg": {
+      "checksum": "7ff7b900b1bd7963f9f243fd4c7702a2"
+    },
+    "assets/img/blog/cropped-rhizome-150x150.jpg": {
+      "checksum": "097fac0603ec6c7e7340229a84c7dd7a"
+    },
+    "assets/img/blog/cropped-rhizome-300x70.jpg": {
+      "checksum": "0a7b74b18b9f940d9a28a7f6e6c89344"
+    },
+    "assets/img/blog/cropped-rhizome-768x179.jpg": {
+      "checksum": "05834a5965e03aaeb977bb2612ad0e74"
+    },
+    "assets/img/blog/cropped-rhizome.jpg": {
+      "checksum": "6a4d01e9a7e9251b982745f7a6727612"
+    },
+    "assets/img/blog/czR2-o0M-150x150.jpg": {
+      "checksum": "5adde07195bc90bbf75bf8d53210c961"
+    },
+    "assets/img/blog/czR2-o0M.jpg": {
+      "checksum": "b642979828bee86865f537ed8da2b4c1"
+    },
+    "assets/img/blog/date-sortie-150x150.jpeg": {
+      "checksum": "a428c552d146d09e332d704bec3b2033"
+    },
+    "assets/img/blog/date-sortie-300x150.jpeg": {
+      "checksum": "aaa6e6b8e8809ae55143c0a6edb61f8e"
+    },
+    "assets/img/blog/date-sortie-768x384.jpeg": {
+      "checksum": "bdde45f7ace2e3f9e2a77ab53d13d5cf"
+    },
+    "assets/img/blog/date-sortie.jpeg": {
+      "checksum": "7a533a696d73ae03b8d734bd6523b598"
+    },
+    "assets/img/blog/densite-notes-moyennes-1024x512.jpeg": {
+      "checksum": "d85a0b89a8c9c3ceecb13d52f85f2c18"
+    },
+    "assets/img/blog/densite-notes-moyennes-150x150.jpeg": {
+      "checksum": "6f37072eae8cd89d3a6c43ff1e013f87"
+    },
+    "assets/img/blog/densite-notes-moyennes-300x150.jpeg": {
+      "checksum": "5863f5b50016feb0d205363a66ef79b4"
+    },
+    "assets/img/blog/densite-notes-moyennes-768x384.jpeg": {
+      "checksum": "cdc8ecc6814ded51b366de257e1eed60"
+    },
+    "assets/img/blog/densite-notes-moyennes-809x405.jpeg": {
+      "checksum": "259e3a9ad29b281177e4b61bc141395b"
+    },
+    "assets/img/blog/densite-notes-moyennes.jpeg": {
+      "checksum": "af0fd947440476ef6aaa881e50a8fb54"
+    },
+    "assets/img/blog/densite-prix-bas-150x150.jpeg": {
+      "checksum": "48fa9977fcd3da34379c73eccf6209df"
+    },
+    "assets/img/blog/densite-prix-bas-300x150.jpeg": {
+      "checksum": "1b054466d8c78e8cd471eb358fce6ba3"
+    },
+    "assets/img/blog/densite-prix-bas-768x384.jpeg": {
+      "checksum": "1845259106d2a235f8c9c5be9f2e1137"
+    },
+    "assets/img/blog/densite-prix-bas.jpeg": {
+      "checksum": "c0613bf60dc2078be19b7557e41fdb24"
+    },
+    "assets/img/blog/die-cut-stickers-150x150.png": {
+      "checksum": "f9081dab58ae67d19a0a5976f6ba48ca"
+    },
+    "assets/img/blog/die-cut-stickers-300x242.png": {
+      "checksum": "33cfddd840e52e350742227f8fea8947"
+    },
+    "assets/img/blog/die-cut-stickers-325x198.png": {
+      "checksum": "3ce51bb763f00a30e3b29f8ead8a6512"
+    },
+    "assets/img/blog/die-cut-stickers-325x260.png": {
+      "checksum": "2f30e644db6cd1259860c43c422171bd"
+    },
+    "assets/img/blog/die-cut-stickers.png": {
+      "checksum": "84046a573708323433783a81d3461f72"
+    },
+    "assets/img/blog/digitaltc-music-150x150.jpg": {
+      "checksum": "8f038e4ce7640bcae1825f140e4a7304"
+    },
+    "assets/img/blog/digitaltc-music-300x133.jpg": {
+      "checksum": "e7f166646ff050dbeefa503d531a2d0d"
+    },
+    "assets/img/blog/digitaltc-music-345x198.jpg": {
+      "checksum": "ed30cbcfb3faae7c0819a828c69fc595"
+    },
+    "assets/img/blog/digitaltc-music-400x260.jpg": {
+      "checksum": "cbfa95bb90712da7b0ae88fe2c8232e0"
+    },
+    "assets/img/blog/digitaltc-music-500x355.jpg": {
+      "checksum": "f41680d0c6e3dc0f43ca4519b0a213cc"
+    },
+    "assets/img/blog/digitaltc-music-539x303.jpg": {
+      "checksum": "3c2df982f51ab53625612a7d3a527985"
+    },
+    "assets/img/blog/digitaltc-music-570x355.jpg": {
+      "checksum": "13c1bd6fc7c6fd4352e72bef6bb58151"
+    },
+    "assets/img/blog/digitaltc-music-600x355.jpg": {
+      "checksum": "4fa26725dcffdd74f96b55c105a35c8b"
+    },
+    "assets/img/blog/digitaltc-music-700x311.jpg": {
+      "checksum": "5f9c932f19c86fc0b6f0ee75692baa04"
+    },
+    "assets/img/blog/digitaltc-music-768x341.jpg": {
+      "checksum": "8489bc0471f8c6061a153095516e5ac0"
+    },
+    "assets/img/blog/digitaltc-music-800x355.jpg": {
+      "checksum": "e2d2fe110906f74557bdce6cec85aab0"
+    },
+    "assets/img/blog/digitaltc-music.jpg": {
+      "checksum": "ce60aaf51cb3e1a06f03f49b4d139b4e"
+    },
+    "assets/img/blog/EfCoMjI3-150x150.jpg": {
+      "checksum": "b50f2fd102c785793fe1c650cf711286"
+    },
+    "assets/img/blog/EfCoMjI3.jpg": {
+      "checksum": "14d374ac1760cd36a5fdc0fa8ae57676"
+    },
+    "assets/img/blog/emoji-typewritter-150x150.jpg": {
+      "checksum": "8a63dea49b76b8da854a78ab46d188bb"
+    },
+    "assets/img/blog/emoji-typewritter-300x112.jpg": {
+      "checksum": "052447a30cb3fb930f56459a7b2ce9dd"
+    },
+    "assets/img/blog/emoji-typewritter-345x198.jpg": {
+      "checksum": "8d38f6f044cc5f65221d51996a2e5e21"
+    },
+    "assets/img/blog/emoji-typewritter-400x238.jpg": {
+      "checksum": "b8d8ce3020a9018f02823b3a0d17d756"
+    },
+    "assets/img/blog/emoji-typewritter-500x238.jpg": {
+      "checksum": "e45208d345feab13783e12b23f3683fe"
+    },
+    "assets/img/blog/emoji-typewritter-539x238.jpg": {
+      "checksum": "c357f4231df9ea157a44b1ad703461f1"
+    },
+    "assets/img/blog/emoji-typewritter-570x238.jpg": {
+      "checksum": "593c8182931e9565eded2435544cf655"
+    },
+    "assets/img/blog/emoji-typewritter-600x238.jpg": {
+      "checksum": "365049ae0b9204c501d14654231498ef"
+    },
+    "assets/img/blog/emoji-typewritter.jpg": {
+      "checksum": "e08dd32d4645fb9171df9bb0f317b3ba"
+    },
+    "assets/img/blog/envie-experience-utilisateur-150x150.jpg": {
+      "checksum": "bcb72dc33132557229cc6ae8e82e589c"
+    },
+    "assets/img/blog/envie-experience-utilisateur-300x133.jpg": {
+      "checksum": "5ddf0b9a74b006d11cfc6075ea7e3122"
+    },
+    "assets/img/blog/envie-experience-utilisateur-345x198.jpg": {
+      "checksum": "37e894d8be8bc91fa96399314fc1aa54"
+    },
+    "assets/img/blog/envie-experience-utilisateur-400x260.jpg": {
+      "checksum": "b05ec66973714220b5d5e3eef4b632c3"
+    },
+    "assets/img/blog/envie-experience-utilisateur-500x355.jpg": {
+      "checksum": "44e0204f637ef0ea1cf4d633ada9cf99"
+    },
+    "assets/img/blog/envie-experience-utilisateur-539x303.jpg": {
+      "checksum": "74def1a4e6ad6df8a6ad3fe53db878ac"
+    },
+    "assets/img/blog/envie-experience-utilisateur-570x355.jpg": {
+      "checksum": "1fdcb68f24b95d7c66d0c80a00c49e44"
+    },
+    "assets/img/blog/envie-experience-utilisateur-600x355.jpg": {
+      "checksum": "0148473c21796cd7b595cc7e5ee79701"
+    },
+    "assets/img/blog/envie-experience-utilisateur-700x311.jpg": {
+      "checksum": "679cd5dac36fc76b1ccc68f9168a88fb"
+    },
+    "assets/img/blog/envie-experience-utilisateur-768x341.jpg": {
+      "checksum": "80a2ebcbec0c34301a4283bcc38ef2cc"
+    },
+    "assets/img/blog/envie-experience-utilisateur-800x355.jpg": {
+      "checksum": "088e96ae9c5305ef90e09ed8613b2434"
+    },
+    "assets/img/blog/envie-experience-utilisateur.jpg": {
+      "checksum": "74b72f60028c26aced997c91ccf14eda"
+    },
+    "assets/img/blog/Fabrique-site-762x455-150x150.jpg": {
+      "checksum": "970d429d7c77deaf6598c1cc051f7a44"
+    },
+    "assets/img/blog/Fabrique-site-762x455-300x133.jpg": {
+      "checksum": "bb922a4a009bd95617db195e84a977c5"
+    },
+    "assets/img/blog/Fabrique-site-762x455-768x341.jpg": {
+      "checksum": "e3e4d2dbe3b1b5cad7515436617334e1"
+    },
+    "assets/img/blog/Fabrique-site-762x455.jpg": {
+      "checksum": "e295e9d742c9728a27a67caafe062b19"
+    },
+    "assets/img/blog/faces-rstats-captions-1024x512.jpeg": {
+      "checksum": "098a2545d5e20277cc33ae9228692277"
+    },
+    "assets/img/blog/faces-rstats-captions-1200x600.jpeg": {
+      "checksum": "994ab293f3876d2693e8ec5f70c48a9c"
+    },
+    "assets/img/blog/faces-rstats-captions-150x150.jpeg": {
+      "checksum": "74bcc15f79ab597cbc8170b6df052239"
+    },
+    "assets/img/blog/faces-rstats-captions-300x150.jpeg": {
+      "checksum": "444f1dbe30089f5164691816ed01312d"
+    },
+    "assets/img/blog/faces-rstats-captions-768x384.jpeg": {
+      "checksum": "4eb24f6ba1d243f4259840622aac7869"
+    },
+    "assets/img/blog/faces-rstats-captions.jpeg": {
+      "checksum": "3c80c57df78b77b7910705f99ecdf8bf"
+    },
+    "assets/img/blog/french-vote-150x150.jpg": {
+      "checksum": "1dc38da3deadf6acf2adcd2bab9cff75"
+    },
+    "assets/img/blog/french-vote-300x133.jpg": {
+      "checksum": "790e9537e8ab894f5b18057550d13a3a"
+    },
+    "assets/img/blog/french-vote-768x341.jpg": {
+      "checksum": "14f4d089e51eb91cfaeed6a8a3821793"
+    },
+    "assets/img/blog/french-vote.jpg": {
+      "checksum": "c0f4feebffe95262e431d4a1d8528867"
+    },
+    "assets/img/blog/genres-frequents-150x150.jpeg": {
+      "checksum": "fb928feb8f384dc66d9cfb7490bb88c1"
+    },
+    "assets/img/blog/genres-frequents-300x150.jpeg": {
+      "checksum": "e7232461a9a61fb1eb07827023e40e50"
+    },
+    "assets/img/blog/genres-frequents-768x384.jpeg": {
+      "checksum": "07d5a7afa835c816cb5e2a35f3461e04"
+    },
+    "assets/img/blog/genres-frequents.jpeg": {
+      "checksum": "671c97bb4e884ed6eded84b27b70e3cd"
+    },
+    "assets/img/blog/gilles-deleuze-150x150.jpg": {
+      "checksum": "7763af394ab75e4a8d418c9a6b137094"
+    },
+    "assets/img/blog/gilles-deleuze-300x133.jpg": {
+      "checksum": "1982cedc4f20d9553c60b12b1c8db8c2"
+    },
+    "assets/img/blog/gilles-deleuze-345x198.jpg": {
+      "checksum": "07faf068551903f91b242fa92311474c"
+    },
+    "assets/img/blog/gilles-deleuze-400x260.jpg": {
+      "checksum": "6ae563ceaafb922ffe55bdd661fc1a69"
+    },
+    "assets/img/blog/gilles-deleuze-500x355.jpg": {
+      "checksum": "61f71c666c572757600dcb27291ecc60"
+    },
+    "assets/img/blog/gilles-deleuze-539x303.jpg": {
+      "checksum": "a0225e1a39df451820406a6f13ad7230"
+    },
+    "assets/img/blog/gilles-deleuze-570x355.jpg": {
+      "checksum": "ea5cea7fde38f9ea8656c5984ee0126d"
+    },
+    "assets/img/blog/gilles-deleuze-600x355.jpg": {
+      "checksum": "94a7e506a2af3a38b3f0a74f93f511e4"
+    },
+    "assets/img/blog/gilles-deleuze-700x311.jpg": {
+      "checksum": "96bfac7ccd34a9d703e3350ebae0c86b"
+    },
+    "assets/img/blog/gilles-deleuze-768x341.jpg": {
+      "checksum": "cff8b5ba4bd557aa4ed75f69a78f5bb3"
+    },
+    "assets/img/blog/gilles-deleuze-800x355.jpg": {
+      "checksum": "8317345937a9c23f724d99726c3743c4"
+    },
+    "assets/img/blog/gilles-deleuze.jpg": {
+      "checksum": "a4e860de2fc98d27b9ffbc7a6c2077c2"
+    },
+    "assets/img/blog/got_char.png": {
+      "checksum": "e4e31669430d35c3e288cbbc6ae1ac76"
+    },
+    "assets/img/blog/h8Vps5Is-150x150.jpeg": {
+      "checksum": "d2db2ac19846bbf9b275fab394926c8c"
+    },
+    "assets/img/blog/h8Vps5Is.jpeg": {
+      "checksum": "7e19e401fc3ef9c7f63eba003bce4fb0"
+    },
+    "assets/img/blog/header_colin_fay-1000x250.jpg": {
+      "checksum": "de748bc3232ede7bb8d62d315045bf4e"
+    },
+    "assets/img/blog/header_colin_fay-1024x225.jpg": {
+      "checksum": "320080de2eb64ecee767439d06c05530"
+    },
+    "assets/img/blog/header_colin_fay-150x150.jpg": {
+      "checksum": "0e3aecaa0543ed9a5b086caf9de58857"
+    },
+    "assets/img/blog/header_colin_fay-300x66.jpg": {
+      "checksum": "054fc7a40b0689b3d07a0fe548b22c06"
+    },
+    "assets/img/blog/header_colin_fay-345x198.jpg": {
+      "checksum": "15885d8ae3c44317348dcf9fd221ab27"
+    },
+    "assets/img/blog/header_colin_fay-400x250.jpg": {
+      "checksum": "d449f0b858bb2e66917bdc6b13a10e2a"
+    },
+    "assets/img/blog/header_colin_fay-500x250.jpg": {
+      "checksum": "05fd31f26d524117de401e608c414120"
+    },
+    "assets/img/blog/header_colin_fay-539x250.jpg": {
+      "checksum": "3c0952b25bcac65b36e10b4ba320ebe2"
+    },
+    "assets/img/blog/header_colin_fay-570x250.jpg": {
+      "checksum": "30dd6521dc275e64b40d441558b944c8"
+    },
+    "assets/img/blog/header_colin_fay-600x250.jpg": {
+      "checksum": "8f3671f77c28b7645f03f01df8653d46"
+    },
+    "assets/img/blog/header_colin_fay-700x154.jpg": {
+      "checksum": "5f0d2ba789d1fa86746c0afcd7c08a12"
+    },
+    "assets/img/blog/header_colin_fay-768x168.jpg": {
+      "checksum": "9700265d104dee80f10b56e4d5484e17"
+    },
+    "assets/img/blog/header_colin_fay-800x250.jpg": {
+      "checksum": "7ce6f356e661f94d719e239385028b5a"
+    },
+    "assets/img/blog/header_colin_fay.jpg": {
+      "checksum": "4f7534f32571b2343dac8c64b7fbbe9c"
+    },
+    "assets/img/blog/header-150x150.jpg": {
+      "checksum": "1dce500e30ec29fbf27389607d92f288"
+    },
+    "assets/img/blog/header-300x59.jpg": {
+      "checksum": "26ee1a366bf29a0c42690f97c0fba6f8"
+    },
+    "assets/img/blog/header-345x158.jpg": {
+      "checksum": "7dc5acfecf47f8328950e69f694eebfa"
+    },
+    "assets/img/blog/header-400x158.jpg": {
+      "checksum": "94510bfabf697dd3fbfaa9b382b73b5e"
+    },
+    "assets/img/blog/header-500x158.jpg": {
+      "checksum": "88f47c39b219deb6e705c52685d89410"
+    },
+    "assets/img/blog/header-539x158.jpg": {
+      "checksum": "c7c80f5974b5ee32b9acedfb527e5418"
+    },
+    "assets/img/blog/header-570x158.jpg": {
+      "checksum": "c6012df503f8c6975394b162699a043b"
+    },
+    "assets/img/blog/header-600x158.jpg": {
+      "checksum": "e6a837e068aa566eb8e15383503a623b"
+    },
+    "assets/img/blog/header-700x137.jpg": {
+      "checksum": "6e7a0de3e60435c191a2fb15bdfe0390"
+    },
+    "assets/img/blog/header-768x150.jpg": {
+      "checksum": "85d72d2b5b962cbeb26818bddab6d1c7"
+    },
+    "assets/img/blog/header-800x158.jpg": {
+      "checksum": "4d079e4214c5bd5cd2fb977da5294837"
+    },
+    "assets/img/blog/header-bis.JPG": {
+      "checksum": "0aef6f120404e0b5c3c9543029c2fcd9"
+    },
+    "assets/img/blog/header.jpg": {
+      "checksum": "c53dde6033ab5bfc3a6e30a51a75524b"
+    },
+    "assets/img/blog/heatmap-r-1024x512.jpg": {
+      "checksum": "c3c7f90f4a9306095347ce4104df5b80"
+    },
+    "assets/img/blog/heatmap-r-150x150.jpg": {
+      "checksum": "082e0e8bff88bb4a25711cd204956d15"
+    },
+    "assets/img/blog/heatmap-r-300x150.jpg": {
+      "checksum": "eb3a4ecd171833ab5bfe754b63b61e2f"
+    },
+    "assets/img/blog/heatmap-r-768x384.jpg": {
+      "checksum": "97a211676786e8b139769f655f8f2c96"
+    },
+    "assets/img/blog/heatmap-r-809x405.jpg": {
+      "checksum": "5c5704c13c67600bb819f5dc145f6a5c"
+    },
+    "assets/img/blog/heatmap-r.jpg": {
+      "checksum": "01a42a128982bfade0ecd48e576fd3ac"
+    },
+    "assets/img/blog/hex-cf.png": {
+      "checksum": "849c8759b67a623a2daec06e59932fdb"
+    },
+    "assets/img/blog/hex-image.svg": {
+      "checksum": "81f52eb9f22a3e6f1f855bf5df869135"
+    },
+    "assets/img/blog/hist-face-rstats-1024x512.jpeg": {
+      "checksum": "c97b1ac578baa8dc5c8e8975e977bebb"
+    },
+    "assets/img/blog/hist-face-rstats-1200x600.jpeg": {
+      "checksum": "b116f40a097e12a0cff4b33c7ce29bcf"
+    },
+    "assets/img/blog/hist-face-rstats-150x150.jpeg": {
+      "checksum": "521dc3ccd8e34949f44c4d0eefe88e7f"
+    },
+    "assets/img/blog/hist-face-rstats-300x150.jpeg": {
+      "checksum": "5b1b9569bd981f6f7f7633480a2539cd"
+    },
+    "assets/img/blog/hist-face-rstats-768x384.jpeg": {
+      "checksum": "31537daedae4202cd340b0a7015d2422"
+    },
+    "assets/img/blog/hist-face-rstats.jpeg": {
+      "checksum": "99ca55eea0bee01a4714e5b6971a185c"
+    },
+    "assets/img/blog/ia-music-man-150x150.jpg": {
+      "checksum": "f083ed5438337d57fe04c15b232456e4"
+    },
+    "assets/img/blog/ia-music-man-300x173.jpg": {
+      "checksum": "cf9252a5d9320b091a721219c6864f72"
+    },
+    "assets/img/blog/ia-music-man-768x443.jpg": {
+      "checksum": "73fe5246952cdc1a55a61237bdbdd4e7"
+    },
+    "assets/img/blog/ia-music-man.jpg": {
+      "checksum": "5110a6601ba97fe45c14096aaaf0f05c"
+    },
+    "assets/img/blog/IMG_2771-1024x768.jpg": {
+      "checksum": "72e4edb50843ff08dfcf272ab08d5fab"
+    },
+    "assets/img/blog/IMG_2771-1200x900.jpg": {
+      "checksum": "c0942a116cb7871db5e6abc905fc8e51"
+    },
+    "assets/img/blog/IMG_2771-150x150.jpg": {
+      "checksum": "6a0a5916a4f005be361bdbe96b1737d0"
+    },
+    "assets/img/blog/IMG_2771-300x225.jpg": {
+      "checksum": "8aca9b4cc32205cd888a37f843f119a2"
+    },
+    "assets/img/blog/IMG_2771-768x576.jpg": {
+      "checksum": "1283ce8983e1226cbfa562280b5c0e99"
+    },
+    "assets/img/blog/IMG_2771.jpg": {
+      "checksum": "eddad4bfe215b586289d140a5afae7cb"
+    },
+    "assets/img/blog/instantane-urgent-eternel-150x150.jpg": {
+      "checksum": "850a6667a8b28e6309758aefdefae550"
+    },
+    "assets/img/blog/instantane-urgent-eternel-2-150x150.jpg": {
+      "checksum": "dba6bdb7a40d3332632b0389d4efbfc0"
+    },
+    "assets/img/blog/instantane-urgent-eternel-2-300x112.jpg": {
+      "checksum": "be53ddf06382afa78ab1b50e8b7c6c39"
+    },
+    "assets/img/blog/instantane-urgent-eternel-2-345x198.jpg": {
+      "checksum": "e9181f871db42fbf784123bfee1e2d17"
+    },
+    "assets/img/blog/instantane-urgent-eternel-2-400x238.jpg": {
+      "checksum": "e038a8c9686a48ce1f0a672d50797ff7"
+    },
+    "assets/img/blog/instantane-urgent-eternel-2-500x238.jpg": {
+      "checksum": "e81bd8c067ec439082dcc5cea5376731"
+    },
+    "assets/img/blog/instantane-urgent-eternel-2-539x238.jpg": {
+      "checksum": "d230497fad69d86fe83afcacf700a4fd"
+    },
+    "assets/img/blog/instantane-urgent-eternel-2-570x238.jpg": {
+      "checksum": "986dd7ab6fa462d263d51141e375d092"
+    },
+    "assets/img/blog/instantane-urgent-eternel-2-600x238.jpg": {
+      "checksum": "5fdd281d098c710d45832e1752a66be3"
+    },
+    "assets/img/blog/instantane-urgent-eternel-2.jpg": {
+      "checksum": "9d3a9575d5f09ede0f66a51b68c3285d"
+    },
+    "assets/img/blog/instantane-urgent-eternel-300x133.jpg": {
+      "checksum": "4aeea2ae28a11e1fe81bb60cceb70bcc"
+    },
+    "assets/img/blog/instantane-urgent-eternel-345x198.jpg": {
+      "checksum": "88429410a90579c1088969e5f54eb10e"
+    },
+    "assets/img/blog/instantane-urgent-eternel-400x260.jpg": {
+      "checksum": "b9d3003df41f7f9d92405a7a5ea309b8"
+    },
+    "assets/img/blog/instantane-urgent-eternel-500x355.jpg": {
+      "checksum": "1d1890789a229ecee4ddba9907862c33"
+    },
+    "assets/img/blog/instantane-urgent-eternel-539x303.jpg": {
+      "checksum": "2c608e08fd853584974b096c0e67605f"
+    },
+    "assets/img/blog/instantane-urgent-eternel-570x355.jpg": {
+      "checksum": "d045d137562a3a751c64e079cd72f33b"
+    },
+    "assets/img/blog/instantane-urgent-eternel-600x355.jpg": {
+      "checksum": "2c68ffb2ac62cf54752dfaa28dcbc018"
+    },
+    "assets/img/blog/instantane-urgent-eternel-700x311.jpg": {
+      "checksum": "26a5362fdc6706dac45a53182197d4c1"
+    },
+    "assets/img/blog/instantane-urgent-eternel-768x341.jpg": {
+      "checksum": "3011338964d70fc2ee52edd2dcb508c1"
+    },
+    "assets/img/blog/instantane-urgent-eternel-800x355.jpg": {
+      "checksum": "cf573c7544a6ca71acc9db397cc3a2bc"
+    },
+    "assets/img/blog/instantane-urgent-eternel.jpg": {
+      "checksum": "a586b0432d5ef77b8936d5645385f93a"
+    },
+    "assets/img/blog/jaro_string_dist_game_of_thrones.png": {
+      "checksum": "434d99c2f40ac52c6f4b76447191b704"
+    },
+    "assets/img/blog/labels-150x150.jpeg": {
+      "checksum": "30bdfc1393311e803aebe4ba25ed5501"
+    },
+    "assets/img/blog/labels-300x150.jpeg": {
+      "checksum": "695fed664abccbbeeb62493a369eb260"
+    },
+    "assets/img/blog/labels-768x384.jpeg": {
+      "checksum": "538aac4aa45eccf28eaab9af8fb8898c"
+    },
+    "assets/img/blog/labels.jpeg": {
+      "checksum": "abcbed0d43dba07907b556bb6834b663"
+    },
+    "assets/img/blog/languagelayer-cran-150x150.jpg": {
+      "checksum": "436cec857050ab1328aa8fb4c4a3321f"
+    },
+    "assets/img/blog/languagelayer-cran-300x133.jpg": {
+      "checksum": "d6943d79402a83f7f4ecc9fb66a37ea1"
+    },
+    "assets/img/blog/languagelayer-cran-768x341.jpg": {
+      "checksum": "5fd6f5299d85326465923ee115c8de7a"
+    },
+    "assets/img/blog/languagelayer-cran.jpg": {
+      "checksum": "310d7600019cc067d31e7b4735acf835"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-150x150.jpg": {
+      "checksum": "59adf81e5b6a96ad6b56e757b80da323"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-300x133.jpg": {
+      "checksum": "44e58bee2c466d66cbeed4b898343ff5"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-345x198.jpg": {
+      "checksum": "82459488082919eace092e5a92d3a8c2"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-400x260.jpg": {
+      "checksum": "74e8dbe093336624cf5b9c2e88ba622e"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-500x355.jpg": {
+      "checksum": "0cbedac962b690b987fa164a06928803"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-539x303.jpg": {
+      "checksum": "615c94e6ddc531e3e116e8366180c16f"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-570x355.jpg": {
+      "checksum": "02b403a76bc2a899c6a1deaeeb855348"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-600x355.jpg": {
+      "checksum": "cb08c7d1980fb9f8461a50cf79e785c0"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-700x311.jpg": {
+      "checksum": "f471d0417cb41bfd671bb9206e3794e7"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-768x341.jpg": {
+      "checksum": "796818f57b5d2e9ac9d2d2ddc0e1b54c"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2-800x355.jpg": {
+      "checksum": "5aa318923b4ab4c14e763f034a9da736"
+    },
+    "assets/img/blog/lc3a9gc3a8retc3a9-web-2.jpg": {
+      "checksum": "79afe3e130acd6300958c128f14aff25"
+    },
+    "assets/img/blog/lcs_string_dist_game_of_thrones.png": {
+      "checksum": "da795c388b72a5ec9e22ea3e1ac91d19"
+    },
+    "assets/img/blog/legerete-web-150x150.jpg": {
+      "checksum": "3350d6e8865dcfdb87f03a1f200c505c"
+    },
+    "assets/img/blog/legerete-web-300x117.jpg": {
+      "checksum": "14e287b7f0dd64798945cd3db55f3aba"
+    },
+    "assets/img/blog/legerete-web-345x198.jpg": {
+      "checksum": "12094a0ae583dbeaf21de15d344a8215"
+    },
+    "assets/img/blog/legerete-web-400x260.jpg": {
+      "checksum": "df1510e0861b03fd1fd186fca9f4966c"
+    },
+    "assets/img/blog/legerete-web-500x316.jpg": {
+      "checksum": "b6aa2d235147df46201d6e9ac62c0b18"
+    },
+    "assets/img/blog/legerete-web-539x303.jpg": {
+      "checksum": "9523bd8d93a7687a12ee84559cd3317a"
+    },
+    "assets/img/blog/legerete-web-570x316.jpg": {
+      "checksum": "fba51a87a429ce876fab613467b8a452"
+    },
+    "assets/img/blog/legerete-web-600x316.jpg": {
+      "checksum": "913d2bd9841871f630b5d2ca613581a2"
+    },
+    "assets/img/blog/legerete-web-700x273.jpg": {
+      "checksum": "9a97e554da2c8a9e09dfc0f21a1c2ed5"
+    },
+    "assets/img/blog/legerete-web-768x300.jpg": {
+      "checksum": "3ccbebb00ed2fd85f586f26d353332be"
+    },
+    "assets/img/blog/legerete-web-800x316.jpg": {
+      "checksum": "ca5e6426fd75bd825e8b146d28fa450f"
+    },
+    "assets/img/blog/legerete-web.jpg": {
+      "checksum": "d21000313c8fe8c021394741de1d10ed"
+    },
+    "assets/img/blog/length_char_name.png": {
+      "checksum": "9d699a362269296a48b0587b713bd743"
+    },
+    "assets/img/blog/letter_diff_game_of_thrones.png": {
+      "checksum": "797c6545d2a072b611acda38272629bb"
+    },
+    "assets/img/blog/letter_distrib_game_of_thrones.png": {
+      "checksum": "cd76fc83b405c6f6e8a0b2ab3197d28a"
+    },
+    "assets/img/blog/lorem_ipsum.jpeg": {
+      "checksum": "dda72851105ed8862383ebe636325fa6"
+    },
+    "assets/img/blog/ls-tattoo.jpg": {
+      "checksum": "8e7bbfa29fc686f998091264e3011c64"
+    },
+    "assets/img/blog/lv_string_dist_game_of_thrones.png": {
+      "checksum": "ab15061191e609af0092d2665c8c90e0"
+    },
+    "assets/img/blog/machine_a_ecrire-150x150.jpg": {
+      "checksum": "c66776bd06cba4de8c9ab8965d5e786f"
+    },
+    "assets/img/blog/machine_a_ecrire-300x117.jpg": {
+      "checksum": "bfd2406eba719f1e8c45f3be1dff7ac9"
+    },
+    "assets/img/blog/machine_a_ecrire-345x198.jpg": {
+      "checksum": "29f5c578e64f57fee484241a702bad41"
+    },
+    "assets/img/blog/machine_a_ecrire-400x260.jpg": {
+      "checksum": "1ec572e6b35a6b50f7b08e4bd37dbcf8"
+    },
+    "assets/img/blog/machine_a_ecrire-500x316.jpg": {
+      "checksum": "9cd997d0b5abf68f7ebb0611c026aca4"
+    },
+    "assets/img/blog/machine_a_ecrire-539x303.jpg": {
+      "checksum": "283c232a6adea1d2a2a1c642077a60c1"
+    },
+    "assets/img/blog/machine_a_ecrire-570x316.jpg": {
+      "checksum": "1a1c6e52e9832a72a84f9073e69ee171"
+    },
+    "assets/img/blog/machine_a_ecrire-600x316.jpg": {
+      "checksum": "c28949c12f433db3a0599620d4ddf232"
+    },
+    "assets/img/blog/machine_a_ecrire-700x272.jpg": {
+      "checksum": "5b371a754313d561fb48cf89efe19241"
+    },
+    "assets/img/blog/machine_a_ecrire-768x299.jpg": {
+      "checksum": "92aefaf79a8173e7abc880cafbb10ed0"
+    },
+    "assets/img/blog/machine_a_ecrire-800x316.jpg": {
+      "checksum": "fd4cdf42de28dc2591a0f1159c66c35d"
+    },
+    "assets/img/blog/machine_a_ecrire.jpg": {
+      "checksum": "a86e91f591d01c4516c102fdabd2fcf8"
+    },
+    "assets/img/blog/macron-1000x500.png": {
+      "checksum": "f0879c0d92e6e78806183e05ee406e79"
+    },
+    "assets/img/blog/macron-150x150.png": {
+      "checksum": "014a798968a5fa88da9cd4a90e2bd540"
+    },
+    "assets/img/blog/macron-300x150.png": {
+      "checksum": "6b8004837fa5e94b1a3fbed0a4bdc075"
+    },
+    "assets/img/blog/macron-768x384.png": {
+      "checksum": "4951aa56f61604bf71c219e54b5fe155"
+    },
+    "assets/img/blog/macron.png": {
+      "checksum": "3d8b84bb93557ebe776fc34394e832a3"
+    },
+    "assets/img/blog/microsoft_api-150x150.jpg": {
+      "checksum": "8b6ad554fb4aa4a44cc125bcd37b0e67"
+    },
+    "assets/img/blog/microsoft_api-300x133.jpg": {
+      "checksum": "34bdb8629cbd6e1b94e3fdae77ad877c"
+    },
+    "assets/img/blog/microsoft_api-768x341.jpg": {
+      "checksum": "bef4bd0ddb6a332e79dd123ab78d6965"
+    },
+    "assets/img/blog/microsoft_api.jpg": {
+      "checksum": "4ad61b0772a56b70d73de8a58baf621a"
+    },
+    "assets/img/blog/microsoft-vision-api-150x150.jpg": {
+      "checksum": "4c9a9b8895f37afcfcbf112f00b7b13e"
+    },
+    "assets/img/blog/microsoft-vision-api-300x133.jpg": {
+      "checksum": "885118f67606928a14668200271983d4"
+    },
+    "assets/img/blog/microsoft-vision-api-768x341.jpg": {
+      "checksum": "b7b6f3419159ead350262e3b7ce0583b"
+    },
+    "assets/img/blog/microsoft-vision-api.jpg": {
+      "checksum": "49529b5c72087ff3c994fe07e48d58ee"
+    },
+    "assets/img/blog/mlp-1000x500.png": {
+      "checksum": "230e21e3c93c66a38ba29e38a6371990"
+    },
+    "assets/img/blog/mlp-150x150.png": {
+      "checksum": "5c80d2395d5daae092402cdb4b526feb"
+    },
+    "assets/img/blog/mlp-300x150.png": {
+      "checksum": "c83bf71e5578ce5afff88efc0918f52e"
+    },
+    "assets/img/blog/mlp-768x384.png": {
+      "checksum": "52cbee20741729982e30f7e81208a1c2"
+    },
+    "assets/img/blog/mlp.png": {
+      "checksum": "4a1e359f7eab9c855629948dbe9c8f0e"
+    },
+    "assets/img/blog/mosaic_glasses-1024x514.jpg": {
+      "checksum": "d06b9c4e54a29e9b9f5e5f2fd860c0f7"
+    },
+    "assets/img/blog/mosaic_glasses-1200x602.jpg": {
+      "checksum": "3d67da34d7609ab00d0463f2ecca377c"
+    },
+    "assets/img/blog/mosaic_glasses-150x150.jpg": {
+      "checksum": "45a485dd74cc342876337bbc719cbeaa"
+    },
+    "assets/img/blog/mosaic_glasses-300x151.jpg": {
+      "checksum": "3eadb438672265941b65bd8aa1563aea"
+    },
+    "assets/img/blog/mosaic_glasses-768x386.jpg": {
+      "checksum": "7e4319f25ac70ce3e07edf00d0e151b3"
+    },
+    "assets/img/blog/mosaic_glasses.jpg": {
+      "checksum": "ec7e39c723025805028bf53a2ea7e647"
+    },
+    "assets/img/blog/mt-sample-background-1024x683.jpg": {
+      "checksum": "8ffc94632ce9db1adeb187d5b39d177e"
+    },
+    "assets/img/blog/mt-sample-background-150x150.jpg": {
+      "checksum": "bf3f317aec8ec3568b94319962bc7915"
+    },
+    "assets/img/blog/mt-sample-background-300x200.jpg": {
+      "checksum": "93a1fdaa9881dcefc58664cdd30617b7"
+    },
+    "assets/img/blog/mt-sample-background-768x512.jpg": {
+      "checksum": "9b183ef50e960bae7431cab93495e1b3"
+    },
+    "assets/img/blog/mt-sample-background-809x539.jpg": {
+      "checksum": "3ebb66185b07fbcd4a916bb30b082381"
+    },
+    "assets/img/blog/mt-sample-background.jpg": {
+      "checksum": "52794f4a10ebc3795d5aee58b6d38e93"
+    },
+    "assets/img/blog/names-colin-150x150.png": {
+      "checksum": "748f63b7fe7797c70011b419a8c442be"
+    },
+    "assets/img/blog/names-colin-300x150.png": {
+      "checksum": "541080c7ba96929908d7b1a01e66db63"
+    },
+    "assets/img/blog/names-colin-768x384.png": {
+      "checksum": "d3e503efad44fd0d3b81673345d98e4a"
+    },
+    "assets/img/blog/names-colin.png": {
+      "checksum": "8edbdf67018bdb84cd12a8eb513578e8"
+    },
+    "assets/img/blog/nbr_of_char.png": {
+      "checksum": "337321aa9842493f820e67ef114b1533"
+    },
+    "assets/img/blog/note-moyenne-vinyles-collection-150x150.jpeg": {
+      "checksum": "0801ff7d6d43abb3325dde4e5f042a3e"
+    },
+    "assets/img/blog/note-moyenne-vinyles-collection-300x150.jpeg": {
+      "checksum": "0cc196140156f4bbf8d165ef95cdf739"
+    },
+    "assets/img/blog/note-moyenne-vinyles-collection-768x384.jpeg": {
+      "checksum": "4321f2eac5edf3de6eba38df51cab742"
+    },
+    "assets/img/blog/note-moyenne-vinyles-collection.jpeg": {
+      "checksum": "ac15af28d26f716e026a84b05bb1411b"
+    },
+    "assets/img/blog/notes-moyennes-150x150.jpeg": {
+      "checksum": "b5e27a52790cc01ea42cb8e0a80da10e"
+    },
+    "assets/img/blog/notes-moyennes-300x150.jpeg": {
+      "checksum": "1e3ec5759b2c9e1555743a29ff49e61e"
+    },
+    "assets/img/blog/notes-moyennes-768x384.jpeg": {
+      "checksum": "38b10334145823822c83bbfba7cf7edf"
+    },
+    "assets/img/blog/notes-moyennes.jpeg": {
+      "checksum": "ef7afac93e602865213fe61dcf215738"
+    },
+    "assets/img/blog/OML2-100x67.jpg": {
+      "checksum": "7296b494ce04e1f83914afc1ebb06a23"
+    },
+    "assets/img/blog/OML2-1024x683.jpg": {
+      "checksum": "b2fb4e9dfb0f94d52196db30c23a06c9"
+    },
+    "assets/img/blog/OML2-150x100.jpg": {
+      "checksum": "70d5d709fbc5c6eb67b0408e3abc78cf"
+    },
+    "assets/img/blog/OML2-150x150.jpg": {
+      "checksum": "31511c09329d3e31600af4249b77171a"
+    },
+    "assets/img/blog/OML2-300x200.jpg": {
+      "checksum": "54135efc530ecb1959f59194dd3748c2"
+    },
+    "assets/img/blog/OML2-350x250.jpg": {
+      "checksum": "b03ec42cc4ceebf89eaa1f73b3ba5f76"
+    },
+    "assets/img/blog/OML2-400x267.jpg": {
+      "checksum": "96deb000f7427a8c00897443ced04cd4"
+    },
+    "assets/img/blog/OML2-430x287.jpg": {
+      "checksum": "662c744db747a909fa107cae5ac04f67"
+    },
+    "assets/img/blog/OML2-750x500.jpg": {
+      "checksum": "b505c53fdeaf9e75d4f18a1e52f6b6da"
+    },
+    "assets/img/blog/OML2-768x512.jpg": {
+      "checksum": "8255160ada9bc5f74787e9b4156194db"
+    },
+    "assets/img/blog/OML2.jpg": {
+      "checksum": "d76e159063c655ae42d31474acec59ae"
+    },
+    "assets/img/blog/pays-origine-1024x512.jpeg": {
+      "checksum": "64165c2f004bb93bc1c172286eb4197a"
+    },
+    "assets/img/blog/pays-origine-150x150.jpeg": {
+      "checksum": "f113dd5fd1c1140b9cdfe1043e635839"
+    },
+    "assets/img/blog/pays-origine-300x150.jpeg": {
+      "checksum": "cab6ab994f39ec6d98800aa2b2c45041"
+    },
+    "assets/img/blog/pays-origine-768x384.jpeg": {
+      "checksum": "c8396e0fc28a1de62333e9ed406af759"
+    },
+    "assets/img/blog/pays-origine-809x405.jpeg": {
+      "checksum": "408bf9356a9c38e6fd57620d39480aa4"
+    },
+    "assets/img/blog/pays-origine.jpeg": {
+      "checksum": "5d55de720d309072df586415233d4968"
+    },
+    "assets/img/blog/pixel-france-150x150.png": {
+      "checksum": "c0cc9015d176870ba6cb5b8b7096c3fd"
+    },
+    "assets/img/blog/pixel-france-2-150x150.png": {
+      "checksum": "1b0faa8002c434c0d4e9ac4874c982da"
+    },
+    "assets/img/blog/pixel-france-2-300x300.png": {
+      "checksum": "925fda772f5cb0e1c957dd4bf6c43bca"
+    },
+    "assets/img/blog/pixel-france-2.png": {
+      "checksum": "6727b216436c427b4a84cf440e3294ff"
+    },
+    "assets/img/blog/pixel-france-3-150x150.png": {
+      "checksum": "7b8e6f99b2e9a69a35eb607341154275"
+    },
+    "assets/img/blog/pixel-france-3-300x300.png": {
+      "checksum": "24a10320985f8a2ff621e17ca674fe0a"
+    },
+    "assets/img/blog/pixel-france-3.png": {
+      "checksum": "b2d405a67c5e059ba840a6a19e2ee647"
+    },
+    "assets/img/blog/pixel-france-300x300.png": {
+      "checksum": "bcffe7137217059713cd086410fffaa4"
+    },
+    "assets/img/blog/pixel-france.png": {
+      "checksum": "41e3b11e34faa3c4a5076e695780c3fa"
+    },
+    "assets/img/blog/pixel-map-150x150.jpg": {
+      "checksum": "91607f7cfbbef3049dce868b9a88f57f"
+    },
+    "assets/img/blog/pixel-map-300x134.jpg": {
+      "checksum": "3b49044700d81adeb2e31686a94e8480"
+    },
+    "assets/img/blog/pixel-map-768x342.jpg": {
+      "checksum": "51a9231df551fe90c499482fd6f715c9"
+    },
+    "assets/img/blog/pixel-map.jpg": {
+      "checksum": "57df2bb7541a3d89133707ce5896df52"
+    },
+    "assets/img/blog/pixel-world-map-150x150.png": {
+      "checksum": "11dbffee3cb903e1d4d70983368f854a"
+    },
+    "assets/img/blog/pixel-world-map-300x150.png": {
+      "checksum": "571b3bf1e5b0dd3759078aa73cd5d558"
+    },
+    "assets/img/blog/pixel-world-map-768x384.png": {
+      "checksum": "95848003012f1a803c4947feefc9cb39"
+    },
+    "assets/img/blog/pixel-world-map.png": {
+      "checksum": "7fcd78f1464f98df8752646f019221a2"
+    },
+    "assets/img/blog/prenom-elisabeth-rstats-150x150.png": {
+      "checksum": "c25f1aa397eabbc6c8dfd6b53a8098b8"
+    },
+    "assets/img/blog/prenom-elisabeth-rstats-300x150.png": {
+      "checksum": "dd769158ef236e9e967080d0756f7cde"
+    },
+    "assets/img/blog/prenom-elisabeth-rstats-768x384.png": {
+      "checksum": "0a29985ce8d063167251b03186a08a8f"
+    },
+    "assets/img/blog/prenom-elisabeth-rstats.png": {
+      "checksum": "2d7ff886e49c4c5118643955e31c24b9"
+    },
+    "assets/img/blog/prison-tattoo-150x150.jpg": {
+      "checksum": "3b745c6387b68f731a91d6393d77194b"
+    },
+    "assets/img/blog/prison-tattoo-2-150x150.jpg": {
+      "checksum": "a40c2874f1a234e635420b78733da968"
+    },
+    "assets/img/blog/prison-tattoo-2-300x112.jpg": {
+      "checksum": "cc58f7ce2e379d55e361f6e6fa6f4834"
+    },
+    "assets/img/blog/prison-tattoo-2-345x198.jpg": {
+      "checksum": "f623b4bbb93f7985824f51f51251419d"
+    },
+    "assets/img/blog/prison-tattoo-2-400x238.jpg": {
+      "checksum": "7d130e79d56fd02609efdea164425c8b"
+    },
+    "assets/img/blog/prison-tattoo-2-500x238.jpg": {
+      "checksum": "5fa5e5fbfdd34434fb25f6b7ee4e6232"
+    },
+    "assets/img/blog/prison-tattoo-2-539x238.jpg": {
+      "checksum": "cbb6f1774f8da53374a71b38870e69a9"
+    },
+    "assets/img/blog/prison-tattoo-2-570x238.jpg": {
+      "checksum": "f2b4b044fe1c063dcc51972f6a935d8c"
+    },
+    "assets/img/blog/prison-tattoo-2-600x238.jpg": {
+      "checksum": "07b40f2a52ef660c63201cc2b1ff4714"
+    },
+    "assets/img/blog/prison-tattoo-2.jpg": {
+      "checksum": "6d0045b2f2a1e6e189b22b34469cc972"
+    },
+    "assets/img/blog/prison-tattoo-300x117.jpg": {
+      "checksum": "85cc3176f2ca04748611903d3a25fcd8"
+    },
+    "assets/img/blog/prison-tattoo-345x198.jpg": {
+      "checksum": "f92d32dd2266f51f3278bb2114937921"
+    },
+    "assets/img/blog/prison-tattoo-400x260.jpg": {
+      "checksum": "56286c1c23d402aa1d11d25c2ff79616"
+    },
+    "assets/img/blog/prison-tattoo-500x315.jpg": {
+      "checksum": "c7d22abf0965422f1db9904b8601c4d4"
+    },
+    "assets/img/blog/prison-tattoo-539x303.jpg": {
+      "checksum": "6b953a57bbf406a84e3a887c8da53743"
+    },
+    "assets/img/blog/prison-tattoo-570x315.jpg": {
+      "checksum": "b4e6a926bce7710fdc8318c9f67df451"
+    },
+    "assets/img/blog/prison-tattoo-600x315.jpg": {
+      "checksum": "eb563157baebdb96d57f62d46f6636a7"
+    },
+    "assets/img/blog/prison-tattoo-700x272.jpg": {
+      "checksum": "2638a2768fe544139236705b0c6dbb35"
+    },
+    "assets/img/blog/prison-tattoo-768x299.jpg": {
+      "checksum": "ed3b838020bceb9f4ca1f70960277bb3"
+    },
+    "assets/img/blog/prison-tattoo-800x315.jpg": {
+      "checksum": "c4e06439790a010ea597f282889fc515"
+    },
+    "assets/img/blog/prison-tattoo.jpg": {
+      "checksum": "397ef3ffe6ab51a474d41b77e7525a4a"
+    },
+    "assets/img/blog/prix-bas-vinyles-150x150.jpeg": {
+      "checksum": "7d0ac57ebd3d576f0c9320817f0d3cdb"
+    },
+    "assets/img/blog/prix-bas-vinyles-300x150.jpeg": {
+      "checksum": "882949d6369e584184655ff7cc38c5d4"
+    },
+    "assets/img/blog/prix-bas-vinyles-768x384.jpeg": {
+      "checksum": "e47b4db6c2c5c742cea7a69c49b0c18d"
+    },
+    "assets/img/blog/prix-bas-vinyles.jpeg": {
+      "checksum": "56d0cfd30a5c7e0369fecf9c4427e522"
+    },
+    "assets/img/blog/prix-et-note-vinyles-collection-150x150.jpeg": {
+      "checksum": "b722c062f1f477b9a79484b6ef969723"
+    },
+    "assets/img/blog/prix-et-note-vinyles-collection-300x150.jpeg": {
+      "checksum": "bad24371d2f6de6eeeda8721ee98bcc6"
+    },
+    "assets/img/blog/prix-et-note-vinyles-collection-768x384.jpeg": {
+      "checksum": "c90c360f8166e6a4e524aa1cbd26a6cb"
+    },
+    "assets/img/blog/prix-et-note-vinyles-collection.jpeg": {
+      "checksum": "580e460dd136428ca927f172d17b35d3"
+    },
+    "assets/img/blog/prix-wants-vinyls-collection-150x150.jpeg": {
+      "checksum": "53be11c5e9483cf6654430a272dea8aa"
+    },
+    "assets/img/blog/prix-wants-vinyls-collection-300x150.jpeg": {
+      "checksum": "03d90887f8c3c2d73a5138c59099bb46"
+    },
+    "assets/img/blog/prix-wants-vinyls-collection-768x384.jpeg": {
+      "checksum": "f00fedee4fe1f2422a6a5f8fcee07716"
+    },
+    "assets/img/blog/prix-wants-vinyls-collection.jpeg": {
+      "checksum": "ddf149b224d4bd70f36e9611f0f33379"
+    },
+    "assets/img/blog/r-discogs-150x150.jpg": {
+      "checksum": "f76263840f82d5a5113c13aefb98020a"
+    },
+    "assets/img/blog/r-discogs-300x133.jpg": {
+      "checksum": "91ac65516d4a89f18b1be9c13ca88b07"
+    },
+    "assets/img/blog/r-discogs-768x341.jpg": {
+      "checksum": "590ae0151e5e63b50e0ec78d87e8ae97"
+    },
+    "assets/img/blog/r-discogs.jpg": {
+      "checksum": "e1deb1a051d11aeb2c5374d4213e1810"
+    },
+    "assets/img/blog/r-minecraft.JPG": {
+      "checksum": "9bbf1ae51cc38c0a3c956e617f5f646a"
+    },
+    "assets/img/blog/racines-150x150.jpg": {
+      "checksum": "2bd290a640bd79cc04b5fb52cf0cc8db"
+    },
+    "assets/img/blog/racines-300x112.jpg": {
+      "checksum": "9cd7816e3649fc513da57794eed76c53"
+    },
+    "assets/img/blog/racines-345x198.jpg": {
+      "checksum": "9ed25f8d98d0012b1ffed783ccb179d1"
+    },
+    "assets/img/blog/racines-400x238.jpg": {
+      "checksum": "8cbc9f73abc79ef21dcdd4497b6bbfe5"
+    },
+    "assets/img/blog/racines-500x238.jpg": {
+      "checksum": "98798e683c1c1d1b685fa6e7f2dfced2"
+    },
+    "assets/img/blog/racines-539x238.jpg": {
+      "checksum": "23bffa926baaea14aa1e275626965bdc"
+    },
+    "assets/img/blog/racines-570x238.jpg": {
+      "checksum": "637ff414189e0a251a568276d097573f"
+    },
+    "assets/img/blog/racines-600x238.jpg": {
+      "checksum": "71082c5332200b90661b49305ff92c66"
+    },
+    "assets/img/blog/racines.jpg": {
+      "checksum": "bc59514517c2fe6f675eef5fd76f48f0"
+    },
+    "assets/img/blog/random_iris1.png": {
+      "checksum": "6baadeb3408cdab40f02189fdb2b5c5c"
+    },
+    "assets/img/blog/random_iris2.png": {
+      "checksum": "758072edaf4d59135054cfd29dcc1d68"
+    },
+    "assets/img/blog/rennes-social-derby-150x150.jpg": {
+      "checksum": "b113943fe64ee0993c62dd87cadf9e74"
+    },
+    "assets/img/blog/rennes-social-derby-300x133.jpg": {
+      "checksum": "c09fa11064b278423311aeccf5e9d1bb"
+    },
+    "assets/img/blog/rennes-social-derby-345x198.jpg": {
+      "checksum": "bcd8438fc509c3556dffc3203c4afe0e"
+    },
+    "assets/img/blog/rennes-social-derby-400x260.jpg": {
+      "checksum": "8e0649594dae7c9f2250cfa26f4c5cb7"
+    },
+    "assets/img/blog/rennes-social-derby-500x355.jpg": {
+      "checksum": "bba6ec5d9778424accece1b23f6ef209"
+    },
+    "assets/img/blog/rennes-social-derby-539x303.jpg": {
+      "checksum": "b7800f36b0af83e8c258d1f2f6f05ee0"
+    },
+    "assets/img/blog/rennes-social-derby-570x355.jpg": {
+      "checksum": "ad09858e9a04423202c70a7f3e5fc69f"
+    },
+    "assets/img/blog/rennes-social-derby-600x355.jpg": {
+      "checksum": "759e65438ef50d69b5fcb6a77c458fdb"
+    },
+    "assets/img/blog/rennes-social-derby-700x311.jpg": {
+      "checksum": "bca9955a6f7cef81ffe28960a6e8b576"
+    },
+    "assets/img/blog/rennes-social-derby-768x341.jpg": {
+      "checksum": "d4c45522c1041982b9d04735bddef212"
+    },
+    "assets/img/blog/rennes-social-derby-800x355.jpg": {
+      "checksum": "24ac9185efd8fbc7de445de716c5703c"
+    },
+    "assets/img/blog/rennes-social-derby.jpg": {
+      "checksum": "68e0d2233b72c32bb5d5a3d1ab73f873"
+    },
+    "assets/img/blog/resultats-premier-tour-1000x500.png": {
+      "checksum": "bd46090105b0e4bf4804eba31abee024"
+    },
+    "assets/img/blog/resultats-premier-tour-150x150.png": {
+      "checksum": "0bd83a831500d7f760d40e2994e7ef63"
+    },
+    "assets/img/blog/resultats-premier-tour-300x150.png": {
+      "checksum": "b97562716c4faf4fb2f6b5578acc1715"
+    },
+    "assets/img/blog/resultats-premier-tour-768x384.png": {
+      "checksum": "7e8080e1d9b4ee5fae8c8b871bbd3511"
+    },
+    "assets/img/blog/resultats-premier-tour.png": {
+      "checksum": "ff588e5e7fe67f984e786d5bce59bfe4"
+    },
+    "assets/img/blog/rgeoapi-150x150.jpg": {
+      "checksum": "611bde155d2b80e61445489538e1ceda"
+    },
+    "assets/img/blog/rgeoapi-300x133.jpg": {
+      "checksum": "9e560f16cdd910019174e97da0c66f03"
+    },
+    "assets/img/blog/rgeoapi-768x341.jpg": {
+      "checksum": "8014466d816ab61bbc450852a412ea34"
+    },
+    "assets/img/blog/rgeoapi-cran-150x150.jpg": {
+      "checksum": "ca8288aaccdad2dbce88c585ca12a758"
+    },
+    "assets/img/blog/rgeoapi-cran-300x133.jpg": {
+      "checksum": "031e56544ad6a80ea1138874f768349e"
+    },
+    "assets/img/blog/rgeoapi-cran-768x341.jpg": {
+      "checksum": "3849232c3bec3e10545b2bc746bdcea7"
+    },
+    "assets/img/blog/rgeoapi-cran.jpg": {
+      "checksum": "e86b52472e6c2b6cdb4106ecc0e2778c"
+    },
+    "assets/img/blog/rgeoapi-v1-150x150.jpg": {
+      "checksum": "0ae41ecec54432685ffb778c28394f3b"
+    },
+    "assets/img/blog/rgeoapi-v1-300x133.jpg": {
+      "checksum": "f9738d91c86e0536375dbe56fbf64e19"
+    },
+    "assets/img/blog/rgeoapi-v1-768x341.jpg": {
+      "checksum": "ccc06b05553b8dfcfc622e7952ae2550"
+    },
+    "assets/img/blog/rgeoapi-v1.jpg": {
+      "checksum": "770a309e7dbd7ad2a51791c70522cd1e"
+    },
+    "assets/img/blog/rgeoapi.jpg": {
+      "checksum": "b6b9b392533f464d520e5e8bfbc29eb1"
+    },
+    "assets/img/blog/rhizome-150x150.jpg": {
+      "checksum": "400ccd5982b314275e87f62cfee13d86"
+    },
+    "assets/img/blog/rhizome-300x155.jpg": {
+      "checksum": "2cc152ce6f7f814e82a5516667a277ad"
+    },
+    "assets/img/blog/rhizome-345x198.jpg": {
+      "checksum": "65a18178dc928754ddeeaa26608bd008"
+    },
+    "assets/img/blog/rhizome-400x259.jpg": {
+      "checksum": "189c5388cf6ed197f5f919e3de3f7e13"
+    },
+    "assets/img/blog/rhizome-500x259.jpg": {
+      "checksum": "43bf6e34e74f8795efb556a33fdc7166"
+    },
+    "assets/img/blog/rhizome-maze-150x150.jpg": {
+      "checksum": "30d2c3b349813737aed939808c95cbdf"
+    },
+    "assets/img/blog/rhizome-maze-300x117.jpg": {
+      "checksum": "30e7f129edd0f2170302a96066c1a423"
+    },
+    "assets/img/blog/rhizome-maze-345x198.jpg": {
+      "checksum": "16f6c42ad469775e1ad4797cc036f8b5"
+    },
+    "assets/img/blog/rhizome-maze-400x260.jpg": {
+      "checksum": "3f6889d447e388fc7d153667f4b66a50"
+    },
+    "assets/img/blog/rhizome-maze-500x315.jpg": {
+      "checksum": "abbd54b8e924805a37b05f71606ed6e0"
+    },
+    "assets/img/blog/rhizome-maze-539x303.jpg": {
+      "checksum": "3c6a84a0bdf0e868eb2c39895dd3fd31"
+    },
+    "assets/img/blog/rhizome-maze-570x315.jpg": {
+      "checksum": "9fcba26d84a043eb524e46e478c24cfa"
+    },
+    "assets/img/blog/rhizome-maze-600x315.jpg": {
+      "checksum": "ea08c747f806ec58c7e5a8d9cbcfe651"
+    },
+    "assets/img/blog/rhizome-maze-700x272.jpg": {
+      "checksum": "c0882b87cacef957dec7e6366a69d758"
+    },
+    "assets/img/blog/rhizome-maze-768x299.jpg": {
+      "checksum": "9b0e7939b7fc71240828449450daf927"
+    },
+    "assets/img/blog/rhizome-maze-800x315.jpg": {
+      "checksum": "54978572a1df68e02e9effbc8c561422"
+    },
+    "assets/img/blog/rhizome-maze.jpg": {
+      "checksum": "343f13aad7c12d23a69972da3e951644"
+    },
+    "assets/img/blog/rhizome.jpg": {
+      "checksum": "f2df45dd38fc251b201fecdc6844349e"
+    },
+    "assets/img/blog/rpinterest-150x150 2.jpg": {
+      "checksum": "59898ceb4c451f44c9caa341ebdc50c4"
+    },
+    "assets/img/blog/rpinterest-150x150.jpg": {
+      "checksum": "41048a1661112907b9159c1665f0d840"
+    },
+    "assets/img/blog/rpinterest-300x133 2.jpg": {
+      "checksum": "57f9ca76ef6ac55f7825011b69cce4ff"
+    },
+    "assets/img/blog/rpinterest-300x133.jpg": {
+      "checksum": "c3b89cd5a7b0bca3a8c5b032b22658d6"
+    },
+    "assets/img/blog/rpinterest-768x341 2.jpg": {
+      "checksum": "3f86557bb117fa34bdcf6cbc8b007694"
+    },
+    "assets/img/blog/rpinterest-768x341.jpg": {
+      "checksum": "41d2d34d5bee643933191d402709286b"
+    },
+    "assets/img/blog/rpinterest-rstats-150x150.jpg": {
+      "checksum": "50fd03c24c5c8675c6dec5d79273948e"
+    },
+    "assets/img/blog/rpinterest-rstats-300x133.jpg": {
+      "checksum": "0d1d48d2d512cfb00781b825af2d0046"
+    },
+    "assets/img/blog/rpinterest-rstats-768x341.jpg": {
+      "checksum": "0dcfe98dcb520822447ccb73d4954976"
+    },
+    "assets/img/blog/rpinterest-rstats.jpg": {
+      "checksum": "10e44c8c952e31ceececea9483abc09d"
+    },
+    "assets/img/blog/rpinterest.jpg": {
+      "checksum": "4e911aacbfa74424da3a2a6e01a761a8"
+    },
+    "assets/img/blog/Rplot-1000x500.png": {
+      "checksum": "960c25fcf0ba0a33ce36ebb1064d023b"
+    },
+    "assets/img/blog/Rplot-150x150.png": {
+      "checksum": "3984ba030762d16411a91753642fc6aa"
+    },
+    "assets/img/blog/Rplot-300x150.png": {
+      "checksum": "dc78e21a3e8ea6fbdd0c524f6495187e"
+    },
+    "assets/img/blog/Rplot-768x384.png": {
+      "checksum": "7fbe01a2d9211231a6ca09a5bee7fb3d"
+    },
+    "assets/img/blog/Rplot.png": {
+      "checksum": "5657dcaec263ad69081d340a867fb883"
+    },
+    "assets/img/blog/Rplot01-1000x500.png": {
+      "checksum": "30501137c2378efa2247d411e07319a2"
+    },
+    "assets/img/blog/Rplot01-150x150.png": {
+      "checksum": "9ac6a4b13b088de69f7d03302de891ef"
+    },
+    "assets/img/blog/Rplot01-300x150.png": {
+      "checksum": "e3c1414718bf10294b452015e39065ed"
+    },
+    "assets/img/blog/Rplot01-768x384.png": {
+      "checksum": "66c6e68268a5ad4b2e6fca0b81aec69a"
+    },
+    "assets/img/blog/Rplot01.png": {
+      "checksum": "12b476eabdbca2be3350def36b6923fa"
+    },
+    "assets/img/blog/Rplot02-1000x500.png": {
+      "checksum": "abdfd41ad785fefd1b7f9a855ce76375"
+    },
+    "assets/img/blog/Rplot02-150x150.png": {
+      "checksum": "c105666d950c689e0def176e45e167c6"
+    },
+    "assets/img/blog/Rplot02-300x150.png": {
+      "checksum": "e1aa755ecc6e76e0f6a01275819b3b0c"
+    },
+    "assets/img/blog/Rplot02-768x384.png": {
+      "checksum": "7022b5ba575e2bac3a9fbcac2e9ac677"
+    },
+    "assets/img/blog/Rplot02.png": {
+      "checksum": "54b0dbad16f5e046815655aa484834c0"
+    },
+    "assets/img/blog/Rplot03-1000x500.png": {
+      "checksum": "78a65977431083acbcfe82d6455ebf8b"
+    },
+    "assets/img/blog/Rplot03-150x150.png": {
+      "checksum": "8e4e4dadbddb4d42c009e49ff6356979"
+    },
+    "assets/img/blog/Rplot03-300x150.png": {
+      "checksum": "e447b1d480123219b7fd9947aee65d06"
+    },
+    "assets/img/blog/Rplot03-768x384.png": {
+      "checksum": "5b41eb9ef756df4ef1e8456140d0a2ef"
+    },
+    "assets/img/blog/Rplot03.png": {
+      "checksum": "a6495cbd0bca8bbf1c16c566f6adcf6e"
+    },
+    "assets/img/blog/Rplot04-1000x500.png": {
+      "checksum": "2d96acafdc643feb6dfd30b75bf679ff"
+    },
+    "assets/img/blog/Rplot04-150x150.png": {
+      "checksum": "e5105b248f360426455b6b18a1c1df69"
+    },
+    "assets/img/blog/Rplot04-300x150.png": {
+      "checksum": "15a97c3d4b387fa03fddfecc44d37611"
+    },
+    "assets/img/blog/Rplot04-768x384.png": {
+      "checksum": "3b01fc265f8cfdd61e74759112ddf8a8"
+    },
+    "assets/img/blog/Rplot04.png": {
+      "checksum": "786b300e55b5416ed8367257a8b5a98a"
+    },
+    "assets/img/blog/Rplot05-1000x500.png": {
+      "checksum": "54749ce1e3059395c4ead203bfa6845b"
+    },
+    "assets/img/blog/Rplot05-150x150.png": {
+      "checksum": "2058bf6ae77ff62ddd427064cfed2736"
+    },
+    "assets/img/blog/Rplot05-300x150.png": {
+      "checksum": "581565fe58c6de258582130fa58ec0a3"
+    },
+    "assets/img/blog/Rplot05-768x384.png": {
+      "checksum": "2d20cf3ba09c61d4c7530d9c5c98b7af"
+    },
+    "assets/img/blog/Rplot05.png": {
+      "checksum": "8295e3c905529e8dab3059631e32c8d8"
+    },
+    "assets/img/blog/Rplot06-1024x512.jpeg": {
+      "checksum": "73a4245542242bc1dfff60b30fa924a2"
+    },
+    "assets/img/blog/Rplot06-1200x600.jpeg": {
+      "checksum": "6d68e8101d84752f4041ca0a965763a4"
+    },
+    "assets/img/blog/Rplot06-150x150.jpeg": {
+      "checksum": "556e39566cad1598a30d569d24f22ea8"
+    },
+    "assets/img/blog/Rplot06-300x150.jpeg": {
+      "checksum": "6cb27c4f32d0a24304d0222ec58fc573"
+    },
+    "assets/img/blog/Rplot06-768x384.jpeg": {
+      "checksum": "a90731062e2105e72d0040e3e6936542"
+    },
+    "assets/img/blog/Rplot06.jpeg": {
+      "checksum": "e95ee116f24e615b5b64b763a3fbac28"
+    },
+    "assets/img/blog/Rplot07-1024x512.jpeg": {
+      "checksum": "41a897b036d57a5425560e8552ae1c07"
+    },
+    "assets/img/blog/Rplot07-1200x600.jpeg": {
+      "checksum": "b1727d8d3f66caa8c428d88f39daf902"
+    },
+    "assets/img/blog/Rplot07-150x150.jpeg": {
+      "checksum": "db8687fbb783e1929a7a20b80bbce0bb"
+    },
+    "assets/img/blog/Rplot07-300x150.jpeg": {
+      "checksum": "245ef52b38d0e6a0407136aa2ba21367"
+    },
+    "assets/img/blog/Rplot07-768x384.jpeg": {
+      "checksum": "c609f6a77b8f8e9c88b0c99e1d2944fb"
+    },
+    "assets/img/blog/Rplot07.jpeg": {
+      "checksum": "032170d6ea92d1776a8b2e6e766a2de4"
+    },
+    "assets/img/blog/Rplot09-1024x512.jpeg": {
+      "checksum": "acbdc2d827433b3b08116f636276e228"
+    },
+    "assets/img/blog/Rplot09-1200x600.jpeg": {
+      "checksum": "2709b22376abc19d83fde7beb5d44eb8"
+    },
+    "assets/img/blog/Rplot09-150x150.jpeg": {
+      "checksum": "4a018165c23d974f653c334f29ac5921"
+    },
+    "assets/img/blog/Rplot09-300x150.jpeg": {
+      "checksum": "24ea5b2f5494a731031f4e06618c4d22"
+    },
+    "assets/img/blog/Rplot09-768x384.jpeg": {
+      "checksum": "e48f076c5f7e771caeb7ef78687b61fe"
+    },
+    "assets/img/blog/Rplot09.jpeg": {
+      "checksum": "f7e783ef17f0f9b0baf68ce76f84f67c"
+    },
+    "assets/img/blog/Rplot12-1024x512.jpeg": {
+      "checksum": "3802dcb809d63d8e607be2d30e973b62"
+    },
+    "assets/img/blog/Rplot12-1200x600.jpeg": {
+      "checksum": "a2ddb8a6e6b08efb31f1dd49fb2aba67"
+    },
+    "assets/img/blog/Rplot12-150x150.jpeg": {
+      "checksum": "8453038fa41ad58579bf7abfa817a270"
+    },
+    "assets/img/blog/Rplot12-300x150.jpeg": {
+      "checksum": "2393481f67556686e4997991e4ddd378"
+    },
+    "assets/img/blog/Rplot12-768x384.jpeg": {
+      "checksum": "87eb7f43f8a650777d54fddd50b01e69"
+    },
+    "assets/img/blog/Rplot12.jpeg": {
+      "checksum": "f06d61a34e964ac0151e847ced10165a"
+    },
+    "assets/img/blog/Rplot14-1024x512.jpeg": {
+      "checksum": "f71cf4eeeaec0bd73bc4d121e33bc192"
+    },
+    "assets/img/blog/Rplot14-1200x600.jpeg": {
+      "checksum": "88be79b96077034c0d983a358749cfe0"
+    },
+    "assets/img/blog/Rplot14-150x150.jpeg": {
+      "checksum": "014f936f0c1481167e61a1e5a1f33291"
+    },
+    "assets/img/blog/Rplot14-300x150.jpeg": {
+      "checksum": "64cd7092094dac08bafe39dcbc2b651c"
+    },
+    "assets/img/blog/Rplot14-768x384.jpeg": {
+      "checksum": "72460c09080de24d89be28bd497fce33"
+    },
+    "assets/img/blog/Rplot14.jpeg": {
+      "checksum": "c26ac63d09df91c346838a6e97da788d"
+    },
+    "assets/img/blog/Rplot15-1024x512.jpeg": {
+      "checksum": "f6bb4e3f41d244ac789979ac30843fb3"
+    },
+    "assets/img/blog/Rplot15-1200x600.jpeg": {
+      "checksum": "d03389c48496b78749066a583ca88f76"
+    },
+    "assets/img/blog/Rplot15-150x150.jpeg": {
+      "checksum": "533b89b7ddb8bd9a5191b6a44b6c7e83"
+    },
+    "assets/img/blog/Rplot15-300x150.jpeg": {
+      "checksum": "1a506bf24d18c1a176be8c5d21f1d9c4"
+    },
+    "assets/img/blog/Rplot15-768x384.jpeg": {
+      "checksum": "cd74d6d831ad702c8eef99b7e8cdd292"
+    },
+    "assets/img/blog/Rplot15.jpeg": {
+      "checksum": "faadd6b1ca6f7c87cf787be4ab7b7b25"
+    },
+    "assets/img/blog/Rplot17-1024x512.jpeg": {
+      "checksum": "5e39f62db8e57ec3e24c157761a31ef1"
+    },
+    "assets/img/blog/Rplot17-1200x600.jpeg": {
+      "checksum": "ac10e8d3dad6c830473409360e43a137"
+    },
+    "assets/img/blog/Rplot17-150x150.jpeg": {
+      "checksum": "4dda9730fc1fcba6b1deea13a5ed66e0"
+    },
+    "assets/img/blog/Rplot17-300x150.jpeg": {
+      "checksum": "cdd885bcbef7c03b1e8af0b461b245d1"
+    },
+    "assets/img/blog/Rplot17-768x384.jpeg": {
+      "checksum": "d2263cb7b65031d17ff41f39c69e7571"
+    },
+    "assets/img/blog/Rplot17.jpeg": {
+      "checksum": "1810a5ee20fba9cd3ccd6e6318bb16ec"
+    },
+    "assets/img/blog/Rplot18-1024x512.jpeg": {
+      "checksum": "9cc3e2193f31b2229f4308621e9a789b"
+    },
+    "assets/img/blog/Rplot18-1200x600.jpeg": {
+      "checksum": "ee062a1cac8614388e36708151a66adb"
+    },
+    "assets/img/blog/Rplot18-150x150.jpeg": {
+      "checksum": "319c988542a3cdfb0838a982364df353"
+    },
+    "assets/img/blog/Rplot18-300x150.jpeg": {
+      "checksum": "5c1a0ec9724e4acee3e4896c41027566"
+    },
+    "assets/img/blog/Rplot18-768x384.jpeg": {
+      "checksum": "3353af6ba4102cc90222a944304ce1e9"
+    },
+    "assets/img/blog/Rplot18.jpeg": {
+      "checksum": "f8e9fa3717ff9819b35bf02f24153334"
+    },
+    "assets/img/blog/Rplot19-1024x512.jpeg": {
+      "checksum": "c3ed7058b2c1c63199a16f76962229da"
+    },
+    "assets/img/blog/Rplot19-1200x600.jpeg": {
+      "checksum": "a9a946e2dea75e762db236ef8601383d"
+    },
+    "assets/img/blog/Rplot19-150x150.jpeg": {
+      "checksum": "315c3338c8014f743febb2b027956175"
+    },
+    "assets/img/blog/Rplot19-300x150.jpeg": {
+      "checksum": "98fda0f675da6228fe30ad31c7b0cecc"
+    },
+    "assets/img/blog/Rplot19-768x384.jpeg": {
+      "checksum": "5e1ca8f5c16c64cc6fb22d34ef127a46"
+    },
+    "assets/img/blog/Rplot19.jpeg": {
+      "checksum": "68e9d0b1c5800e16c84d00bc6265828b"
+    },
+    "assets/img/blog/Rplot20-1024x512.jpeg": {
+      "checksum": "c73dcf354932815e3cd79ee1cb89138d"
+    },
+    "assets/img/blog/Rplot20-1200x600.jpeg": {
+      "checksum": "d803ac8ba1c21d00c85c58ab83e0fec9"
+    },
+    "assets/img/blog/Rplot20-150x150.jpeg": {
+      "checksum": "33048a41039d6ea5b520713462612805"
+    },
+    "assets/img/blog/Rplot20-300x150.jpeg": {
+      "checksum": "1d434cf589774c41fe55ac1acca986dd"
+    },
+    "assets/img/blog/Rplot20-768x384.jpeg": {
+      "checksum": "49e820627a56b381d07d68417be828de"
+    },
+    "assets/img/blog/Rplot20.jpeg": {
+      "checksum": "02aa09b45b1410901bb8dc5aef22d1a1"
+    },
+    "assets/img/blog/rsd-logo-150x150.png": {
+      "checksum": "073e4bb0d767c088cc2caf609631dc4a"
+    },
+    "assets/img/blog/rsd-logo-258x300.png": {
+      "checksum": "f7371936251309ebdbbefb8dc6d2eedb"
+    },
+    "assets/img/blog/rsd-logo-345x198.png": {
+      "checksum": "c5c58402ff65291b1996373546b5c210"
+    },
+    "assets/img/blog/rsd-logo-362x260.png": {
+      "checksum": "79babae310bd653e83f29fb1d309c35b"
+    },
+    "assets/img/blog/rsd-logo-362x303.png": {
+      "checksum": "71f62771cd21459040f5f3e4f34b7d71"
+    },
+    "assets/img/blog/rsd-logo-362x380.png": {
+      "checksum": "6c8a5f963162074ab0986d0018bb61ea"
+    },
+    "assets/img/blog/rsd-logo.png": {
+      "checksum": "2a43a45ffa370e51b319310d16b98601"
+    },
+    "assets/img/blog/rstats-caption-confidence-150x150.png": {
+      "checksum": "9af1cbdee676f438508c5ff58820b376"
+    },
+    "assets/img/blog/rstats-caption-confidence-300x150.png": {
+      "checksum": "eb8fb365bc0a57102fce26f88a880dbc"
+    },
+    "assets/img/blog/rstats-caption-confidence-768x384.png": {
+      "checksum": "5e9216efcd7cecf5737bbca73e3c8a1a"
+    },
+    "assets/img/blog/rstats-caption-confidence.png": {
+      "checksum": "98f90347ae1d9e5faf66032c1fc422d4"
+    },
+    "assets/img/blog/rstats-captions-users-150x150.png": {
+      "checksum": "a852253e223b2332de70c66acc10e65f"
+    },
+    "assets/img/blog/rstats-captions-users-300x150.png": {
+      "checksum": "a5044e23377afab9c31bb5304a282f7f"
+    },
+    "assets/img/blog/rstats-captions-users-768x384.png": {
+      "checksum": "9e5b7dd704498482d5b547a7ec391cb2"
+    },
+    "assets/img/blog/rstats-captions-users.png": {
+      "checksum": "5c71415c9d994cc2eec67298a02aca78"
+    },
+    "assets/img/blog/rstats-tags-1024x512.jpeg": {
+      "checksum": "78db1421316bf826de11c52bcb293652"
+    },
+    "assets/img/blog/rstats-tags-1200x600.jpeg": {
+      "checksum": "70932dfd8a79e33c2bc08baa12443238"
+    },
+    "assets/img/blog/rstats-tags-150x150.jpeg": {
+      "checksum": "09af0c34d54237e6d10c83354fa73e24"
+    },
+    "assets/img/blog/rstats-tags-150x150.png": {
+      "checksum": "5f61098ab321f402222fad6eb1864e9d"
+    },
+    "assets/img/blog/rstats-tags-300x150.jpeg": {
+      "checksum": "a06c7566411aa11016cb8dc7337c9027"
+    },
+    "assets/img/blog/rstats-tags-300x150.png": {
+      "checksum": "dbddf90105b1abdcf7dac19dc879cdc2"
+    },
+    "assets/img/blog/rstats-tags-768x384.jpeg": {
+      "checksum": "44e1ae2ede4fda6d3658d81ff8c0d7b0"
+    },
+    "assets/img/blog/rstats-tags-768x384.png": {
+      "checksum": "f04962fe7ba7dc8837f211341250ff12"
+    },
+    "assets/img/blog/rstats-tags.jpeg": {
+      "checksum": "85264eefecf172a343cfcce0d23db14b"
+    },
+    "assets/img/blog/rstats-tags.png": {
+      "checksum": "b7874af3d3b97f8b9ad0dc792f8e2534"
+    },
+    "assets/img/blog/runderscore.jpg": {
+      "checksum": "688cca728cdca01f4dada88ef70eda1b"
+    },
+    "assets/img/blog/sardou.gif": {
+      "checksum": "2193cbec0c8809273a83ec5074b37ec8"
+    },
+    "assets/img/blog/second-tour-blanc-1000x500.png": {
+      "checksum": "1cd7177fe27e57f6891ab6cf80434d7c"
+    },
+    "assets/img/blog/second-tour-blanc-150x150.png": {
+      "checksum": "5582c75d649fde9eab13043d5b381874"
+    },
+    "assets/img/blog/second-tour-blanc-300x150.png": {
+      "checksum": "cec00ab941e6cddc3cd1c5d651dd6b77"
+    },
+    "assets/img/blog/second-tour-blanc-768x384.png": {
+      "checksum": "04a2ad4aac21e34b2d42c3e17f87687c"
+    },
+    "assets/img/blog/second-tour-blanc.png": {
+      "checksum": "c720d2e01c934e0aeee95e3f33132b07"
+    },
+    "assets/img/blog/simulation-second-tour-1-1000x500.png": {
+      "checksum": "873fb4de6891e9b2843cec4b2d7238ca"
+    },
+    "assets/img/blog/simulation-second-tour-1-150x150.png": {
+      "checksum": "fa648889b7e53029f94b30596c83ff0f"
+    },
+    "assets/img/blog/simulation-second-tour-1-300x150.png": {
+      "checksum": "4049fabf139cec536a8004a2b9ac4118"
+    },
+    "assets/img/blog/simulation-second-tour-1-768x384.png": {
+      "checksum": "fb0ac399712f0f81dd4b87f08c9d4a97"
+    },
+    "assets/img/blog/simulation-second-tour-1.png": {
+      "checksum": "ad235d343ceeb13a35d1a6348a55268e"
+    },
+    "assets/img/blog/simulation-second-tour-2-1000x500.png": {
+      "checksum": "38839074c9398ceff81b3cd9e26e96f9"
+    },
+    "assets/img/blog/simulation-second-tour-2-150x150.png": {
+      "checksum": "06ee4490378123cc9759cdd8012bc8c5"
+    },
+    "assets/img/blog/simulation-second-tour-2-300x150.png": {
+      "checksum": "15005c2644f17fc39e0a0a146f0ac521"
+    },
+    "assets/img/blog/simulation-second-tour-2-768x384.png": {
+      "checksum": "89ca81458e14f6eae94a1b2a896b16f6"
+    },
+    "assets/img/blog/simulation-second-tour-2.png": {
+      "checksum": "c762361e5bb4dbbdc646862d487385db"
+    },
+    "assets/img/blog/simulation-second-tour-3-1000x500.png": {
+      "checksum": "b4a533891f014ab5dce694478c9e4d59"
+    },
+    "assets/img/blog/simulation-second-tour-3-150x150.png": {
+      "checksum": "fb02f81d1bae5b01ce6d32e747beaffc"
+    },
+    "assets/img/blog/simulation-second-tour-3-300x150.png": {
+      "checksum": "6f8e6218d104288f6e98368fee596f52"
+    },
+    "assets/img/blog/simulation-second-tour-3-768x384.png": {
+      "checksum": "803641a1d7eed0a183a170193c286003"
+    },
+    "assets/img/blog/simulation-second-tour-3.png": {
+      "checksum": "7f4fdda3c28f1db76f00ed814832701f"
+    },
+    "assets/img/blog/simulation-second-tour-4-1000x500.png": {
+      "checksum": "890240301c9f4cdecf286a5a76c211e2"
+    },
+    "assets/img/blog/simulation-second-tour-4-150x150.png": {
+      "checksum": "447e53bd8f397eb4faeb2490c00e91ac"
+    },
+    "assets/img/blog/simulation-second-tour-4-300x150.png": {
+      "checksum": "d97dd878b62575d6075e2d22aa6b9bd9"
+    },
+    "assets/img/blog/simulation-second-tour-4-768x384.png": {
+      "checksum": "ea3a6df4ef8ddc6746efaaf7bf7abb58"
+    },
+    "assets/img/blog/simulation-second-tour-4.png": {
+      "checksum": "6fb04e8298bd7d316139fbba79c00298"
+    },
+    "assets/img/blog/simulation-second-tour-5-1000x500.png": {
+      "checksum": "a7826486a431b364b02f6e81559516b7"
+    },
+    "assets/img/blog/simulation-second-tour-5-150x150.png": {
+      "checksum": "d39e0b6750d5da3861c07de3837e7c6e"
+    },
+    "assets/img/blog/simulation-second-tour-5-300x150.png": {
+      "checksum": "68498281fbcf25f38cf39b949f1face7"
+    },
+    "assets/img/blog/simulation-second-tour-5-768x384.png": {
+      "checksum": "80e9b5003d45660d402b27ffa6a555c8"
+    },
+    "assets/img/blog/simulation-second-tour-5.png": {
+      "checksum": "098519802a7e2f4b41de5c7354f17300"
+    },
+    "assets/img/blog/smiley-150x150.jpg": {
+      "checksum": "2af110927a2397b13ae6ae0f99420f51"
+    },
+    "assets/img/blog/smiley-2-150x150.jpg": {
+      "checksum": "4444343202447ce626332e2a30830822"
+    },
+    "assets/img/blog/smiley-2-300x112.jpg": {
+      "checksum": "5579d8dee0825adf57760d6fe81b9461"
+    },
+    "assets/img/blog/smiley-2-345x198.jpg": {
+      "checksum": "50af0a1f818e1533fa81583672026477"
+    },
+    "assets/img/blog/smiley-2-400x238.jpg": {
+      "checksum": "34ad123962f851943731fa2da54c117a"
+    },
+    "assets/img/blog/smiley-2-500x238.jpg": {
+      "checksum": "43d54950ea401949fe7bf10f60d99b2d"
+    },
+    "assets/img/blog/smiley-2-539x238.jpg": {
+      "checksum": "4d073574ddc1a614d96b4df0af967ec6"
+    },
+    "assets/img/blog/smiley-2-570x238.jpg": {
+      "checksum": "f97c60b02a8c002260aacda5e3433077"
+    },
+    "assets/img/blog/smiley-2-600x238.jpg": {
+      "checksum": "dd267b08e65fed13b144b6d49eef43e9"
+    },
+    "assets/img/blog/smiley-2.jpg": {
+      "checksum": "c5e1a3f09709f97a1d403b225d8f6278"
+    },
+    "assets/img/blog/smiley-300x117.jpg": {
+      "checksum": "d99a3ed6ec5dc36b26c3968052070b5e"
+    },
+    "assets/img/blog/smiley-345x198.jpg": {
+      "checksum": "387905df8cc2956c10fadc228c2ec94c"
+    },
+    "assets/img/blog/smiley-400x260.jpg": {
+      "checksum": "148cd0e2b61f3588a0ae79dbee5edfa7"
+    },
+    "assets/img/blog/smiley-500x315.jpg": {
+      "checksum": "b9214f8caf3f00417fa24d5f588106e3"
+    },
+    "assets/img/blog/smiley-539x303.jpg": {
+      "checksum": "2185f413e394e3c661d962d8707ccf03"
+    },
+    "assets/img/blog/smiley-570x315.jpg": {
+      "checksum": "9f91db6f3f7158d1add9d4cb2306c6f9"
+    },
+    "assets/img/blog/smiley-600x315.jpg": {
+      "checksum": "a61a36257d1fa10ed1ef4c092d8af2e1"
+    },
+    "assets/img/blog/smiley-700x272.jpg": {
+      "checksum": "663d76cf62a06183fbaf2ed45047985a"
+    },
+    "assets/img/blog/smiley-768x299.jpg": {
+      "checksum": "60331f97bd561f8d8e4b8c664d967e2a"
+    },
+    "assets/img/blog/smiley-800x315.jpg": {
+      "checksum": "e45d2b9cd072e9c4bb5bde7c2c456aac"
+    },
+    "assets/img/blog/smiley.jpg": {
+      "checksum": "7bee1595a644baf631af4e79badea114"
+    },
+    "assets/img/blog/smiling_camera-1024x514.jpg": {
+      "checksum": "e26f56e7bf152a0498f1ca3c59fd278b"
+    },
+    "assets/img/blog/smiling_camera-1200x602.jpg": {
+      "checksum": "f850706954c095a7ead211e5a7db9f68"
+    },
+    "assets/img/blog/smiling_camera-150x150.jpg": {
+      "checksum": "2a2a59393d71f0157cb74a97685f1ee6"
+    },
+    "assets/img/blog/smiling_camera-300x151.jpg": {
+      "checksum": "5f55cb1acf4ab5c76dc1c6c4025023dd"
+    },
+    "assets/img/blog/smiling_camera-768x386.jpg": {
+      "checksum": "0b7772ef00f93edce036ef6fd0dc70dd"
+    },
+    "assets/img/blog/smiling_camera.jpg": {
+      "checksum": "1dfb897bc2f584fc828120d96c3267fb"
+    },
+    "assets/img/blog/snapchat-communication-150x150.jpg": {
+      "checksum": "311a00a3c9f734648fdbf23c1484ea98"
+    },
+    "assets/img/blog/snapchat-communication-300x133.jpg": {
+      "checksum": "ed1b55532fcd5f9aef82516fdb21bd62"
+    },
+    "assets/img/blog/snapchat-communication-345x198.jpg": {
+      "checksum": "a660ead373597a13ab1d2508f6bd12e4"
+    },
+    "assets/img/blog/snapchat-communication-400x260.jpg": {
+      "checksum": "91bc55e8dde855f41c0a5b1046a90135"
+    },
+    "assets/img/blog/snapchat-communication-500x355.jpg": {
+      "checksum": "fb2c5a8e518433a76a926e63c3fbaa33"
+    },
+    "assets/img/blog/snapchat-communication-539x303.jpg": {
+      "checksum": "575e05930a4b0d89ce52384050ea13ae"
+    },
+    "assets/img/blog/snapchat-communication-570x355.jpg": {
+      "checksum": "8feb107cb6e48754313a27fc0fb843aa"
+    },
+    "assets/img/blog/snapchat-communication-600x355.jpg": {
+      "checksum": "922fa6560b94e762ea72e1b91aad53f6"
+    },
+    "assets/img/blog/snapchat-communication-700x311.jpg": {
+      "checksum": "1360e0323449b780484f2582ac7ba9c4"
+    },
+    "assets/img/blog/snapchat-communication-768x341.jpg": {
+      "checksum": "2a57309d02306f348edd87632b04819f"
+    },
+    "assets/img/blog/snapchat-communication-800x355.jpg": {
+      "checksum": "6ec3f4faa302cddafbf142c1dbce2ba4"
+    },
+    "assets/img/blog/snapchat-communication.jpg": {
+      "checksum": "b48bdd579ee83a55af4736e09fab6741"
+    },
+    "assets/img/blog/songs-last-fm-christmas-1024x512.jpeg": {
+      "checksum": "d7be86a39edbd74934cfce6ffbc45da8"
+    },
+    "assets/img/blog/songs-last-fm-christmas-150x150.jpeg": {
+      "checksum": "9f08b2313634146165ed66ca0296faa0"
+    },
+    "assets/img/blog/songs-last-fm-christmas-300x150.jpeg": {
+      "checksum": "708b0fa66d12bb1093931a0b158199f0"
+    },
+    "assets/img/blog/songs-last-fm-christmas-768x384.jpeg": {
+      "checksum": "074d154e324f8a3a4e485980f95b3002"
+    },
+    "assets/img/blog/songs-last-fm-christmas-809x405.jpeg": {
+      "checksum": "9be05bc67a46c73dd8aa57172836832a"
+    },
+    "assets/img/blog/songs-last-fm-christmas.jpeg": {
+      "checksum": "9c2eb8bf47a4970a106bfb5bd1f87d5a"
+    },
+    "assets/img/blog/streaming-advice-personnalisation-150x150.jpg": {
+      "checksum": "3439f7bd5f3f56ad508bb647205c1f7e"
+    },
+    "assets/img/blog/streaming-advice-personnalisation-300x112.jpg": {
+      "checksum": "4873cb54e7bf5ad8288049a5e9798948"
+    },
+    "assets/img/blog/streaming-advice-personnalisation-345x198.jpg": {
+      "checksum": "8278fbfbe5a05ae69f23dd895b886dc5"
+    },
+    "assets/img/blog/streaming-advice-personnalisation-400x238.jpg": {
+      "checksum": "72f62616ddf9dd2a5e552c51cf6d87ca"
+    },
+    "assets/img/blog/streaming-advice-personnalisation-500x238.jpg": {
+      "checksum": "27b822008cb6d33fd6596a5e8ceeab02"
+    },
+    "assets/img/blog/streaming-advice-personnalisation-539x238.jpg": {
+      "checksum": "884284a23a53d994075c8731f78a63dc"
+    },
+    "assets/img/blog/streaming-advice-personnalisation-570x238.jpg": {
+      "checksum": "71af6c018d7e872b9d711feb668c3b86"
+    },
+    "assets/img/blog/streaming-advice-personnalisation-600x238.jpg": {
+      "checksum": "95a868e064884941887aef2200e37502"
+    },
+    "assets/img/blog/streaming-advice-personnalisation.jpg": {
+      "checksum": "35175e6bc7f39c0b78f06570bfa42b0c"
+    },
+    "assets/img/blog/streaming-homophily-150x150.jpg": {
+      "checksum": "62994840a3b42faf3cc77daf254b1af6"
+    },
+    "assets/img/blog/streaming-homophily-300x63.jpg": {
+      "checksum": "475c81ecc54398cb4d64eb57e08aa166"
+    },
+    "assets/img/blog/streaming-homophily-345x158.jpg": {
+      "checksum": "d4ff01dd54c99c6e980c78ad607042cf"
+    },
+    "assets/img/blog/streaming-homophily-400x158.jpg": {
+      "checksum": "0c50e47be44d1ff262713257cfd4e80f"
+    },
+    "assets/img/blog/streaming-homophily-500x158.jpg": {
+      "checksum": "21964283e62ed65c62b3a3f1b0767ef1"
+    },
+    "assets/img/blog/streaming-homophily-539x158.jpg": {
+      "checksum": "5de41814a752bf438905527635757b41"
+    },
+    "assets/img/blog/streaming-homophily-570x158.jpg": {
+      "checksum": "05d7986f252041e3f7893b648adc9aea"
+    },
+    "assets/img/blog/streaming-homophily-600x158.jpg": {
+      "checksum": "18158620f3d4ef921e5e644e598ffbca"
+    },
+    "assets/img/blog/streaming-homophily-700x147.jpg": {
+      "checksum": "a4e8f8e764c9245381c437bdb4aad40e"
+    },
+    "assets/img/blog/streaming-homophily.jpg": {
+      "checksum": "932c80e814bc8e28fc624453d3ec6d6d"
+    },
+    "assets/img/blog/styles-frequents-150x150.jpeg": {
+      "checksum": "566485e3f7c3d99743dec9ce42000756"
+    },
+    "assets/img/blog/styles-frequents-300x150.jpeg": {
+      "checksum": "4296ba2920e98fcfd15acb93bba1c527"
+    },
+    "assets/img/blog/styles-frequents-768x384.jpeg": {
+      "checksum": "43f9dbde9ad29685759978e8e14fcafc"
+    },
+    "assets/img/blog/styles-frequents.jpeg": {
+      "checksum": "9b76d99e9e1d3aa35e2d9a1c13f2506e"
+    },
+    "assets/img/blog/sys.sleep_-150x150.jpg": {
+      "checksum": "c3a42e7c93733f45b8861d96b5770dbb"
+    },
+    "assets/img/blog/sys.sleep_-300x133.jpg": {
+      "checksum": "c06bf547206ff2d3bd6badaebca7a8ee"
+    },
+    "assets/img/blog/sys.sleep_-768x341.jpg": {
+      "checksum": "b18637822f2b85ea174d885271b24a82"
+    },
+    "assets/img/blog/sys.sleep_.jpg": {
+      "checksum": "c1fef3ca8a4894aae208af7e7b754c67"
+    },
+    "assets/img/blog/text-mining-r-100x44.jpg": {
+      "checksum": "89457f4a7607b9f4f2bb870fc35fa866"
+    },
+    "assets/img/blog/text-mining-r-150x150.jpg": {
+      "checksum": "24b7240ab393693869802d693ecb9eb1"
+    },
+    "assets/img/blog/text-mining-r-150x67.jpg": {
+      "checksum": "b5483b7d559a4dff0cb4c4c6a96c2682"
+    },
+    "assets/img/blog/text-mining-r-300x133.jpg": {
+      "checksum": "8f509f206721276fd16d0ae5dad7c4bd"
+    },
+    "assets/img/blog/text-mining-r-350x250.jpg": {
+      "checksum": "66dadea776462b3b18408c9a006fce15"
+    },
+    "assets/img/blog/text-mining-r-400x178.jpg": {
+      "checksum": "d27466ed3814c60bff1d6967686db2ce"
+    },
+    "assets/img/blog/text-mining-r-430x191.jpg": {
+      "checksum": "3bbbf7b7e785bd0f509d83b4e9dedaa4"
+    },
+    "assets/img/blog/text-mining-r-750x333.jpg": {
+      "checksum": "09d16f967c86dc3555cf311e4b006029"
+    },
+    "assets/img/blog/text-mining-r-768x341.jpg": {
+      "checksum": "5ecdd99857c8b700b8faffd146f0212c"
+    },
+    "assets/img/blog/text-mining-r.jpg": {
+      "checksum": "6918aa9f16ae59ba0a849a8b1e3ee953"
+    },
+    "assets/img/blog/tidystringdist.png": {
+      "checksum": "26d2ea89d98eb335b791d21336e96a40"
+    },
+    "assets/img/blog/time-150x150.jpg": {
+      "checksum": "efcdba818b584d5930f9efb77ca12346"
+    },
+    "assets/img/blog/time-300x112.jpg": {
+      "checksum": "dacf4665d5323152d060bcb0a3f9da1e"
+    },
+    "assets/img/blog/time-345x198.jpg": {
+      "checksum": "c707c96c561876ff03f3f90d61986986"
+    },
+    "assets/img/blog/time-400x238.jpg": {
+      "checksum": "9be8a689c8cefd0bfe88c9133225f0b2"
+    },
+    "assets/img/blog/time-500x238.jpg": {
+      "checksum": "310eb21d86a427ba96d256d0c83c8222"
+    },
+    "assets/img/blog/time-539x238.jpg": {
+      "checksum": "3617c8dc2993a4697f65ff585b69ff68"
+    },
+    "assets/img/blog/time-570x238.jpg": {
+      "checksum": "e2d7f5caab7aab8f7f77aed790e4ae4c"
+    },
+    "assets/img/blog/time-600x238.jpg": {
+      "checksum": "b78bc9693dd9c8820e0632555ebb3541"
+    },
+    "assets/img/blog/time.jpg": {
+      "checksum": "84a9d3a94897d22d79468424c0c666e9"
+    },
+    "assets/img/blog/translate-150x150.jpg": {
+      "checksum": "7b1022bf5f5f11644ec6ca2bd81070e5"
+    },
+    "assets/img/blog/translate-300x173.jpg": {
+      "checksum": "39f52f0a98308d5582c7253514880b84"
+    },
+    "assets/img/blog/translate-768x443.jpg": {
+      "checksum": "147704f158309caa59e473327f4815a4"
+    },
+    "assets/img/blog/translate-e1482842709198-150x150.jpg": {
+      "checksum": "3c24ceb325fb5a101a4ff422c71f1f2e"
+    },
+    "assets/img/blog/translate-e1482842709198-300x173.jpg": {
+      "checksum": "4fea66b53b38e2a16df2eaf4de390b2a"
+    },
+    "assets/img/blog/translate-e1482842709198-768x443.jpg": {
+      "checksum": "8539ddd7f08630bd7d70b6107d6bce10"
+    },
+    "assets/img/blog/translate-e1482842709198.jpg": {
+      "checksum": "147704f158309caa59e473327f4815a4"
+    },
+    "assets/img/blog/translate.jpg": {
+      "checksum": "c530af08964dde6c274da14697cf3943"
+    },
+    "assets/img/blog/Untitled-design-1024x1024.jpg": {
+      "checksum": "d812dadf6d78e1d0220c111605cbfcc9"
+    },
+    "assets/img/blog/Untitled-design-150x150.jpg": {
+      "checksum": "f05d6aff1a7a5b46113c0ceb2c2dbb20"
+    },
+    "assets/img/blog/Untitled-design-300x300.jpg": {
+      "checksum": "ba91ba4d88140e135766a3f99a76815f"
+    },
+    "assets/img/blog/Untitled-design-768x768.jpg": {
+      "checksum": "4e453cc79274537b652a9d8bb6285dc3"
+    },
+    "assets/img/blog/Untitled-design-809x809.jpg": {
+      "checksum": "df21a2cfc7738b05843dd674d2ce17af"
+    },
+    "assets/img/blog/Untitled-design.jpg": {
+      "checksum": "2fdc3fc6ed6290785798c0f48b955dd6"
+    },
+    "assets/img/blog/us-pixel-map-150x150.png": {
+      "checksum": "4c7a98d53f9768be75feebf9ad8e72d0"
+    },
+    "assets/img/blog/us-pixel-map-300x150.png": {
+      "checksum": "f6afce97423c4d282b343036d78af4dd"
+    },
+    "assets/img/blog/us-pixel-map-768x384.png": {
+      "checksum": "0a5bc691d3bd75b05c5bfc6fff5801c9"
+    },
+    "assets/img/blog/us-pixel-map.png": {
+      "checksum": "da56c8a3ff2d8b6114efc0835de29929"
+    },
+    "assets/img/blog/user-mainstage.JPG": {
+      "checksum": "82d4058d20d54baf9cfb1c38072c9848"
+    },
+    "assets/img/blog/user-sign.JPG": {
+      "checksum": "b5c6f63c4bdd7189805e0bd604344b0d"
+    },
+    "assets/img/blog/vice-snowden-150x150.jpeg": {
+      "checksum": "effbde1ffa26af383cd27a4035a4b225"
+    },
+    "assets/img/blog/vice-snowden-300x133.jpeg": {
+      "checksum": "f2c61ec474c437dbd73eb526a9e6d921"
+    },
+    "assets/img/blog/vice-snowden-768x341.jpeg": {
+      "checksum": "a3bc3454b90b3f3d089ed35278f3ae5a"
+    },
+    "assets/img/blog/vice-snowden.jpeg": {
+      "checksum": "f5000e15ed443e1c509d31ec24c39af4"
+    },
+    "assets/img/blog/void-france-map-150x150.png": {
+      "checksum": "dc2559b4b18394db71159c30c5349142"
+    },
+    "assets/img/blog/void-france-map-300x300.png": {
+      "checksum": "102fb2d84a0d1f296fe788c011708510"
+    },
+    "assets/img/blog/void-france-map.png": {
+      "checksum": "33dc9162e32c91a8ef8ec561e6d2ba99"
+    },
+    "assets/img/blog/vote-fr-150x150.jpg": {
+      "checksum": "d7cf9489051f4b28c47649422db89e4b"
+    },
+    "assets/img/blog/vote-fr-300x133.jpg": {
+      "checksum": "f559e7a991a8265d7e5b909618ac0269"
+    },
+    "assets/img/blog/vote-fr-768x341.jpg": {
+      "checksum": "43e95900070668fdebc12f118f4213cb"
+    },
+    "assets/img/blog/vote-fr.jpg": {
+      "checksum": "0fec4ddc3fc3b6804b591ef0b4b9ead9"
+    },
+    "assets/img/colin_coffee_squared.jpg": {
+      "checksum": "4a49df7f32d09cb08c6f4b6f99004b8e"
+    },
+    "assets/img/dashboard_example.png": {
+      "checksum": "5996ef03aff17a093059602da8d4dda8"
+    },
+    "assets/img/dockerbw.png": {
+      "checksum": "1dfbc55705c0637a71173a35dce94814"
+    },
+    "assets/img/graph_mentions-1.png": {
+      "checksum": "2bac65f456b17732f26743ef91d158b4"
+    },
+    "assets/img/graph-1.png": {
+      "checksum": "eee3e55abd3bf97b5a64327dd7dce0a5"
+    },
+    "assets/img/horizontal_shiny.png": {
+      "checksum": "fd4e105ab700406edd6b8a845522703f"
+    },
+    "assets/img/more_code.png": {
+      "checksum": "93bbc9056f7c297a84e4963f4d34adbe"
+    },
+    "assets/img/most_tweeted-1.png": {
+      "checksum": "6856269e0fbafbfc449251664e264e54"
+    },
+    "assets/img/pexels/aboutcolin.jpg": {
+      "checksum": "1a4c36628a986f68a281a8bb3c083bdb"
+    },
+    "assets/img/pexels/banner.jpg": {
+      "checksum": "a81e73d8f41047595740ace549b9de1b"
+    },
+    "assets/img/pexels/blogcolin.jpg": {
+      "checksum": "cda7799e231a5a1fcafeef3d5f5b2e29"
+    },
+    "assets/img/pexels/colinbanner.jpg": {
+      "checksum": "c6503497b943e4e27f3e75a31a8bb967"
+    },
+    "assets/img/pexels/opensource.jpg": {
+      "checksum": "2b316250c723c1fe1ba5e0f54190a762"
+    },
+    "assets/img/pexels/search.jpg": {
+      "checksum": "7d754504a9230be8f212e95ffd95adcb"
+    },
+    "assets/img/pexels/talkspubli.jpg": {
+      "checksum": "633182daf40f045c95937859bd038b13"
+    },
+    "assets/img/portfolio/cabin.png": {
+      "checksum": "56ec4ee72a91e8f3d954db6cccbf8ab2"
+    },
+    "assets/img/portfolio/cake.png": {
+      "checksum": "4b52b0b2489115cffdd9b00c8badb1a5"
+    },
+    "assets/img/portfolio/circus.png": {
+      "checksum": "e27c88e555910ddce50b6f1e275023a4"
+    },
+    "assets/img/portfolio/game.png": {
+      "checksum": "107d31e81b23d07ad38c7cc4d1f7ea27"
+    },
+    "assets/img/portfolio/github.png": {
+      "checksum": "7618eb12039e30d0c3f2581fd0350899"
+    },
+    "assets/img/portfolio/jekyllblog2.png": {
+      "checksum": "d15fc7110f075ca46940b8af052adbd4"
+    },
+    "assets/img/portfolio/ninja.png": {
+      "checksum": "d6de2ab61c92a6b8e62c8012c01db73c"
+    },
+    "assets/img/portfolio/safe.png": {
+      "checksum": "0e112b8bc5594f09161bef4b407978a3"
+    },
+    "assets/img/portfolio/submarine.png": {
+      "checksum": "8fad4ff92040b17345896e0e777a79ad"
+    },
+    "assets/img/portfolio/toh.png": {
+      "checksum": "21105d680a9b3cacb799eea2a22cfbba"
+    },
+    "assets/img/portfolio/ttt.png": {
+      "checksum": "e76648ff88607523166a751c6ad59425"
+    },
+    "assets/img/promises.png": {
+      "checksum": "621a0490a3d83e6df59abc5675ad67c4"
+    },
+    "assets/img/searchweek-1.png": {
+      "checksum": "6a559fb3fad9fa6bec5b605b739772b6"
+    },
+    "assets/img/shinyspin.gif": {
+      "checksum": "f57f1d3b550f1dc055038ad32b1ac3ba"
+    },
+    "assets/img/shinyspin.mp4": {
+      "checksum": "ed3f786237f3d25bcca6bdb9cf5f6263"
+    },
+    "assets/img/thumbnails/desk-messy.jpeg": {
+      "checksum": "e3a0eeaf1890d406226484e85d08cb4f"
+    },
+    "assets/img/triangle.svg": {
+      "checksum": "f0fcd699a56dae35e48e9418d3e7596b"
+    },
+    "assets/img/tweet_model.png": {
+      "checksum": "33ba51b79acd66c6df8fc37fbb143f45"
+    },
+    "assets/img/tweets_day-1.png": {
+      "checksum": "5747080091bdeeeda82bdc51f66b7c2b"
+    },
+    "assets/img/unnamed-chunk-16-1.png": {
+      "checksum": "11911f294ee414ff8ac2ac00992d423f"
+    },
+    "assets/img/unnamed-chunk-17-1.png": {
+      "checksum": "b23699c97cc3b4e1ecf2c9542a0a7341"
+    },
+    "assets/img/unnamed-chunk-18-1.png": {
+      "checksum": "11911f294ee414ff8ac2ac00992d423f"
+    },
+    "assets/img/unnamed-chunk-19-1.png": {
+      "checksum": "b23699c97cc3b4e1ecf2c9542a0a7341"
+    },
+    "assets/img/unnamed-chunk-21-1.png": {
+      "checksum": "11911f294ee414ff8ac2ac00992d423f"
+    },
+    "assets/img/unnamed-chunk-22-1.png": {
+      "checksum": "b23699c97cc3b4e1ecf2c9542a0a7341"
+    },
+    "assets/img/unnamed-chunk-24-1.png": {
+      "checksum": "8eabec8dbf63d86ee405aecfef022c3f"
+    },
+    "assets/img/unnamed-chunk-25-1.png": {
+      "checksum": "c6d166c0aea890f16bd933cf40bb2854"
+    },
+    "assets/img/unnamed-chunk-3-1.png": {
+      "checksum": "8b77b437503024c24da57d0209ddc514"
+    },
+    "assets/img/unnamed-chunk-4-1.png": {
+      "checksum": "4db11ff8c008b419b35b271d41dc6259"
+    },
+    "assets/img/unnamed-chunk-4-2.png": {
+      "checksum": "d86216e743d0bad254f54f140be0a7a8"
+    },
+    "assets/img/unnamed-chunk-7-1.png": {
+      "checksum": "0733d6f6dde570312a35efdcd6366b3b"
+    },
+    "assets/img/unnamed-chunk-7-2.png": {
+      "checksum": "3ec2e1f8e69201ee649ba85475df8248"
+    },
+    "assets/img/unnamed-chunk-8-1.png": {
+      "checksum": "6a559fb3fad9fa6bec5b605b739772b6"
+    },
+    "assets/img/web2day.png": {
+      "checksum": "8932869d28dbfbb3d60cc6f922109337"
+    },
+    "assets/img/wrongkiddoorigin.jpeg": {
+      "checksum": "cd95a812577fb7658a83514eac5e2d1e"
+    },
+    "assets/js/_main.js": {
+      "checksum": "4e7653c1d9a5a46e1443ef4556b413ea"
+    },
+    "assets/js/github_repo.js": {
+      "checksum": "71045f68fdcef79ab5cdb8630b3a6316"
+    },
+    "assets/js/lunr/lunr-en.js": {
+      "checksum": "8b7dc81af45283c3be403c5e7dda204f"
+    },
+    "assets/js/lunr/lunr-gr.js": {
+      "checksum": "91399d43d12114fccd137cf228d2066e"
+    },
+    "assets/js/lunr/lunr-store.js": {
+      "checksum": "d16445234f9d4eaa12abdb507aafafdf"
+    },
+    "assets/js/lunr/lunr.js": {
+      "checksum": "a5802d96e7726edf965526075d62e86e"
+    },
+    "assets/js/lunr/lunr.min.js": {
+      "checksum": "0833ed15a7fa760441ebd94b92270ff9"
+    },
+    "assets/js/main.min.js": {
+      "checksum": "6bde691c7141962dbeffed3bb0a339c5"
+    },
+    "assets/js/plugins/jquery.fitvids.js": {
+      "checksum": "eebb3a0cfe2cf49b72e25d61cf4c533f"
+    },
+    "assets/js/plugins/jquery.greedy-navigation.js": {
+      "checksum": "346c4ce5f6088efcea3835fbad1fea19"
+    },
+    "assets/js/plugins/jquery.magnific-popup.js": {
+      "checksum": "b3aec63f332f0e294691c4036c14b27c"
+    },
+    "assets/js/plugins/jquery.smooth-scroll.min.js": {
+      "checksum": "b8a0e7fd406454ee7b7254826b7d6bce"
+    },
+    "assets/js/vendor/jquery/jquery-3.3.1.min.js": {
+      "checksum": "a09e13ee94d51c524b7e2a728c7d4039"
+    },
+    "atelier-dataviz-dimanche-12-mars-fabrique-de-linfo/index.html": {
+      "checksum": "dd645fc67bf2031689299f313f0e5cec"
+    },
+    "attempt-0-3-0/index.html": {
+      "checksum": "f4374b98a7ff0b6eea50bb954faa777c"
+    },
+    "attempt-cran/index.html": {
+      "checksum": "9b8967be28e3f87605f2973fa4275706"
+    },
+    "back-budapest/index.html": {
+      "checksum": "ef88c5cfc8a9e4fea5c60d58273b7d52"
+    },
+    "back-from-toulouse/index.html": {
+      "checksum": "db2253ed0e10bbd08d599ad1f271f1bf"
+    },
+    "back-user2017/index.html": {
+      "checksum": "f3a160ecab824950c40c05cc845b273c"
+    },
+    "banner.js": {
+      "checksum": "f14ab0ffb39838f8ff07b9c201ad5e68"
+    },
+    "build-api-wrapper-package-r/index.html": {
+      "checksum": "d858397a16c022b03c2f204caf77faac"
+    },
+    "carte-r-rgeoapi-ggplot2/index.html": {
+      "checksum": "2d8a42a97ea57d9036bf38ed28850bfe"
+    },
+    "cartographier-second-tour-francais-r/index.html": {
+      "checksum": "c4c732a4915d84ac183051178f117869"
+    },
+    "categories/index.html": {
+      "checksum": "e908c8204ee1cf6b828eb0f501e6ec88"
+    },
+    "CNAME": {
+      "checksum": "e81ccd5782423f5d82027db627797184"
+    },
+    "collect-rtweet/index.html": {
+      "checksum": "9ef00c52035ed2e5b503b9e94363aad4"
+    },
+    "coming-budapest/index.html": {
+      "checksum": "affb1f3884d6f1ce45e9a75ce57c18d8"
+    },
+    "create-an-heatmap-with-r-and-ggplot2/index.html": {
+      "checksum": "92eb8c3e790822ec691fe52727c95a0c"
+    },
+    "create-map-ggplot2-rgeoapi-ggmap/index.html": {
+      "checksum": "54c1c203bac059913fc868dae4c8cdfd"
+    },
+    "create-r-cli-npm/index.html": {
+      "checksum": "af6c4a4cf46a348d8314898aaf1b8f6c"
+    },
+    "dancing-banana-r-package-doc/index.html": {
+      "checksum": "926768bf507eabb8a2b6ae52a24395ef"
+    },
+    "data-bzh-apero-storycode-rennes/index.html": {
+      "checksum": "14e0ac7c4d726b929b238d64a6c25141"
+    },
+    "data-vinyles-bibliotheque-discogs-r/index.html": {
+      "checksum": "dc13117e7ee953a99d3d846d353b142e"
+    },
+    "data-vinyles-discogs-r/index.html": {
+      "checksum": "0afee6a3af1bd91ac76a7203e4ad9946"
+    },
+    "docker-r-reproducibility/index.html": {
+      "checksum": "ffde9d0743d66b578e043e590ae690eb"
+    },
+    "dockerfiler-cran/index.html": {
+      "checksum": "6a7d6b7872ce9dd71cde25ff4e702798"
+    },
+    "explain-environments-eli5/index.html": {
+      "checksum": "2c4a737df5ca153506750c044ce0d084"
+    },
+    "feed.xml": {
+      "checksum": "6e280e1f1beba2325345cd157b35ff9e"
+    },
+    "frying-pane/index.html": {
+      "checksum": "940d75084667374a0eeceabf661f9e49"
+    },
+    "game-of-thrones-characters-r/index.html": {
+      "checksum": "3044dfcb46db1296cdb22fbf533f90d1"
+    },
+    "happy-dev-purrr/index.html": {
+      "checksum": "9c3b4f7e06d3561aa767b03761234189"
+    },
+    "heatmap-avec-r-et-ggplot2/index.html": {
+      "checksum": "a75a625839bf96bcf242df75d33e1a96"
+    },
+    "index.html": {
+      "checksum": "ba791e497206348d3b003658a78b0a21"
+    },
+    "intro-to-r/appendix-a-a-sample-session.html": {
+      "checksum": "c46a3336cbbc3b13effb8141152309bc"
+    },
+    "intro-to-r/appendix-b-invoking-r.html": {
+      "checksum": "d1ed0d674ec74cd0383042aafc33261a"
+    },
+    "intro-to-r/appendix-c-the-command-line-editor.html": {
+      "checksum": "8d4fbbfee29e87de546e69a96fb83183"
+    },
+    "intro-to-r/appendix-d-function-and-variable-index.html": {
+      "checksum": "5a823142e08fec6e236401e948a3008a"
+    },
+    "intro-to-r/appendix-e-concept-index.html": {
+      "checksum": "0c121715af9f8a6ce7dbb033750a7665"
+    },
+    "intro-to-r/appendix-f-references.html": {
+      "checksum": "d11a894bdbe33cdf2bfe95807e815c78"
+    },
+    "intro-to-r/arrays-and-matrices.html": {
+      "checksum": "fc9120fcf3bba5cb940998e2d6619483"
+    },
+    "intro-to-r/ecdf.png": {
+      "checksum": "61d03b1b2578759610f2ce56a2c37cab"
+    },
+    "intro-to-r/fig11.png": {
+      "checksum": "3e8c4b6a2ac2da7d2bc07a6ab7f532dc"
+    },
+    "intro-to-r/fig12.png": {
+      "checksum": "7611cdb76c9949dd1a28f176f0842972"
+    },
+    "intro-to-r/graphical-procedures.html": {
+      "checksum": "29deaa6b384ccb370c4c3f21684f8b73"
+    },
+    "intro-to-r/grouping-loops-and-conditional-execution.html": {
+      "checksum": "f7b24dacdde509b752d51c3841513cb1"
+    },
+    "intro-to-r/hist.png": {
+      "checksum": "1e71cbb62f0872779a6597ae747c7e10"
+    },
+    "intro-to-r/ice.png": {
+      "checksum": "1299138550d50dcc26b16573ba0fc260"
+    },
+    "intro-to-r/index.html": {
+      "checksum": "79b0ae4c56fa2c82c9685e1e7bfc8935"
+    },
+    "intro-to-r/introduction-and-preliminaries.html": {
+      "checksum": "286e76f4e0c2b7745f93e7cb1ed10987"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/css/fontawesome/fontawesome-webfont.ttf": {
+      "checksum": "a3de2170e4e9df77161ea5d3f31b2668"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/css/plugin-bookdown.css": {
+      "checksum": "398170631e7fe7e8ac2e5357e26acc2c"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/css/plugin-fontsettings.css": {
+      "checksum": "056a6db3eef3553a78f3b7e02356b2e7"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/css/plugin-highlight.css": {
+      "checksum": "467fbe4b6b5a4b88fdd75c463f8626ec"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/css/plugin-search.css": {
+      "checksum": "0ee84d42c4f09648c8d3ff7d03b95a4a"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/css/style.css": {
+      "checksum": "dd74bd9563f4c8c779465a97096a2336"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/js/app.min.js": {
+      "checksum": "f65fcb47aadbd40eb173e91f7ddffecb"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/js/jquery.highlight.js": {
+      "checksum": "ccd61e628681c562a97ba04566e59bdd"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/js/lunr.js": {
+      "checksum": "fbc747c6143aabb39b0ea7c0524b7057"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/js/plugin-bookdown.js": {
+      "checksum": "66e06a9749e29e0ee5029389f1bcec9b"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/js/plugin-fontsettings.js": {
+      "checksum": "c69e5565f16ccb8560ee353e6ba4b927"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/js/plugin-search.js": {
+      "checksum": "99c920c896af5a97fba5ff8f8cfb2cc3"
+    },
+    "intro-to-r/libs/gitbook-2.6.7/js/plugin-sharing.js": {
+      "checksum": "780475ac3510067a6a78f8762a0c70a7"
+    },
+    "intro-to-r/libs/jquery-2.2.3/jquery.min.js": {
+      "checksum": "33cabfa15c1060aaa3d207c653afb1ee"
+    },
+    "intro-to-r/lists-and-data-frames.html": {
+      "checksum": "87a4aaf6fdf85f6cb8016b955d30468b"
+    },
+    "intro-to-r/objects-their-modes-and-attributes.html": {
+      "checksum": "c29866cd5f16f84b549c7235f67bc780"
+    },
+    "intro-to-r/ordered-and-unordered-factors.html": {
+      "checksum": "aa4690c3c476e7396f0d315716cde4bb"
+    },
+    "intro-to-r/os-facilities.html": {
+      "checksum": "3e830dc0b91d876bee0eb0a68ae3eb05"
+    },
+    "intro-to-r/packages.html": {
+      "checksum": "83d67aee1d16bc26bd3658941399ddbf"
+    },
+    "intro-to-r/preface.html": {
+      "checksum": "59771fafcc54d734bd0ca24b3375f601"
+    },
+    "intro-to-r/probability-distributions.html": {
+      "checksum": "d38102860cb59372522c5e7c42f2c019"
+    },
+    "intro-to-r/QQ.png": {
+      "checksum": "5679d46063048f7a70a21512d555681a"
+    },
+    "intro-to-r/reading-data-from-files.html": {
+      "checksum": "c1e406e8c71bb024d3e1d3b95758a9f3"
+    },
+    "intro-to-r/search_index.json": {
+      "checksum": "96d12f1661e8a874eef7f86ebec7f151"
+    },
+    "intro-to-r/simple-manipulations-numbers-and-vectors.html": {
+      "checksum": "43a61d528fecbd807e41800ee2d4467b"
+    },
+    "intro-to-r/statistical-models-in-r.html": {
+      "checksum": "a8611adc91775d5dbc6c578f0ebd89fe"
+    },
+    "intro-to-r/style.css": {
+      "checksum": "19f0b33dc27d4f748874d2cde5cea5bc"
+    },
+    "intro-to-r/writing-your-own-functions.html": {
+      "checksum": "b4d92c8f48e777106fca8ea666eea975"
+    },
+    "js-const-r/index.html": {
+      "checksum": "028bd57503077bdb6071ba42730b9c19"
+    },
+    "languagelayer-1-0-0-disponible-cran/index.html": {
+      "checksum": "3d0798dc52890cfeb1e3e36b3e52a98d"
+    },
+    "languagelayer110/index.html": {
+      "checksum": "bf6d02678e808a999c4abb208f395dea"
+    },
+    "lazyeval/index.html": {
+      "checksum": "4ae16653378a5a4b892879c60ddfb186"
+    },
+    "loremjulia/index.html": {
+      "checksum": "3f6ee5a5a0fa4bca4ea0297b94d02333"
+    },
+    "mapping-the-french-second-round-results-with-r/index.html": {
+      "checksum": "b4ce931acf58a74daa6752769792492f"
+    },
+    "musarderie-digitaltc-lia-lhomme-la-creativite/index.html": {
+      "checksum": "9000602748207692f97b0f5d33fb040b"
+    },
+    "nantes-digital-week/index.html": {
+      "checksum": "07f6d1219c1ce68dc1bf438410b77a51"
+    },
+    "one-week-shiny-gogole-search.html": {
+      "checksum": "e3acd1967b243a29c8731a6b38ea7937"
+    },
+    "one-week-shiny-gogole-search/index.html": {
+      "checksum": "12ebf3138b175f4992e063b71e6cdf9f"
+    },
+    "one-week-shiny-google-search/index.html": {
+      "checksum": "d18a5be81f98334e817a115e6fd92f17"
+    },
+    "open-source/index.html": {
+      "checksum": "dee67382f4831b958c30db5b99351631"
+    },
+    "osgridfolio/example.html": {
+      "checksum": "0122cc7659f37611c196ffcbe6b95578"
+    },
+    "osgridfolio/LICENSE.md": {
+      "checksum": "a877a58ae508e54259c257ea56c8515e"
+    },
+    "osgridfolio/osgridfolio.css": {
+      "checksum": "b04d784feeffdcb882ad9629d4b3e5c6"
+    },
+    "osgridfolio/osgridfolio.js": {
+      "checksum": "71045f68fdcef79ab5cdb8630b3a6316"
+    },
+    "osgridfolio/readme.md": {
+      "checksum": "92c1fad69a9ae57edcaa9b78295cdf9b"
+    },
+    "page2/index.html": {
+      "checksum": "a6f0051ec53101432d413154d28e8932"
+    },
+    "page3/index.html": {
+      "checksum": "67789c721b7b0679064d30e969d428b3"
+    },
+    "page4/index.html": {
+      "checksum": "34e9822c0b05f2b90468b15b76a8c7e6"
+    },
+    "page5/index.html": {
+      "checksum": "86063e3273550ae13beaba40bdaec237"
+    },
+    "playing-r-infix-functions/index.html": {
+      "checksum": "b825b6980261206ee9325bf0ed9cb6d6"
+    },
+    "playing-with-dolt-one/index.html": {
+      "checksum": "f61cfa6538844222cae3e4c962baed08"
+    },
+    "playing-with-rstats-and-microsoft-computer-vision-api/index.html": {
+      "checksum": "d3bd915a60933f81a8f2d28cb73ec217"
+    },
+    "predict-french-vote-with-r/index.html": {
+      "checksum": "7723b5559d9d0145cb26ffd247e552d3"
+    },
+    "proustr-0-2-0/index.html": {
+      "checksum": "a017e7f7c62ef2b181d74b264f790243"
+    },
+    "proustr-package/index.html": {
+      "checksum": "f3ae6d9524a51bbebcae7e408121d72d"
+    },
+    "purrr-adverb-tidyverse/index.html": {
+      "checksum": "b78ba41ba36387af4f4e90ad52bfc9a0"
+    },
+    "purrr-code-optim/index.html": {
+      "checksum": "9c1314d9123860feaf85b5e96d29ff91"
+    },
+    "purrr-mappers/index.html": {
+      "checksum": "f346b2ad5f8a749e3ba81d2397799f6f"
+    },
+    "purrr-set-na/index.html": {
+      "checksum": "0bf80299b2edce01754bd8361c49f33f"
+    },
+    "purrr-statistics/index.html": {
+      "checksum": "288e83f75bf8ecba033801ae8f41aaa4"
+    },
+    "purrr-text-wrangling/index.html": {
+      "checksum": "a2f1713c864e63ecc3bf89dbd5e5298f"
+    },
+    "purrr-web-mining/index.html": {
+      "checksum": "72b2889c8b8d922a7081a8fe4d0695fb"
+    },
+    "r-assignment/index.html": {
+      "checksum": "71e6f7249ebc33502bad81023e0aab8e"
+    },
+    "r-data-import-export/acknowledgements.html": {
+      "checksum": "18df607f0dc6426e387ca864b870b43d"
+    },
+    "r-data-import-export/appendix-a-references.html": {
+      "checksum": "de7116e7757a3f4a322bbfc7a2fab566"
+    },
+    "r-data-import-export/binary-files.html": {
+      "checksum": "c79cc80cf25800c92c908c27db6949d7"
+    },
+    "r-data-import-export/concept-index.html": {
+      "checksum": "06d9a21cba82b8ccd27e9a7224be75cd"
+    },
+    "r-data-import-export/connections.html": {
+      "checksum": "7e80f307b04a3cb54fbfcefbbc0c7aa7"
+    },
+    "r-data-import-export/function-and-variable-index.html": {
+      "checksum": "e0a828472096a66a503a9d4269775c56"
+    },
+    "r-data-import-export/image-files.html": {
+      "checksum": "3df0afa5643ec38823167c4af7d66c7f"
+    },
+    "r-data-import-export/importing-from-other-statistical-systems.html": {
+      "checksum": "6145db0c1fe0e2fb871239b9179c7063"
+    },
+    "r-data-import-export/index.html": {
+      "checksum": "b39edfa5b46572d30b682674e97be173"
+    },
+    "r-data-import-export/introduction.html": {
+      "checksum": "64e8e07bf54ec60fbea26950645f5742"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/css/fontawesome/fontawesome-webfont.ttf": {
+      "checksum": "a3de2170e4e9df77161ea5d3f31b2668"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/css/plugin-bookdown.css": {
+      "checksum": "398170631e7fe7e8ac2e5357e26acc2c"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/css/plugin-fontsettings.css": {
+      "checksum": "056a6db3eef3553a78f3b7e02356b2e7"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/css/plugin-highlight.css": {
+      "checksum": "467fbe4b6b5a4b88fdd75c463f8626ec"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/css/plugin-search.css": {
+      "checksum": "0ee84d42c4f09648c8d3ff7d03b95a4a"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/css/style.css": {
+      "checksum": "dd74bd9563f4c8c779465a97096a2336"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/js/app.min.js": {
+      "checksum": "f65fcb47aadbd40eb173e91f7ddffecb"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/js/jquery.highlight.js": {
+      "checksum": "ccd61e628681c562a97ba04566e59bdd"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/js/lunr.js": {
+      "checksum": "fbc747c6143aabb39b0ea7c0524b7057"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/js/plugin-bookdown.js": {
+      "checksum": "66e06a9749e29e0ee5029389f1bcec9b"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/js/plugin-fontsettings.js": {
+      "checksum": "c69e5565f16ccb8560ee353e6ba4b927"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/js/plugin-search.js": {
+      "checksum": "99c920c896af5a97fba5ff8f8cfb2cc3"
+    },
+    "r-data-import-export/libs/gitbook-2.6.7/js/plugin-sharing.js": {
+      "checksum": "780475ac3510067a6a78f8762a0c70a7"
+    },
+    "r-data-import-export/libs/jquery-2.2.3/jquery.min.js": {
+      "checksum": "33cabfa15c1060aaa3d207c653afb1ee"
+    },
+    "r-data-import-export/network-interfaces.html": {
+      "checksum": "21a08fb59523b1bcf8c4844b351fd05b"
+    },
+    "r-data-import-export/reading-excel-spreadsheets.html": {
+      "checksum": "f4072ff06e60906dbdbffb65c0f4a7bb"
+    },
+    "r-data-import-export/relational-databases.html": {
+      "checksum": "1051db864941200fec38106b3095ee01"
+    },
+    "r-data-import-export/search_index.json": {
+      "checksum": "6ea990713ae1db879cc5ed8ebe3c9dcd"
+    },
+    "r-data-import-export/spreadsheet-like-data.html": {
+      "checksum": "5b87eef926a23dd5bfb4f98e17bbe99c"
+    },
+    "r-data-import-export/style.css": {
+      "checksum": "19f0b33dc27d4f748874d2cde5cea5bc"
+    },
+    "r-installation-administration/add-on-packages.html": {
+      "checksum": "0c65c12e583f8deccb52fea87461bfb8"
+    },
+    "r-installation-administration/appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html": {
+      "checksum": "a851bfba193eab8f860fb21851e6b938"
+    },
+    "r-installation-administration/appendix-b-configuration-on-a-unix-alike.html": {
+      "checksum": "b669f3e99130be9d416e076d8ec8fefc"
+    },
+    "r-installation-administration/appendix-c-platform-notes.html": {
+      "checksum": "44186b2891701cefb97167d9dc094c40"
+    },
+    "r-installation-administration/appendix-d-the-windows-toolset.html": {
+      "checksum": "549674911cc213448339b5ef3a9826d1"
+    },
+    "r-installation-administration/choosing-between-32-and-64-bit-builds.html": {
+      "checksum": "c6f0ec133b8a0774f0d782539cbdc569"
+    },
+    "r-installation-administration/concept-index.html": {
+      "checksum": "5d87da373effd51403bb26bc9d3d900d"
+    },
+    "r-installation-administration/environment-variable-index.html": {
+      "checksum": "a0614cf58032fb5f12a86e10339b384b"
+    },
+    "r-installation-administration/function-and-variable-index.html": {
+      "checksum": "f11a9d2d964fd68951fb0135c327034a"
+    },
+    "r-installation-administration/index.html": {
+      "checksum": "8fbda87bcd796bc8fea5b836e0f201fb"
+    },
+    "r-installation-administration/installing-r-under-macos.html": {
+      "checksum": "4dddac693929e1d189c81126308dba03"
+    },
+    "r-installation-administration/installing-r-under-unix-alikes.html": {
+      "checksum": "a57d39a260bcf1abc86f8c3943c954b3"
+    },
+    "r-installation-administration/installing-r-under-windows.html": {
+      "checksum": "c245899bb841f75ee5145489f8b399e2"
+    },
+    "r-installation-administration/internationalization-and-localization.html": {
+      "checksum": "5dc550e633f9c89d87aa60c7d6dfa091"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/css/fontawesome/fontawesome-webfont.ttf": {
+      "checksum": "a3de2170e4e9df77161ea5d3f31b2668"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/css/plugin-bookdown.css": {
+      "checksum": "398170631e7fe7e8ac2e5357e26acc2c"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/css/plugin-fontsettings.css": {
+      "checksum": "056a6db3eef3553a78f3b7e02356b2e7"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/css/plugin-highlight.css": {
+      "checksum": "467fbe4b6b5a4b88fdd75c463f8626ec"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/css/plugin-search.css": {
+      "checksum": "0ee84d42c4f09648c8d3ff7d03b95a4a"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/css/style.css": {
+      "checksum": "dd74bd9563f4c8c779465a97096a2336"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/js/app.min.js": {
+      "checksum": "f65fcb47aadbd40eb173e91f7ddffecb"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/js/jquery.highlight.js": {
+      "checksum": "ccd61e628681c562a97ba04566e59bdd"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/js/lunr.js": {
+      "checksum": "fbc747c6143aabb39b0ea7c0524b7057"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/js/plugin-bookdown.js": {
+      "checksum": "66e06a9749e29e0ee5029389f1bcec9b"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/js/plugin-fontsettings.js": {
+      "checksum": "c69e5565f16ccb8560ee353e6ba4b927"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/js/plugin-search.js": {
+      "checksum": "99c920c896af5a97fba5ff8f8cfb2cc3"
+    },
+    "r-installation-administration/libs/gitbook-2.6.7/js/plugin-sharing.js": {
+      "checksum": "780475ac3510067a6a78f8762a0c70a7"
+    },
+    "r-installation-administration/libs/jquery-2.2.3/jquery.min.js": {
+      "checksum": "33cabfa15c1060aaa3d207c653afb1ee"
+    },
+    "r-installation-administration/obtaining-r.html": {
+      "checksum": "47ded8214193ecde2d9c5aaba1d9ef93"
+    },
+    "r-installation-administration/running-r.html": {
+      "checksum": "c72b5bd74086863c0080eee9db16d25a"
+    },
+    "r-installation-administration/search_index.json": {
+      "checksum": "dafafc1ac6bf36056c0be9801283513d"
+    },
+    "r-installation-administration/style.css": {
+      "checksum": "19f0b33dc27d4f748874d2cde5cea5bc"
+    },
+    "r-installation-administration/the-standalone-rmath-library.html": {
+      "checksum": "b80cf81a09703a5d2cefed2dbe78af53"
+    },
+    "r-internals/concept-index.html": {
+      "checksum": "ec533ead78be432b8529031b2681194e"
+    },
+    "r-internals/current-and-future-directions.html": {
+      "checksum": "a6e966aaa6a0bf7638073248126b3b82"
+    },
+    "r-internals/files.html": {
+      "checksum": "89e696e8cc3eb8ffe9784a2d091fb073"
+    },
+    "r-internals/function-and-variable-index.html": {
+      "checksum": "4a4f7fa64c8cdfdcf1d163c4ff87646b"
+    },
+    "r-internals/graphics.html": {
+      "checksum": "b6b3f59058fbae4bc3511e627e2cc2f1"
+    },
+    "r-internals/gui-consoles.html": {
+      "checksum": "d0f653978759f2c83e579ebaec180347"
+    },
+    "r-internals/index.html": {
+      "checksum": "a6c4a90c8b99772844553219a0cda514"
+    },
+    "r-internals/internal-vs-primitive.html": {
+      "checksum": "fcfc5de0c1df92d8dac9f880fef01f0d"
+    },
+    "r-internals/internationalization-in-the-r-sources.html": {
+      "checksum": "6ec7b9a0953d3900df17e2a749e964bc"
+    },
+    "r-internals/libs/gitbook-2.6.7/css/fontawesome/fontawesome-webfont.ttf": {
+      "checksum": "a3de2170e4e9df77161ea5d3f31b2668"
+    },
+    "r-internals/libs/gitbook-2.6.7/css/plugin-bookdown.css": {
+      "checksum": "398170631e7fe7e8ac2e5357e26acc2c"
+    },
+    "r-internals/libs/gitbook-2.6.7/css/plugin-fontsettings.css": {
+      "checksum": "056a6db3eef3553a78f3b7e02356b2e7"
+    },
+    "r-internals/libs/gitbook-2.6.7/css/plugin-highlight.css": {
+      "checksum": "467fbe4b6b5a4b88fdd75c463f8626ec"
+    },
+    "r-internals/libs/gitbook-2.6.7/css/plugin-search.css": {
+      "checksum": "0ee84d42c4f09648c8d3ff7d03b95a4a"
+    },
+    "r-internals/libs/gitbook-2.6.7/css/style.css": {
+      "checksum": "dd74bd9563f4c8c779465a97096a2336"
+    },
+    "r-internals/libs/gitbook-2.6.7/js/app.min.js": {
+      "checksum": "f65fcb47aadbd40eb173e91f7ddffecb"
+    },
+    "r-internals/libs/gitbook-2.6.7/js/jquery.highlight.js": {
+      "checksum": "ccd61e628681c562a97ba04566e59bdd"
+    },
+    "r-internals/libs/gitbook-2.6.7/js/lunr.js": {
+      "checksum": "fbc747c6143aabb39b0ea7c0524b7057"
+    },
+    "r-internals/libs/gitbook-2.6.7/js/plugin-bookdown.js": {
+      "checksum": "66e06a9749e29e0ee5029389f1bcec9b"
+    },
+    "r-internals/libs/gitbook-2.6.7/js/plugin-fontsettings.js": {
+      "checksum": "c69e5565f16ccb8560ee353e6ba4b927"
+    },
+    "r-internals/libs/gitbook-2.6.7/js/plugin-search.js": {
+      "checksum": "99c920c896af5a97fba5ff8f8cfb2cc3"
+    },
+    "r-internals/libs/gitbook-2.6.7/js/plugin-sharing.js": {
+      "checksum": "780475ac3510067a6a78f8762a0c70a7"
+    },
+    "r-internals/libs/jquery-2.2.3/jquery.min.js": {
+      "checksum": "33cabfa15c1060aaa3d207c653afb1ee"
+    },
+    "r-internals/r-coding-standards.html": {
+      "checksum": "0d508a557f993847cdcde222ce301f0c"
+    },
+    "r-internals/r-internal-structures.html": {
+      "checksum": "8313260b5127f5375a3fac75566ce449"
+    },
+    "r-internals/search_index.json": {
+      "checksum": "cd1a641a197ffc2822c2cf34902e6a58"
+    },
+    "r-internals/structure-of-an-installed-package.html": {
+      "checksum": "3ee8522c245cae0f100e87f21f22ae08"
+    },
+    "r-internals/style.css": {
+      "checksum": "19f0b33dc27d4f748874d2cde5cea5bc"
+    },
+    "r-internals/testing-r-code.html": {
+      "checksum": "8e0bec8986964b9ff59c92b0eb0e2e6a"
+    },
+    "r-internals/tools.html": {
+      "checksum": "a39d5d1e2000c40f6af0e1ea05082b21"
+    },
+    "r-internals/use-of-tex-dialects.html": {
+      "checksum": "cee84fbdd0b5f7f848d839625e607ece"
+    },
+    "r-language-definition/appendix-a-references.html": {
+      "checksum": "aaf9bd5b4fed04e27c0bc667458473c6"
+    },
+    "r-language-definition/computing-on-the-language.html": {
+      "checksum": "e21025d0fb8fe1717ba897690bb63bce"
+    },
+    "r-language-definition/concept-index.html": {
+      "checksum": "2becd454e538b731162f219ef9a7da1f"
+    },
+    "r-language-definition/debugging.html": {
+      "checksum": "a9f8e730f006197289d45efc0190dae6"
+    },
+    "r-language-definition/evaluation-of-expressions.html": {
+      "checksum": "8bb846da0d571c92fea4866bd14def36"
+    },
+    "r-language-definition/exception-handling.html": {
+      "checksum": "610955a74d8fa135c54427aba3041384"
+    },
+    "r-language-definition/function-and-variable-index.html": {
+      "checksum": "8151ad3e9d19650c1e66306265fb8d2d"
+    },
+    "r-language-definition/functions.html": {
+      "checksum": "a071dc9f237b528f055668b4a55986b0"
+    },
+    "r-language-definition/index.html": {
+      "checksum": "14ba46d01ce7024b5f0ced37de9d2ea2"
+    },
+    "r-language-definition/introduction.html": {
+      "checksum": "8dfaec81ba3f964fa841a5ccadbc4452"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/css/fontawesome/fontawesome-webfont.ttf": {
+      "checksum": "a3de2170e4e9df77161ea5d3f31b2668"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/css/plugin-bookdown.css": {
+      "checksum": "398170631e7fe7e8ac2e5357e26acc2c"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/css/plugin-fontsettings.css": {
+      "checksum": "056a6db3eef3553a78f3b7e02356b2e7"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/css/plugin-highlight.css": {
+      "checksum": "467fbe4b6b5a4b88fdd75c463f8626ec"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/css/plugin-search.css": {
+      "checksum": "0ee84d42c4f09648c8d3ff7d03b95a4a"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/css/style.css": {
+      "checksum": "dd74bd9563f4c8c779465a97096a2336"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/js/app.min.js": {
+      "checksum": "f65fcb47aadbd40eb173e91f7ddffecb"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/js/jquery.highlight.js": {
+      "checksum": "ccd61e628681c562a97ba04566e59bdd"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/js/lunr.js": {
+      "checksum": "fbc747c6143aabb39b0ea7c0524b7057"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/js/plugin-bookdown.js": {
+      "checksum": "66e06a9749e29e0ee5029389f1bcec9b"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/js/plugin-fontsettings.js": {
+      "checksum": "c69e5565f16ccb8560ee353e6ba4b927"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/js/plugin-search.js": {
+      "checksum": "99c920c896af5a97fba5ff8f8cfb2cc3"
+    },
+    "r-language-definition/libs/gitbook-2.6.7/js/plugin-sharing.js": {
+      "checksum": "780475ac3510067a6a78f8762a0c70a7"
+    },
+    "r-language-definition/libs/jquery-2.2.3/jquery.min.js": {
+      "checksum": "33cabfa15c1060aaa3d207c653afb1ee"
+    },
+    "r-language-definition/object-oriented-programming.html": {
+      "checksum": "30d63c83ef6d676e74096367daaf8c46"
+    },
+    "r-language-definition/objects.html": {
+      "checksum": "8801f74f0ae31f1f976c2bfda9c25de2"
+    },
+    "r-language-definition/parser.html": {
+      "checksum": "38baf88d5e1bb51601d3e64f791739b0"
+    },
+    "r-language-definition/r-language-definition.html": {
+      "checksum": "f1bd089833fc9b42250d6f709cf28897"
+    },
+    "r-language-definition/search_index.json": {
+      "checksum": "ba8533e072f2a935d4af99b706bf3d11"
+    },
+    "r-language-definition/style.css": {
+      "checksum": "19f0b33dc27d4f748874d2cde5cea5bc"
+    },
+    "r-language-definition/system-and-foreign-language-interfaces.html": {
+      "checksum": "39b8e495a49703af7dd7f9080d65d549"
+    },
+    "r-manuals/index.html": {
+      "checksum": "2b489a24e1e52a02e6c754bc40b3b211"
+    },
+    "r6-parent-exposure/index.html": {
+      "checksum": "5b42ab9f367dd4fbcd0134d8d72a9bdb"
+    },
+    "r6-shared-objects/index.html": {
+      "checksum": "7ed1dbc8215217d5b4bcd48cdd7cf74a"
+    },
+    "ractivebinfing/index.html": {
+      "checksum": "06a237cc1692c17fd688d988d3e5b4fc"
+    },
+    "ran.R": {
+      "checksum": "d09f998b036b24527c72820d467deaba"
+    },
+    "random-r-benchmarks/index.html": {
+      "checksum": "7ab70b21a3af8a00aa115aa590bb292c"
+    },
+    "random/index.html": {
+      "checksum": "ee4246a1ae819adbc87dece232e19771"
+    },
+    "random/readme.md": {
+      "checksum": "53ee89877e6a080e76f6a6af1de2df77"
+    },
+    "rennes-social-derby-la-competition-de-community-managers/index.html": {
+      "checksum": "b35be8dbd527e827b214c0ddeed7a412"
+    },
+    "replace.R": {
+      "checksum": "d94e68b325f67961af478e73aa4dccca"
+    },
+    "rgeoapi-1-1-0-disponible-cran/index.html": {
+      "checksum": "ba86c2c5e2e98e81e5d68ba652efbda6"
+    },
+    "rgeoapi-package-r/index.html": {
+      "checksum": "8882d9fdfaf60345e844b3f05b224a28"
+    },
+    "rgeoapi-v1/index.html": {
+      "checksum": "95bd3e526198e0f208c3cb0fa2395c73"
+    },
+    "rgeoapi/index.html": {
+      "checksum": "740a0b50077beb6c4b29c91ee2d08564"
+    },
+    "robots.txt": {
+      "checksum": "45fa963a5e67c6a3ef67c8ffa71b2b88"
+    },
+    "rpinterest-cran/index.html": {
+      "checksum": "ba607871ce9b9c4ee966edb5d2b2cc67"
+    },
+    "rpinterest-disponible-cran/index.html": {
+      "checksum": "1d9341ec81af3501c1a14f77014d7c87"
+    },
+    "rpinterest-package-r/index.html": {
+      "checksum": "d7d988d0e5cfda96df7e083174d26eb9"
+    },
+    "rpinterest-un-package-r-pour-acceder-a-lapi-pinterest/index.html": {
+      "checksum": "6591f60edb2ccc26083d45f02c739d89"
+    },
+    "rstats-api-calls-and-sys-sleep/index.html": {
+      "checksum": "f1cf293dd483133432a5f91ab0efdef4"
+    },
+    "rstats-api-calls-sys-sleep/index.html": {
+      "checksum": "024269c9eaec9a3c8d29125185a90fea"
+    },
+    "rstats-create-a-pixel-map-with-r/index.html": {
+      "checksum": "51ca0322d5eddcf5226733681f78275c"
+    },
+    "rstats-languagelayer-api/index.html": {
+      "checksum": "6f71685cae1088b331bc46f7852b39c1"
+    },
+    "rstats-languagelayer-query-the-languagelayer-api-with-r/index.html": {
+      "checksum": "f58dd24e115ad7ddb2b96beda552f73e"
+    },
+    "rstats-microsoft-computer-vision-api-2/index.html": {
+      "checksum": "713e52f457fa38715dbfde111ec35060"
+    },
+    "rstats-text-mining-r-gutenbergr-2/index.html": {
+      "checksum": "b6ff6a5fe29dd36d9d872e895f3f618c"
+    },
+    "rstats-text-mining-r-gutenbergr/index.html": {
+      "checksum": "9cc671fbcab69e9e059cad32ba9a2794"
+    },
+    "rstats-turbonegro/index.html": {
+      "checksum": "5daabc507fadbd764aeb84f6eaf699e8"
+    },
+    "rstatsnyc-neo4j/index.html": {
+      "checksum": "01d415264d22f85c70e2e08ed613ea1f"
+    },
+    "rtweet-tidytext/index.html": {
+      "checksum": "bd4d59481e757602b0eb8b05d3392ca8"
+    },
+    "search/index.html": {
+      "checksum": "417b0cbeef2085450036ad60ce821a26"
+    },
+    "see-you-user-2019.html": {
+      "checksum": "293fa27f9f36357de45a592f7cabf3da"
+    },
+    "sitemap.xml": {
+      "checksum": "03919529e7c98f422ab1b7fe5810a969"
+    },
+    "src/contrib/attempt_0.2.1.tar.gz": {
+      "checksum": "3ba02dbb8a7a4daa75b29325895f2b36"
+    },
+    "src/contrib/craneur_0.0.0.9000.tar.gz": {
+      "checksum": "e3ef1ff3d829c040c9bafb960fb8630b"
+    },
+    "src/contrib/devaddins_0.0.0.9000.tar.gz": {
+      "checksum": "61ba9f704c335b5945ce32a7208cb80e"
+    },
+    "src/contrib/dockerfiler_0.1.1.tar.gz": {
+      "checksum": "c3c9b2985d963f693a4422a4a80603ee"
+    },
+    "src/contrib/fryingpane_0.0.0.9000.tar.gz": {
+      "checksum": "1c6476f515edb54a514a0884e664b340"
+    },
+    "src/contrib/index.html": {
+      "checksum": "7238590433b4f09328a2d2c386d80d41"
+    },
+    "src/contrib/index.md": {
+      "checksum": "a2a3c12e9221e27bdda93ebe6c6ab892"
+    },
+    "src/contrib/jekyllthat_0.0.0.9000.tar.gz": {
+      "checksum": "86b2fc2948c03fdbf9b5327227875102"
+    },
+    "src/contrib/languagelayeR_1.2.3.tar.gz": {
+      "checksum": "5dc52e5cf9830d7cbcc256db5fed619e"
+    },
+    "src/contrib/PACKAGES": {
+      "checksum": "f980be1e0e7eff417117b04418cd9a3a"
+    },
+    "src/contrib/proustr_0.3.0.9000.tar.gz": {
+      "checksum": "30c5df1586bd9f6d6f3f0af9b989b7d7"
+    },
+    "src/contrib/rgeoapi_1.2.0.tar.gz": {
+      "checksum": "bf6261f4694ad5b49ae1c84ebedf2e30"
+    },
+    "src/contrib/rpinterest_0.4.0.tar.gz": {
+      "checksum": "e5d077a6c4b3659539bdaf7307571d9f"
+    },
+    "src/contrib/tidystringdist_0.1.2.tar.gz": {
+      "checksum": "8327a9ae41009f57ddb376fa423b4e7a"
+    },
+    "staticman.yml": {
+      "checksum": "26f077dc102df199640b86503f96c25f"
+    },
+    "tags/index.html": {
+      "checksum": "a3e65eff28ab66ba2874338106f39942"
+    },
+    "talks-publications.html": {
+      "checksum": "e449b9ee9f3b108259ba8f009e86383a"
+    },
+    "talks-publications/index.html": {
+      "checksum": "b1e531591dfe83c7f35288ed67b79ace"
+    },
+    "tidyeval-1/index.html": {
+      "checksum": "fb3c81163f8614a8927b91bedd458768"
+    },
+    "tidystringdist/index.html": {
+      "checksum": "8e87a990894d9f8a732d5ec31e67c3fd"
+    },
+    "ux-rennes/index.html": {
+      "checksum": "b0608c69a9bc84730a327f6274747343"
+    },
+    "watch-r-shiny/index.html": {
+      "checksum": "9d4fd1154ee2703fcb21cfedde3b8fd9"
+    },
+    "web-dev-r/index.html": {
+      "checksum": "2035ab1348521fccb2953a9d414743a7"
+    },
+    "wikileaks/index.html": {
+      "checksum": "e86981d8412c39fa9e58c4ebaab4c260"
+    },
+    "wikileaksdm/2015.csv": {
+      "checksum": "3ea9792bba355f4c28440c3d22f7c2d3"
+    },
+    "wikileaksdm/2016.csv": {
+      "checksum": "e31e38569593df018c2dab2500d0b8b1"
+    },
+    "wikileaksdm/2017.csv": {
+      "checksum": "e0c417fe513dd653a28ce54aae903b7d"
+    },
+    "wikileaksdm/daily.csv": {
+      "checksum": "e61d6b8c978fea8a3dd5c9c901ce0fe4"
+    },
+    "wikileaksdm/funs.R": {
+      "checksum": "1f1f94e32319e5cf8f0fe5574cec33df"
+    },
+    "wikileaksdm/index.html": {
+      "checksum": "031c7fb87887e1330df732bbd8016654"
+    },
+    "wikileaksdm/json/2015.json": {
+      "checksum": "bb57356100f8d356945ccf65d1ae94c9"
+    },
+    "wikileaksdm/json/2016.json": {
+      "checksum": "5ba84902fe83b4e8bb17c33cb4c66274"
+    },
+    "wikileaksdm/json/2017.json": {
+      "checksum": "3489578a9841fceee83bf10a7da799b4"
+    },
+    "wikileaksdm/json/daily.json": {
+      "checksum": "c43090eb18b9c96941e822325c805f46"
+    },
+    "wikileaksdm/json/json": {
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "wikileaksdm/json/mentions_count.json": {
+      "checksum": "98d146ea4876a342c57502d7882ffeec"
+    },
+    "wikileaksdm/json/mentions.json": {
+      "checksum": "d3aaf50cba2f4106ac8367802dca7b59"
+    },
+    "wikileaksdm/json/urls.json": {
+      "checksum": "547204f19b27922ba1bb1a5cc6c6ef0b"
+    },
+    "wikileaksdm/json/user_Bean.json": {
+      "checksum": "e13099f651aafcce6d6f1c91bdb40f54"
+    },
+    "wikileaksdm/json/user_Cabledrum.json": {
+      "checksum": "16c51dbc77b6b775be076b6e61fa3680"
+    },
+    "wikileaksdm/json/user_count.json": {
+      "checksum": "f60ed862841b03dc41b399e746cdbb77"
+    },
+    "wikileaksdm/json/user_DMConversationEntry.json": {
+      "checksum": "2d0489c549632cf9ccdd5f663055cd5a"
+    },
+    "wikileaksdm/json/user_Emmy.B.json": {
+      "checksum": "d324238754119bbf1dbeb6dbbcd00d13"
+    },
+    "wikileaksdm/json/user_LibertarianLibrarian.json": {
+      "checksum": "e523cadf36ef55d0b1740b53f5c5ae46"
+    },
+    "wikileaksdm/json/user_M.json": {
+      "checksum": "9076b9b60d5a5258909aa1e2e6406f50"
+    },
+    "wikileaksdm/json/user_Matt.Watt.json": {
+      "checksum": "6cd825de1263663babf01d1e702b2e71"
+    },
+    "wikileaksdm/json/user_noll.json": {
+      "checksum": "b198aea6585cc419e393a5b1b9526ef3"
+    },
+    "wikileaksdm/json/user_SAWC.Sydney.json": {
+      "checksum": "2c34bec5e5f7da2ac63e0a9aaaa33d82"
+    },
+    "wikileaksdm/json/user_voidiss.json": {
+      "checksum": "3f92ba36f5ecf1b16d055bff7ec5a789"
+    },
+    "wikileaksdm/json/user_WikiLeaks.json": {
+      "checksum": "fbcc779cefa94b36f55370dde24fc850"
+    },
+    "wikileaksdm/json/user_WikiLeaks.Press.json": {
+      "checksum": "d220459bbfe6781e71ea645acd46024b"
+    },
+    "wikileaksdm/json/user_WikiLeaks.Task.Force.json": {
+      "checksum": "d6a39c91a9abc3286a99d2f34bb6e709"
+    },
+    "wikileaksdm/json/user_WISE.Up.Action.json": {
+      "checksum": "d2fd9a59f5d21449049c2de8f9bd10b6"
+    },
+    "wikileaksdm/json/user_WISE.Up.Wales.json": {
+      "checksum": "d56bb3dd0e7cc6501a95d8e974a4fbf6"
+    },
+    "wikileaksdm/json/wikileaks_dm.json": {
+      "checksum": "532bdecb76c7347e1ece30623d6561ba"
+    },
+    "wikileaksdm/mention_urls.html": {
+      "checksum": "383f1347668086dec65a44147aed93ca"
+    },
+    "wikileaksdm/mentions_count.csv": {
+      "checksum": "c98e7c2f64a61f80be6b4a32a257986f"
+    },
+    "wikileaksdm/mentions.csv": {
+      "checksum": "82910d0c67f9cf2e60793347971d1d51"
+    },
+    "wikileaksdm/methodo.html": {
+      "checksum": "b9ed1cb69c5d58b23a35313ab30f0452"
+    },
+    "wikileaksdm/raw.txt": {
+      "checksum": "0ff4df95275391c4394d6c6226e2d23f"
+    },
+    "wikileaksdm/README.md": {
+      "checksum": "b7171754bf69e24b49ff03382958ce68"
+    },
+    "wikileaksdm/render.R": {
+      "checksum": "024da812fd7741a192ca2d2ba351f7d6"
+    },
+    "wikileaksdm/timeline.html": {
+      "checksum": "6cf356988bfa95dbc3986b75f91cbb94"
+    },
+    "wikileaksdm/urls.csv": {
+      "checksum": "43ed9a06b144cd4925cc199720048a4d"
+    },
+    "wikileaksdm/user_Bean.csv": {
+      "checksum": "abda9d6c430b57736b0119619a3027c0"
+    },
+    "wikileaksdm/user_Cabledrum.csv": {
+      "checksum": "360c74640817088a52ef26141286aa02"
+    },
+    "wikileaksdm/user_count.csv": {
+      "checksum": "d1ee054d58f2562a25d2e383684e7c66"
+    },
+    "wikileaksdm/user_DMConversationEntry.csv": {
+      "checksum": "7b3c1511555c4dc44fb9a7890199de31"
+    },
+    "wikileaksdm/user_Emmy.B.csv": {
+      "checksum": "a28c75733788335f34e83d8d8001a2a8"
+    },
+    "wikileaksdm/user_LibertarianLibrarian.csv": {
+      "checksum": "663390cf987e1c9e9d755707893f1fc5"
+    },
+    "wikileaksdm/user_M.csv": {
+      "checksum": "54670257ae20770d2fb15de5c1d197ac"
+    },
+    "wikileaksdm/user_Matt.Watt.csv": {
+      "checksum": "389d03ab49e4efd22af5b9a69d318af4"
+    },
+    "wikileaksdm/user_noll.csv": {
+      "checksum": "a5f3319e65c940561680f54037cda1db"
+    },
+    "wikileaksdm/user_SAWC.Sydney.csv": {
+      "checksum": "64f45d71c5c4271664b5a509acc02302"
+    },
+    "wikileaksdm/user_voidiss.csv": {
+      "checksum": "c24b17a22bb86ea69e83be67394bf630"
+    },
+    "wikileaksdm/user_WikiLeaks.csv": {
+      "checksum": "c61166b4ac18603a75b465532561f1ac"
+    },
+    "wikileaksdm/user_WikiLeaks.Press.csv": {
+      "checksum": "d2f4401f330e1bee0f434b97b018b0f1"
+    },
+    "wikileaksdm/user_WikiLeaks.Task.Force.csv": {
+      "checksum": "30d6d52fc1ee7cef64f5056c523177ba"
+    },
+    "wikileaksdm/user_WISE.Up.Action.csv": {
+      "checksum": "3699f4f6ed5ed508d64fa6672199aa47"
+    },
+    "wikileaksdm/user_WISE.Up.Wales.csv": {
+      "checksum": "8801a0b5a6f8133d68d1315d02fc2288"
+    },
+    "wikileaksdm/users.html": {
+      "checksum": "bf50f5d85a511945f0bdb0e573ffd8c7"
+    },
+    "wikileaksdm/wikileaks_dm.csv": {
+      "checksum": "f8cb89e3054b7003faae226ec6f728a6"
+    },
+    "wikileaksdm/wikileaksdm.Rproj": {
+      "checksum": "c8d3f84a410f46d4d8b03a268e313e35"
+    },
+    "worldemojiday.html": {
+      "checksum": "7785a0218023ef4b320eeec3c4255158"
+    },
+    "writing-r-extensions/acknowledgements-1.html": {
+      "checksum": "23248731f8ae06cace7b60bfbabb66d8"
+    },
+    "writing-r-extensions/acknowledgements.html": {
+      "checksum": "5b4feb5d466c70609e9ca0d9137523fe"
+    },
+    "writing-r-extensions/concept-index.html": {
+      "checksum": "fc4b088fc01edc5a5173a3f3756b3629"
+    },
+    "writing-r-extensions/creating-r-packages-1.html": {
+      "checksum": "f20eefad093ebfd828ad8e5ed2ea141b"
+    },
+    "writing-r-extensions/creating-r-packages.html": {
+      "checksum": "92d7fc2236a0c7600113fc3b4fe65b97"
+    },
+    "writing-r-extensions/debugging-1.html": {
+      "checksum": "503e38fb8fa8c2dd114252ee29383b9f"
+    },
+    "writing-r-extensions/debugging.html": {
+      "checksum": "c2c38d449ec457a1f92b9d2e151a6255"
+    },
+    "writing-r-extensions/function-and-variable-index.html": {
+      "checksum": "b7936eb4c33b84b7d8cc4e38573de724"
+    },
+    "writing-r-extensions/generic-functions-and-methods.html": {
+      "checksum": "c7c9bf23c35199b746dcf39f2398cbfa"
+    },
+    "writing-r-extensions/index.html": {
+      "checksum": "f2fcd271323d51b664652f5089dc0a34"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/css/fontawesome/fontawesome-webfont.ttf": {
+      "checksum": "a3de2170e4e9df77161ea5d3f31b2668"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/css/plugin-bookdown.css": {
+      "checksum": "398170631e7fe7e8ac2e5357e26acc2c"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/css/plugin-fontsettings.css": {
+      "checksum": "056a6db3eef3553a78f3b7e02356b2e7"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/css/plugin-highlight.css": {
+      "checksum": "467fbe4b6b5a4b88fdd75c463f8626ec"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/css/plugin-search.css": {
+      "checksum": "0ee84d42c4f09648c8d3ff7d03b95a4a"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/css/style.css": {
+      "checksum": "dd74bd9563f4c8c779465a97096a2336"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/js/app.min.js": {
+      "checksum": "f65fcb47aadbd40eb173e91f7ddffecb"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/js/jquery.highlight.js": {
+      "checksum": "ccd61e628681c562a97ba04566e59bdd"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/js/lunr.js": {
+      "checksum": "fbc747c6143aabb39b0ea7c0524b7057"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/js/plugin-bookdown.js": {
+      "checksum": "66e06a9749e29e0ee5029389f1bcec9b"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/js/plugin-fontsettings.js": {
+      "checksum": "c69e5565f16ccb8560ee353e6ba4b927"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/js/plugin-search.js": {
+      "checksum": "99c920c896af5a97fba5ff8f8cfb2cc3"
+    },
+    "writing-r-extensions/libs/gitbook-2.6.7/js/plugin-sharing.js": {
+      "checksum": "780475ac3510067a6a78f8762a0c70a7"
+    },
+    "writing-r-extensions/libs/jquery-2.2.3/jquery.min.js": {
+      "checksum": "33cabfa15c1060aaa3d207c653afb1ee"
+    },
+    "writing-r-extensions/linking-guis-and-other-front-ends-to-r.html": {
+      "checksum": "ad33455feab208dee3362c9b6e524c67"
+    },
+    "writing-r-extensions/search_index.json": {
+      "checksum": "59aa111897bb516bc9ee572964450a04"
+    },
+    "writing-r-extensions/style.css": {
+      "checksum": "19f0b33dc27d4f748874d2cde5cea5bc"
+    },
+    "writing-r-extensions/system-and-foreign-language-interfaces-1.html": {
+      "checksum": "7b1d92f2cb1b1dc3aa86ab7887501e43"
+    },
+    "writing-r-extensions/system-and-foreign-language-interfaces.html": {
+      "checksum": "02631ab49c99e36797eeac742e1852e5"
+    },
+    "writing-r-extensions/the-r-api-entry-points-for-c-code.html": {
+      "checksum": "61d930b6e5ca7b976b61728711b5e87b"
+    },
+    "writing-r-extensions/tidying-and-profiling-r-code-1.html": {
+      "checksum": "8f5fc3dce361b391f0e741aafc7f5976"
+    },
+    "writing-r-extensions/tidying-and-profiling-r-code.html": {
+      "checksum": "7e3099e004766146c90a7068cdc9996a"
+    },
+    "writing-r-extensions/writing-r-documentation-files-1.html": {
+      "checksum": "c33dacd2acfcdf63c408953679ab2ef3"
+    },
+    "writing-r-extensions/writing-r-documentation-files.html": {
+      "checksum": "0a8c0d5da1d3df1aa5072d28738bbb8f"
+    },
+    "writing-r-extensions/writing-r-extensions-1.html": {
+      "checksum": "5578891fa64d77b6d841ab4ca1a40293"
+    },
+    "zee-you-user-2019.html": {
+      "checksum": "340bf77b3e756000d533c1987fc09a59"
+    },
+    "zee-you-user-2019/index.html": {
+      "checksum": "340bf77b3e756000d533c1987fc09a59"
+    }
+  },
+  "users": null
+}

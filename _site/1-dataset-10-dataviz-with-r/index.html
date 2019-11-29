@@ -1,0 +1,688 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>1 dataset, 10 visualisations with R - Colin Fay</title>
+<meta name="description" content="Creating 10 datavisualisations from 1 dataset with R.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="1 dataset, 10 visualisations with R">
+<meta property="og:url" content="http://localhost:4000/1-dataset-10-dataviz-with-r/">
+
+
+  <meta property="og:description" content="Creating 10 datavisualisations from 1 dataset with R.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="1 dataset, 10 visualisations with R">
+  <meta name="twitter:description" content="Creating 10 datavisualisations from 1 dataset with R.">
+  <meta name="twitter:url" content="http://localhost:4000/1-dataset-10-dataviz-with-r/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-03-15T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/1-dataset-10-dataviz-with-r/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="1 dataset, 10 visualisations with R">
+    <meta itemprop="description" content="Creating 10 datavisualisations from 1 dataset with R.">
+    <meta itemprop="datePublished" content="March 15, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">1 dataset, 10 visualisations with R
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  2 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <h2 id="creating-10-datavisualisations-from-1-dataset-with-r">Creating 10 datavisualisations from 1 dataset with R.</h2>
+
+<h3 id="back-from-la-fabrique-de-linfo"><em>Back from La fabrique de l’info</em></h3>
+<p><a href="/assets/img/blog/IMG_2771.jpg"><img class="size-medium wp-image-1412 alignleft" src="/assets/img/blog/IMG_2771-300x225.jpg" alt="" width="300" height="225" /></a></p>
+
+<p>On the 12th of march, I gave a speech in Rennes about data &amp; visualisation.</p>
+
+<p>During this talk, I presented the audience with a series of dataviz made from one dataset, in order to show how you can get various information and points of view from the very same dataset, depending on what you want to show the reader.</p>
+<p style="text-align: center;"><a href="https://github.com/ColinFay/conf/blob/master/fabrique-info/La%20fabrique%20de%20l'info.pdf">Slides from my talk</a></p>
+<p>For this, I took this <a href="https://data.enseignementsup-recherche.gouv.fr/explore/dataset/fr-esr-pes-pedr-beneficiaires/">dataset</a>, and created 10 visualizations, each focusing on specific variable(s). Here’s how to make them with R.</p>
+<h3 id="1-dataset-10-dataviz">1 dataset, 10 dataviz</h3>
+<p><em>Notes</em> These plots have been created using tools from the <code class="highlighter-rouge">databzhtools</code> you can find here : <a class="uri" href="https://github.com/DataBzh/data-bzh-tools">https://github.com/DataBzh/Data-bzh-tools</a>
+Download it on your hard drive, and load it in R with : <code class="highlighter-rouge">source("data-bzh-tools-master/main.R")</code></p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#Charger les données</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">source</span><span class="p">(</span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"data-bzh-tools-master/main.R"</span><span class="p">)</span><span class="w">
+</span><span class="n">prim</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_csv2</span><span class="p">(</span><span class="s2">"https://data.enseignementsup-recherche.gouv.fr/explore/dataset/fr-esr-pes-pedr-beneficiaires/download/?format=csv&amp;amp;timezone=Europe/Berlin&amp;amp;use_labels_for_header=true"</span><span class="p">)</span><span class="w">
+</span><span class="n">prim</span><span class="o">$</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"01-01-"</span><span class="p">,</span><span class="n">prim</span><span class="o">$</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">lubridate</span><span class="o">::</span><span class="n">dmy</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<h4 id="frequency-distribution">Frequency distribution</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prim</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">somme</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colour1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/Rplot06.jpeg"><img class="aligncenter size-large wp-image-1393" src="/assets/img/blog/Rplot06.jpeg" alt="" width="840" height="420" /></a></p>
+<h4 id="prop-by-sector">Prop by sector</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prim</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">`Secteur disciplinaire`</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">somme</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`Secteur disciplinaire`</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colours</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"fill"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/Rplot07.jpeg"><img class="aligncenter size-large wp-image-1394" src="/assets/img/blog/Rplot07.jpeg" alt="" width="840" height="420" /></a></p>
+<h4 id="value-by-sector">Value by sector</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prim</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">,</span><span class="w"> </span><span class="n">`Secteur disciplinaire`</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">,</span><span class="n">somme</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`Secteur disciplinaire`</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">`Secteur disciplinaire`</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colours</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">facet_grid</span><span class="p">(</span><span class="o">~</span><span class="n">`Secteur disciplinaire`</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/Rplot12.jpeg"><img class="aligncenter size-large wp-image-1395" src="/assets/img/blog/Rplot12.jpeg" alt="" width="840" height="420" /></a></p>
+<h4 id="map">Map</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#states &lt;- map_data("france")</span><span class="w">
+</span><span class="n">prim2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">prim</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">separate</span><span class="p">(</span><span class="n">`Géo-localisation`</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"lon"</span><span class="p">,</span><span class="s2">"lat"</span><span class="p">),</span><span class="w"> </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="s1">','</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span><span class="w"> </span><span class="n">lat</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">states</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">long</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_polygon</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#e4e4e4"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">coord_map</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_path</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">states</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">long</span><span class="p">,</span><span class="w"> </span><span class="n">lat</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="o">=</span><span class="kc">NULL</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s2">"grey50"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prim2</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">lon</span><span class="p">),</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">somme</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colour3</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">palette</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">scale_size</span><span class="p">(</span><span class="n">range</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">10</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">xlim</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">states</span><span class="o">$</span><span class="n">long</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">ylim</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">states</span><span class="o">$</span><span class="n">lat</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/Rplot20.jpeg"><img class="aligncenter size-large wp-image-1396" src="/assets/img/blog/Rplot20.jpeg" alt="" width="840" height="420" /></a></p>
+<h4 id="boxplot">Boxplot</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">prim</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">R</span><span class="err">é</span><span class="n">gion</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_boxplot</span><span class="p">(</span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colour4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<h2><a href="/assets/img/blog/Rplot18.jpeg"><img class="aligncenter size-large wp-image-1397" src="/assets/img/blog/Rplot18.jpeg" alt="" width="840" height="420" /></a></h2>
+<h4 id="dotplot">Dotplot</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prim</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">R</span><span class="err">é</span><span class="n">gion</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">reorder</span><span class="p">(</span><span class="n">R</span><span class="err">é</span><span class="n">gion</span><span class="p">,</span><span class="w"> </span><span class="n">somme</span><span class="p">),</span><span class="w"> </span><span class="n">somme</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colour1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">xlab</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/Rplot15.jpeg"><img class="aligncenter size-large wp-image-1399" src="/assets/img/blog/Rplot15.jpeg" alt="" width="840" height="420" /></a></p>
+<h4 id="dotplot-bis">Dotplot bis</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prim</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="err">É</span><span class="n">tablissement</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">na.omit</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">reorder</span><span class="p">(</span><span class="err">É</span><span class="n">tablissement</span><span class="p">,</span><span class="w"> </span><span class="n">somme</span><span class="p">),</span><span class="w"> </span><span class="n">somme</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colour3</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="o">=</span><span class="m">4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">xlab</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/Rplot17.jpeg"><img class="aligncenter size-large wp-image-1400" src="/assets/img/blog/Rplot17.jpeg" alt="" width="840" height="420" /></a></p>
+<h4 id="histogram">Histogram</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prim</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="err">É</span><span class="n">tablissement</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">na.omit</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">somme</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_histogram</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colour3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Bénéficiaire"</span><span class="p">)</span><span class="o">+</span><span class="w">
+  </span><span class="n">ylab</span><span class="p">(</span><span class="s2">"Nombre d'établissements dans la tranche"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/Rplot19.jpeg"><img class="aligncenter size-large wp-image-1401" src="/assets/img/blog/Rplot19.jpeg" alt="" width="840" height="420" /></a></p>
+<h4 id="line-plot">Line plot</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prim</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">`Groupe de corps`</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">somme</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="n">`Groupe de corps`</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="n">`Groupe de corps`</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_line</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colours</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/Rplot14.jpeg"><img class="aligncenter size-large wp-image-1402" src="/assets/img/blog/Rplot14.jpeg" alt="" width="840" height="420" /></a></p>
+<h4 id="barplot">Barplot</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prim</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">,</span><span class="w"> </span><span class="n">Sexe</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">B</span><span class="err">é</span><span class="n">n</span><span class="err">é</span><span class="n">ficiaires</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">Ann</span><span class="err">é</span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">somme</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colour2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">databzh</span><span class="o">$</span><span class="n">colours</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">facet_grid</span><span class="p">(</span><span class="n">Sexe</span><span class="o">~</span><span class="n">.</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Les bénéficiaires de la prime d'excellence scientifique"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">databzhTheme</span><span class="p">()</span><span class="w">
+
+
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/Rplot09.jpeg"><img class="aligncenter size-large wp-image-1403" src="/assets/img/blog/Rplot09.jpeg" alt="" width="840" height="420" /></a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#talk" class="page__taxonomy-item" rel="tag">talk</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-03-15T00:00:00+01:00">March 15, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=1+dataset%2C+10+visualisations+with+R%20http%3A%2F%2Flocalhost%3A4000%2F1-dataset-10-dataviz-with-r%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2F1-dataset-10-dataviz-with-r%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2F1-dataset-10-dataviz-with-r%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2F1-dataset-10-dataviz-with-r%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/1-dataset-10-visualisations/" class="pagination--pager" title="1 dataset, 10 visualisations — retour de La Fabrique de l’info
+">←</a>
+    
+    
+      <a href="/heatmap-avec-r-et-ggplot2/" class="pagination--pager" title="Une heatmap avec R et ggplot2
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/1-dataset-10-dataviz-with-r/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/1-dataset-10-dataviz-with-r"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

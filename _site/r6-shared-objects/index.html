@@ -1,0 +1,647 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>R6 and shared objects - Colin Fay</title>
+<meta name="description" content="A short tutorial about how to share objects between all instances of an R6 class.When you create a new object which is an instance of an R6 class, it contains its own data fields — i.e. one change in an object is not reflected inside all the instances of the class. If you made a mistake in the class definition, you can’t just change something in the parent and expect the change to be reflected in the children who inherited from your parent class. Or maybe you need to work with the same dataframe all along, and whenever you change something in it, you want the dataframe to be updated for everyone.Share elements across all instances of a classWell, that was partially true: this is the default behavior of R6 objects, and in fact you can make objects shareable inside all the instances of a class, i.e. a change in one class instance will be reflected in all the instances of this class. For this, you’ll need to create an environment in the shared element, which is to be put inside your private field.Let’s compare a class which doesn’t share its object:library(R6)GrandParentClassic &lt;- R6Class(&quot;GrandParent&quot;,                    public = list(                     name = &quot;Grandparent&quot;                   ))grand_pa_classic &lt;- GrandParentClassic$new()grand_ma_classic &lt;- GrandParentClassic$new()grand_pa_classic$name == grand_ma_classic$name[1] TRUEgrand_pa_classic$name &lt;- &quot;Grand Pa&quot;grand_pa_classic$name == grand_ma_classic$name[1] FALSEAs you can see, a change in one of the instances is not reflected inside the others — changing the name of the grand_pa_classic object does not change the name of grand_ma_classic. That’s usually the behavior you want your objects to have — but sometime you don’t. And for that, you need to create the objects to be shared in an environment inside the shared method in your private field. You can then access it with active binding.GrandParentShared &lt;- R6Class(&quot;GrandParent&quot;,                       private = list(                         shared = {                        env &lt;- new.env()                        env$name &lt;- &quot;Grand Parent&quot;                        env                         }                       ),                       active = list(                         name = function(value){                           if(missing(value)) return(private$shared$name)                           else private$shared$name &lt;- value                         }                       ))grand_pa_shared &lt;- GrandParentShared$new()grand_ma_shared &lt;- GrandParentShared$new()grand_pa_shared$name == grand_ma_shared$name[1] TRUEgrand_pa_shared$name &lt;- &quot;Grand Pa&quot;grand_pa_shared$name == grand_ma_shared$name[1] TRUEHere, changes in one instance are reflected in other instances. That’s because {R6} does not copy by value environments: they are always copied by reference, so point to the same slot in memory.The same can goes if you want to pass shared objects along the inheritance tree:# Without Shared fieldPapaClassic &lt;- R6Class(&quot;PapaClassic&quot;,                 inherit = GrandParentClassic)ChildClassic &lt;- R6Class(&quot;ChildClassic&quot;,                  inherit = PapaClassic)                 grand_pa_classic &lt;- GrandParentClassic$new()papa_classic &lt;- PapaClassic$new()child_classic &lt;- ChildClassic$new()grand_pa_classic$name == papa_classic$name[1] TRUEpapa_classic$name == child_classic$name[1]TRUE papa_classic$name &lt;- &quot;Papa&quot;grand_pa_classic$name == papa_classic$name[1] FALSEpapa_classic$name == child_classic$name[1] FALSE# With Shared fieldPapaShared &lt;- R6Class(&quot;PapaShared&quot;,                 inherit = GrandParentShared)ChildShared &lt;- R6Class(&quot;ChildShared&quot;,                  inherit = PapaShared)grand_pa_shared &lt;- GrandParentShared$new()papa_shared &lt;- PapaShared$new()child_shared &lt;- ChildShared$new()grand_pa_shared$name == papa_shared$name[1] TRUEpapa_shared$name == child_shared$name[1] TRUEpapa_shared$name &lt;- &quot;Papa&quot;grand_pa_shared$name == papa_shared$name[1] TRUEpapa_shared$name == child_shared$name[1] TRUEAs you can seen, changes flow all along the family tree!">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="R6 and shared objects">
+<meta property="og:url" content="http://localhost:4000/r6-shared-objects/">
+
+
+  <meta property="og:description" content="A short tutorial about how to share objects between all instances of an R6 class.When you create a new object which is an instance of an R6 class, it contains its own data fields — i.e. one change in an object is not reflected inside all the instances of the class. If you made a mistake in the class definition, you can’t just change something in the parent and expect the change to be reflected in the children who inherited from your parent class. Or maybe you need to work with the same dataframe all along, and whenever you change something in it, you want the dataframe to be updated for everyone.Share elements across all instances of a classWell, that was partially true: this is the default behavior of R6 objects, and in fact you can make objects shareable inside all the instances of a class, i.e. a change in one class instance will be reflected in all the instances of this class. For this, you’ll need to create an environment in the shared element, which is to be put inside your private field.Let’s compare a class which doesn’t share its object:library(R6)GrandParentClassic &lt;- R6Class(&quot;GrandParent&quot;,                    public = list(                     name = &quot;Grandparent&quot;                   ))grand_pa_classic &lt;- GrandParentClassic$new()grand_ma_classic &lt;- GrandParentClassic$new()grand_pa_classic$name == grand_ma_classic$name[1] TRUEgrand_pa_classic$name &lt;- &quot;Grand Pa&quot;grand_pa_classic$name == grand_ma_classic$name[1] FALSEAs you can see, a change in one of the instances is not reflected inside the others — changing the name of the grand_pa_classic object does not change the name of grand_ma_classic. That’s usually the behavior you want your objects to have — but sometime you don’t. And for that, you need to create the objects to be shared in an environment inside the shared method in your private field. You can then access it with active binding.GrandParentShared &lt;- R6Class(&quot;GrandParent&quot;,                       private = list(                         shared = {                        env &lt;- new.env()                        env$name &lt;- &quot;Grand Parent&quot;                        env                         }                       ),                       active = list(                         name = function(value){                           if(missing(value)) return(private$shared$name)                           else private$shared$name &lt;- value                         }                       ))grand_pa_shared &lt;- GrandParentShared$new()grand_ma_shared &lt;- GrandParentShared$new()grand_pa_shared$name == grand_ma_shared$name[1] TRUEgrand_pa_shared$name &lt;- &quot;Grand Pa&quot;grand_pa_shared$name == grand_ma_shared$name[1] TRUEHere, changes in one instance are reflected in other instances. That’s because {R6} does not copy by value environments: they are always copied by reference, so point to the same slot in memory.The same can goes if you want to pass shared objects along the inheritance tree:# Without Shared fieldPapaClassic &lt;- R6Class(&quot;PapaClassic&quot;,                 inherit = GrandParentClassic)ChildClassic &lt;- R6Class(&quot;ChildClassic&quot;,                  inherit = PapaClassic)                 grand_pa_classic &lt;- GrandParentClassic$new()papa_classic &lt;- PapaClassic$new()child_classic &lt;- ChildClassic$new()grand_pa_classic$name == papa_classic$name[1] TRUEpapa_classic$name == child_classic$name[1]TRUE papa_classic$name &lt;- &quot;Papa&quot;grand_pa_classic$name == papa_classic$name[1] FALSEpapa_classic$name == child_classic$name[1] FALSE# With Shared fieldPapaShared &lt;- R6Class(&quot;PapaShared&quot;,                 inherit = GrandParentShared)ChildShared &lt;- R6Class(&quot;ChildShared&quot;,                  inherit = PapaShared)grand_pa_shared &lt;- GrandParentShared$new()papa_shared &lt;- PapaShared$new()child_shared &lt;- ChildShared$new()grand_pa_shared$name == papa_shared$name[1] TRUEpapa_shared$name == child_shared$name[1] TRUEpapa_shared$name &lt;- &quot;Papa&quot;grand_pa_shared$name == papa_shared$name[1] TRUEpapa_shared$name == child_shared$name[1] TRUEAs you can seen, changes flow all along the family tree!">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="R6 and shared objects">
+  <meta name="twitter:description" content="A short tutorial about how to share objects between all instances of an R6 class.When you create a new object which is an instance of an R6 class, it contains its own data fields — i.e. one change in an object is not reflected inside all the instances of the class. If you made a mistake in the class definition, you can’t just change something in the parent and expect the change to be reflected in the children who inherited from your parent class. Or maybe you need to work with the same dataframe all along, and whenever you change something in it, you want the dataframe to be updated for everyone.Share elements across all instances of a classWell, that was partially true: this is the default behavior of R6 objects, and in fact you can make objects shareable inside all the instances of a class, i.e. a change in one class instance will be reflected in all the instances of this class. For this, you’ll need to create an environment in the shared element, which is to be put inside your private field.Let’s compare a class which doesn’t share its object:library(R6)GrandParentClassic &lt;- R6Class(&quot;GrandParent&quot;,                    public = list(                     name = &quot;Grandparent&quot;                   ))grand_pa_classic &lt;- GrandParentClassic$new()grand_ma_classic &lt;- GrandParentClassic$new()grand_pa_classic$name == grand_ma_classic$name[1] TRUEgrand_pa_classic$name &lt;- &quot;Grand Pa&quot;grand_pa_classic$name == grand_ma_classic$name[1] FALSEAs you can see, a change in one of the instances is not reflected inside the others — changing the name of the grand_pa_classic object does not change the name of grand_ma_classic. That’s usually the behavior you want your objects to have — but sometime you don’t. And for that, you need to create the objects to be shared in an environment inside the shared method in your private field. You can then access it with active binding.GrandParentShared &lt;- R6Class(&quot;GrandParent&quot;,                       private = list(                         shared = {                        env &lt;- new.env()                        env$name &lt;- &quot;Grand Parent&quot;                        env                         }                       ),                       active = list(                         name = function(value){                           if(missing(value)) return(private$shared$name)                           else private$shared$name &lt;- value                         }                       ))grand_pa_shared &lt;- GrandParentShared$new()grand_ma_shared &lt;- GrandParentShared$new()grand_pa_shared$name == grand_ma_shared$name[1] TRUEgrand_pa_shared$name &lt;- &quot;Grand Pa&quot;grand_pa_shared$name == grand_ma_shared$name[1] TRUEHere, changes in one instance are reflected in other instances. That’s because {R6} does not copy by value environments: they are always copied by reference, so point to the same slot in memory.The same can goes if you want to pass shared objects along the inheritance tree:# Without Shared fieldPapaClassic &lt;- R6Class(&quot;PapaClassic&quot;,                 inherit = GrandParentClassic)ChildClassic &lt;- R6Class(&quot;ChildClassic&quot;,                  inherit = PapaClassic)                 grand_pa_classic &lt;- GrandParentClassic$new()papa_classic &lt;- PapaClassic$new()child_classic &lt;- ChildClassic$new()grand_pa_classic$name == papa_classic$name[1] TRUEpapa_classic$name == child_classic$name[1]TRUE papa_classic$name &lt;- &quot;Papa&quot;grand_pa_classic$name == papa_classic$name[1] FALSEpapa_classic$name == child_classic$name[1] FALSE# With Shared fieldPapaShared &lt;- R6Class(&quot;PapaShared&quot;,                 inherit = GrandParentShared)ChildShared &lt;- R6Class(&quot;ChildShared&quot;,                  inherit = PapaShared)grand_pa_shared &lt;- GrandParentShared$new()papa_shared &lt;- PapaShared$new()child_shared &lt;- ChildShared$new()grand_pa_shared$name == papa_shared$name[1] TRUEpapa_shared$name == child_shared$name[1] TRUEpapa_shared$name &lt;- &quot;Papa&quot;grand_pa_shared$name == papa_shared$name[1] TRUEpapa_shared$name == child_shared$name[1] TRUEAs you can seen, changes flow all along the family tree!">
+  <meta name="twitter:url" content="http://localhost:4000/r6-shared-objects/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-08-15T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/r6-shared-objects/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="R6 and shared objects">
+    <meta itemprop="description" content="A short tutorial about how to share objects between all instances of an R6 class.When you create a new object which is an instance of an R6 class, it contains its own data fields — i.e. one change in an object is not reflected inside all the instances of the class. If you made a mistake in the class definition, you can’t just change something in the parent and expect the change to be reflected in the children who inherited from your parent class. Or maybe you need to work with the same dataframe all along, and whenever you change something in it, you want the dataframe to be updated for everyone.Share elements across all instances of a classWell, that was partially true: this is the default behavior of R6 objects, and in fact you can make objects shareable inside all the instances of a class, i.e. a change in one class instance will be reflected in all the instances of this class. For this, you’ll need to create an environment in the shared element, which is to be put inside your private field.Let’s compare a class which doesn’t share its object:library(R6)GrandParentClassic &lt;- R6Class(&quot;GrandParent&quot;,                    public = list(                     name = &quot;Grandparent&quot;                   ))grand_pa_classic &lt;- GrandParentClassic$new()grand_ma_classic &lt;- GrandParentClassic$new()grand_pa_classic$name == grand_ma_classic$name[1] TRUEgrand_pa_classic$name &lt;- &quot;Grand Pa&quot;grand_pa_classic$name == grand_ma_classic$name[1] FALSEAs you can see, a change in one of the instances is not reflected inside the others — changing the name of the grand_pa_classic object does not change the name of grand_ma_classic. That’s usually the behavior you want your objects to have — but sometime you don’t. And for that, you need to create the objects to be shared in an environment inside the shared method in your private field. You can then access it with active binding.GrandParentShared &lt;- R6Class(&quot;GrandParent&quot;,                       private = list(                         shared = {                        env &lt;- new.env()                        env$name &lt;- &quot;Grand Parent&quot;                        env                         }                       ),                       active = list(                         name = function(value){                           if(missing(value)) return(private$shared$name)                           else private$shared$name &lt;- value                         }                       ))grand_pa_shared &lt;- GrandParentShared$new()grand_ma_shared &lt;- GrandParentShared$new()grand_pa_shared$name == grand_ma_shared$name[1] TRUEgrand_pa_shared$name &lt;- &quot;Grand Pa&quot;grand_pa_shared$name == grand_ma_shared$name[1] TRUEHere, changes in one instance are reflected in other instances. That’s because {R6} does not copy by value environments: they are always copied by reference, so point to the same slot in memory.The same can goes if you want to pass shared objects along the inheritance tree:# Without Shared fieldPapaClassic &lt;- R6Class(&quot;PapaClassic&quot;,                 inherit = GrandParentClassic)ChildClassic &lt;- R6Class(&quot;ChildClassic&quot;,                  inherit = PapaClassic)                 grand_pa_classic &lt;- GrandParentClassic$new()papa_classic &lt;- PapaClassic$new()child_classic &lt;- ChildClassic$new()grand_pa_classic$name == papa_classic$name[1] TRUEpapa_classic$name == child_classic$name[1]TRUE papa_classic$name &lt;- &quot;Papa&quot;grand_pa_classic$name == papa_classic$name[1] FALSEpapa_classic$name == child_classic$name[1] FALSE# With Shared fieldPapaShared &lt;- R6Class(&quot;PapaShared&quot;,                 inherit = GrandParentShared)ChildShared &lt;- R6Class(&quot;ChildShared&quot;,                  inherit = PapaShared)grand_pa_shared &lt;- GrandParentShared$new()papa_shared &lt;- PapaShared$new()child_shared &lt;- ChildShared$new()grand_pa_shared$name == papa_shared$name[1] TRUEpapa_shared$name == child_shared$name[1] TRUEpapa_shared$name &lt;- &quot;Papa&quot;grand_pa_shared$name == papa_shared$name[1] TRUEpapa_shared$name == child_shared$name[1] TRUEAs you can seen, changes flow all along the family tree!">
+    <meta itemprop="datePublished" content="August 15, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">R6 and shared objects
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  2 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>A short tutorial about how to share objects between all instances of an R6 class.</p>
+
+<p>When you create a new object which is an instance of an R6 class, it contains its own data fields — i.e. one change in an object is not reflected inside all the instances of the class. If you made a mistake in the class definition, you can’t just change something in the parent and expect the change to be reflected in the children who inherited from your parent class. Or maybe you need to work with the same dataframe all along, and whenever you change something in it, you want the dataframe to be updated for everyone.</p>
+
+<h2 id="share-elements-across-all-instances-of-a-class">Share elements across all instances of a class</h2>
+
+<p>Well, that was partially true: this is the default behavior of R6 objects, and in fact you can make objects shareable inside all the instances of a class, i.e. a change in one class instance will be reflected in all the instances of this class. For this, you’ll need to create an environment in the <code class="highlighter-rouge">shared</code> element, which is to be put inside your <code class="highlighter-rouge">private</code> field.</p>
+
+<p>Let’s compare a class which doesn’t share its object:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">R</span><span class="m">6</span><span class="p">)</span><span class="w">
+</span><span class="n">GrandParentClassic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">R</span><span class="m">6</span><span class="n">Class</span><span class="p">(</span><span class="s2">"GrandParent"</span><span class="p">,</span><span class="w"> 
+                   </span><span class="n">public</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+                     </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Grandparent"</span><span class="w">
+                   </span><span class="p">))</span><span class="w">
+
+</span><span class="n">grand_pa_classic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GrandParentClassic</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+</span><span class="n">grand_ma_classic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GrandParentClassic</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+
+</span><span class="n">grand_pa_classic</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">grand_ma_classic</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+
+</span><span class="n">grand_pa_classic</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Grand Pa"</span><span class="w">
+</span><span class="n">grand_pa_classic</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">grand_ma_classic</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">FALSE</span><span class="w">
+</span></code></pre></div></div>
+
+<p>As you can see, a change in one of the instances is not reflected inside the others — changing the name of the <code class="highlighter-rouge">grand_pa_classic</code> object does not change the name of <code class="highlighter-rouge">grand_ma_classic</code>. That’s usually the behavior you want your objects to have — but sometime you don’t. And for that, you need to create the objects to be shared in an environment inside the <code class="highlighter-rouge">shared</code> method in your <code class="highlighter-rouge">private</code> field. You can then access it with active binding.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">GrandParentShared</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">R</span><span class="m">6</span><span class="n">Class</span><span class="p">(</span><span class="s2">"GrandParent"</span><span class="p">,</span><span class="w">
+                       </span><span class="n">private</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+                         </span><span class="n">shared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="n">env</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">new.env</span><span class="p">()</span><span class="w">
+                        </span><span class="n">env</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Grand Parent"</span><span class="w">
+                        </span><span class="n">env</span><span class="w">
+                         </span><span class="p">}</span><span class="w">
+                       </span><span class="p">),</span><span class="w">
+                       </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+                         </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">value</span><span class="p">){</span><span class="w">
+                           </span><span class="k">if</span><span class="p">(</span><span class="nf">missing</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="w"> </span><span class="nf">return</span><span class="p">(</span><span class="n">private</span><span class="o">$</span><span class="n">shared</span><span class="o">$</span><span class="n">name</span><span class="p">)</span><span class="w">
+                           </span><span class="k">else</span><span class="w"> </span><span class="n">private</span><span class="o">$</span><span class="n">shared</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">value</span><span class="w">
+                         </span><span class="p">}</span><span class="w">
+                       </span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+
+</span><span class="n">grand_pa_shared</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GrandParentShared</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+</span><span class="n">grand_ma_shared</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GrandParentShared</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+
+</span><span class="n">grand_pa_shared</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">grand_ma_shared</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+
+</span><span class="n">grand_pa_shared</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Grand Pa"</span><span class="w">
+</span><span class="n">grand_pa_shared</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">grand_ma_shared</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here, changes in one instance are reflected in other instances. That’s because {R6} does not copy by value environments: they are always copied by reference, so point to the same slot in memory.</p>
+
+<p>The same can goes if you want to pass shared objects along the inheritance tree:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Without Shared field</span><span class="w">
+</span><span class="n">PapaClassic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">R</span><span class="m">6</span><span class="n">Class</span><span class="p">(</span><span class="s2">"PapaClassic"</span><span class="p">,</span><span class="w"> 
+                </span><span class="n">inherit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GrandParentClassic</span><span class="p">)</span><span class="w">
+</span><span class="n">ChildClassic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">R</span><span class="m">6</span><span class="n">Class</span><span class="p">(</span><span class="s2">"ChildClassic"</span><span class="p">,</span><span class="w"> 
+                 </span><span class="n">inherit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PapaClassic</span><span class="p">)</span><span class="w">
+                 
+</span><span class="n">grand_pa_classic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GrandParentClassic</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+</span><span class="n">papa_classic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">PapaClassic</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+</span><span class="n">child_classic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ChildClassic</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+
+</span><span class="n">grand_pa_classic</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">papa_classic</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+</span><span class="n">papa_classic</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">child_classic</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="kc">TRUE</span><span class="w"> 
+
+</span><span class="n">papa_classic</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Papa"</span><span class="w">
+</span><span class="n">grand_pa_classic</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">papa_classic</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">FALSE</span><span class="w">
+</span><span class="n">papa_classic</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">child_classic</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">FALSE</span><span class="w">
+
+</span><span class="c1"># With Shared field</span><span class="w">
+</span><span class="n">PapaShared</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">R</span><span class="m">6</span><span class="n">Class</span><span class="p">(</span><span class="s2">"PapaShared"</span><span class="p">,</span><span class="w"> 
+                </span><span class="n">inherit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GrandParentShared</span><span class="p">)</span><span class="w">
+</span><span class="n">ChildShared</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">R</span><span class="m">6</span><span class="n">Class</span><span class="p">(</span><span class="s2">"ChildShared"</span><span class="p">,</span><span class="w"> 
+                 </span><span class="n">inherit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PapaShared</span><span class="p">)</span><span class="w">
+
+</span><span class="n">grand_pa_shared</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GrandParentShared</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+</span><span class="n">papa_shared</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">PapaShared</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+</span><span class="n">child_shared</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ChildShared</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+
+</span><span class="n">grand_pa_shared</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">papa_shared</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+</span><span class="n">papa_shared</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">child_shared</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+
+</span><span class="n">papa_shared</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Papa"</span><span class="w">
+</span><span class="n">grand_pa_shared</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">papa_shared</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+</span><span class="n">papa_shared</span><span class="o">$</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">child_shared</span><span class="o">$</span><span class="n">name</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+</span></code></pre></div></div>
+<p>As you can seen, changes flow all along the family tree!</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#r6" class="page__taxonomy-item" rel="tag">R6</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-08-15T00:00:00+02:00">August 15, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=R6+and+shared+objects%20http%3A%2F%2Flocalhost%3A4000%2Fr6-shared-objects%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fr6-shared-objects%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fr6-shared-objects%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fr6-shared-objects%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/loremjulia/" class="pagination--pager" title="LoremJulia - A lorem ipsum generator made in Julia
+">←</a>
+    
+    
+      <a href="/game-of-thrones-characters-r/" class="pagination--pager" title="Why Can’t I Remember Game of Thrones Characters? An Analysis in R
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/r6-shared-objects/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/r6-shared-objects"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

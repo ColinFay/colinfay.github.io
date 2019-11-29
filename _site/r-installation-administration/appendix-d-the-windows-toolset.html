@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="appendix-c-platform-notes.html">
+<link rel="next" href="function-and-variable-index.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix-d-the-windows-toolset" class="section level1">
+<h1><span class="header-section-number">Chapter 13</span> Appendix D The Windows toolset</h1>
+<p>
+If you want to build R or add-on packages from source in Windows, you will need to collect, install and test an extensive set of tools. See <a href="https://CRAN.R-project.org/bin/windows/Rtools/" class="uri">https://CRAN.R-project.org/bin/windows/Rtools/</a> for the current locations and other updates to these instructions. (Most Windows users will not need to build add-on packages from source; see <a href="add-on-packages.html">Add-on packages</a> for details.)
+</p>
+<p>
+We have found that the build process for R is quite sensitive to the choice of tools: please follow our instructions <strong>exactly</strong>, even to the choice of particular versions of the tools.<a href="environment-variable-index.html#FOOT80" id="DOCF80"><sup>80</sup></a> The build process for add-on packages is somewhat more forgiving, but we recommend using the exact toolset at first, and only substituting other tools once you are familiar with the process.
+</p>
+<p>
+<em>This appendix contains a lot of prescriptive comments. They are here as a result of bitter experience. Please do not report problems to the R mailing lists unless you have followed all the prescriptions.</em>
+</p>
+<p>
+We have collected most of the necessary tools (unfortunately not all, due to license or size limitations) into an executable installer named Rtools*.exe, available from <a href="https://CRAN.R-project.org/bin/windows/Rtools/" class="uri">https://CRAN.R-project.org/bin/windows/Rtools/</a>. You should download and run it, choosing the default “Package authoring installation” to build add-on packages, or the “full installation” if you intend to build R.
+</p>
+<p>
+You will need the following items to build R and packages. See the subsections below for detailed descriptions.
+</p>
+<ul>
+<li>
+The command line tools (in Rtools*.exe)
+</li>
+<li>
+The MinGW-w64 32/64-bit toolchain to compile C, Fortran and C++.
+</li>
+</ul>
+<p>
+For installing simple source packages containing data or R source but no compiled code, none of these are needed.
+</p>
+<p>
+A complete build of R including PDF manuals, and producing the installer will also need the following:
+</p>
+<ul>
+<li>
+LaTeX
+</li>
+<li>
+The Inno Setup installer
+</li>
+<li>
+(optional) <code class="calibre6">qpdf</code>
+</li>
+</ul>
+<p>
+<a href="" id="index-PATH-3"></a>
+</p>
+<p>
+It is important to set your <code class="calibre6">PATH</code> properly. The installer Rtools*.exe optionally sets the path to components that it installs.
+</p>
+<p>
+Your <code class="calibre6">PATH</code> may include . first, then the bin directories of the tools, the compiler toolchain and LaTeX. Do not use filepaths containing spaces: you can always use the short forms (found by <code class="calibre6">dir /x</code> at the Windows command line). Network shares (with paths starting <code class="calibre6">\</code>) are not supported.
+</p>
+<p>
+For example for a 32-bit build, all on one line,
+</p>
+<div class="example">
+<pre class="example1"><code>PATH=c:\Rtools\bin;c:\MiKTeX\miktex\bin;
+     c:\R\R-3.2\bin\i386;c:\windows;c:\windows\system32</code></pre>
+</div>
+<p>
+It is essential that the directory containing the command line tools comes first or second in the path: there are typically like-named tools<a href="environment-variable-index.html#FOOT81" id="DOCF81"><sup>81</sup></a> in other directories, and they will <strong>not</strong> work. The ordering of the other directories is less important, but if in doubt, use the order above.
+</p>
+<p>
+Our toolset contains copies of Cygwin DLLs that may conflict with other ones on your system if both are in the path at once. The normal recommendation is to delete the older ones; however, at one time we found our tools did not work with a newer version of the Cygwin DLLs, so it may be safest not to have any other version of the Cygwin DLLs in your path.
+</p>
+<hr />
+<p>
+<a href="" id="LaTeX"></a> <a href="" id="LaTeX-1"></a>
+</p>
+<h3 id="d.1-latex" class="section">
+D.1 LaTeX
+</h3>
+<p>
+The ‘MiKTeX’ (<a href="http://www.miktex.org/" class="uri">http://www.miktex.org/</a>) distribution of LaTeX includes a suitable port of <code class="calibre6">pdftex</code>. This can be set up to install extra packages ‘on the fly’, which is the simplest way to use it (and the default). The ‘basic’ version of ‘MiKTeX’ almost suffices: when last checked packages
+</p>
+<div class="example">
+<pre class="example1"><code>epsf inconsolata mptopdf url</code></pre>
+</div>
+<p>
+needed to be added (on the fly or <em>via</em> the ‘MiKTeX’ Package Manager) to install R. In any case ensure that the <strong>inconsolata</strong> package is installed—you can check with the ‘MiKTeX’ Package Manager.
+</p>
+<p>
+The Rtools*.exe installer does <em>not</em> include any version of LaTeX.
+</p>
+<p>
+It is also possible to use the TeX Live distribution from <a href="https://www.tug.org/texlive/" class="uri">https://www.tug.org/texlive/</a>.
+</p>
+<p>
+<a href="" id="index-R_005fRD4PDF-2"></a>
+</p>
+<p>
+Please read <a href="installing-r-under-unix-alikes.html#Making-the-manuals">Making the manuals</a> about how to make fullrefman.pdf and set the environment variable <code class="calibre6">R_RD4PDF</code> suitably; ensure you have the required fonts installed or that ‘MiKTeX’ is set up to install LaTeX packages on first use.
+</p>
+<hr />
+<p>
+<a href="" id="The-Inno-Setup-installer"></a> <a href="" id="The-Inno-Setup-installer-1"></a>
+</p>
+<h3 id="d.2-the-inno-setup-installer" class="section">
+D.2 The Inno Setup installer
+</h3>
+<p>
+To make the installer package (R-3.4.2-win.exe) we currently require the Unicode version of Inno Setup 5.3.7 or later from <a href="http://jrsoftware.org/" class="uri">http://jrsoftware.org/</a>. This is <em>not</em> included in Rtools*.exe.
+</p>
+<p>
+Copy file src/gnuwin32/MkRules.dist to src/gnuwin32/MkRules.local and edit it to set <code class="calibre6">ISDIR</code> to the location where Inno Setup was installed.
+</p>
+<hr />
+<p>
+<a href="" id="The-command-line-tools"></a> <a href="" id="The-command-line-tools-1"></a>
+</p>
+<h3 id="d.3-the-command-line-tools" class="section">
+D.3 The command line tools
+</h3>
+<p>
+This item is installed by the Rtools*.exe installer.
+</p>
+<p>
+If you choose to install these yourself, you will need suitable versions of at least <code class="calibre6">basename</code>, <code class="calibre6">cat</code>, <code class="calibre6">cmp</code>, <code class="calibre6">comm</code>, <code class="calibre6">cp</code>, <code class="calibre6">cut</code>, <code class="calibre6">date</code>, <code class="calibre6">diff</code>, <code class="calibre6">du</code>, <code class="calibre6">echo</code>, <code class="calibre6">expr</code>, <code class="calibre6">gzip</code>, <code class="calibre6">ls</code>, <code class="calibre6">make</code>, <code class="calibre6">makeinfo</code>, <code class="calibre6">mkdir</code>, <code class="calibre6">mv</code>, <code class="calibre6">rm</code>, <code class="calibre6">rsync</code>, <code class="calibre6">sed</code>, <code class="calibre6">sh</code>, <code class="calibre6">sort</code>, <code class="calibre6">tar</code>, <code class="calibre6">texindex</code>, <code class="calibre6">touch</code> and <code class="calibre6">uniq</code>; we use those from the Cygwin distribution (<a href="https://www.cygwin.com/" class="uri">https://www.cygwin.com/</a>) or compiled from the sources. You will also need <code class="calibre6">zip</code> and <code class="calibre6">unzip</code> from the Info-ZIP project (<a href="http://www.info-zip.org/" class="uri">http://www.info-zip.org/</a>). All of these tools are in Rtools*.exe.
+</p>
+<p>
+<strong>Beware</strong>: ‘Native’ ports of make are <strong>not</strong> suitable (including those called ‘MinGW make’ at the MinGW SourceForge site and <code class="calibre6">mingw32-make</code> in some MinGW-w64 distributions). There were also problems with other versions of the Cygwin tools and DLLs. To avoid frustration, please use our tool set, and make sure it is at the front of your path (including before the Windows system directories). If you are using a Windows shell, type <code class="calibre6">PATH</code> at the prompt to find out.
+</p>
+<p>
+<a href="" id="index-CYGWIN"></a>
+</p>
+<p>
+You may need to set the environment variable <code class="calibre6">CYGWIN</code> to a value including ‘nodosfilewarning’ to suppress messages about Windows-style paths.
+</p>
+<hr />
+<p>
+<a href="" id="The-MinGW_002dw64-toolchain"></a> <a href="" id="The-MinGW_002dw64-toolchain-1"></a>
+</p>
+<h3 id="d.4-the-mingw-w64-toolchain" class="section">
+D.4 The MinGW-w64 toolchain
+</h3>
+<p>
+Technically you need more than just a compiler so the set of tools is referred to as a ‘toolchain’.
+</p>
+<p>
+The preferred toolchain is part of <code class="calibre6">Rtools*.exe</code>: this uses a version of <code class="calibre6">gcc 4.9.3</code> and version rt_v3 of the MinGW-w64 project’s runtime.
+</p>
+<p>
+This toolchain does not use <em>multilib</em>: separate front-ends are used for 32-bit and 64-bit compilation. These compilers need to be specified in <code class="calibre6">BINPREF</code> and <code class="calibre6">BINPREF64</code> make variables as described previously at the end of <a href="add-on-packages.html#windows">Windows packages</a>.
+</p>
+<p>
+To select a 32-bit or 64-bit build of R, set the options in MkRules.local appropriately (following the comments in the file).
+</p>
+<p>
+Some external software libraries will need to be re-compiled under the new toolchain: especially those providing a C++ interface. Many of those used by CRAN packages are available from <a href="https://www.stats.ox.ac.uk/pub/Rtools/multilib/" class="uri">https://www.stats.ox.ac.uk/pub/Rtools/multilib/</a>. Users developing packages with <a href="https://CRAN.R-project.org/package=Rcpp"><strong>Rcpp</strong></a> need to ensure that they use a version built with exactly the same toolchain as their package: the recommendation is to build <a href="https://CRAN.R-project.org/package=Rcpp"><strong>Rcpp</strong></a> from its sources yourself.
+</p>
+<p>
+There is support for OpenMP and pthreads in this toolchain. As the performance of OpenMP on Windows is poor for small tasks, it is not used for R itself.
+</p>
+<hr />
+<p>
+<a href="" id="Useful-additional-programs"></a> <a href="" id="Useful-additional-programs-1"></a>
+</p>
+<h3 id="d.5-useful-additional-programs" class="section">
+D.5 Useful additional programs
+</h3>
+<p>
+The process of making the installer will make use of <code class="calibre6">qpdf</code> to compact some of the package vignettes, if it is available. Windows binaries of <code class="calibre6">qpdf</code> are available from <a href="http://sourceforge.net/projects/qpdf/files/" class="uri">http://sourceforge.net/projects/qpdf/files/</a>. Set the path to the <code class="calibre6">qpdf</code> installation in file MkRules.local.
+</p>
+<p>
+Developers of packages will find some of the ‘goodies’ at <a href="https://www.stats.ox.ac.uk/pub/Rtools/goodies" class="uri">https://www.stats.ox.ac.uk/pub/Rtools/goodies</a> useful.
+</p>
+<p>
+There is a version of the <code class="calibre6">file</code> command that identifies the type of files, and is used by <code class="calibre6">Rcmd check</code> if available. The binary distribution is included in Rtools*.exe.
+</p>
+<p>
+The file xzutils.zip contains the program <code class="calibre6">xz</code> which can be used to (de)compress files with that form of compression.
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index"></a> <a href="" id="Function-and-variable-index-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="appendix-c-platform-notes.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="function-and-variable-index.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

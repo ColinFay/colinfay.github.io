@@ -1,0 +1,617 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>New R Package — proustr - Colin Fay</title>
+<meta name="description" content="proustr is now on CRAN.An R Package for Marcel Proust’s A La Recherche Du Temps PerduThis package gives you access to all the books from Marcel Proust “À la recherche du temps perdu” collection. This collection is divided in books, which are divided in volumes. Inspired by the package janeaustenr by Julia Silge.All books have been downloaded from BEQHere is a list of all the books contained in this pacakage :  Du côté de chez Swann (1913): 2 volumes ducotedechezswann1 &amp; ducotedechezswann2.  À l’ombre des jeunes filles en fleurs (1919): 3 volumes alombredesjeunesfillesenfleurs1, alombredesjeunesfillesenfleurs2, and alombredesjeunesfillesenfleurs3.  Le Côté de Guermantes (1920-1921): 3 volumes lecotedeguermantes1, lecotedeguermantes2 and lecotedeguermantes3  Sodome et Gomorrhe I et II (1921-1922) : 2 volumes sodomeetgomorrhe1 and sodomeetgomorrhe2.  La Prisonnière (1923) : 2 volumes laprisonniere1 and laprisonniere2.  Albertine disparue (1925, also know as : La Fugitive) : albertinedisparue.Le Temps retrouvé (1927) : 2 volumes letempretrouve1 and letempretrouve2.Install proustrInstall this package directly in R :From CRAN :install.packages(&quot;proustr&quot;)From Github :devtools::install_github(&quot;ColinFay/proustr&quot;)Examplesdevtools::install_github(&quot;ThinkRstat/stopwords&quot;)library(proustr)library(tidytext)library(tidyverse)library(stopwords)proust_books() %&gt;%   mutate(text = stringr::str_replace_all(.$text, &quot;’&quot;, &quot; &quot;)) %&gt;%   unnest_tokens(word, text) %&gt;%  filter(!word %in% stopwords_iso$fr) %&gt;%  count(word, sort = TRUE)%&gt;%  head(10)# A tibble: 10 x 2         word     n        &lt;chr&gt; &lt;int&gt; 1        mme  3106 2      faire  2869 3  albertine  2389 4      grand  1833 5 guermantes  1807 6        vie  1732 7      temps  1715 8      swann  1682 9     jamais  163910       voir  1568ContactQuestions and feedbacks welcome !">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="New R Package — proustr">
+<meta property="og:url" content="http://localhost:4000/proustr-package/">
+
+
+  <meta property="og:description" content="proustr is now on CRAN.An R Package for Marcel Proust’s A La Recherche Du Temps PerduThis package gives you access to all the books from Marcel Proust “À la recherche du temps perdu” collection. This collection is divided in books, which are divided in volumes. Inspired by the package janeaustenr by Julia Silge.All books have been downloaded from BEQHere is a list of all the books contained in this pacakage :  Du côté de chez Swann (1913): 2 volumes ducotedechezswann1 &amp; ducotedechezswann2.  À l’ombre des jeunes filles en fleurs (1919): 3 volumes alombredesjeunesfillesenfleurs1, alombredesjeunesfillesenfleurs2, and alombredesjeunesfillesenfleurs3.  Le Côté de Guermantes (1920-1921): 3 volumes lecotedeguermantes1, lecotedeguermantes2 and lecotedeguermantes3  Sodome et Gomorrhe I et II (1921-1922) : 2 volumes sodomeetgomorrhe1 and sodomeetgomorrhe2.  La Prisonnière (1923) : 2 volumes laprisonniere1 and laprisonniere2.  Albertine disparue (1925, also know as : La Fugitive) : albertinedisparue.Le Temps retrouvé (1927) : 2 volumes letempretrouve1 and letempretrouve2.Install proustrInstall this package directly in R :From CRAN :install.packages(&quot;proustr&quot;)From Github :devtools::install_github(&quot;ColinFay/proustr&quot;)Examplesdevtools::install_github(&quot;ThinkRstat/stopwords&quot;)library(proustr)library(tidytext)library(tidyverse)library(stopwords)proust_books() %&gt;%   mutate(text = stringr::str_replace_all(.$text, &quot;’&quot;, &quot; &quot;)) %&gt;%   unnest_tokens(word, text) %&gt;%  filter(!word %in% stopwords_iso$fr) %&gt;%  count(word, sort = TRUE)%&gt;%  head(10)# A tibble: 10 x 2         word     n        &lt;chr&gt; &lt;int&gt; 1        mme  3106 2      faire  2869 3  albertine  2389 4      grand  1833 5 guermantes  1807 6        vie  1732 7      temps  1715 8      swann  1682 9     jamais  163910       voir  1568ContactQuestions and feedbacks welcome !">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="New R Package — proustr">
+  <meta name="twitter:description" content="proustr is now on CRAN.An R Package for Marcel Proust’s A La Recherche Du Temps PerduThis package gives you access to all the books from Marcel Proust “À la recherche du temps perdu” collection. This collection is divided in books, which are divided in volumes. Inspired by the package janeaustenr by Julia Silge.All books have been downloaded from BEQHere is a list of all the books contained in this pacakage :  Du côté de chez Swann (1913): 2 volumes ducotedechezswann1 &amp; ducotedechezswann2.  À l’ombre des jeunes filles en fleurs (1919): 3 volumes alombredesjeunesfillesenfleurs1, alombredesjeunesfillesenfleurs2, and alombredesjeunesfillesenfleurs3.  Le Côté de Guermantes (1920-1921): 3 volumes lecotedeguermantes1, lecotedeguermantes2 and lecotedeguermantes3  Sodome et Gomorrhe I et II (1921-1922) : 2 volumes sodomeetgomorrhe1 and sodomeetgomorrhe2.  La Prisonnière (1923) : 2 volumes laprisonniere1 and laprisonniere2.  Albertine disparue (1925, also know as : La Fugitive) : albertinedisparue.Le Temps retrouvé (1927) : 2 volumes letempretrouve1 and letempretrouve2.Install proustrInstall this package directly in R :From CRAN :install.packages(&quot;proustr&quot;)From Github :devtools::install_github(&quot;ColinFay/proustr&quot;)Examplesdevtools::install_github(&quot;ThinkRstat/stopwords&quot;)library(proustr)library(tidytext)library(tidyverse)library(stopwords)proust_books() %&gt;%   mutate(text = stringr::str_replace_all(.$text, &quot;’&quot;, &quot; &quot;)) %&gt;%   unnest_tokens(word, text) %&gt;%  filter(!word %in% stopwords_iso$fr) %&gt;%  count(word, sort = TRUE)%&gt;%  head(10)# A tibble: 10 x 2         word     n        &lt;chr&gt; &lt;int&gt; 1        mme  3106 2      faire  2869 3  albertine  2389 4      grand  1833 5 guermantes  1807 6        vie  1732 7      temps  1715 8      swann  1682 9     jamais  163910       voir  1568ContactQuestions and feedbacks welcome !">
+  <meta name="twitter:url" content="http://localhost:4000/proustr-package/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-06-05T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/proustr-package/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="New R Package — proustr">
+    <meta itemprop="description" content="proustr is now on CRAN.An R Package for Marcel Proust’s A La Recherche Du Temps PerduThis package gives you access to all the books from Marcel Proust “À la recherche du temps perdu” collection. This collection is divided in books, which are divided in volumes. Inspired by the package janeaustenr by Julia Silge.All books have been downloaded from BEQHere is a list of all the books contained in this pacakage :  Du côté de chez Swann (1913): 2 volumes ducotedechezswann1 &amp; ducotedechezswann2.  À l’ombre des jeunes filles en fleurs (1919): 3 volumes alombredesjeunesfillesenfleurs1, alombredesjeunesfillesenfleurs2, and alombredesjeunesfillesenfleurs3.  Le Côté de Guermantes (1920-1921): 3 volumes lecotedeguermantes1, lecotedeguermantes2 and lecotedeguermantes3  Sodome et Gomorrhe I et II (1921-1922) : 2 volumes sodomeetgomorrhe1 and sodomeetgomorrhe2.  La Prisonnière (1923) : 2 volumes laprisonniere1 and laprisonniere2.  Albertine disparue (1925, also know as : La Fugitive) : albertinedisparue.Le Temps retrouvé (1927) : 2 volumes letempretrouve1 and letempretrouve2.Install proustrInstall this package directly in R :From CRAN :install.packages(&quot;proustr&quot;)From Github :devtools::install_github(&quot;ColinFay/proustr&quot;)Examplesdevtools::install_github(&quot;ThinkRstat/stopwords&quot;)library(proustr)library(tidytext)library(tidyverse)library(stopwords)proust_books() %&gt;%   mutate(text = stringr::str_replace_all(.$text, &quot;’&quot;, &quot; &quot;)) %&gt;%   unnest_tokens(word, text) %&gt;%  filter(!word %in% stopwords_iso$fr) %&gt;%  count(word, sort = TRUE)%&gt;%  head(10)# A tibble: 10 x 2         word     n        &lt;chr&gt; &lt;int&gt; 1        mme  3106 2      faire  2869 3  albertine  2389 4      grand  1833 5 guermantes  1807 6        vie  1732 7      temps  1715 8      swann  1682 9     jamais  163910       voir  1568ContactQuestions and feedbacks welcome !">
+    <meta itemprop="datePublished" content="June 05, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">New R Package — proustr
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  1 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p><code class="highlighter-rouge">proustr</code> is now on <a href="https://cran.r-project.org/web/packages/proustr/index.html">CRAN</a>.</p>
+
+<p align="center"><img src="https://github.com/ColinFay/proustr/blob/master/proustr_hex.png?raw=true" width="250" /></p>
+
+<h2 id="an-r-package-for-marcel-prousts-a-la-recherche-du-temps-perdu">An R Package for Marcel Proust’s A La Recherche Du Temps Perdu</h2>
+
+<p>This package gives you access to all the books from Marcel Proust “À la recherche du temps perdu” collection. This collection is divided in books, which are divided in volumes. Inspired by the package <a href="https://github.com/juliasilge/janeaustenr">janeaustenr</a> by Julia Silge.</p>
+
+<p>All books have been downloaded from <a href="https://beq.ebooksgratuits.com/auteurs/Proust/proust.htm">BEQ</a></p>
+
+<p>Here is a list of all the books contained in this pacakage :</p>
+
+<ul>
+  <li>Du côté de chez Swann (1913): 2 volumes <code class="highlighter-rouge">ducotedechezswann1</code> &amp; <code class="highlighter-rouge">ducotedechezswann2</code>.</li>
+  <li>À l’ombre des jeunes filles en fleurs (1919): 3 volumes <code class="highlighter-rouge">alombredesjeunesfillesenfleurs1</code>, <code class="highlighter-rouge">alombredesjeunesfillesenfleurs2</code>, and <code class="highlighter-rouge">alombredesjeunesfillesenfleurs3</code>.</li>
+  <li>Le Côté de Guermantes (1920-1921): 3 volumes <code class="highlighter-rouge">lecotedeguermantes1</code>, <code class="highlighter-rouge">lecotedeguermantes2</code> and <code class="highlighter-rouge">lecotedeguermantes3</code></li>
+  <li>Sodome et Gomorrhe I et II (1921-1922) : 2 volumes <code class="highlighter-rouge">sodomeetgomorrhe1</code> and <code class="highlighter-rouge">sodomeetgomorrhe2</code>.</li>
+  <li>La Prisonnière (1923) : 2 volumes <code class="highlighter-rouge">laprisonniere1</code> and <code class="highlighter-rouge">laprisonniere2</code>.</li>
+  <li>Albertine disparue (1925, also know as : La Fugitive) : <code class="highlighter-rouge">albertinedisparue</code>.
+Le Temps retrouvé (1927) : 2 volumes <code class="highlighter-rouge">letempretrouve1</code> and <code class="highlighter-rouge">letempretrouve2</code>.</li>
+</ul>
+
+<h2 id="install-proustr">Install proustr</h2>
+
+<p>Install this package directly in R :</p>
+
+<p>From CRAN :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="s2">"proustr"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>From Github :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">devtools</span><span class="o">::</span><span class="n">install_github</span><span class="p">(</span><span class="s2">"ColinFay/proustr"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="examples">Examples</h2>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">devtools</span><span class="o">::</span><span class="n">install_github</span><span class="p">(</span><span class="s2">"ThinkRstat/stopwords"</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">proustr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidytext</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">stopwords</span><span class="p">)</span><span class="w">
+</span><span class="n">proust_books</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="n">.</span><span class="o">$</span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="s2">"’"</span><span class="p">,</span><span class="w"> </span><span class="s2">" "</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">unnest_tokens</span><span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">filter</span><span class="p">(</span><span class="o">!</span><span class="n">word</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">stopwords_iso</span><span class="o">$</span><span class="n">fr</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">count</span><span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="w"> </span><span class="n">sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># A tibble: 10 x 2</span><span class="w">
+         </span><span class="n">word</span><span class="w">     </span><span class="n">n</span><span class="w">
+        </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">int</span><span class="o">&gt;</span><span class="w">
+ </span><span class="m">1</span><span class="w">        </span><span class="n">mme</span><span class="w">  </span><span class="m">3106</span><span class="w">
+ </span><span class="m">2</span><span class="w">      </span><span class="n">faire</span><span class="w">  </span><span class="m">2869</span><span class="w">
+ </span><span class="m">3</span><span class="w">  </span><span class="n">albertine</span><span class="w">  </span><span class="m">2389</span><span class="w">
+ </span><span class="m">4</span><span class="w">      </span><span class="n">grand</span><span class="w">  </span><span class="m">1833</span><span class="w">
+ </span><span class="m">5</span><span class="w"> </span><span class="n">guermantes</span><span class="w">  </span><span class="m">1807</span><span class="w">
+ </span><span class="m">6</span><span class="w">        </span><span class="n">vie</span><span class="w">  </span><span class="m">1732</span><span class="w">
+ </span><span class="m">7</span><span class="w">      </span><span class="n">temps</span><span class="w">  </span><span class="m">1715</span><span class="w">
+ </span><span class="m">8</span><span class="w">      </span><span class="n">swann</span><span class="w">  </span><span class="m">1682</span><span class="w">
+ </span><span class="m">9</span><span class="w">     </span><span class="n">jamais</span><span class="w">  </span><span class="m">1639</span><span class="w">
+</span><span class="m">10</span><span class="w">       </span><span class="n">voir</span><span class="w">  </span><span class="m">1568</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="contact">Contact</h3>
+
+<p>Questions and feedbacks <a href="mailto:contact@colinfay.me">welcome</a> !</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#package" class="page__taxonomy-item" rel="tag">package</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#r" class="page__taxonomy-item" rel="tag">r</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-06-05T00:00:00+02:00">June 05, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=New+R+Package+%E2%80%94+proustr%20http%3A%2F%2Flocalhost%3A4000%2Fproustr-package%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fproustr-package%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fproustr-package%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fproustr-package%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/rstats-turbonegro/" class="pagination--pager" title="[Just for fun] New R package — tuRbonegro
+">←</a>
+    
+    
+      <a href="/playing-r-infix-functions/" class="pagination--pager" title="Playing with R, infix functions, and pizza
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/proustr-package/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/proustr-package"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

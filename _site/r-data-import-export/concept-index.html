@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Data Import/Export</title>
+  <meta name="description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Data Import/Export" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  <meta name="github-repo" content="ColinFay/r-data-import-export" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Data Import/Export" />
+  
+  <meta name="twitter:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="function-and-variable-index.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Data Import/Export</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Data Import/Export</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="spreadsheet-like-data.html"><a href="spreadsheet-like-data.html"><i class="fa fa-check"></i><b>2</b> Spreadsheet-like data</a></li>
+<li class="chapter" data-level="3" data-path="importing-from-other-statistical-systems.html"><a href="importing-from-other-statistical-systems.html"><i class="fa fa-check"></i><b>3</b> Importing from other statistical systems</a></li>
+<li class="chapter" data-level="4" data-path="relational-databases.html"><a href="relational-databases.html"><i class="fa fa-check"></i><b>4</b> Relational databases</a></li>
+<li class="chapter" data-level="5" data-path="binary-files.html"><a href="binary-files.html"><i class="fa fa-check"></i><b>5</b> Binary files</a></li>
+<li class="chapter" data-level="6" data-path="image-files.html"><a href="image-files.html"><i class="fa fa-check"></i><b>6</b> Image files</a></li>
+<li class="chapter" data-level="7" data-path="connections.html"><a href="connections.html"><i class="fa fa-check"></i><b>7</b> Connections</a></li>
+<li class="chapter" data-level="8" data-path="network-interfaces.html"><a href="network-interfaces.html"><i class="fa fa-check"></i><b>8</b> Network interfaces</a></li>
+<li class="chapter" data-level="9" data-path="reading-excel-spreadsheets.html"><a href="reading-excel-spreadsheets.html"><i class="fa fa-check"></i><b>9</b> Reading Excel spreadsheets</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>10</b> Appendix A References</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and variable index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Import/Export</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="concept-index" class="section level1">
+<h1><span class="header-section-number">Chapter 12</span> Concept index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="concept-index.html#Concept-index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-H" class="summary-letter"><strong>H</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-X" class="summary-letter"><strong>X</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-Y" class="summary-letter"><strong>Y</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-A">A</a>
+</p>
+<p>
+<a href="introduction.html#index-awk">awk</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="003-R-data.html#Introduction">Introduction</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-B">B</a>
+</p>
+<p>
+<a href="binary-files.html#index-Binary-files">Binary files</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#Binary-files">Binary files</a>
+</p>
+<p>
+<a href="connections.html#index-Binary-files-1">Binary files</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Binary-connections">Binary connections</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-C">C</a>
+</p>
+<p>
+<a href="introduction.html#index-comma-separated-values">comma separated values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="connections.html#index-Compressed-files">Compressed files</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="connections.html#index-Connections">Connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="image-files.html#Connections">Connections</a>
+</p>
+<p>
+<a href="connections.html#index-Connections-1">Connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="connections.html#index-Connections-2">Connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Output-to-connections">Output to connections</a>
+</p>
+<p>
+<a href="connections.html#index-Connections-3">Connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Listing-and-manipulating-connections">Listing and manipulating connections</a>
+</p>
+<p>
+<a href="introduction.html#index-CSV-files">CSV files</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-CSV-files-1">CSV files</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-D">D</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-Data-Interchange-Format-_0028DIF_0029">Data Interchange Format (DIF)</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Data-Interchange-Format-_0028DIF_0029">Data Interchange Format (DIF)</a>
+</p>
+<p>
+<a href="relational-databases.html#index-Dbase">Dbase</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="binary-files.html#index-dBase">dBase</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="binary-files.html#dBase-files-_0028DBF_0029">dBase files (DBF)</a>
+</p>
+<p>
+<a href="binary-files.html#index-DBF-files">DBF files</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="binary-files.html#dBase-files-_0028DBF_0029">dBase files (DBF)</a>
+</p>
+<p>
+<a href="relational-databases.html#index-DBMS">DBMS</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#Relational-databases">Relational databases</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-E">E</a>
+</p>
+<p>
+<a href="introduction.html#index-Encodings">Encodings</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Encodings">Encodings</a>
+</p>
+<p>
+<a href="introduction.html#index-Encodings-1">Encodings</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-EpiData">EpiData</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-EpiInfo">EpiInfo</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="relational-databases.html#index-Excel">Excel</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-Excel-1">Excel</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="introduction.html#index-Exporting-to-a-text-file">Exporting to a text file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-F">F</a>
+</p>
+<p>
+<a href="connections.html#index-File-connections">File connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-Fixed_002dwidth_002dformat-files">Fixed-width-format files</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Fixed_002dwidth_002dformat-files">Fixed-width-format files</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-Flat-contingency-tables">Flat contingency tables</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Flat-contingency-tables">Flat contingency tables</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-H">H</a>
+</p>
+<p>
+<a href="binary-files.html#index-Hierarchical-Data-Format">Hierarchical Data Format</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="binary-files.html#Binary-data-formats">Binary data formats</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-I">I</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-Importing-from-other-statistical-systems">Importing from other statistical systems</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Importing-from-other-statistical-systems">Importing from other statistical systems</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-L">L</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-locales">locales</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-M">M</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-Minitab">Minitab</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="introduction.html#index-Missing-values">Missing values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-Missing-values-1">Missing values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<p>
+<a href="relational-databases.html#index-MySQL-database-system">MySQL database system</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#DBI">DBI</a>
+</p>
+<p>
+<a href="relational-databases.html#index-MySQL-database-system-1">MySQL database system</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-N">N</a>
+</p>
+<p>
+<a href="binary-files.html#index-network-Common-Data-Form">network Common Data Form</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="binary-files.html#Binary-data-formats">Binary data formats</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-O">O</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-Octave">Octave</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#Octave">Octave</a>
+</p>
+<p>
+<a href="relational-databases.html#index-ODBC">ODBC</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#Overview-of-RDBMSs">Overview of RDBMSs</a>
+</p>
+<p>
+<a href="relational-databases.html#index-ODBC-1">ODBC</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="relational-databases.html#index-Open-Database-Connectivity">Open Database Connectivity</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#Overview-of-RDBMSs">Overview of RDBMSs</a>
+</p>
+<p>
+<a href="relational-databases.html#index-Open-Database-Connectivity-1">Open Database Connectivity</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-P">P</a>
+</p>
+<p>
+<a href="introduction.html#index-perl">perl</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="003-R-data.html#Introduction">Introduction</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-perl-1">perl</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Fixed_002dwidth_002dformat-files">Fixed-width-format files</a>
+</p>
+<p>
+<a href="connections.html#index-Pipe-connections">Pipe connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="relational-databases.html#index-PostgreSQL-database-system">PostgreSQL database system</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#RODBC">RODBC</a>
+</p>
+<p>
+<a href="connections.html#index-Pushback-on-a-connection">Pushback on a connection</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Pushback">Pushback</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-Q">Q</a>
+</p>
+<p>
+<a href="introduction.html#index-Quoting-strings">Quoting strings</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Export-to-text-files">Export to text files</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-Quoting-strings-1">Quoting strings</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Variations-on-read_002etable">Variations on read.table</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-R">R</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-Re_002dshaping-data">Re-shaping data</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="spreadsheet-like-data.html#Re_002dshaping-data">Re-shaping data</a>
+</p>
+<p>
+<a href="relational-databases.html#index-Relational-databases">Relational databases</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#Relational-databases">Relational databases</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-S">S</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-S_002dPLUS">S-PLUS</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-SAS">SAS</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="connections.html#index-Sockets">Sockets</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="network-interfaces.html#index-Sockets-1">Sockets</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="network-interfaces.html#Reading-from-sockets">Reading from sockets</a>
+</p>
+<p>
+<a href="spreadsheet-like-data.html#index-Spreadsheet_002dlike-data">Spreadsheet-like data</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#Spreadsheet_002dlike-data">Spreadsheet-like data</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-SPSS">SPSS</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-SPSS-Data-Entry">SPSS Data Entry</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="relational-databases.html#index-SQL-queries">SQL queries</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#SQL-queries">SQL queries</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-Stata">Stata</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#index-Systat">Systat</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="importing-from-other-statistical-systems.html#EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat">EpiInfo Minitab SAS S-PLUS SPSS Stata Systat</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-T">T</a>
+</p>
+<p>
+<a href="connections.html#index-Terminal-connections">Terminal connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="connections.html#index-Text-connections">Text connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-U">U</a>
+</p>
+<p>
+<a href="introduction.html#index-Unix-tools">Unix tools</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="003-R-data.html#Introduction">Introduction</a>
+</p>
+<p>
+<a href="connections.html#index-URL-connections">URL connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Types-of-connections">Types of connections</a>
+</p>
+<p>
+<a href="connections.html#index-URL-connections-1">URL connections</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="connections.html#Input-from-connections">Input from connections</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-X">X</a>
+</p>
+<p>
+<a href="introduction.html#index-XML">XML</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#XML">XML</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-Y">Y</a>
+</p>
+<p>
+<a href="introduction.html#index-yaml">yaml</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="introduction.html#XML">XML</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="concept-index.html#Concept-index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-H" class="summary-letter"><strong>H</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-X" class="summary-letter"><strong>X</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-Y" class="summary-letter"><strong>Y</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<div class="contents">
+<hr />
+<h4 id="footnotes" class="subsection">
+Footnotes
+</h4>
+<h3 id="section" class="section">
+<a href="introduction.html#DOCF1" id="FOOT1" class="calibre20">(1)</a>
+</h3>
+<p>
+the distinction is subtle, <a href="https://en.wikipedia.org/wiki/UTF-16/UCS-2" class="uri">https://en.wikipedia.org/wiki/UTF-16/UCS-2</a>, and the use of surrogate pairs is very rare.
+</p>
+<h3 id="section-1" class="section">
+<a href="introduction.html#DOCF2" id="FOOT2" class="calibre20">(2)</a>
+</h3>
+<p>
+Even then, Windows applications may expect a Byte Order Mark which the implementation of <code class="calibre2">iconv</code> used by R may or may not add depending on the platform.
+</p>
+<h3 id="section-2" class="section">
+<a href="spreadsheet-like-data.html#DOCF3" id="FOOT3" class="calibre20">(3)</a>
+</h3>
+<p>
+This is normally fast as looking at the first entry rules out most of the possibilities.
+</p>
+<h3 id="section-3" class="section">
+<a href="relational-databases.html#DOCF4" id="FOOT4" class="calibre20">(4)</a>
+</h3>
+<p>
+and forks, notably MariaDB.
+</p>
+</div>
+<hr />
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="function-and-variable-index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

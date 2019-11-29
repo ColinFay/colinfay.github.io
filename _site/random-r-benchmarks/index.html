@@ -1,0 +1,872 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Some random R benchmarks - Colin Fay</title>
+<meta name="description" content="Some random (one could say useless) benchmarks on R, serious or for fun,and some advices to make your code run faster.disclamer::on()  As with all microbenchmarks, these won’t affect the performance ofmost code, but can be important for special cases. Advanced R -Performancedisclamer::off()There are two main things you can do to optimise your code: write moreand shorter functions to avoid repeating yourself(maintainance-oriented optimisation), and find ways to make your Rcode run faster (usage-oriented optimisation).One way to make you R code run really faster is to turn to languageslike C++. But you know, it’s not thateasy,and before turning to that, you can still use some tricks in plain R.I was working on {attempt} lately, a package that (I hope) makesconditions handling easier, and aims to be used inside other functions(more on that). As the {attempt}functions are to be used inside other functions, I focused on trying tospeed things up as much as I could, in order to keep the general UXattractive. And of course, I wanted to do that without having to go forC / C++ (well, mainly because I don’t know how to program in C).For this, I played a lot with {microbenchmark}, a package that allows tocompare the time spent to run several R commands, and in the end, Iwas glad to see that using these benchmarks allowed me to write fasterfunctions (and sometimes, really faster). I won’t share them all here(because this is a one thousand lines script), but here are some piecestaken out of it.  Because at the end of the day, someone always asks: “and what aboutperformance?”return or stop as soon as possibleFunny thing: as I started writing this post, I came accross thisblogpost by Yihui thatstates the exact same thing I was writing: focus on return() orstop() as soon as possible. Don’t make your code compute stuffs youmight never need in some cases, or make useless tests. For example, ifyou have an if statement that will stop the function, test it first.  Note: the examples that follow are of course toy examples.library(microbenchmark)compute_first &lt;- function(a){  b &lt;- log(a) * 10   c &lt;- log(a) * 100  d &lt;- b + c  if( a == 1 ) {    return(0)  }  return(d)}if_first &lt;- function(a){  if( a == 1 ) {    return(0)  }  b &lt;- log(a) * 10   c &lt;- log(a) * 100  d &lt;- b + c  return(d)}# First, make sure you&#39;re benchmarking on the same resultall.equal(compute_first(3), if_first(3))## [1] TRUEall.equal(compute_first(0), if_first(0))## [1] TRUEmicrobenchmark(compute_first(1), if_first(1), compute_first(0), if_first(0), times = 100)## Unit: nanoseconds##              expr min    lq   mean median    uq   max neval cld##  compute_first(1) 487 509.5 684.65  522.5 568.0 12556   100   b##       if_first(1) 238 257.0 291.21  265.5 298.0   779   100  a ##  compute_first(0) 483 509.0 569.97  540.5 586.0  1196   100   b##       if_first(0) 489 509.0 593.14  528.0 580.5  2657   100   bAs you can see, compute_first takes almost as much time to compute inboth cases. But you can save some time when using if_first : in thecase of a == 1, the function doesn’t compute b, c or d, so runsfaster.Yes, it’s a matter of nanoseconds, but what if:sleep_first &lt;- function(b){  Sys.sleep(0.01)  if (b == 1 ){    return(0)  }  return(b * 10)}sleep_second &lt;- function(b){  if (b == 1 ){    return(0)  }  Sys.sleep(0.01)  return(b * 10)}all.equal(sleep_first(1), sleep_second(1))## [1] TRUEall.equal(sleep_first(0), sleep_second(0))## [1] TRUEmicrobenchmark(sleep_first(1), sleep_second(1), sleep_first(0), sleep_second(0), times = 100)## Unit: nanoseconds##             expr      min       lq        mean     median       uq##   sleep_first(1) 10050575 10491052 11331793.64 11289640.0 12139226##  sleep_second(1)      309     1676     8646.22     7468.5     9717##   sleep_first(0) 10061303 10690055 11506264.50 11464036.0 12452736##  sleep_second(0) 10068596 10651320 11521164.44 11533203.5 12290622##       max neval cld##  12710034   100   b##     85780   100  a ##  14822220   100   b##  15501758   100   bUse importFrom, not ::Yes, :: is a function, so calling pkg::function is slower thanattaching the package and then use the function. That’s why whencreating a package, it’s better to use @importFrom. Do this instead ofjust listing the package as dependency, and then using :: inside yourfunctions.We see this even with base:a &lt;- NULLb &lt;- NAmicrobenchmark(is.null(a),                base::is.null(a),                is.na(b),                base::is.na(b),               times = 10000)## Unit: nanoseconds##              expr  min     lq      mean median   uq     max neval cld##        is.null(a)   80  144.0  250.1765  204.0  229  102375 10000 a  ##  base::is.null(a) 3670 6337.5 8280.9690 7444.0 8126  974538 10000  b ##          is.na(b)  108  186.0  285.7768  262.0  298   52941 10000 a  ##    base::is.na(b) 3775 6469.0 9332.7668 7566.5 8274 3621082 10000   cAs a general rule of thumb, you should aim at making as less functioncalls as possible: calling one function takes time, so if can beavoided, avoid it.Here, for example, there’s a way to avoid calling ::, so use it :)Does return() make the funcion slower?I’ve heard several times that return() slows your code a little bit(that makes sens, return is a function call).with_return &lt;- function(x){  return(x*1e3)}without_return &lt;- function(x){  x*1e3}all.equal(with_return(3), without_return(3))## [1] TRUEmicrobenchmark(with_return(3),               without_return(3),               times = 10000)## Unit: nanoseconds##               expr min  lq     mean median  uq     max neval cld##     with_return(3) 227 248 521.5837    256 372 1713180 10000   a##  without_return(3) 228 247 521.8669    256 375 1677252 10000   aSurprisingly, return() doesn’t slow your code. So use it!Brackets make the code (a little bit) slowerBut they make it way clearer. So keep it unless you want to win abunch of nanoseconds :)microbenchmark(if(TRUE)&quot;yay&quot;,               if(TRUE) {&quot;yay&quot;},               if(FALSE) &quot;yay&quot; else &quot;nay&quot;,                if(FALSE) {&quot;yay&quot;} else {&quot;nay&quot;},                times = 10000)## Unit: nanoseconds##                                         expr min lq     mean median  uq##                              if (TRUE) &quot;yay&quot;  38 50  55.7466     53  59##                      if (TRUE) {     &quot;yay&quot; }  75 88  98.6950     93  97##                  if (FALSE) &quot;yay&quot; else &quot;nay&quot;  39 54  59.8155     56  61##  if (FALSE) {     &quot;yay&quot; } else {     &quot;nay&quot; }  77 91 101.4289     96 101##    max neval cld##   9717 10000  a ##  10006 10000   b##  12510 10000  a ##   8601 10000   bAssign as less as possibleYep, because assigning is a function.with_assign &lt;- function(a){  b &lt;- a*10e3  c &lt;- sqrt(b)  d &lt;- log(c)  d}without_assign &lt;- function(a){  log(sqrt(a*10e3))}microbenchmark(with_assign(3),               without_assign(3),               times = 1000)## Unit: nanoseconds##               expr min  lq     mean median    uq     max neval cld##     with_assign(3) 439 467 2733.461    488 535.5 2186584  1000   a##  without_assign(3) 276 297 1726.264    306 330.5 1376750  1000   aWhat about the pipe ?Does the pipe makes things slower?library(magrittr)with_pipe &lt;- function(a){  10e3 %&gt;% &quot;*&quot;(a) %&gt;% sqrt() %&gt;% log()}all.equal(with_pipe(3), without_assign(3))## [1] TRUEmicrobenchmark(with_pipe(3),               without_assign(3),               times = 1000)## Unit: nanoseconds##               expr   min    lq      mean   median     uq     max neval cld##       with_pipe(3) 94948 99167 126867.31 103021.5 121308 2566817  1000   b##  without_assign(3)   278   318    594.12    514.5    622    9650  1000  aYou know, because %&gt;% is a function.ConclusionThese tests are just random tests I run, and I can’t say they coverall the technics you can use to speed up your code: rhese are just somequestions I can accross and wanted to share.At the end of the day, there are also methods (like the bracket one)that can help you save some nanoseconds. So don’t be afraid of not usingthem, and stay focus on what’s more important: write code that is easyto understand. Because a piece of code that is easy to understand is apiece of code that is easy to maintain! And never forget:  It’s easy to get caught up in trying to remove all bottlenecks.Don’t! Your time is valuable and is better spent analysing yourdata, not eliminating possible inefficiencies in your code. Bepragmatic: don’t spend hours of your time to save seconds of computertime. Advanced R - OptimisingcodeIf you want to read more about code optimisation for speed, ColinGillespie and Robin Lovelace wrote a nice book about being more efficienwith R, with a chapter focused on performance: Efficientoptimisation.See also Advanced R - Performant code.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Some random R benchmarks">
+<meta property="og:url" content="http://localhost:4000/random-r-benchmarks/">
+
+
+  <meta property="og:description" content="Some random (one could say useless) benchmarks on R, serious or for fun,and some advices to make your code run faster.disclamer::on()  As with all microbenchmarks, these won’t affect the performance ofmost code, but can be important for special cases. Advanced R -Performancedisclamer::off()There are two main things you can do to optimise your code: write moreand shorter functions to avoid repeating yourself(maintainance-oriented optimisation), and find ways to make your Rcode run faster (usage-oriented optimisation).One way to make you R code run really faster is to turn to languageslike C++. But you know, it’s not thateasy,and before turning to that, you can still use some tricks in plain R.I was working on {attempt} lately, a package that (I hope) makesconditions handling easier, and aims to be used inside other functions(more on that). As the {attempt}functions are to be used inside other functions, I focused on trying tospeed things up as much as I could, in order to keep the general UXattractive. And of course, I wanted to do that without having to go forC / C++ (well, mainly because I don’t know how to program in C).For this, I played a lot with {microbenchmark}, a package that allows tocompare the time spent to run several R commands, and in the end, Iwas glad to see that using these benchmarks allowed me to write fasterfunctions (and sometimes, really faster). I won’t share them all here(because this is a one thousand lines script), but here are some piecestaken out of it.  Because at the end of the day, someone always asks: “and what aboutperformance?”return or stop as soon as possibleFunny thing: as I started writing this post, I came accross thisblogpost by Yihui thatstates the exact same thing I was writing: focus on return() orstop() as soon as possible. Don’t make your code compute stuffs youmight never need in some cases, or make useless tests. For example, ifyou have an if statement that will stop the function, test it first.  Note: the examples that follow are of course toy examples.library(microbenchmark)compute_first &lt;- function(a){  b &lt;- log(a) * 10   c &lt;- log(a) * 100  d &lt;- b + c  if( a == 1 ) {    return(0)  }  return(d)}if_first &lt;- function(a){  if( a == 1 ) {    return(0)  }  b &lt;- log(a) * 10   c &lt;- log(a) * 100  d &lt;- b + c  return(d)}# First, make sure you&#39;re benchmarking on the same resultall.equal(compute_first(3), if_first(3))## [1] TRUEall.equal(compute_first(0), if_first(0))## [1] TRUEmicrobenchmark(compute_first(1), if_first(1), compute_first(0), if_first(0), times = 100)## Unit: nanoseconds##              expr min    lq   mean median    uq   max neval cld##  compute_first(1) 487 509.5 684.65  522.5 568.0 12556   100   b##       if_first(1) 238 257.0 291.21  265.5 298.0   779   100  a ##  compute_first(0) 483 509.0 569.97  540.5 586.0  1196   100   b##       if_first(0) 489 509.0 593.14  528.0 580.5  2657   100   bAs you can see, compute_first takes almost as much time to compute inboth cases. But you can save some time when using if_first : in thecase of a == 1, the function doesn’t compute b, c or d, so runsfaster.Yes, it’s a matter of nanoseconds, but what if:sleep_first &lt;- function(b){  Sys.sleep(0.01)  if (b == 1 ){    return(0)  }  return(b * 10)}sleep_second &lt;- function(b){  if (b == 1 ){    return(0)  }  Sys.sleep(0.01)  return(b * 10)}all.equal(sleep_first(1), sleep_second(1))## [1] TRUEall.equal(sleep_first(0), sleep_second(0))## [1] TRUEmicrobenchmark(sleep_first(1), sleep_second(1), sleep_first(0), sleep_second(0), times = 100)## Unit: nanoseconds##             expr      min       lq        mean     median       uq##   sleep_first(1) 10050575 10491052 11331793.64 11289640.0 12139226##  sleep_second(1)      309     1676     8646.22     7468.5     9717##   sleep_first(0) 10061303 10690055 11506264.50 11464036.0 12452736##  sleep_second(0) 10068596 10651320 11521164.44 11533203.5 12290622##       max neval cld##  12710034   100   b##     85780   100  a ##  14822220   100   b##  15501758   100   bUse importFrom, not ::Yes, :: is a function, so calling pkg::function is slower thanattaching the package and then use the function. That’s why whencreating a package, it’s better to use @importFrom. Do this instead ofjust listing the package as dependency, and then using :: inside yourfunctions.We see this even with base:a &lt;- NULLb &lt;- NAmicrobenchmark(is.null(a),                base::is.null(a),                is.na(b),                base::is.na(b),               times = 10000)## Unit: nanoseconds##              expr  min     lq      mean median   uq     max neval cld##        is.null(a)   80  144.0  250.1765  204.0  229  102375 10000 a  ##  base::is.null(a) 3670 6337.5 8280.9690 7444.0 8126  974538 10000  b ##          is.na(b)  108  186.0  285.7768  262.0  298   52941 10000 a  ##    base::is.na(b) 3775 6469.0 9332.7668 7566.5 8274 3621082 10000   cAs a general rule of thumb, you should aim at making as less functioncalls as possible: calling one function takes time, so if can beavoided, avoid it.Here, for example, there’s a way to avoid calling ::, so use it :)Does return() make the funcion slower?I’ve heard several times that return() slows your code a little bit(that makes sens, return is a function call).with_return &lt;- function(x){  return(x*1e3)}without_return &lt;- function(x){  x*1e3}all.equal(with_return(3), without_return(3))## [1] TRUEmicrobenchmark(with_return(3),               without_return(3),               times = 10000)## Unit: nanoseconds##               expr min  lq     mean median  uq     max neval cld##     with_return(3) 227 248 521.5837    256 372 1713180 10000   a##  without_return(3) 228 247 521.8669    256 375 1677252 10000   aSurprisingly, return() doesn’t slow your code. So use it!Brackets make the code (a little bit) slowerBut they make it way clearer. So keep it unless you want to win abunch of nanoseconds :)microbenchmark(if(TRUE)&quot;yay&quot;,               if(TRUE) {&quot;yay&quot;},               if(FALSE) &quot;yay&quot; else &quot;nay&quot;,                if(FALSE) {&quot;yay&quot;} else {&quot;nay&quot;},                times = 10000)## Unit: nanoseconds##                                         expr min lq     mean median  uq##                              if (TRUE) &quot;yay&quot;  38 50  55.7466     53  59##                      if (TRUE) {     &quot;yay&quot; }  75 88  98.6950     93  97##                  if (FALSE) &quot;yay&quot; else &quot;nay&quot;  39 54  59.8155     56  61##  if (FALSE) {     &quot;yay&quot; } else {     &quot;nay&quot; }  77 91 101.4289     96 101##    max neval cld##   9717 10000  a ##  10006 10000   b##  12510 10000  a ##   8601 10000   bAssign as less as possibleYep, because assigning is a function.with_assign &lt;- function(a){  b &lt;- a*10e3  c &lt;- sqrt(b)  d &lt;- log(c)  d}without_assign &lt;- function(a){  log(sqrt(a*10e3))}microbenchmark(with_assign(3),               without_assign(3),               times = 1000)## Unit: nanoseconds##               expr min  lq     mean median    uq     max neval cld##     with_assign(3) 439 467 2733.461    488 535.5 2186584  1000   a##  without_assign(3) 276 297 1726.264    306 330.5 1376750  1000   aWhat about the pipe ?Does the pipe makes things slower?library(magrittr)with_pipe &lt;- function(a){  10e3 %&gt;% &quot;*&quot;(a) %&gt;% sqrt() %&gt;% log()}all.equal(with_pipe(3), without_assign(3))## [1] TRUEmicrobenchmark(with_pipe(3),               without_assign(3),               times = 1000)## Unit: nanoseconds##               expr   min    lq      mean   median     uq     max neval cld##       with_pipe(3) 94948 99167 126867.31 103021.5 121308 2566817  1000   b##  without_assign(3)   278   318    594.12    514.5    622    9650  1000  aYou know, because %&gt;% is a function.ConclusionThese tests are just random tests I run, and I can’t say they coverall the technics you can use to speed up your code: rhese are just somequestions I can accross and wanted to share.At the end of the day, there are also methods (like the bracket one)that can help you save some nanoseconds. So don’t be afraid of not usingthem, and stay focus on what’s more important: write code that is easyto understand. Because a piece of code that is easy to understand is apiece of code that is easy to maintain! And never forget:  It’s easy to get caught up in trying to remove all bottlenecks.Don’t! Your time is valuable and is better spent analysing yourdata, not eliminating possible inefficiencies in your code. Bepragmatic: don’t spend hours of your time to save seconds of computertime. Advanced R - OptimisingcodeIf you want to read more about code optimisation for speed, ColinGillespie and Robin Lovelace wrote a nice book about being more efficienwith R, with a chapter focused on performance: Efficientoptimisation.See also Advanced R - Performant code.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Some random R benchmarks">
+  <meta name="twitter:description" content="Some random (one could say useless) benchmarks on R, serious or for fun,and some advices to make your code run faster.disclamer::on()  As with all microbenchmarks, these won’t affect the performance ofmost code, but can be important for special cases. Advanced R -Performancedisclamer::off()There are two main things you can do to optimise your code: write moreand shorter functions to avoid repeating yourself(maintainance-oriented optimisation), and find ways to make your Rcode run faster (usage-oriented optimisation).One way to make you R code run really faster is to turn to languageslike C++. But you know, it’s not thateasy,and before turning to that, you can still use some tricks in plain R.I was working on {attempt} lately, a package that (I hope) makesconditions handling easier, and aims to be used inside other functions(more on that). As the {attempt}functions are to be used inside other functions, I focused on trying tospeed things up as much as I could, in order to keep the general UXattractive. And of course, I wanted to do that without having to go forC / C++ (well, mainly because I don’t know how to program in C).For this, I played a lot with {microbenchmark}, a package that allows tocompare the time spent to run several R commands, and in the end, Iwas glad to see that using these benchmarks allowed me to write fasterfunctions (and sometimes, really faster). I won’t share them all here(because this is a one thousand lines script), but here are some piecestaken out of it.  Because at the end of the day, someone always asks: “and what aboutperformance?”return or stop as soon as possibleFunny thing: as I started writing this post, I came accross thisblogpost by Yihui thatstates the exact same thing I was writing: focus on return() orstop() as soon as possible. Don’t make your code compute stuffs youmight never need in some cases, or make useless tests. For example, ifyou have an if statement that will stop the function, test it first.  Note: the examples that follow are of course toy examples.library(microbenchmark)compute_first &lt;- function(a){  b &lt;- log(a) * 10   c &lt;- log(a) * 100  d &lt;- b + c  if( a == 1 ) {    return(0)  }  return(d)}if_first &lt;- function(a){  if( a == 1 ) {    return(0)  }  b &lt;- log(a) * 10   c &lt;- log(a) * 100  d &lt;- b + c  return(d)}# First, make sure you&#39;re benchmarking on the same resultall.equal(compute_first(3), if_first(3))## [1] TRUEall.equal(compute_first(0), if_first(0))## [1] TRUEmicrobenchmark(compute_first(1), if_first(1), compute_first(0), if_first(0), times = 100)## Unit: nanoseconds##              expr min    lq   mean median    uq   max neval cld##  compute_first(1) 487 509.5 684.65  522.5 568.0 12556   100   b##       if_first(1) 238 257.0 291.21  265.5 298.0   779   100  a ##  compute_first(0) 483 509.0 569.97  540.5 586.0  1196   100   b##       if_first(0) 489 509.0 593.14  528.0 580.5  2657   100   bAs you can see, compute_first takes almost as much time to compute inboth cases. But you can save some time when using if_first : in thecase of a == 1, the function doesn’t compute b, c or d, so runsfaster.Yes, it’s a matter of nanoseconds, but what if:sleep_first &lt;- function(b){  Sys.sleep(0.01)  if (b == 1 ){    return(0)  }  return(b * 10)}sleep_second &lt;- function(b){  if (b == 1 ){    return(0)  }  Sys.sleep(0.01)  return(b * 10)}all.equal(sleep_first(1), sleep_second(1))## [1] TRUEall.equal(sleep_first(0), sleep_second(0))## [1] TRUEmicrobenchmark(sleep_first(1), sleep_second(1), sleep_first(0), sleep_second(0), times = 100)## Unit: nanoseconds##             expr      min       lq        mean     median       uq##   sleep_first(1) 10050575 10491052 11331793.64 11289640.0 12139226##  sleep_second(1)      309     1676     8646.22     7468.5     9717##   sleep_first(0) 10061303 10690055 11506264.50 11464036.0 12452736##  sleep_second(0) 10068596 10651320 11521164.44 11533203.5 12290622##       max neval cld##  12710034   100   b##     85780   100  a ##  14822220   100   b##  15501758   100   bUse importFrom, not ::Yes, :: is a function, so calling pkg::function is slower thanattaching the package and then use the function. That’s why whencreating a package, it’s better to use @importFrom. Do this instead ofjust listing the package as dependency, and then using :: inside yourfunctions.We see this even with base:a &lt;- NULLb &lt;- NAmicrobenchmark(is.null(a),                base::is.null(a),                is.na(b),                base::is.na(b),               times = 10000)## Unit: nanoseconds##              expr  min     lq      mean median   uq     max neval cld##        is.null(a)   80  144.0  250.1765  204.0  229  102375 10000 a  ##  base::is.null(a) 3670 6337.5 8280.9690 7444.0 8126  974538 10000  b ##          is.na(b)  108  186.0  285.7768  262.0  298   52941 10000 a  ##    base::is.na(b) 3775 6469.0 9332.7668 7566.5 8274 3621082 10000   cAs a general rule of thumb, you should aim at making as less functioncalls as possible: calling one function takes time, so if can beavoided, avoid it.Here, for example, there’s a way to avoid calling ::, so use it :)Does return() make the funcion slower?I’ve heard several times that return() slows your code a little bit(that makes sens, return is a function call).with_return &lt;- function(x){  return(x*1e3)}without_return &lt;- function(x){  x*1e3}all.equal(with_return(3), without_return(3))## [1] TRUEmicrobenchmark(with_return(3),               without_return(3),               times = 10000)## Unit: nanoseconds##               expr min  lq     mean median  uq     max neval cld##     with_return(3) 227 248 521.5837    256 372 1713180 10000   a##  without_return(3) 228 247 521.8669    256 375 1677252 10000   aSurprisingly, return() doesn’t slow your code. So use it!Brackets make the code (a little bit) slowerBut they make it way clearer. So keep it unless you want to win abunch of nanoseconds :)microbenchmark(if(TRUE)&quot;yay&quot;,               if(TRUE) {&quot;yay&quot;},               if(FALSE) &quot;yay&quot; else &quot;nay&quot;,                if(FALSE) {&quot;yay&quot;} else {&quot;nay&quot;},                times = 10000)## Unit: nanoseconds##                                         expr min lq     mean median  uq##                              if (TRUE) &quot;yay&quot;  38 50  55.7466     53  59##                      if (TRUE) {     &quot;yay&quot; }  75 88  98.6950     93  97##                  if (FALSE) &quot;yay&quot; else &quot;nay&quot;  39 54  59.8155     56  61##  if (FALSE) {     &quot;yay&quot; } else {     &quot;nay&quot; }  77 91 101.4289     96 101##    max neval cld##   9717 10000  a ##  10006 10000   b##  12510 10000  a ##   8601 10000   bAssign as less as possibleYep, because assigning is a function.with_assign &lt;- function(a){  b &lt;- a*10e3  c &lt;- sqrt(b)  d &lt;- log(c)  d}without_assign &lt;- function(a){  log(sqrt(a*10e3))}microbenchmark(with_assign(3),               without_assign(3),               times = 1000)## Unit: nanoseconds##               expr min  lq     mean median    uq     max neval cld##     with_assign(3) 439 467 2733.461    488 535.5 2186584  1000   a##  without_assign(3) 276 297 1726.264    306 330.5 1376750  1000   aWhat about the pipe ?Does the pipe makes things slower?library(magrittr)with_pipe &lt;- function(a){  10e3 %&gt;% &quot;*&quot;(a) %&gt;% sqrt() %&gt;% log()}all.equal(with_pipe(3), without_assign(3))## [1] TRUEmicrobenchmark(with_pipe(3),               without_assign(3),               times = 1000)## Unit: nanoseconds##               expr   min    lq      mean   median     uq     max neval cld##       with_pipe(3) 94948 99167 126867.31 103021.5 121308 2566817  1000   b##  without_assign(3)   278   318    594.12    514.5    622    9650  1000  aYou know, because %&gt;% is a function.ConclusionThese tests are just random tests I run, and I can’t say they coverall the technics you can use to speed up your code: rhese are just somequestions I can accross and wanted to share.At the end of the day, there are also methods (like the bracket one)that can help you save some nanoseconds. So don’t be afraid of not usingthem, and stay focus on what’s more important: write code that is easyto understand. Because a piece of code that is easy to understand is apiece of code that is easy to maintain! And never forget:  It’s easy to get caught up in trying to remove all bottlenecks.Don’t! Your time is valuable and is better spent analysing yourdata, not eliminating possible inefficiencies in your code. Bepragmatic: don’t spend hours of your time to save seconds of computertime. Advanced R - OptimisingcodeIf you want to read more about code optimisation for speed, ColinGillespie and Robin Lovelace wrote a nice book about being more efficienwith R, with a chapter focused on performance: Efficientoptimisation.See also Advanced R - Performant code.">
+  <meta name="twitter:url" content="http://localhost:4000/random-r-benchmarks/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-01-09T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/random-r-benchmarks/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Some random R benchmarks">
+    <meta itemprop="description" content="Some random (one could say useless) benchmarks on R, serious or for fun,and some advices to make your code run faster.disclamer::on()  As with all microbenchmarks, these won’t affect the performance ofmost code, but can be important for special cases. Advanced R -Performancedisclamer::off()There are two main things you can do to optimise your code: write moreand shorter functions to avoid repeating yourself(maintainance-oriented optimisation), and find ways to make your Rcode run faster (usage-oriented optimisation).One way to make you R code run really faster is to turn to languageslike C++. But you know, it’s not thateasy,and before turning to that, you can still use some tricks in plain R.I was working on {attempt} lately, a package that (I hope) makesconditions handling easier, and aims to be used inside other functions(more on that). As the {attempt}functions are to be used inside other functions, I focused on trying tospeed things up as much as I could, in order to keep the general UXattractive. And of course, I wanted to do that without having to go forC / C++ (well, mainly because I don’t know how to program in C).For this, I played a lot with {microbenchmark}, a package that allows tocompare the time spent to run several R commands, and in the end, Iwas glad to see that using these benchmarks allowed me to write fasterfunctions (and sometimes, really faster). I won’t share them all here(because this is a one thousand lines script), but here are some piecestaken out of it.  Because at the end of the day, someone always asks: “and what aboutperformance?”return or stop as soon as possibleFunny thing: as I started writing this post, I came accross thisblogpost by Yihui thatstates the exact same thing I was writing: focus on return() orstop() as soon as possible. Don’t make your code compute stuffs youmight never need in some cases, or make useless tests. For example, ifyou have an if statement that will stop the function, test it first.  Note: the examples that follow are of course toy examples.library(microbenchmark)compute_first &lt;- function(a){  b &lt;- log(a) * 10   c &lt;- log(a) * 100  d &lt;- b + c  if( a == 1 ) {    return(0)  }  return(d)}if_first &lt;- function(a){  if( a == 1 ) {    return(0)  }  b &lt;- log(a) * 10   c &lt;- log(a) * 100  d &lt;- b + c  return(d)}# First, make sure you&#39;re benchmarking on the same resultall.equal(compute_first(3), if_first(3))## [1] TRUEall.equal(compute_first(0), if_first(0))## [1] TRUEmicrobenchmark(compute_first(1), if_first(1), compute_first(0), if_first(0), times = 100)## Unit: nanoseconds##              expr min    lq   mean median    uq   max neval cld##  compute_first(1) 487 509.5 684.65  522.5 568.0 12556   100   b##       if_first(1) 238 257.0 291.21  265.5 298.0   779   100  a ##  compute_first(0) 483 509.0 569.97  540.5 586.0  1196   100   b##       if_first(0) 489 509.0 593.14  528.0 580.5  2657   100   bAs you can see, compute_first takes almost as much time to compute inboth cases. But you can save some time when using if_first : in thecase of a == 1, the function doesn’t compute b, c or d, so runsfaster.Yes, it’s a matter of nanoseconds, but what if:sleep_first &lt;- function(b){  Sys.sleep(0.01)  if (b == 1 ){    return(0)  }  return(b * 10)}sleep_second &lt;- function(b){  if (b == 1 ){    return(0)  }  Sys.sleep(0.01)  return(b * 10)}all.equal(sleep_first(1), sleep_second(1))## [1] TRUEall.equal(sleep_first(0), sleep_second(0))## [1] TRUEmicrobenchmark(sleep_first(1), sleep_second(1), sleep_first(0), sleep_second(0), times = 100)## Unit: nanoseconds##             expr      min       lq        mean     median       uq##   sleep_first(1) 10050575 10491052 11331793.64 11289640.0 12139226##  sleep_second(1)      309     1676     8646.22     7468.5     9717##   sleep_first(0) 10061303 10690055 11506264.50 11464036.0 12452736##  sleep_second(0) 10068596 10651320 11521164.44 11533203.5 12290622##       max neval cld##  12710034   100   b##     85780   100  a ##  14822220   100   b##  15501758   100   bUse importFrom, not ::Yes, :: is a function, so calling pkg::function is slower thanattaching the package and then use the function. That’s why whencreating a package, it’s better to use @importFrom. Do this instead ofjust listing the package as dependency, and then using :: inside yourfunctions.We see this even with base:a &lt;- NULLb &lt;- NAmicrobenchmark(is.null(a),                base::is.null(a),                is.na(b),                base::is.na(b),               times = 10000)## Unit: nanoseconds##              expr  min     lq      mean median   uq     max neval cld##        is.null(a)   80  144.0  250.1765  204.0  229  102375 10000 a  ##  base::is.null(a) 3670 6337.5 8280.9690 7444.0 8126  974538 10000  b ##          is.na(b)  108  186.0  285.7768  262.0  298   52941 10000 a  ##    base::is.na(b) 3775 6469.0 9332.7668 7566.5 8274 3621082 10000   cAs a general rule of thumb, you should aim at making as less functioncalls as possible: calling one function takes time, so if can beavoided, avoid it.Here, for example, there’s a way to avoid calling ::, so use it :)Does return() make the funcion slower?I’ve heard several times that return() slows your code a little bit(that makes sens, return is a function call).with_return &lt;- function(x){  return(x*1e3)}without_return &lt;- function(x){  x*1e3}all.equal(with_return(3), without_return(3))## [1] TRUEmicrobenchmark(with_return(3),               without_return(3),               times = 10000)## Unit: nanoseconds##               expr min  lq     mean median  uq     max neval cld##     with_return(3) 227 248 521.5837    256 372 1713180 10000   a##  without_return(3) 228 247 521.8669    256 375 1677252 10000   aSurprisingly, return() doesn’t slow your code. So use it!Brackets make the code (a little bit) slowerBut they make it way clearer. So keep it unless you want to win abunch of nanoseconds :)microbenchmark(if(TRUE)&quot;yay&quot;,               if(TRUE) {&quot;yay&quot;},               if(FALSE) &quot;yay&quot; else &quot;nay&quot;,                if(FALSE) {&quot;yay&quot;} else {&quot;nay&quot;},                times = 10000)## Unit: nanoseconds##                                         expr min lq     mean median  uq##                              if (TRUE) &quot;yay&quot;  38 50  55.7466     53  59##                      if (TRUE) {     &quot;yay&quot; }  75 88  98.6950     93  97##                  if (FALSE) &quot;yay&quot; else &quot;nay&quot;  39 54  59.8155     56  61##  if (FALSE) {     &quot;yay&quot; } else {     &quot;nay&quot; }  77 91 101.4289     96 101##    max neval cld##   9717 10000  a ##  10006 10000   b##  12510 10000  a ##   8601 10000   bAssign as less as possibleYep, because assigning is a function.with_assign &lt;- function(a){  b &lt;- a*10e3  c &lt;- sqrt(b)  d &lt;- log(c)  d}without_assign &lt;- function(a){  log(sqrt(a*10e3))}microbenchmark(with_assign(3),               without_assign(3),               times = 1000)## Unit: nanoseconds##               expr min  lq     mean median    uq     max neval cld##     with_assign(3) 439 467 2733.461    488 535.5 2186584  1000   a##  without_assign(3) 276 297 1726.264    306 330.5 1376750  1000   aWhat about the pipe ?Does the pipe makes things slower?library(magrittr)with_pipe &lt;- function(a){  10e3 %&gt;% &quot;*&quot;(a) %&gt;% sqrt() %&gt;% log()}all.equal(with_pipe(3), without_assign(3))## [1] TRUEmicrobenchmark(with_pipe(3),               without_assign(3),               times = 1000)## Unit: nanoseconds##               expr   min    lq      mean   median     uq     max neval cld##       with_pipe(3) 94948 99167 126867.31 103021.5 121308 2566817  1000   b##  without_assign(3)   278   318    594.12    514.5    622    9650  1000  aYou know, because %&gt;% is a function.ConclusionThese tests are just random tests I run, and I can’t say they coverall the technics you can use to speed up your code: rhese are just somequestions I can accross and wanted to share.At the end of the day, there are also methods (like the bracket one)that can help you save some nanoseconds. So don’t be afraid of not usingthem, and stay focus on what’s more important: write code that is easyto understand. Because a piece of code that is easy to understand is apiece of code that is easy to maintain! And never forget:  It’s easy to get caught up in trying to remove all bottlenecks.Don’t! Your time is valuable and is better spent analysing yourdata, not eliminating possible inefficiencies in your code. Bepragmatic: don’t spend hours of your time to save seconds of computertime. Advanced R - OptimisingcodeIf you want to read more about code optimisation for speed, ColinGillespie and Robin Lovelace wrote a nice book about being more efficienwith R, with a chapter focused on performance: Efficientoptimisation.See also Advanced R - Performant code.">
+    <meta itemprop="datePublished" content="January 09, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Some random R benchmarks
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  6 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Some random (one could say useless) benchmarks on R, serious or for fun,
+and some advices to make your code run faster.</p>
+
+<p><code class="highlighter-rouge">disclamer::on()</code></p>
+
+<blockquote>
+  <p>As with all microbenchmarks, these won’t affect the performance of
+most code, but can be important for special cases. <a href="http://adv-r.had.co.nz/Performance.html">Advanced R -
+Performance</a></p>
+</blockquote>
+
+<p><code class="highlighter-rouge">disclamer::off()</code></p>
+
+<p>There are two main things you can do to optimise your code: <strong>write more
+and shorter functions</strong> to avoid repeating yourself
+(maintainance-oriented optimisation), and <strong>find ways to make your R
+code run faster</strong> (usage-oriented optimisation).</p>
+
+<p>One way to make you R code run really faster is to turn to languages
+like C++. But you know, <a href="https://memegenerator.net/img/instances/500x/39604158/i-love-c-it-makes-people-cry.jpg">it’s not that
+easy</a>,
+and before turning to that, you can still use some tricks in plain R.</p>
+
+<p>I was working on {attempt} lately, a package that (I hope) makes
+conditions handling easier, and aims to be used inside other functions
+(<a href="https://github.com/ColinFay/attempt">more on that</a>). As the {attempt}
+functions are to be used inside other functions, I focused on trying to
+speed things up as much as I could, in order to keep the general UX
+attractive. And of course, I wanted to do that without having to go for
+C / C++ (well, mainly because I don’t know how to program in C).</p>
+
+<p>For this, I played a lot with {microbenchmark}, a package that allows to
+<strong>compare the time spent to run several R commands</strong>, and in the end, I
+was glad to see that using these benchmarks allowed me to write faster
+functions (and sometimes, really faster). I won’t share them all here
+(because this is a one thousand lines script), but here are some pieces
+taken out of it.</p>
+
+<blockquote>
+  <p>Because at the end of the day, someone always asks: “and what about
+performance?”</p>
+</blockquote>
+
+<h2 id="return-or-stop-as-soon-as-possible">return or stop as soon as possible</h2>
+
+<p>Funny thing: as I started writing this post, I came accross <a href="https://yihui.name/en/2018/01/stop-early/">this
+blogpost</a> by Yihui that
+states the exact same thing I was writing: <strong>focus on <code class="highlighter-rouge">return()</code> or
+<code class="highlighter-rouge">stop()</code> as soon as possible</strong>. Don’t make your code compute stuffs you
+might never need in some cases, or make useless tests. For example, if
+you have an if statement that will stop the function, test it first.</p>
+
+<blockquote>
+  <p>Note: the examples that follow are of course toy examples.</p>
+</blockquote>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">microbenchmark</span><span class="p">)</span><span class="w">
+
+</span><span class="n">compute_first</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">){</span><span class="w">
+  </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="w"> 
+  </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="w">
+  </span><span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="m">0</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">if_first</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">){</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="m">0</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="w"> 
+  </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="w">
+  </span><span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># First, make sure you're benchmarking on the same result</span><span class="w">
+</span><span class="n">all.equal</span><span class="p">(</span><span class="n">compute_first</span><span class="p">(</span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="n">if_first</span><span class="p">(</span><span class="m">3</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] TRUE
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">all.equal</span><span class="p">(</span><span class="n">compute_first</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">if_first</span><span class="p">(</span><span class="m">0</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] TRUE
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">microbenchmark</span><span class="p">(</span><span class="n">compute_first</span><span class="p">(</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">if_first</span><span class="p">(</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">compute_first</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">if_first</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">times</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Unit: nanoseconds
+##              expr min    lq   mean median    uq   max neval cld
+##  compute_first(1) 487 509.5 684.65  522.5 568.0 12556   100   b
+##       if_first(1) 238 257.0 291.21  265.5 298.0   779   100  a 
+##  compute_first(0) 483 509.0 569.97  540.5 586.0  1196   100   b
+##       if_first(0) 489 509.0 593.14  528.0 580.5  2657   100   b
+</code></pre></div></div>
+
+<p>As you can see, <code class="highlighter-rouge">compute_first</code> takes almost as much time to compute in
+both cases. But you can save some time when using <code class="highlighter-rouge">if_first</code> : in the
+case of <code class="highlighter-rouge">a == 1</code>, the function doesn’t compute <code class="highlighter-rouge">b</code>, <code class="highlighter-rouge">c</code> or <code class="highlighter-rouge">d</code>, so runs
+faster.</p>
+
+<p>Yes, it’s a matter of nanoseconds, but what if:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sleep_first</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">b</span><span class="p">){</span><span class="w">
+  </span><span class="n">Sys.sleep</span><span class="p">(</span><span class="m">0.01</span><span class="p">)</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">){</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="m">0</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">sleep_second</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">b</span><span class="p">){</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">){</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="m">0</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="n">Sys.sleep</span><span class="p">(</span><span class="m">0.01</span><span class="p">)</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">all.equal</span><span class="p">(</span><span class="n">sleep_first</span><span class="p">(</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">sleep_second</span><span class="p">(</span><span class="m">1</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] TRUE
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">all.equal</span><span class="p">(</span><span class="n">sleep_first</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">sleep_second</span><span class="p">(</span><span class="m">0</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] TRUE
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">microbenchmark</span><span class="p">(</span><span class="n">sleep_first</span><span class="p">(</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">sleep_second</span><span class="p">(</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">sleep_first</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">sleep_second</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">times</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Unit: nanoseconds
+##             expr      min       lq        mean     median       uq
+##   sleep_first(1) 10050575 10491052 11331793.64 11289640.0 12139226
+##  sleep_second(1)      309     1676     8646.22     7468.5     9717
+##   sleep_first(0) 10061303 10690055 11506264.50 11464036.0 12452736
+##  sleep_second(0) 10068596 10651320 11521164.44 11533203.5 12290622
+##       max neval cld
+##  12710034   100   b
+##     85780   100  a 
+##  14822220   100   b
+##  15501758   100   b
+</code></pre></div></div>
+
+<h2 id="use-importfrom-not-">Use <code class="highlighter-rouge">importFrom</code>, not <code class="highlighter-rouge">::</code></h2>
+
+<p>Yes, <code class="highlighter-rouge">::</code> is a function, so calling <code class="highlighter-rouge">pkg::function</code> is slower than
+attaching the package and then use the function. That’s why when
+creating a package, it’s better to use <code class="highlighter-rouge">@importFrom</code>. Do this instead of
+just listing the package as dependency, and then using <code class="highlighter-rouge">::</code> inside your
+functions.</p>
+
+<p>We see this even with base:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kc">NULL</span><span class="w">
+</span><span class="n">b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kc">NA</span><span class="w">
+</span><span class="n">microbenchmark</span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> 
+               </span><span class="n">base</span><span class="o">::</span><span class="nf">is.null</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> 
+               </span><span class="nf">is.na</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> 
+               </span><span class="n">base</span><span class="o">::</span><span class="nf">is.na</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w">
+               </span><span class="n">times</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10000</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Unit: nanoseconds
+##              expr  min     lq      mean median   uq     max neval cld
+##        is.null(a)   80  144.0  250.1765  204.0  229  102375 10000 a  
+##  base::is.null(a) 3670 6337.5 8280.9690 7444.0 8126  974538 10000  b 
+##          is.na(b)  108  186.0  285.7768  262.0  298   52941 10000 a  
+##    base::is.na(b) 3775 6469.0 9332.7668 7566.5 8274 3621082 10000   c
+</code></pre></div></div>
+
+<p>As a general rule of thumb, you should aim at <strong>making as less function
+calls as possible</strong>: calling one function takes time, so if can be
+avoided, avoid it.</p>
+
+<p>Here, for example, there’s a way to avoid calling <code class="highlighter-rouge">::</code>, so use it :)</p>
+
+<h2 id="does-return-make-the-funcion-slower">Does <code class="highlighter-rouge">return()</code> make the funcion slower?</h2>
+
+<p>I’ve heard several times that <code class="highlighter-rouge">return()</code> slows your code a little bit
+(that makes sens, return is a function call).</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">with_return</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="m">1e3</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">without_return</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+  </span><span class="n">x</span><span class="o">*</span><span class="m">1e3</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">all.equal</span><span class="p">(</span><span class="n">with_return</span><span class="p">(</span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="n">without_return</span><span class="p">(</span><span class="m">3</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] TRUE
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">microbenchmark</span><span class="p">(</span><span class="n">with_return</span><span class="p">(</span><span class="m">3</span><span class="p">),</span><span class="w">
+               </span><span class="n">without_return</span><span class="p">(</span><span class="m">3</span><span class="p">),</span><span class="w">
+               </span><span class="n">times</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10000</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Unit: nanoseconds
+##               expr min  lq     mean median  uq     max neval cld
+##     with_return(3) 227 248 521.5837    256 372 1713180 10000   a
+##  without_return(3) 228 247 521.8669    256 375 1677252 10000   a
+</code></pre></div></div>
+
+<p>Surprisingly, <code class="highlighter-rouge">return()</code> doesn’t slow your code. So use it!</p>
+
+<h2 id="brackets-make-the-code-a-little-bit-slower">Brackets make the code (a little bit) slower</h2>
+
+<p>But they make it way clearer. So <strong>keep it unless you want to win a
+bunch of nanoseconds</strong> :)</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">microbenchmark</span><span class="p">(</span><span class="k">if</span><span class="p">(</span><span class="kc">TRUE</span><span class="p">)</span><span class="s2">"yay"</span><span class="p">,</span><span class="w">
+               </span><span class="k">if</span><span class="p">(</span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="s2">"yay"</span><span class="p">},</span><span class="w">
+               </span><span class="k">if</span><span class="p">(</span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="s2">"yay"</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">"nay"</span><span class="p">,</span><span class="w"> 
+               </span><span class="k">if</span><span class="p">(</span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="s2">"yay"</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="s2">"nay"</span><span class="p">},</span><span class="w"> 
+               </span><span class="n">times</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10000</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Unit: nanoseconds
+##                                         expr min lq     mean median  uq
+##                              if (TRUE) "yay"  38 50  55.7466     53  59
+##                      if (TRUE) {     "yay" }  75 88  98.6950     93  97
+##                  if (FALSE) "yay" else "nay"  39 54  59.8155     56  61
+##  if (FALSE) {     "yay" } else {     "nay" }  77 91 101.4289     96 101
+##    max neval cld
+##   9717 10000  a 
+##  10006 10000   b
+##  12510 10000  a 
+##   8601 10000   b
+</code></pre></div></div>
+
+<h2 id="assign-as-less-as-possible">Assign as less as possible</h2>
+
+<p>Yep, because assigning is a function.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">with_assign</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">){</span><span class="w">
+  </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">a</span><span class="o">*</span><span class="m">10e3</span><span class="w">
+  </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="w">
+  </span><span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w">
+  </span><span class="n">d</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">without_assign</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">){</span><span class="w">
+  </span><span class="nf">log</span><span class="p">(</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="m">10e3</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">microbenchmark</span><span class="p">(</span><span class="n">with_assign</span><span class="p">(</span><span class="m">3</span><span class="p">),</span><span class="w">
+               </span><span class="n">without_assign</span><span class="p">(</span><span class="m">3</span><span class="p">),</span><span class="w">
+               </span><span class="n">times</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Unit: nanoseconds
+##               expr min  lq     mean median    uq     max neval cld
+##     with_assign(3) 439 467 2733.461    488 535.5 2186584  1000   a
+##  without_assign(3) 276 297 1726.264    306 330.5 1376750  1000   a
+</code></pre></div></div>
+
+<h2 id="what-about-the-pipe-">What about the pipe ?</h2>
+
+<p>Does the pipe makes things slower?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">magrittr</span><span class="p">)</span><span class="w">
+</span><span class="n">with_pipe</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">){</span><span class="w">
+  </span><span class="m">10e3</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="s2">"*"</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">log</span><span class="p">()</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">all.equal</span><span class="p">(</span><span class="n">with_pipe</span><span class="p">(</span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="n">without_assign</span><span class="p">(</span><span class="m">3</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] TRUE
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">microbenchmark</span><span class="p">(</span><span class="n">with_pipe</span><span class="p">(</span><span class="m">3</span><span class="p">),</span><span class="w">
+               </span><span class="n">without_assign</span><span class="p">(</span><span class="m">3</span><span class="p">),</span><span class="w">
+               </span><span class="n">times</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Unit: nanoseconds
+##               expr   min    lq      mean   median     uq     max neval cld
+##       with_pipe(3) 94948 99167 126867.31 103021.5 121308 2566817  1000   b
+##  without_assign(3)   278   318    594.12    514.5    622    9650  1000  a
+</code></pre></div></div>
+
+<p>You know, because <code class="highlighter-rouge">%&gt;%</code> is a function.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p><strong>These tests are just random tests I run</strong>, and I can’t say they cover
+all the technics you can use to speed up your code: rhese are just some
+questions I can accross and wanted to share.</p>
+
+<p>At the end of the day, there are also methods (like the bracket one)
+that can help you save some nanoseconds. So don’t be afraid of not using
+them, and stay focus on what’s more important: <strong>write code that is easy
+to understand. Because a piece of code that is easy to understand is a
+piece of code that is easy to maintain!</strong> And never forget:</p>
+
+<blockquote>
+  <p>It’s easy to get caught up in trying to remove all bottlenecks.
+Don’t! Your time is valuable and is better spent analysing your
+data, not eliminating possible inefficiencies in your code. Be
+pragmatic: don’t spend hours of your time to save seconds of computer
+time. <a href="http://adv-r.had.co.nz/Performance.html">Advanced R - Optimising
+code</a></p>
+</blockquote>
+
+<p>If you want to read more about code optimisation for speed, Colin
+Gillespie and Robin Lovelace wrote a nice book about being more efficien
+with R, with a chapter focused on performance: <a href="https://csgillespie.github.io/efficientR/performance.html">Efficient
+optimisation</a>.
+See also <a href="http://adv-r.had.co.nz/">Advanced R - Performant code</a>.</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#infrastructure" class="page__taxonomy-item" rel="tag">infrastructure</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#package" class="page__taxonomy-item" rel="tag">package</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#r" class="page__taxonomy-item" rel="tag">r</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-01-09T00:00:00+01:00">January 09, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Some+random+R+benchmarks%20http%3A%2F%2Flocalhost%3A4000%2Frandom-r-benchmarks%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Frandom-r-benchmarks%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Frandom-r-benchmarks%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Frandom-r-benchmarks%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/attempt-cran/" class="pagination--pager" title="{attempt} is now on CRAN
+">←</a>
+    
+    
+      <a href="/dancing-banana-r-package-doc/" class="pagination--pager" title="[How to] Include a dancing banana in your R package documentation
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/random-r-benchmarks/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/random-r-benchmarks"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Internals</title>
+  <meta name="description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Internals" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  <meta name="github-repo" content="ColinFay/r-internals" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Internals" />
+  
+  <meta name="twitter:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="internationalization-in-the-r-sources.html">
+<link rel="next" href="files.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R internals</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Internals</a></li>
+<li class="chapter" data-level="1" data-path="r-internal-structures.html"><a href="r-internal-structures.html"><i class="fa fa-check"></i><b>1</b> R Internal Structures</a></li>
+<li class="chapter" data-level="2" data-path="internal-vs-primitive.html"><a href="internal-vs-primitive.html"><i class="fa fa-check"></i><b>2</b> <code class="calibre18">.Internal</code> vs <code class="calibre18">.Primitive</code></a></li>
+<li class="chapter" data-level="3" data-path="internationalization-in-the-r-sources.html"><a href="internationalization-in-the-r-sources.html"><i class="fa fa-check"></i><b>3</b> Internationalization in the R sources</a></li>
+<li class="chapter" data-level="4" data-path="structure-of-an-installed-package.html"><a href="structure-of-an-installed-package.html"><i class="fa fa-check"></i><b>4</b> Structure of an Installed Package</a></li>
+<li class="chapter" data-level="5" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5</b> Files</a></li>
+<li class="chapter" data-level="6" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>6</b> Graphics</a></li>
+<li class="chapter" data-level="7" data-path="gui-consoles.html"><a href="gui-consoles.html"><i class="fa fa-check"></i><b>7</b> GUI consoles</a></li>
+<li class="chapter" data-level="8" data-path="tools.html"><a href="tools.html"><i class="fa fa-check"></i><b>8</b> Tools</a></li>
+<li class="chapter" data-level="9" data-path="r-coding-standards.html"><a href="r-coding-standards.html"><i class="fa fa-check"></i><b>9</b> R coding standards</a></li>
+<li class="chapter" data-level="10" data-path="testing-r-code.html"><a href="testing-r-code.html"><i class="fa fa-check"></i><b>10</b> Testing R code</a></li>
+<li class="chapter" data-level="11" data-path="use-of-tex-dialects.html"><a href="use-of-tex-dialects.html"><i class="fa fa-check"></i><b>11</b> Use of TeX dialects</a></li>
+<li class="chapter" data-level="12" data-path="current-and-future-directions.html"><a href="current-and-future-directions.html"><i class="fa fa-check"></i><b>12</b> Current and future directions</a></li>
+<li class="chapter" data-level="13" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>13</b> Function and variable index</a></li>
+<li class="chapter" data-level="14" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>14</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Internals</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="structure-of-an-installed-package" class="section level1">
+<h1><span class="header-section-number">Chapter 4</span> Structure of an Installed Package</h1>
+<p>
+The structure of a <em>source</em> packages is described in <a href="http://colinfay.me/writing-r-extensions/creating-r-packages.html">Creating R packages</a> in Writing R Extensions: this chapter is concerned with the structure of <em>installed</em> packages.
+</p>
+<p>
+An installed package has a top-level file DESCRIPTION, a copy of the file of that name in the package sources with a ‘Built’ field appended, and file INDEX, usually describing the objects on which help is available, a file NAMESPACE if the package has a name space, optional files such as CITATION, LICENCE and NEWS, and any other files copied in from inst. It will have directories Meta, help and html (even if the package has no help pages), almost always has a directory R and often has a directory libs to contain compiled code. Other directories with known meaning to R are data, demo, doc and po.
+</p>
+<p>
+Function <code class="calibre2">library</code> looks for a namespace and if one is found passes control to <code class="calibre2">loadNamespace</code>. Then <code class="calibre2">library</code> or <code class="calibre2">loadNamespace</code> looks for file R/pkgname, warns if it is not found and otherwise sources the code (using <code class="calibre2">sys.source</code>) into the package’s environment, then lazy-loads a database R/sysdata if present. So how R code gets loaded depends on the contents of R/pkgname: a standard template to load lazy-load databases are provided in share/R/nspackloader.R.
+</p>
+<p>
+Compiled code is usually loaded when the package’s namespace is loaded by a <code class="calibre2">useDynlib</code> directive in a NAMESPACE file or by the package’s <code class="calibre2">.onLoad</code> function. Conventionally compiled code is loaded by a call to <code class="calibre2">library.dynam</code> and this looks in directory libs (and in an appropriate sub-directory if sub-architectures are in use) for a shared object (Unix-alike) or DLL (Windows).
+</p>
+<p>
+Subdirectory data serves two purposes. In a package using lazy-loading of data, it contains a lazy-load database Rdata, plus a file Rdata.rds which contain a named character vector used by <code class="calibre2">data()</code> in the (unusual) event that it is used for such a package. Otherwise it is a copy of the data directory in the sources, with saved images re-compressed if <code class="calibre2">R CMD INSTALL –resave-data</code> was used.
+</p>
+<p>
+Subdirectory demo supports the <code class="calibre2">demo</code> function, and is copied from the sources.
+</p>
+<p>
+Subdirectory po contains (in subdirectories) compiled message catalogs.
+</p>
+<hr />
+<p>
+<a href="" id="Metadata"></a> <a href="" id="Metadata-1"></a>
+</p>
+<h3 id="metadata" class="section">
+4.1 Metadata
+</h3>
+<p>
+Directory Meta contains several files in <code class="calibre2">.rds</code> format, that is serialized R objects written by <code class="calibre2">saveRDS</code>. All packages have files Rd.rds, hsearch.rds, links.rds, features.rds, and package.rds. Packages with namespaces have a file nsInfo.rds, and those with data, demos or vignettes have data.rds, demo.rds or vignette.rds files.
+</p>
+<p>
+The structure of these files (and their existence and names) is private to R, so the description here is for those trying to follow the R sources: there should be no reference to these files in non-base packages.
+</p>
+<p>
+File package.rds is a dump of information extracted from the DESCRIPTION file. It is a list of several components. The first, ‘DESCRIPTION’, is a character vector, the DESCRIPTION file as read by <code class="calibre2">read.dcf</code>. Further elements ‘Depends’, ‘Suggests’, ‘Imports’, ‘Rdepends’ and ‘Rdepends2’ record the ‘Depends’, ‘Suggests’ and ‘Imports’ fields. These are all lists, and can be empty. The first three have an entry for each package named, each entry being a list of length 1 or 3, which element ‘name’ (the package name) and optional elements ‘op’ (a character string) and ‘version’ (an object of class ‘“package_version”’). Element ‘Rdepends’ is used for the first version dependency on R, and ‘Rdepends2’ is a list of zero or more R version dependencies—each is a three-element list of the form described for packages. Element ‘Rdepends’ is no longer used, but it is still potentially needed so R &lt; 2.7.0 can detect that the package was not installed for it.
+</p>
+<p>
+File nsInfo.rds records a list, a parsed version of the NAMESPACE file.
+</p>
+<p>
+File Rd.rds records a data frame with one row for each help file. The columns are ‘File’ (the file name with extension), ‘Name’ (the ‘\name’ section), ‘Type’ (from the optional ‘\docType’ section), ‘Title’, ‘Encoding’, ‘Aliases’, ‘Concepts’ and ‘Keywords’. All columns are character vectors apart from ‘Aliases’, which is a list of character vectors.
+</p>
+<p>
+File hsearch.rds records the information to be used by ‘help.search’. This is a list of four unnamed elements which are character matrices for help files, aliases, keywords and concepts. All the matrices have columns ‘ID’ and ‘Package’ which are used to tie the aliases, keywords and concepts (the remaining column of the last three elements) to a particular help file. The first element has further columns ‘LibPath’ (stored as <code class="calibre2">“”</code> and filled in what the file is loaded), ‘name’, ‘title’, ‘topic’ (the first alias, used when presenting the results as ‘pkgname::topic’) and ‘Encoding’.
+</p>
+<p>
+File links.rds records a named character vector, the names being aliases and the values character strings of the form
+</p>
+<div class="example">
+<pre class="example1"><code>&quot;../../pkgname/html/filename.html&quot;</code></pre>
+</div>
+<p>
+File data.rds records a two-column character matrix with columns of dataset names and titles from the corresponding help file. File demo.rds has the same structure for package demos.
+</p>
+<p>
+File vignette.rds records a data frame with one row for each ‘vignette’ (.[RS]nw file in inst/doc) and with columns ‘File’ (the full file path in the sources), ‘Title’, ‘PDF’ (the pathless file name of the installed PDF version, if present), ‘Depends’, ‘Keywords’ and ‘R’ (the pathless file name of the installed R code, if present).
+</p>
+<hr />
+<p>
+<a href="" id="Help"></a> <a href="" id="Help-1"></a>
+</p>
+<h3 id="help" class="section">
+4.2 Help
+</h3>
+<p>
+All installed packages, whether they had any .Rd files or not, have help and html directories. The latter normally only contains the single file 00Index.html, the package index which has hyperlinks to the help topics (if any).
+</p>
+<p>
+Directory help contains files AnIndex, paths.rds and pkgname.rd[bx]. The latter two files are a lazy-load database of parsed .Rd files, accessed by <code class="calibre2">tools:::fetchRdDB</code>. File paths.rds is a saved character vector of the original path names of the .Rd files, used when updating the database.
+</p>
+<p>
+File AnIndex is a two-column tab-delimited file: the first column contains the aliases defined in the help files and the second the basename (without the .Rd or .rd extension) of the file containing that alias. It is read by <code class="calibre2">utils:::index.search</code> to search for files matching a topic (alias), and read by <code class="calibre2">scan</code> in <code class="calibre2">utils:::matchAvailableTopics</code>, part of the completion system.
+</p>
+<p>
+File aliases.rds is the same information as AnIndex as a named character vector (names the topics, values the file basename), for faster access.
+</p>
+<hr />
+<p>
+<a href="" id="Files"></a> <a href="" id="Files-1"></a>
+</p>
+<div id="calibre_pb_11" class="calibre6">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="internationalization-in-the-r-sources.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="files.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

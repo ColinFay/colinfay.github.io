@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Internals</title>
+  <meta name="description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Internals" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  <meta name="github-repo" content="ColinFay/r-internals" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Internals" />
+  
+  <meta name="twitter:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="function-and-variable-index.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R internals</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Internals</a></li>
+<li class="chapter" data-level="1" data-path="r-internal-structures.html"><a href="r-internal-structures.html"><i class="fa fa-check"></i><b>1</b> R Internal Structures</a></li>
+<li class="chapter" data-level="2" data-path="internal-vs-primitive.html"><a href="internal-vs-primitive.html"><i class="fa fa-check"></i><b>2</b> <code class="calibre18">.Internal</code> vs <code class="calibre18">.Primitive</code></a></li>
+<li class="chapter" data-level="3" data-path="internationalization-in-the-r-sources.html"><a href="internationalization-in-the-r-sources.html"><i class="fa fa-check"></i><b>3</b> Internationalization in the R sources</a></li>
+<li class="chapter" data-level="4" data-path="structure-of-an-installed-package.html"><a href="structure-of-an-installed-package.html"><i class="fa fa-check"></i><b>4</b> Structure of an Installed Package</a></li>
+<li class="chapter" data-level="5" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5</b> Files</a></li>
+<li class="chapter" data-level="6" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>6</b> Graphics</a></li>
+<li class="chapter" data-level="7" data-path="gui-consoles.html"><a href="gui-consoles.html"><i class="fa fa-check"></i><b>7</b> GUI consoles</a></li>
+<li class="chapter" data-level="8" data-path="tools.html"><a href="tools.html"><i class="fa fa-check"></i><b>8</b> Tools</a></li>
+<li class="chapter" data-level="9" data-path="r-coding-standards.html"><a href="r-coding-standards.html"><i class="fa fa-check"></i><b>9</b> R coding standards</a></li>
+<li class="chapter" data-level="10" data-path="testing-r-code.html"><a href="testing-r-code.html"><i class="fa fa-check"></i><b>10</b> Testing R code</a></li>
+<li class="chapter" data-level="11" data-path="use-of-tex-dialects.html"><a href="use-of-tex-dialects.html"><i class="fa fa-check"></i><b>11</b> Use of TeX dialects</a></li>
+<li class="chapter" data-level="12" data-path="current-and-future-directions.html"><a href="current-and-future-directions.html"><i class="fa fa-check"></i><b>12</b> Current and future directions</a></li>
+<li class="chapter" data-level="13" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>13</b> Function and variable index</a></li>
+<li class="chapter" data-level="14" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>14</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Internals</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="concept-index" class="section level1">
+<h1><span class="header-section-number">Chapter 14</span> Concept index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="concept-index.html#Concept-index_cp_symbol-1" class="summary-letter"><strong>.</strong></a>  <br /> <a href="concept-index.html#Concept-index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-V" class="summary-letter"><strong>V</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-W" class="summary-letter"><strong>W</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_symbol-1">.</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-_002e_002e_002e-argument">… argument</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Rest-of-header">Rest of header</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-_002e_002e_002e-argument-1">… argument</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Dot_002ddot_002ddot-arguments">Dot-dot-dot arguments</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-_002eInternal-function">.Internal function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-A">A</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-allocation-classes">allocation classes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Allocation-classes">Allocation classes</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-argument-evaluation">argument evaluation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-argument-list">argument list</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPTYPEs">SEXPTYPEs</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-atomic-vector-type">atomic vector type</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPTYPEs">SEXPTYPEs</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-attributes">attributes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-attributes_002c-preserving">attributes, preserving</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-autoprinting">autoprinting</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Autoprinting">Autoprinting</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-B">B</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-base-environment">base environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Environments-and-variable-lookup">Environments and variable lookup</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-base-environment-1">base environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Base-environment">Base environment</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-base-namespace">base namespace</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Namespaces">Namespaces</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-builtin-function">builtin function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-C">C</a>
+</p>
+<p>
+<a href="r-coding-standards.html#index-coding-standards">coding standards</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tools.html#R-coding-standards">R coding standards</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-context">context</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Contexts">Contexts</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-copying-semantics">copying semantics</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Rest-of-header">Rest of header</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-copying-semantics-1">copying semantics</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Attributes">Attributes</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-E">E</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-environment">environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Environments-and-variable-lookup">Environments and variable lookup</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-environment_002c-base">environment, base</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Environments-and-variable-lookup">Environments and variable lookup</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-environment_002c-base-1">environment, base</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Base-environment">Base environment</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-environment_002c-global">environment, global</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Global-environment">Global environment</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-expression">expression</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPTYPEs">SEXPTYPEs</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-F">F</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-function">function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPTYPEs">SEXPTYPEs</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-G">G</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-garbage-collector">garbage collector</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#The-write-barrier">The write barrier</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-generic_002c-generic">generic, generic</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-generic_002c-internal">generic, internal</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-global-environment">global environment</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Global-environment">Global environment</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-L">L</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-language-object">language object</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPTYPEs">SEXPTYPEs</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-M">M</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-method-dispatch">method dispatch</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Contexts">Contexts</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-missingness">missingness</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Missingness">Missingness</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-modules">modules</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Modules">Modules</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-N">N</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-namespace">namespace</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Namespaces">Namespaces</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-namespace_002c-base">namespace, base</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Namespaces">Namespaces</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-node">node</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPs">SEXPs</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-P">P</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-preserving-attributes">preserving attributes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-primitive-function">primitive function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-promise">promise</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Rest-of-header">Rest of header</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-S">S</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-S4-type">S4 type</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPTYPEs">SEXPTYPEs</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-search-path">search path</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Search-paths">Search paths</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-serialization">serialization</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Serialization-Formats">Serialization Formats</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-SEXP">SEXP</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPs">SEXPs</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-SEXPRREC">SEXPRREC</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPs">SEXPs</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-SEXPTYPE">SEXPTYPE</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPTYPEs">SEXPTYPEs</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-SEXPTYPE-table">SEXPTYPE table</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#SEXPTYPEs">SEXPTYPEs</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-special-function">special function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Argument-evaluation">Argument evaluation</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-U">U</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-user-databases">user databases</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Environments-and-variable-lookup">Environments and variable lookup</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-V">V</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-variable-lookup">variable lookup</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Environments-and-variable-lookup">Environments and variable lookup</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-vector-type">vector type</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#The-_0027data_0027">The ‘data’</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-visibility">visibility</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#Visibility">Visibility</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-W">W</a>
+</p>
+<p>
+<a href="r-internal-structures.html#index-write-barrier">write barrier</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="r-internal-structures.html#The-write-barrier">The write barrier</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="concept-index.html#Concept-index_cp_symbol-1" class="summary-letter"><strong>.</strong></a>  <br /> <a href="concept-index.html#Concept-index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-V" class="summary-letter"><strong>V</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-W" class="summary-letter"><strong>W</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<div class="contents">
+<hr />
+<h4 id="footnotes" class="subsection">
+Footnotes
+</h4>
+<h3 id="section" class="section">
+<a href="r-internal-structures.html#DOCF1" id="FOOT1" class="calibre26">(1)</a>
+</h3>
+<p>
+strictly, a <code class="calibre2">SEXPREC</code> node; <code class="calibre2">VECTOR_SEXPREC</code> nodes are slightly smaller but followed by data in the node.
+</p>
+<h3 id="section-1" class="section">
+<a href="r-internal-structures.html#DOCF2" id="FOOT2" class="calibre26">(2)</a>
+</h3>
+<p>
+a pointer to a function or a symbol to look up the function by name, or a language object to be evaluated to give a function.
+</p>
+<h3 id="section-2" class="section">
+<a href="r-internal-structures.html#DOCF3" id="FOOT3" class="calibre26">(3)</a>
+</h3>
+<p>
+This is almost unused. The only current use is for hash tables of environments (<code class="calibre2">VECSXP</code>s), where <code class="calibre2">length</code> is the size of the table and <code class="calibre2">truelength</code> is the number of primary slots in use, and for the reference hash tables in serialization (<code class="calibre2">VECSXP</code>s), where <code class="calibre2">truelength</code> is the number of slots in use.
+</p>
+<h3 id="section-3" class="section">
+<a href="r-internal-structures.html#DOCF4" id="FOOT4" class="calibre26">(4)</a>
+</h3>
+<p>
+Remember that attaching a list or a saved image actually creates and populates an environment and attaches that.
+</p>
+<h3 id="section-4" class="section">
+<a href="r-internal-structures.html#DOCF5" id="FOOT5" class="calibre26">(5)</a>
+</h3>
+<p>
+There is currently one other difference: when profiling builtin functions are counted as function calls but specials are not.
+</p>
+<h3 id="section-5" class="section">
+<a href="r-internal-structures.html#DOCF6" id="FOOT6" class="calibre26">(6)</a>
+</h3>
+<p>
+the other current example is left brace, which is implemented as a primitive.
+</p>
+<h3 id="section-6" class="section">
+<a href="r-internal-structures.html#DOCF7" id="FOOT7" class="calibre26">(7)</a>
+</h3>
+<p>
+only bits 0:4 are currently used for <code class="calibre2">SEXPTYPE</code>s but values 241:255 are used for pseudo-<code class="calibre2">SEXPTYPE</code>s.
+</p>
+<h3 id="section-7" class="section">
+<a href="r-internal-structures.html#DOCF8" id="FOOT8" class="calibre26">(8)</a>
+</h3>
+<p>
+Currently the only relevant bits are 0:1, 4, 14:15.
+</p>
+<h3 id="section-8" class="section">
+<a href="r-internal-structures.html#DOCF9" id="FOOT9" class="calibre26">(9)</a>
+</h3>
+<p>
+See define <code class="calibre2">USE_UTF8_IF_POSSIBLE</code> in file src/main/gram.c.
+</p>
+<h3 id="section-9" class="section">
+<a href="r-internal-structures.html#DOCF10" id="FOOT10" class="calibre26">(10)</a>
+</h3>
+<p>
+or UTF-16 if support for surrogates is enabled in the OS, which it used not to be when encoding support was added to R.
+</p>
+<h3 id="section-10" class="section">
+<a href="r-internal-structures.html#DOCF11" id="FOOT11" class="calibre26">(11)</a>
+</h3>
+<p>
+but not the GraphApp toolkit.
+</p>
+<h3 id="section-11" class="section">
+<a href="r-internal-structures.html#DOCF12" id="FOOT12" class="calibre26">(12)</a>
+</h3>
+<p>
+This can also create non-S4 objects, as in <code class="calibre2">new(“integer”)</code>.
+</p>
+<h3 id="section-12" class="section">
+<a href="r-internal-structures.html#DOCF13" id="FOOT13" class="calibre26">(13)</a>
+</h3>
+<p>
+although this is not recommended as it is less future-proof.
+</p>
+<h3 id="section-13" class="section">
+<a href="r-internal-structures.html#DOCF14" id="FOOT14" class="calibre26">(14)</a>
+</h3>
+<p>
+but apparently not on Windows.
+</p>
+<h3 id="section-14" class="section">
+<a href="graphics.html#DOCF15" id="FOOT15" class="calibre26">(15)</a>
+</h3>
+<p>
+The C code is in files <code class="calibre2">base.c</code>, <code class="calibre2">graphics.c</code>, <code class="calibre2">par.c</code>, <code class="calibre2">plot.c</code> and <code class="calibre2">plot3d.c</code> in directory src/main.
+</p>
+<h3 id="section-15" class="section">
+<a href="graphics.html#DOCF16" id="FOOT16" class="calibre26">(16)</a>
+</h3>
+<p>
+although that needs to be handled carefully, as for example the <code class="calibre2">circle</code> callback is given a radius (and that should be interpreted as in the x units).
+</p>
+<h3 id="section-16" class="section">
+<a href="graphics.html#DOCF17" id="FOOT17" class="calibre26">(17)</a>
+</h3>
+<p>
+It is possible for the device to find the <code class="calibre2">GEDevDesc</code> which points to its <code class="calibre2">DevDesc</code>, and this is done often enough that there is a convenience function <code class="calibre2">desc2GEDesc</code> to do so.
+</p>
+<h3 id="section-17" class="section">
+<a href="graphics.html#DOCF18" id="FOOT18" class="calibre26">(18)</a>
+</h3>
+<p>
+Calling <code class="calibre2">R_CheckDeviceAvailable()</code> ensures there is a free slot or throws an error.
+</p>
+<h3 id="section-18" class="section">
+<a href="graphics.html#DOCF19" id="FOOT19" class="calibre26">(19)</a>
+</h3>
+<p>
+in device coordinates
+</p>
+<h3 id="section-19" class="section">
+<a href="graphics.html#DOCF20" id="FOOT20" class="calibre26">(20)</a>
+</h3>
+<p>
+It is technically possible to use alpha-blending on metafile devices such as printers, but it seems few drivers have support for this.
+</p>
+<h3 id="section-20" class="section">
+<a href="gui-consoles.html#DOCF21" id="FOOT21" class="calibre26">(21)</a>
+</h3>
+<p>
+an Xcode project, in SVN at <a href="https://svn.r-project.org/R-packages/trunk/Mac-GUI" class="uri">https://svn.r-project.org/R-packages/trunk/Mac-GUI</a>.
+</p>
+<h3 id="section-21" class="section">
+<a href="tools.html#DOCF22" id="FOOT22" class="calibre26">(22)</a>
+</h3>
+<p>
+under Windows, junction points, or copies if environment variable <code class="calibre2">R_WIN_NO_JUNCTIONS</code> has a non-empty value.
+</p>
+<h3 id="section-22" class="section">
+<a href="tools.html#DOCF23" id="FOOT23" class="calibre26">(23)</a>
+</h3>
+<p>
+see the previous footnote.
+</p>
+<h3 id="section-23" class="section">
+<a href="tools.html#DOCF24" id="FOOT24" class="calibre26">(24)</a>
+</h3>
+<p>
+The usual culprits are calls to compiled code <em>via</em> <code class="calibre2">.Call</code> or <code class="calibre2">.External</code> which alter their arguments.
+</p>
+<h3 id="section-24" class="section">
+<a href="tools.html#DOCF25" id="FOOT25" class="calibre26">(25)</a>
+</h3>
+<p>
+things which the byte compiler assumes do not change, e.g. function bodies.
+</p>
+<h3 id="section-25" class="section">
+<a href="use-of-tex-dialects.html#DOCF26" id="FOOT26" class="calibre26">(26)</a>
+</h3>
+<p>
+Linux distributions tend to unbundle texinfo.tex from ‘texinfo’.
+</p>
+<h3 id="section-26" class="section">
+<a href="current-and-future-directions.html#DOCF27" id="FOOT27" class="calibre26">(27)</a>
+</h3>
+<p>
+but <code class="calibre2">LENGTH</code> is a macro under some internal uses.
+</p>
+</div>
+<hr />
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="function-and-variable-index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

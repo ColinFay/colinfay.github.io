@@ -1,0 +1,89 @@
+Package: craneur
+Version: 0.0.0.9000
+Imports: attempt, desc, glue, R6, tools
+Suggests: testthat
+License: MIT + file LICENSE
+MD5sum: e3ef1ff3d829c040c9bafb960fb8630b
+NeedsCompilation: no
+
+Package: jekyllthat
+Version: 0.0.0.9000
+Imports: rmarkdown, glue
+License: MIT + file LICENSE
+MD5sum: 86b2fc2948c03fdbf9b5327227875102
+NeedsCompilation: no
+
+Package: tidystringdist
+Version: 0.1.2
+Imports: stringdist, rlang, magrittr, dplyr, purrr, attempt
+Suggests: testthat, knitr, rmarkdown, covr
+License: MIT + file LICENSE
+MD5sum: 8327a9ae41009f57ddb376fa423b4e7a
+NeedsCompilation: no
+
+Package: attempt
+Version: 0.2.1
+Imports: rlang
+Suggests: testthat, knitr, rmarkdown
+License: MIT + file LICENSE
+MD5sum: 3ba02dbb8a7a4daa75b29325895f2b36
+NeedsCompilation: no
+
+Package: rpinterest
+Version: 0.4.0
+Imports: attempt, curl, glue, httr, jsonlite, magrittr, purrr
+Suggests: testthat
+License: GPL-3
+MD5sum: e5d077a6c4b3659539bdaf7307571d9f
+NeedsCompilation: no
+
+Package: rgeoapi
+Version: 1.2.0
+Imports: httr, rjson, magrittr, tools, jsonlite, curl, attempt, purrr,
+        glue
+Suggests: testthat
+License: MIT + file LICENSE
+MD5sum: bf6261f4694ad5b49ae1c84ebedf2e30
+NeedsCompilation: no
+
+Package: proustr
+Version: 0.3.0.9000
+Imports: dplyr, magrittr, stringr, rlang, purrr, tidyr, tokenizers,
+        SnowballC, attempt
+Depends: R (>= 2.10)
+Suggests: testthat, knitr, rmarkdown, covr
+License: MIT + file LICENSE
+MD5sum: 30c5df1586bd9f6d6f3f0af9b989b7d7
+NeedsCompilation: no
+
+Package: languagelayeR
+Version: 1.2.3
+Imports: httr, rjson, attempt, curl
+Suggests: testthat, knitr, rmarkdown, covr
+License: MIT + file LICENSE
+MD5sum: 5dc52e5cf9830d7cbcc256db5fed619e
+NeedsCompilation: no
+
+Package: fryingpane
+Version: 0.0.0.9000
+Imports: attempt, glue, shiny, tibble
+Suggests: testthat
+License: MIT + file LICENSE
+MD5sum: 1c6476f515edb54a514a0884e664b340
+NeedsCompilation: no
+
+Package: dockerfiler
+Version: 0.1.1
+Imports: attempt, glue, R6
+Suggests: covr, testthat, knitr, rmarkdown
+License: MIT + file LICENSE
+MD5sum: c3c9b2985d963f693a4422a4a80603ee
+NeedsCompilation: no
+
+Package: devaddins
+Version: 0.0.0.9000
+Imports: devtools
+Depends: R (>= 3.4.3)
+License: What license is it under?
+MD5sum: 61ba9f704c335b5945ce32a7208cb80e
+NeedsCompilation: no

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The R language definition</title>
+  <meta name="description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="The R language definition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  <meta name="github-repo" content="ColinFay/r-language-definition" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The R language definition" />
+  
+  <meta name="twitter:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="evaluation-of-expressions.html">
+<link rel="next" href="object-oriented-programming.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">The R language definition</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Language Definition</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="objects.html"><a href="objects.html"><i class="fa fa-check"></i><b>2</b> Objects</a></li>
+<li class="chapter" data-level="3" data-path="evaluation-of-expressions.html"><a href="evaluation-of-expressions.html"><i class="fa fa-check"></i><b>3</b> Evaluation of expressions</a></li>
+<li class="chapter" data-level="4" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>4</b> Functions</a></li>
+<li class="chapter" data-level="5" data-path="object-oriented-programming.html"><a href="object-oriented-programming.html"><i class="fa fa-check"></i><b>5</b> Object-oriented programming</a></li>
+<li class="chapter" data-level="6" data-path="computing-on-the-language.html"><a href="computing-on-the-language.html"><i class="fa fa-check"></i><b>6</b> Computing on the language</a></li>
+<li class="chapter" data-level="7" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>7</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="8" data-path="exception-handling.html"><a href="exception-handling.html"><i class="fa fa-check"></i><b>8</b> Exception handling</a></li>
+<li class="chapter" data-level="9" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>9</b> Debugging</a></li>
+<li class="chapter" data-level="10" data-path="parser.html"><a href="parser.html"><i class="fa fa-check"></i><b>10</b> Parser</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and Variable Index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept Index</a></li>
+<li class="chapter" data-level="13" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>13</b> Appendix A References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The R language definition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="functions" class="section level1">
+<h1><span class="header-section-number">Chapter 4</span> Functions</h1>
+<hr />
+<p>
+<a href="" id="Writing-functions"></a> <a href="" id="Writing-functions-1"></a>
+</p>
+<h3 id="writing-functions" class="section">
+4.1 Writing functions
+</h3>
+<p>
+While R can be very useful as a data analysis tool most users very quickly find themselves wanting to write their own <a href="" id="index-function-11"></a> functions. This is one of the real advantages of R. Users can program it and they can, if they want to, change the system level functions to functions that they find more appropriate.
+</p>
+<p>
+R also provides facilities that make it easy to document any functions that you have created. See <a href="http://colinfay.me/writing-r-extensions/">Writing R documentation</a> in Writing R Extensions.
+</p>
+<hr />
+<p>
+<a href="" id="Syntax-and-examples"></a> <a href="" id="Syntax-and-examples-1"></a>
+</p>
+<h4 id="syntax-and-examples" class="subsection">
+4.1.1 Syntax and examples
+</h4>
+<p>
+The syntax for writing a <a href="" id="index-function-12"></a> function is
+</p>
+<div class="example">
+<pre class="example1"><code>function ( arglist ) body</code></pre>
+</div>
+<p>
+The first component of the function declaration is the keyword <code class="calibre7">function</code> which indicates to R that you want to create a function.
+</p>
+<p>
+An <a href="" id="index-argument-1"></a> argument list is a comma separated list of formal arguments. A formal argument can be a symbol, a statement of the form ‘symbol = expression’, or the special formal argument ‘…’.
+</p>
+<p>
+The <em>body</em> can be any valid R expression. Generally, the body is a group of expressions contained in curly braces (‘{’ and ‘}’).
+</p>
+<p>
+Generally <a href="" id="index-function-13"></a> functions are assigned to symbols but they don’t need to be. The value returned by the call to <code class="calibre7">function</code> is a function. If this is not given a name it is referred to as an <a href="" id="index-function_002c-anonymous"></a> anonymous function. Anonymous functions are most frequently used as arguments to other functions such as the <code class="calibre7">apply</code> family or <code class="calibre7">outer</code>.
+</p>
+<p>
+Here is a simple function: <code class="calibre7">echo &lt;- function(x) print(x)</code>. So <code class="calibre7">echo</code> is a function that takes a single argument and when <code class="calibre7">echo</code> is invoked it prints its argument.
+</p>
+<hr />
+<p>
+<a href="" id="Arguments"></a> <a href="" id="Arguments-1"></a>
+</p>
+<h4 id="arguments" class="subsection">
+4.1.2 Arguments
+</h4>
+<p>
+The formal arguments to the function define the variables whose values will be supplied at the time the function is invoked. The names of these arguments can be used within the function body where they obtain the value supplied at the time of function invocation.
+</p>
+<p>
+<a href="" id="index-argument_002c-default-values"></a>
+</p>
+<p>
+Default values for arguments can be specified using the special form ‘name = expression’. In this case, if the user does not specify a value for the argument when the function is invoked the expression will be associated with the corresponding symbol. When a value is needed the expression is <a href="" id="index-evaluation_002c-expression-2"></a> evaluated in the evaluation frame of the function.
+</p>
+<p>
+Default behaviours can also be specified by using the function <code class="calibre7">missing</code>. When <code class="calibre7">missing</code> is called with the <a href="" id="index-name-5"></a> name of a formal argument it returns <code class="calibre7">TRUE</code> if the formal argument was not matched with any actual argument and has not been subsequently modified in the body of the function. An argument that is <code class="calibre7">missing</code> will thus have its default value, if any. The <code class="calibre7">missing</code> function does not force evaluation of the argument.
+</p>
+<p>
+The special type of argument ‘…’ can contain any number of supplied arguments. It is used for a variety of purposes. It allows you to write a <a href="" id="index-function-14"></a> function that takes an arbitrary number of arguments. It can be used to absorb some arguments into an intermediate function which can then be extracted by functions called subsequently.
+</p>
+<hr />
+<p>
+<a href="" id="Functions-as-objects"></a> <a href="" id="Functions-as-objects-1"></a>
+</p>
+<h3 id="functions-as-objects" class="section">
+4.2 Functions as objects
+</h3>
+<p>
+Functions are first class objects in R. They can be used anywhere that an R object is required. In particular they can be passed as arguments to functions and returned as values from functions. See <a href="objects.html#Function-objects">Function objects</a> for the details.
+</p>
+<hr />
+<p>
+<a href="" id="Evaluation"></a> <a href="" id="Evaluation-1"></a>
+</p>
+<h3 id="evaluation" class="section">
+4.3 Evaluation
+</h3>
+<hr />
+<p>
+<a href="" id="Evaluation-environment"></a> <a href="" id="Evaluation-environment-1"></a>
+</p>
+<h4 id="evaluation-environment" class="subsection">
+4.3.1 Evaluation environment
+</h4>
+<p>
+When a <a href="" id="index-function-15"></a> function is called or invoked a new <a href="" id="index-evaluation-1"></a> evaluation frame is created. In this frame the formal arguments are matched with the supplied arguments according to the rules given in <a href="functions.html#Argument-matching">Argument matching</a>. The statements in the body of the function are evaluated sequentially in this <a href="" id="index-environment-9"></a> environment frame.
+</p>
+<p>
+The enclosing frame of the evaluation frame is the environment frame associated with the function being invoked. This may be different from S. While many functions have <code class="calibre7">.GlobalEnv</code> as their environment this does not have to be true and functions defined in packages with namespaces (normally) have the package namespace as their environment.
+</p>
+<hr />
+<p>
+<a href="" id="Argument-matching"></a> <a href="" id="Argument-matching-1"></a>
+</p>
+<h4 id="argument-matching" class="subsection">
+4.3.2 Argument matching
+</h4>
+<p>
+This subsection applies to closures but not to primitive functions. The latter typically ignore tags and do positional matching, but their help pages should be consulted for exceptions, which include <code class="calibre7">log</code>, <code class="calibre7">round</code>, <code class="calibre7">signif</code>, <code class="calibre7">rep</code> and <code class="calibre7">seq.int</code>.
+</p>
+<p>
+The first thing that occurs in a <a href="" id="index-function-16"></a> function evaluation is the matching of formal to the actual or supplied arguments. This is done by a three-pass process:
+</p>
+<ol>
+<li>
+<strong>Exact matching on tags</strong>. <a href="" id="index-name-6"></a> For each named supplied argument the list of formal arguments is searched for an item whose name matches exactly. It is an error to have the same formal argument match several actuals or vice versa.
+</li>
+<li>
+<strong>Partial matching on tags</strong>. Each remaining named supplied argument is compared to the remaining formal arguments using partial matching. If the name of the supplied argument matches exactly with the first part of a formal argument then the two arguments are considered to be matched. It is an error to have multiple partial matches. Notice that if <code class="calibre7">f &lt;- function(fumble, fooey) fbody</code>, then <code class="calibre7">f(f = 1, fo = 2)</code> is illegal, even though the 2nd actual argument only matches <code class="calibre7">fooey</code>. <code class="calibre7">f(f = 1, fooey = 2)</code> <em>is</em> legal though since the second argument matches exactly and is removed from consideration for partial matching. If the formal arguments contain ‘…’ then partial matching is only applied to arguments that precede it.
+</li>
+<li>
+<strong>Positional matching</strong>. Any unmatched formal arguments are bound to <em>unnamed</em> supplied arguments, in order. If there is a ‘…’ argument, it will take up the remaining arguments, tagged or not.
+</li>
+</ol>
+<p>
+If any arguments remain unmatched an error is declared.
+</p>
+<p>
+Argument matching is augmented by the functions <code class="calibre7">match.arg</code>, <code class="calibre7">match.call</code> and <code class="calibre7">match.fun</code>. <a href="" id="index-match_002earg"></a> <a href="" id="index-match_002ecall"></a> <a href="" id="index-match_002efun"></a> Access to the partial matching algorithm used by R is via <code class="calibre7">pmatch</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Argument-evaluation"></a> <a href="" id="Argument-evaluation-1"></a>
+</p>
+<h4 id="argument-evaluation" class="subsection">
+4.3.3 Argument evaluation
+</h4>
+<p>
+One of the most important things to know about the <a href="" id="index-evaluation_002c-argument"></a> evaluation of arguments to a <a href="" id="index-function-17"></a> function is that supplied arguments and default arguments are treated differently. The supplied arguments to a function are evaluated in the evaluation frame of the calling function. The default arguments to a function are evaluated in the evaluation frame of the function.
+</p>
+<p>
+The semantics of invoking a function in R argument are <em>call-by-value</em>. In general, supplied arguments behave as if they are local variables initialized with the value supplied and the <a href="" id="index-name-7"></a> name of the corresponding formal argument. Changing the value of a supplied argument within a function will not affect the value of the variable in the calling frame.
+</p>
+<p>
+R has a form of lazy evaluation of function arguments. Arguments are not evaluated until needed. It is important to realize that in some cases the argument will never be evaluated. Thus, it is bad style to use arguments to functions to cause side-effects. While in <strong>C</strong> it is common to use the form, <code class="calibre7">foo(x = y)</code> to invoke <code class="calibre7">foo</code> with the value of <code class="calibre7">y</code> and simultaneously to assign the value of <code class="calibre7">y</code> to <code class="calibre7">x</code> this same style should not be used in R. There is no guarantee that the argument will ever be evaluated and hence the <a href="" id="index-assignment-5"></a> assignment may not take place.
+</p>
+<p>
+It is also worth noting that the effect of <code class="calibre7">foo(x &lt;- y)</code> if the argument is evaluated is to change the value of <code class="calibre7">x</code> in the calling <a href="" id="index-environment-10"></a> environment and not in the <a href="" id="index-environment_002c-evaluation-2"></a> evaluation environment of <code class="calibre7">foo</code>.
+</p>
+<p>
+It is possible to access the actual (not default) expressions used as arguments inside the function. The mechanism is implemented via promises. When a <a href="" id="index-function-18"></a> function is being evaluated the actual expression used as an argument is stored in the promise together with a pointer to the environment the function was called from. When (if) the argument is evaluated the stored expression is evaluated in the environment that the function was called from. Since only a pointer to the environment is used any changes made to that environment will be in effect during this evaluation. The resulting value is then also stored in a separate spot in the promise. Subsequent evaluations retrieve this stored value (a second evaluation is not carried out). Access to the unevaluated expression is also available using <code class="calibre7">substitute</code>.
+</p>
+<p>
+When a <a href="" id="index-function-19"></a> function is called, each formal argument is assigned a promise in the local environment of the call with the expression slot containing the actual argument (if it exists) and the environment slot containing the environment of the caller. If no actual argument for a formal argument is given in the call and there is a default expression, it is similarly assigned to the expression slot of the formal argument, but with the <a href="" id="index-environment-11"></a> environment set to the local environment.
+</p>
+<p>
+The process of filling the value slot of a promise by <a href="" id="index-evaluation-2"></a> evaluating the contents of the expression slot in the promise’s environment is called <em>forcing</em> the promise. A promise will only be forced once, the value slot content being used directly later on.
+</p>
+<p>
+A promise is forced when its value is needed. This usually happens inside internal <a href="" id="index-function-20"></a> <a href="" id="index-function_002c-internal"></a> functions, but a promise can also be forced by direct evaluation of the promise itself. This is occasionally useful when a default expression depends on the value of another formal argument or other variable in the local environment. This is seen in the following example where the lone <code class="calibre7">label</code> ensures that the label is based on the value of <code class="calibre7">x</code> before it is changed in the next line.
+</p>
+<div class="example">
+<pre class="example1"><code>function(x, label = deparse(x)) {
+    label
+    x &lt;- x + 1
+    print(label)
+}</code></pre>
+</div>
+<p>
+The expression slot of a promise can itself involve other promises. This happens whenever an unevaluated argument is passed as an argument to another function. When forcing a promise, other promises in its expression will also be forced recursively as they are evaluated.
+</p>
+<hr />
+<p>
+<a href="" id="Scope"></a> <a href="" id="Scope-1"></a>
+</p>
+<h4 id="scope" class="subsection">
+4.3.4 Scope
+</h4>
+<p>
+<a href="" id="index-scope-2"></a>
+</p>
+<p>
+Scope or the scoping rules are simply the set of rules used by the <a href="" id="index-evaluation_002c-symbol-2"></a> evaluator to find a value for a <a href="" id="index-symbol-3"></a> symbol. Every computer language has a set of such rules. In R the rules are fairly simple but there do exist mechanisms for subverting the usual, or default rules.
+</p>
+<p>
+R adheres to a set of rules that are called <em>lexical scope</em>. This means the variable <a href="" id="index-binding"></a> bindings in effect at the time the expression was created are used to provide values for any unbound symbols in the expression.
+</p>
+<p>
+Most of the interesting properties of <a href="" id="index-scope-3"></a> scope are involved with evaluating <a href="" id="index-function-21"></a> functions and we concentrate on this issue. A symbol can be either <a href="" id="index-binding-1"></a> bound or unbound. All of the formal arguments to a function provide bound symbols in the body of the function. Any other symbols in the body of the function are either local variables or unbound variables. A local variable is one that is defined within the function. Because R has no formal definition of variables, they are simply used as needed, it can be difficult to determine whether a variable is local or not. Local variables must first be defined, this is typically done by having them on the left-hand side of an <a href="" id="index-assignment-6"></a> assignment.
+</p>
+<p>
+During the evaluation process if an unbound symbol is detected then R attempts to find a value for it. The scoping rules determine how this process proceeds. In R the <a href="" id="index-environment-12"></a> environment of the function is searched first, then its enclosure and so on until the global environment is reached.
+</p>
+<p>
+The global environment heads a search list of environments that are searched sequentially for a matching symbol. The value of the first match is then used.
+</p>
+<p>
+When this set of rules is combined with the fact that <a href="" id="index-function-22"></a> functions can be returned as values from other functions then some rather nice, but at first glance peculiar, properties obtain.
+</p>
+<p>
+A simple example:
+</p>
+<div class="example">
+<pre class="example1"><code>f &lt;- function() {
+    y &lt;- 10
+    g &lt;- function(x) x + y
+    return(g)
+}
+h &lt;- f()
+h(3)</code></pre>
+</div>
+<p>
+<a href="" id="index-evaluation-3"></a>
+</p>
+<p>
+A rather interesting question is what happens when <code class="calibre7">h</code> is evaluated. To describe this we need a bit more notation. Within a <a href="" id="index-function-23"></a> function body variables can be bound, local or unbound. The bound variables are those that match the formal arguments to the function. The local variables are those that were created or defined within the function body. The unbound variables are those that are neither local nor bound. When a function body is evaluated there is no problem determining values for local variables or for bound variables. Scoping rules determine how the language will find values for the unbound variables.
+</p>
+<p>
+When <code class="calibre7">h(3)</code> is evaluated we see that its body is that of <code class="calibre7">g</code>. Within that body <code class="calibre7">x</code> is bound to the formal argument and <code class="calibre7">y</code> is unbound. In a language with <a href="" id="index-scope-4"></a> lexical scope <code class="calibre7">x</code> will be associated with the value 3 and <code class="calibre7">y</code> with the value 10 local to <code class="calibre7">f</code> so <code class="calibre7">h(3)</code> should return the value 13. In R this is indeed what happens.
+</p>
+<p>
+In S, because of the different scoping rules one will get an error indicating that <code class="calibre7">y</code> is not found, unless there is a variable <code class="calibre7">y</code> in your workspace in which case its value will be used.
+</p>
+<hr />
+<p>
+<a href="" id="Object_002doriented-programming"></a> <a href="" id="Object_002doriented-programming-1"></a>
+</p>
+<div id="calibre_pb_11" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="evaluation-of-expressions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="object-oriented-programming.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

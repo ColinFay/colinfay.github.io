@@ -1,0 +1,872 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Happy dev with {purrr} - Colin Fay</title>
+<meta name="description" content="A transcription of my talk at the Rencontres R 2018.7th Rencontres RFrom the 4th to 6th of July, I was with ThinkR atthe 7th edition of the RencontresR, the annualFrench meeting about R.During this conference, I gave a lightning called “Vous allez aimeravoir {purrr}”, which is a french dad-joke about the fact that {purrr}sounds exactly like “peur”, which is the french word for “fear”.That being said, here’s a transcription of what this lightning talkwas about, for those who didn’t get the chance to be there.Vous allez aimer avoir {purrr}Here’s a list of some reasons why {purrr} is an amazing tool forwritting cleaner and simpler code: that is to say a code which willbe, on the long run, easier to maintain.{purrr} ?{purrr} is a package from the core tidyverse, defined as a “FunctionalProgramming Tools”. It’s a relatively recent package, as the 0.0.0.9000was released on GitHub on the 29th of november 2014.It can be used to work on lists. And, as you can remember, almost everyobject you’ll work with is a list: vectors, dataframe, and of course,list.IterateIf you’re used to standard iteration, this is the functions you’reusing. Grammar and params order is a little bit messy, which can be anightmare if you want to move from one to the other.apply(X, MARGIN, FUN, ...)lapply(X, FUN, ...)sapply(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE)vapply(X, FUN, FUN.VALUE, ..., USE.NAMES = TRUE)tapply(X, INDEX, FUN = NULL, ..., default = NA, simplify = TRUE)mapply(FUN, ..., MoreArgs = NULL, SIMPLIFY = TRUE, USE.NAMES = TRUE)eapply(env, FUN, ..., all.names = FALSE, USE.NAMES = TRUE)In {purrr}, you’re using function which have a stable and consistentgrammar: once you’ve learnt one, you can easily switch to another.map(.x, .f, ...)map_if(.x, .p, .f, ...)map_at(.x, .at, .f, ...)map_lgl(.x, .f, ...)map_chr(.x, .f, ...)map_int(.x, .f, ...)map_dbl(.x, .f, ...)map_dfr(.x, .f, ..., .id = NULL)map_dfc(.x, .f, ...)ExtractExtracting elements from a list in base can be done that way:lapply(list, function(x) x$tweets)lapply(list, function(x) x[2])lapply(list, function(x) nchar(x))do.call( rbind,lapply(list, function(x) x$df) )It’s less verbose and more consistent if you’re doing it with{purrr}:map(list, &quot;tweets&quot;)map(list, 2)map(list, nchar)map_dfr(list, &quot;df&quot;)Lambda functionsLambda functions are functions which are created on the fly, they arealso called anonymous functions because you don’t have to give them aname.lapply(list, function(x) x + 2){purrr} mappers are an easy to use shortcut to do this exact same thing.map(list, ~ .x + 2)They also work for more than one element:mapply(function(x, y) x + y, list1, list2)VSmap2(list1, list2, ~ .x + .y)Note also the consistency of grammar between the two, unlike lapplyand mapplyType stable{purrr} functions are type stable, which means they will always returnthe type you are expecting:sapply(iris$Sepal.Length, as.data.frame) %&gt;% class()## [1] &quot;list&quot;sapply(iris$Sepal.Length, as.numeric) %&gt;% class()## [1] &quot;numeric&quot;VSmap_dfr(iris$Sepal.Length, as.data.frame) %&gt;% class()## [1] &quot;data.frame&quot;map_dbl(iris$Sepal.Length, as.numeric) %&gt;% class()## [1] &quot;numeric&quot;  Note: yes, this iteration makes no sense, it’s just an example ;)Selected actionsDoing a specific action somewhere (by name or by condition) is ratherverbose in basesapply(iris[, sapply(iris, is.numeric)], mean)while {purrr} has a _if and _at notation (that you already know from{dplyr}), which make it clear what you are doing.map_if(iris, is.numeric, mean) sapply(iris[, c(&quot;Sepal.Length&quot;, &quot;Sepal.Width&quot;)], mean)VSmap_at(iris, c(&quot;Sepal.Length&quot;, &quot;Sepal.Width&quot;), mean)  Note: the {purrr} version also returns the elements you are notmodifing, contrary to the base version, so these codes do not do theexact same thing.e = mc2Let’s end with the e = mc2 law of software quality: the more codeyou have, the more you are prone to make mistakes.  Note: I’ve found this slide on the internet, if anybody could point meout to the source, I’d be glad to include it.Cleaner codeCompare :coef(summary(lm(Sepal.Length ~ Species, data = iris)))coef(summary(lm(Pepal.Length ~ Species, data = iris)))coef(summary(lm(Sepal.Width ~ Species, data = irirs)))coef(summary(lm(Sepal.Length ~ Species, data = iris)))tocoef_lm &lt;- compose(coef, summary, lm)coef_lm(Sepal.Length ~ Species, data = iris)coef_lm(Petal.Length ~ Species, data = iris)coef_lm(Sepal.Width ~ Species, data = iris)coef_lm(Petal.Width ~ Species, data = iris)The first portion is definitely more verbose, and a lot of code isunnecessarily repeated. There is so much repetitions that you didn’tnotice the typos. When you are repeating the same series of functions,compose allows you to build a new function that will do exactly thisseries, but with a less verbose code.Less code, more rockHere is another case.Compare:sapply(airquality, mean, trim = 2, na.rm = TRUE) sapply(mtcars, mean, trim = 2, na.rm = TRUE)sapply(volcano, mean, trim = 2, na.rm = TRUE)tomy_mean &lt;- partial(mean, trim = 2, na.rm = TRUE)map_dbl(airquality, my_mean)map_dbl(mtcars, my_mean)map_dbl(volcano, my_mean)Here, in the first chunk, if I need to change the trim or the na.rmargument, I’ll have to do this three times. Which seems easy, but let’simagine you have the three somewhere inside a 2000 lines scripts, of ifyou have to change this 20 times. Finding a needle in a haystack, yes.partial is a function that allows you to prefill a function, so thatwhen you need to change a param, you’ll have to change it only once,instead of multiple times.I Am GrootIf you are a little bit in a rush and want to apply a function withoutbothering about errors, possibly is your new best friend:# Will failsapply(iris, max)# Will worksapply(airquality, max)# Will failsapply(volcano, max)# Will failsapply(iris, max)VSpossible_max &lt;- possibly(max, otherwise = NULL)# Will all workmap(iris, possible_max)map(airquality, possible_max)map(volcano, possible_max)map(iris, possible_max)What possibly does is taking a function, an otherwise param, andwhen this newly function is used, either the result or the otherwiseelement is returned.One use case can be webscraping, when you want to scrape hundreds ofurl, but don’t want your iteration to stop because one out of x urlsfails.PredicatesFinally, let’s look at keep and discard, two predicates that allowto do conditional selection or removal in a list.Yes, keep and discard do exactly what you expect them to do, whichmake using them a little bit clearer than using a base solution:iris[ , sapply(iris, is.numeric) ]VSkeep(iris, is.numeric) iris[, ! sapply(iris, is.numeric) ]VSdiscard(iris, is.numeric)PipelineHere’s a pipeline example of using {purrr} for getting the rounded meanof each column of two data.frames. As you can see, if I want to changesomething, I’ll only have to do it once!rounded_mean &lt;- compose(  partial(round, digits = 1),  partial(mean, trim = 2, na.rm = TRUE)  )map(  list(airquality, mtcars),   ~ map_dbl(.x, rounded_mean))## [[1]]##   Ozone Solar.R    Wind    Temp   Month     Day ##    31.5   205.0     9.7    79.0     7.0    16.0 ## ## [[2]]##   mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb ##  19.2   6.0 196.3 123.0   3.7   3.3  17.7   0.0   0.0   4.0   2.0SlidesThe slides from the talk are availablehere:https://github.com/ColinFay/conf/blob/master/2018-07-rencontresr-rennes/purrr-lightning.pdf">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Happy dev with {purrr}">
+<meta property="og:url" content="http://localhost:4000/happy-dev-purrr/">
+
+
+  <meta property="og:description" content="A transcription of my talk at the Rencontres R 2018.7th Rencontres RFrom the 4th to 6th of July, I was with ThinkR atthe 7th edition of the RencontresR, the annualFrench meeting about R.During this conference, I gave a lightning called “Vous allez aimeravoir {purrr}”, which is a french dad-joke about the fact that {purrr}sounds exactly like “peur”, which is the french word for “fear”.That being said, here’s a transcription of what this lightning talkwas about, for those who didn’t get the chance to be there.Vous allez aimer avoir {purrr}Here’s a list of some reasons why {purrr} is an amazing tool forwritting cleaner and simpler code: that is to say a code which willbe, on the long run, easier to maintain.{purrr} ?{purrr} is a package from the core tidyverse, defined as a “FunctionalProgramming Tools”. It’s a relatively recent package, as the 0.0.0.9000was released on GitHub on the 29th of november 2014.It can be used to work on lists. And, as you can remember, almost everyobject you’ll work with is a list: vectors, dataframe, and of course,list.IterateIf you’re used to standard iteration, this is the functions you’reusing. Grammar and params order is a little bit messy, which can be anightmare if you want to move from one to the other.apply(X, MARGIN, FUN, ...)lapply(X, FUN, ...)sapply(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE)vapply(X, FUN, FUN.VALUE, ..., USE.NAMES = TRUE)tapply(X, INDEX, FUN = NULL, ..., default = NA, simplify = TRUE)mapply(FUN, ..., MoreArgs = NULL, SIMPLIFY = TRUE, USE.NAMES = TRUE)eapply(env, FUN, ..., all.names = FALSE, USE.NAMES = TRUE)In {purrr}, you’re using function which have a stable and consistentgrammar: once you’ve learnt one, you can easily switch to another.map(.x, .f, ...)map_if(.x, .p, .f, ...)map_at(.x, .at, .f, ...)map_lgl(.x, .f, ...)map_chr(.x, .f, ...)map_int(.x, .f, ...)map_dbl(.x, .f, ...)map_dfr(.x, .f, ..., .id = NULL)map_dfc(.x, .f, ...)ExtractExtracting elements from a list in base can be done that way:lapply(list, function(x) x$tweets)lapply(list, function(x) x[2])lapply(list, function(x) nchar(x))do.call( rbind,lapply(list, function(x) x$df) )It’s less verbose and more consistent if you’re doing it with{purrr}:map(list, &quot;tweets&quot;)map(list, 2)map(list, nchar)map_dfr(list, &quot;df&quot;)Lambda functionsLambda functions are functions which are created on the fly, they arealso called anonymous functions because you don’t have to give them aname.lapply(list, function(x) x + 2){purrr} mappers are an easy to use shortcut to do this exact same thing.map(list, ~ .x + 2)They also work for more than one element:mapply(function(x, y) x + y, list1, list2)VSmap2(list1, list2, ~ .x + .y)Note also the consistency of grammar between the two, unlike lapplyand mapplyType stable{purrr} functions are type stable, which means they will always returnthe type you are expecting:sapply(iris$Sepal.Length, as.data.frame) %&gt;% class()## [1] &quot;list&quot;sapply(iris$Sepal.Length, as.numeric) %&gt;% class()## [1] &quot;numeric&quot;VSmap_dfr(iris$Sepal.Length, as.data.frame) %&gt;% class()## [1] &quot;data.frame&quot;map_dbl(iris$Sepal.Length, as.numeric) %&gt;% class()## [1] &quot;numeric&quot;  Note: yes, this iteration makes no sense, it’s just an example ;)Selected actionsDoing a specific action somewhere (by name or by condition) is ratherverbose in basesapply(iris[, sapply(iris, is.numeric)], mean)while {purrr} has a _if and _at notation (that you already know from{dplyr}), which make it clear what you are doing.map_if(iris, is.numeric, mean) sapply(iris[, c(&quot;Sepal.Length&quot;, &quot;Sepal.Width&quot;)], mean)VSmap_at(iris, c(&quot;Sepal.Length&quot;, &quot;Sepal.Width&quot;), mean)  Note: the {purrr} version also returns the elements you are notmodifing, contrary to the base version, so these codes do not do theexact same thing.e = mc2Let’s end with the e = mc2 law of software quality: the more codeyou have, the more you are prone to make mistakes.  Note: I’ve found this slide on the internet, if anybody could point meout to the source, I’d be glad to include it.Cleaner codeCompare :coef(summary(lm(Sepal.Length ~ Species, data = iris)))coef(summary(lm(Pepal.Length ~ Species, data = iris)))coef(summary(lm(Sepal.Width ~ Species, data = irirs)))coef(summary(lm(Sepal.Length ~ Species, data = iris)))tocoef_lm &lt;- compose(coef, summary, lm)coef_lm(Sepal.Length ~ Species, data = iris)coef_lm(Petal.Length ~ Species, data = iris)coef_lm(Sepal.Width ~ Species, data = iris)coef_lm(Petal.Width ~ Species, data = iris)The first portion is definitely more verbose, and a lot of code isunnecessarily repeated. There is so much repetitions that you didn’tnotice the typos. When you are repeating the same series of functions,compose allows you to build a new function that will do exactly thisseries, but with a less verbose code.Less code, more rockHere is another case.Compare:sapply(airquality, mean, trim = 2, na.rm = TRUE) sapply(mtcars, mean, trim = 2, na.rm = TRUE)sapply(volcano, mean, trim = 2, na.rm = TRUE)tomy_mean &lt;- partial(mean, trim = 2, na.rm = TRUE)map_dbl(airquality, my_mean)map_dbl(mtcars, my_mean)map_dbl(volcano, my_mean)Here, in the first chunk, if I need to change the trim or the na.rmargument, I’ll have to do this three times. Which seems easy, but let’simagine you have the three somewhere inside a 2000 lines scripts, of ifyou have to change this 20 times. Finding a needle in a haystack, yes.partial is a function that allows you to prefill a function, so thatwhen you need to change a param, you’ll have to change it only once,instead of multiple times.I Am GrootIf you are a little bit in a rush and want to apply a function withoutbothering about errors, possibly is your new best friend:# Will failsapply(iris, max)# Will worksapply(airquality, max)# Will failsapply(volcano, max)# Will failsapply(iris, max)VSpossible_max &lt;- possibly(max, otherwise = NULL)# Will all workmap(iris, possible_max)map(airquality, possible_max)map(volcano, possible_max)map(iris, possible_max)What possibly does is taking a function, an otherwise param, andwhen this newly function is used, either the result or the otherwiseelement is returned.One use case can be webscraping, when you want to scrape hundreds ofurl, but don’t want your iteration to stop because one out of x urlsfails.PredicatesFinally, let’s look at keep and discard, two predicates that allowto do conditional selection or removal in a list.Yes, keep and discard do exactly what you expect them to do, whichmake using them a little bit clearer than using a base solution:iris[ , sapply(iris, is.numeric) ]VSkeep(iris, is.numeric) iris[, ! sapply(iris, is.numeric) ]VSdiscard(iris, is.numeric)PipelineHere’s a pipeline example of using {purrr} for getting the rounded meanof each column of two data.frames. As you can see, if I want to changesomething, I’ll only have to do it once!rounded_mean &lt;- compose(  partial(round, digits = 1),  partial(mean, trim = 2, na.rm = TRUE)  )map(  list(airquality, mtcars),   ~ map_dbl(.x, rounded_mean))## [[1]]##   Ozone Solar.R    Wind    Temp   Month     Day ##    31.5   205.0     9.7    79.0     7.0    16.0 ## ## [[2]]##   mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb ##  19.2   6.0 196.3 123.0   3.7   3.3  17.7   0.0   0.0   4.0   2.0SlidesThe slides from the talk are availablehere:https://github.com/ColinFay/conf/blob/master/2018-07-rencontresr-rennes/purrr-lightning.pdf">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Happy dev with {purrr}">
+  <meta name="twitter:description" content="A transcription of my talk at the Rencontres R 2018.7th Rencontres RFrom the 4th to 6th of July, I was with ThinkR atthe 7th edition of the RencontresR, the annualFrench meeting about R.During this conference, I gave a lightning called “Vous allez aimeravoir {purrr}”, which is a french dad-joke about the fact that {purrr}sounds exactly like “peur”, which is the french word for “fear”.That being said, here’s a transcription of what this lightning talkwas about, for those who didn’t get the chance to be there.Vous allez aimer avoir {purrr}Here’s a list of some reasons why {purrr} is an amazing tool forwritting cleaner and simpler code: that is to say a code which willbe, on the long run, easier to maintain.{purrr} ?{purrr} is a package from the core tidyverse, defined as a “FunctionalProgramming Tools”. It’s a relatively recent package, as the 0.0.0.9000was released on GitHub on the 29th of november 2014.It can be used to work on lists. And, as you can remember, almost everyobject you’ll work with is a list: vectors, dataframe, and of course,list.IterateIf you’re used to standard iteration, this is the functions you’reusing. Grammar and params order is a little bit messy, which can be anightmare if you want to move from one to the other.apply(X, MARGIN, FUN, ...)lapply(X, FUN, ...)sapply(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE)vapply(X, FUN, FUN.VALUE, ..., USE.NAMES = TRUE)tapply(X, INDEX, FUN = NULL, ..., default = NA, simplify = TRUE)mapply(FUN, ..., MoreArgs = NULL, SIMPLIFY = TRUE, USE.NAMES = TRUE)eapply(env, FUN, ..., all.names = FALSE, USE.NAMES = TRUE)In {purrr}, you’re using function which have a stable and consistentgrammar: once you’ve learnt one, you can easily switch to another.map(.x, .f, ...)map_if(.x, .p, .f, ...)map_at(.x, .at, .f, ...)map_lgl(.x, .f, ...)map_chr(.x, .f, ...)map_int(.x, .f, ...)map_dbl(.x, .f, ...)map_dfr(.x, .f, ..., .id = NULL)map_dfc(.x, .f, ...)ExtractExtracting elements from a list in base can be done that way:lapply(list, function(x) x$tweets)lapply(list, function(x) x[2])lapply(list, function(x) nchar(x))do.call( rbind,lapply(list, function(x) x$df) )It’s less verbose and more consistent if you’re doing it with{purrr}:map(list, &quot;tweets&quot;)map(list, 2)map(list, nchar)map_dfr(list, &quot;df&quot;)Lambda functionsLambda functions are functions which are created on the fly, they arealso called anonymous functions because you don’t have to give them aname.lapply(list, function(x) x + 2){purrr} mappers are an easy to use shortcut to do this exact same thing.map(list, ~ .x + 2)They also work for more than one element:mapply(function(x, y) x + y, list1, list2)VSmap2(list1, list2, ~ .x + .y)Note also the consistency of grammar between the two, unlike lapplyand mapplyType stable{purrr} functions are type stable, which means they will always returnthe type you are expecting:sapply(iris$Sepal.Length, as.data.frame) %&gt;% class()## [1] &quot;list&quot;sapply(iris$Sepal.Length, as.numeric) %&gt;% class()## [1] &quot;numeric&quot;VSmap_dfr(iris$Sepal.Length, as.data.frame) %&gt;% class()## [1] &quot;data.frame&quot;map_dbl(iris$Sepal.Length, as.numeric) %&gt;% class()## [1] &quot;numeric&quot;  Note: yes, this iteration makes no sense, it’s just an example ;)Selected actionsDoing a specific action somewhere (by name or by condition) is ratherverbose in basesapply(iris[, sapply(iris, is.numeric)], mean)while {purrr} has a _if and _at notation (that you already know from{dplyr}), which make it clear what you are doing.map_if(iris, is.numeric, mean) sapply(iris[, c(&quot;Sepal.Length&quot;, &quot;Sepal.Width&quot;)], mean)VSmap_at(iris, c(&quot;Sepal.Length&quot;, &quot;Sepal.Width&quot;), mean)  Note: the {purrr} version also returns the elements you are notmodifing, contrary to the base version, so these codes do not do theexact same thing.e = mc2Let’s end with the e = mc2 law of software quality: the more codeyou have, the more you are prone to make mistakes.  Note: I’ve found this slide on the internet, if anybody could point meout to the source, I’d be glad to include it.Cleaner codeCompare :coef(summary(lm(Sepal.Length ~ Species, data = iris)))coef(summary(lm(Pepal.Length ~ Species, data = iris)))coef(summary(lm(Sepal.Width ~ Species, data = irirs)))coef(summary(lm(Sepal.Length ~ Species, data = iris)))tocoef_lm &lt;- compose(coef, summary, lm)coef_lm(Sepal.Length ~ Species, data = iris)coef_lm(Petal.Length ~ Species, data = iris)coef_lm(Sepal.Width ~ Species, data = iris)coef_lm(Petal.Width ~ Species, data = iris)The first portion is definitely more verbose, and a lot of code isunnecessarily repeated. There is so much repetitions that you didn’tnotice the typos. When you are repeating the same series of functions,compose allows you to build a new function that will do exactly thisseries, but with a less verbose code.Less code, more rockHere is another case.Compare:sapply(airquality, mean, trim = 2, na.rm = TRUE) sapply(mtcars, mean, trim = 2, na.rm = TRUE)sapply(volcano, mean, trim = 2, na.rm = TRUE)tomy_mean &lt;- partial(mean, trim = 2, na.rm = TRUE)map_dbl(airquality, my_mean)map_dbl(mtcars, my_mean)map_dbl(volcano, my_mean)Here, in the first chunk, if I need to change the trim or the na.rmargument, I’ll have to do this three times. Which seems easy, but let’simagine you have the three somewhere inside a 2000 lines scripts, of ifyou have to change this 20 times. Finding a needle in a haystack, yes.partial is a function that allows you to prefill a function, so thatwhen you need to change a param, you’ll have to change it only once,instead of multiple times.I Am GrootIf you are a little bit in a rush and want to apply a function withoutbothering about errors, possibly is your new best friend:# Will failsapply(iris, max)# Will worksapply(airquality, max)# Will failsapply(volcano, max)# Will failsapply(iris, max)VSpossible_max &lt;- possibly(max, otherwise = NULL)# Will all workmap(iris, possible_max)map(airquality, possible_max)map(volcano, possible_max)map(iris, possible_max)What possibly does is taking a function, an otherwise param, andwhen this newly function is used, either the result or the otherwiseelement is returned.One use case can be webscraping, when you want to scrape hundreds ofurl, but don’t want your iteration to stop because one out of x urlsfails.PredicatesFinally, let’s look at keep and discard, two predicates that allowto do conditional selection or removal in a list.Yes, keep and discard do exactly what you expect them to do, whichmake using them a little bit clearer than using a base solution:iris[ , sapply(iris, is.numeric) ]VSkeep(iris, is.numeric) iris[, ! sapply(iris, is.numeric) ]VSdiscard(iris, is.numeric)PipelineHere’s a pipeline example of using {purrr} for getting the rounded meanof each column of two data.frames. As you can see, if I want to changesomething, I’ll only have to do it once!rounded_mean &lt;- compose(  partial(round, digits = 1),  partial(mean, trim = 2, na.rm = TRUE)  )map(  list(airquality, mtcars),   ~ map_dbl(.x, rounded_mean))## [[1]]##   Ozone Solar.R    Wind    Temp   Month     Day ##    31.5   205.0     9.7    79.0     7.0    16.0 ## ## [[2]]##   mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb ##  19.2   6.0 196.3 123.0   3.7   3.3  17.7   0.0   0.0   4.0   2.0SlidesThe slides from the talk are availablehere:https://github.com/ColinFay/conf/blob/master/2018-07-rencontresr-rennes/purrr-lightning.pdf">
+  <meta name="twitter:url" content="http://localhost:4000/happy-dev-purrr/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-07-07T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/happy-dev-purrr/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Happy dev with {purrr}">
+    <meta itemprop="description" content="A transcription of my talk at the Rencontres R 2018.7th Rencontres RFrom the 4th to 6th of July, I was with ThinkR atthe 7th edition of the RencontresR, the annualFrench meeting about R.During this conference, I gave a lightning called “Vous allez aimeravoir {purrr}”, which is a french dad-joke about the fact that {purrr}sounds exactly like “peur”, which is the french word for “fear”.That being said, here’s a transcription of what this lightning talkwas about, for those who didn’t get the chance to be there.Vous allez aimer avoir {purrr}Here’s a list of some reasons why {purrr} is an amazing tool forwritting cleaner and simpler code: that is to say a code which willbe, on the long run, easier to maintain.{purrr} ?{purrr} is a package from the core tidyverse, defined as a “FunctionalProgramming Tools”. It’s a relatively recent package, as the 0.0.0.9000was released on GitHub on the 29th of november 2014.It can be used to work on lists. And, as you can remember, almost everyobject you’ll work with is a list: vectors, dataframe, and of course,list.IterateIf you’re used to standard iteration, this is the functions you’reusing. Grammar and params order is a little bit messy, which can be anightmare if you want to move from one to the other.apply(X, MARGIN, FUN, ...)lapply(X, FUN, ...)sapply(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE)vapply(X, FUN, FUN.VALUE, ..., USE.NAMES = TRUE)tapply(X, INDEX, FUN = NULL, ..., default = NA, simplify = TRUE)mapply(FUN, ..., MoreArgs = NULL, SIMPLIFY = TRUE, USE.NAMES = TRUE)eapply(env, FUN, ..., all.names = FALSE, USE.NAMES = TRUE)In {purrr}, you’re using function which have a stable and consistentgrammar: once you’ve learnt one, you can easily switch to another.map(.x, .f, ...)map_if(.x, .p, .f, ...)map_at(.x, .at, .f, ...)map_lgl(.x, .f, ...)map_chr(.x, .f, ...)map_int(.x, .f, ...)map_dbl(.x, .f, ...)map_dfr(.x, .f, ..., .id = NULL)map_dfc(.x, .f, ...)ExtractExtracting elements from a list in base can be done that way:lapply(list, function(x) x$tweets)lapply(list, function(x) x[2])lapply(list, function(x) nchar(x))do.call( rbind,lapply(list, function(x) x$df) )It’s less verbose and more consistent if you’re doing it with{purrr}:map(list, &quot;tweets&quot;)map(list, 2)map(list, nchar)map_dfr(list, &quot;df&quot;)Lambda functionsLambda functions are functions which are created on the fly, they arealso called anonymous functions because you don’t have to give them aname.lapply(list, function(x) x + 2){purrr} mappers are an easy to use shortcut to do this exact same thing.map(list, ~ .x + 2)They also work for more than one element:mapply(function(x, y) x + y, list1, list2)VSmap2(list1, list2, ~ .x + .y)Note also the consistency of grammar between the two, unlike lapplyand mapplyType stable{purrr} functions are type stable, which means they will always returnthe type you are expecting:sapply(iris$Sepal.Length, as.data.frame) %&gt;% class()## [1] &quot;list&quot;sapply(iris$Sepal.Length, as.numeric) %&gt;% class()## [1] &quot;numeric&quot;VSmap_dfr(iris$Sepal.Length, as.data.frame) %&gt;% class()## [1] &quot;data.frame&quot;map_dbl(iris$Sepal.Length, as.numeric) %&gt;% class()## [1] &quot;numeric&quot;  Note: yes, this iteration makes no sense, it’s just an example ;)Selected actionsDoing a specific action somewhere (by name or by condition) is ratherverbose in basesapply(iris[, sapply(iris, is.numeric)], mean)while {purrr} has a _if and _at notation (that you already know from{dplyr}), which make it clear what you are doing.map_if(iris, is.numeric, mean) sapply(iris[, c(&quot;Sepal.Length&quot;, &quot;Sepal.Width&quot;)], mean)VSmap_at(iris, c(&quot;Sepal.Length&quot;, &quot;Sepal.Width&quot;), mean)  Note: the {purrr} version also returns the elements you are notmodifing, contrary to the base version, so these codes do not do theexact same thing.e = mc2Let’s end with the e = mc2 law of software quality: the more codeyou have, the more you are prone to make mistakes.  Note: I’ve found this slide on the internet, if anybody could point meout to the source, I’d be glad to include it.Cleaner codeCompare :coef(summary(lm(Sepal.Length ~ Species, data = iris)))coef(summary(lm(Pepal.Length ~ Species, data = iris)))coef(summary(lm(Sepal.Width ~ Species, data = irirs)))coef(summary(lm(Sepal.Length ~ Species, data = iris)))tocoef_lm &lt;- compose(coef, summary, lm)coef_lm(Sepal.Length ~ Species, data = iris)coef_lm(Petal.Length ~ Species, data = iris)coef_lm(Sepal.Width ~ Species, data = iris)coef_lm(Petal.Width ~ Species, data = iris)The first portion is definitely more verbose, and a lot of code isunnecessarily repeated. There is so much repetitions that you didn’tnotice the typos. When you are repeating the same series of functions,compose allows you to build a new function that will do exactly thisseries, but with a less verbose code.Less code, more rockHere is another case.Compare:sapply(airquality, mean, trim = 2, na.rm = TRUE) sapply(mtcars, mean, trim = 2, na.rm = TRUE)sapply(volcano, mean, trim = 2, na.rm = TRUE)tomy_mean &lt;- partial(mean, trim = 2, na.rm = TRUE)map_dbl(airquality, my_mean)map_dbl(mtcars, my_mean)map_dbl(volcano, my_mean)Here, in the first chunk, if I need to change the trim or the na.rmargument, I’ll have to do this three times. Which seems easy, but let’simagine you have the three somewhere inside a 2000 lines scripts, of ifyou have to change this 20 times. Finding a needle in a haystack, yes.partial is a function that allows you to prefill a function, so thatwhen you need to change a param, you’ll have to change it only once,instead of multiple times.I Am GrootIf you are a little bit in a rush and want to apply a function withoutbothering about errors, possibly is your new best friend:# Will failsapply(iris, max)# Will worksapply(airquality, max)# Will failsapply(volcano, max)# Will failsapply(iris, max)VSpossible_max &lt;- possibly(max, otherwise = NULL)# Will all workmap(iris, possible_max)map(airquality, possible_max)map(volcano, possible_max)map(iris, possible_max)What possibly does is taking a function, an otherwise param, andwhen this newly function is used, either the result or the otherwiseelement is returned.One use case can be webscraping, when you want to scrape hundreds ofurl, but don’t want your iteration to stop because one out of x urlsfails.PredicatesFinally, let’s look at keep and discard, two predicates that allowto do conditional selection or removal in a list.Yes, keep and discard do exactly what you expect them to do, whichmake using them a little bit clearer than using a base solution:iris[ , sapply(iris, is.numeric) ]VSkeep(iris, is.numeric) iris[, ! sapply(iris, is.numeric) ]VSdiscard(iris, is.numeric)PipelineHere’s a pipeline example of using {purrr} for getting the rounded meanof each column of two data.frames. As you can see, if I want to changesomething, I’ll only have to do it once!rounded_mean &lt;- compose(  partial(round, digits = 1),  partial(mean, trim = 2, na.rm = TRUE)  )map(  list(airquality, mtcars),   ~ map_dbl(.x, rounded_mean))## [[1]]##   Ozone Solar.R    Wind    Temp   Month     Day ##    31.5   205.0     9.7    79.0     7.0    16.0 ## ## [[2]]##   mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb ##  19.2   6.0 196.3 123.0   3.7   3.3  17.7   0.0   0.0   4.0   2.0SlidesThe slides from the talk are availablehere:https://github.com/ColinFay/conf/blob/master/2018-07-rencontresr-rennes/purrr-lightning.pdf">
+    <meta itemprop="datePublished" content="July 07, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Happy dev with {purrr}
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  6 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>A transcription of my talk at the Rencontres R 2018.</p>
+
+<h2 id="7th-rencontres-r">7th Rencontres R</h2>
+
+<p>From the 4th to 6th of July, I was with <a href="https://thinkr.fr">ThinkR</a> at
+the 7th edition of the <a href="https://r2018-rennes.sciencesconf.org/program/details">Rencontres
+R</a>, the annual
+French meeting about R.</p>
+
+<p>During this conference, I gave a lightning called “Vous allez aimer
+avoir {purrr}”, which is a french dad-joke about the fact that {purrr}
+sounds exactly like “peur”, which is the french word for “fear”.</p>
+
+<p>That being said, <strong>here’s a transcription of what this lightning talk
+was about</strong>, for those who didn’t get the chance to be there.</p>
+
+<h2 id="vous-allez-aimer-avoir-purrr">Vous allez aimer avoir {purrr}</h2>
+
+<p>Here’s a list of some reasons why <strong>{purrr} is an amazing tool for
+writting cleaner and simpler code</strong>: that is to say a code which will
+be, on the long run, easier to maintain.</p>
+
+<h3 id="purrr-">{purrr} ?</h3>
+
+<p>{purrr} is a package from the core tidyverse, defined as a “Functional
+Programming Tools”. It’s a relatively recent package, as the 0.0.0.9000
+was released on GitHub on the 29th of november 2014.</p>
+
+<p>It can be used to work on lists. And, as you can remember, almost every
+object you’ll work with is a list: vectors, dataframe, and of course,
+list.</p>
+
+<p><img src="../assets/img/wrongkiddoorigin.jpeg" alt="" /></p>
+
+<h3 id="iterate">Iterate</h3>
+
+<p>If you’re used to standard iteration, this is the functions you’re
+using. Grammar and params order is a little bit messy, which can be a
+nightmare if you want to move from one to the other.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">apply</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">MARGIN</span><span class="p">,</span><span class="w"> </span><span class="n">FUN</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span><span class="n">lapply</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">FUN</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span><span class="n">sapply</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">FUN</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">,</span><span class="w"> </span><span class="n">simplify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">USE.NAMES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">vapply</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">FUN</span><span class="p">,</span><span class="w"> </span><span class="n">FUN.VALUE</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">,</span><span class="w"> </span><span class="n">USE.NAMES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">tapply</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">INDEX</span><span class="p">,</span><span class="w"> </span><span class="n">FUN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">,</span><span class="w"> </span><span class="n">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">simplify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">mapply</span><span class="p">(</span><span class="n">FUN</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">,</span><span class="w"> </span><span class="n">MoreArgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">SIMPLIFY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">USE.NAMES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">eapply</span><span class="p">(</span><span class="n">env</span><span class="p">,</span><span class="w"> </span><span class="n">FUN</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">,</span><span class="w"> </span><span class="n">all.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">USE.NAMES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>In {purrr}, <strong>you’re using function which have a stable and consistent
+grammar</strong>: once you’ve learnt one, you can easily switch to another.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.f</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span><span class="n">map_if</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.p</span><span class="p">,</span><span class="w"> </span><span class="n">.f</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span><span class="n">map_at</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.at</span><span class="p">,</span><span class="w"> </span><span class="n">.f</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span><span class="n">map_lgl</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.f</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span><span class="n">map_chr</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.f</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span><span class="n">map_int</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.f</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span><span class="n">map_dbl</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.f</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span><span class="n">map_dfr</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.f</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">,</span><span class="w"> </span><span class="n">.id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w">
+</span><span class="n">map_dfc</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.f</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="extract">Extract</h3>
+
+<p>Extracting elements from a list in base can be done that way:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lapply</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="o">$</span><span class="n">tweets</span><span class="p">)</span><span class="w">
+</span><span class="n">lapply</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="m">2</span><span class="p">])</span><span class="w">
+</span><span class="n">lapply</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">nchar</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">
+</span><span class="n">do.call</span><span class="p">(</span><span class="w"> </span><span class="n">rbind</span><span class="p">,</span><span class="n">lapply</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="o">$</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>It’s <strong>less verbose and more consistent</strong> if you’re doing it with
+{purrr}:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="s2">"tweets"</span><span class="p">)</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">nchar</span><span class="p">)</span><span class="w">
+</span><span class="n">map_dfr</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="s2">"df"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="lambda-functions">Lambda functions</h3>
+
+<p>Lambda functions are <strong>functions which are created on the fly, they are
+also called anonymous functions because you don’t have to give them a
+name</strong>.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lapply</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>{purrr} mappers are an easy to use shortcut to do this exact same thing.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>They also work for more than one element:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mapply</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">list1</span><span class="p">,</span><span class="w"> </span><span class="n">list2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>VS</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map2</span><span class="p">(</span><span class="n">list1</span><span class="p">,</span><span class="w"> </span><span class="n">list2</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">.y</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Note also the consistency of grammar between the two, unlike <code class="highlighter-rouge">lapply</code>
+and <code class="highlighter-rouge">mapply</code></p>
+
+<h3 id="type-stable">Type stable</h3>
+
+<p>{purrr} functions are type stable, which means they will always return
+the type you are expecting:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sapply</span><span class="p">(</span><span class="n">iris</span><span class="o">$</span><span class="n">Sepal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">class</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "list"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sapply</span><span class="p">(</span><span class="n">iris</span><span class="o">$</span><span class="n">Sepal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">as.numeric</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">class</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "numeric"
+</code></pre></div></div>
+
+<p>VS</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_dfr</span><span class="p">(</span><span class="n">iris</span><span class="o">$</span><span class="n">Sepal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">class</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "data.frame"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_dbl</span><span class="p">(</span><span class="n">iris</span><span class="o">$</span><span class="n">Sepal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">as.numeric</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">class</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "numeric"
+</code></pre></div></div>
+
+<blockquote>
+  <p>Note: yes, this iteration makes no sense, it’s just an example ;)</p>
+</blockquote>
+
+<h3 id="selected-actions">Selected actions</h3>
+
+<p>Doing a specific action somewhere (by name or by condition) is rather
+verbose in base</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sapply</span><span class="p">(</span><span class="n">iris</span><span class="p">[,</span><span class="w"> </span><span class="n">sapply</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">is.numeric</span><span class="p">)],</span><span class="w"> </span><span class="n">mean</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>while {purrr} has a _if and _at notation (that you already know from
+{dplyr}), which make it clear what you are doing.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_if</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">is.numeric</span><span class="p">,</span><span class="w"> </span><span class="n">mean</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p> </p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sapply</span><span class="p">(</span><span class="n">iris</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"Sepal.Length"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sepal.Width"</span><span class="p">)],</span><span class="w"> </span><span class="n">mean</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>VS</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_at</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"Sepal.Length"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sepal.Width"</span><span class="p">),</span><span class="w"> </span><span class="n">mean</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<blockquote>
+  <p>Note: the {purrr} version also returns the elements you are not
+modifing, contrary to the base version, so these codes do not do the
+exact same thing.</p>
+</blockquote>
+
+<h3 id="e--mc2">e = mc2</h3>
+
+<p>Let’s end with the <code class="highlighter-rouge">e = mc2</code> law of software quality: <strong>the more code
+you have, the more you are prone to make mistakes</strong>.</p>
+
+<p><img src="../assets/img/more_code.png" alt="" /></p>
+
+<blockquote>
+  <p>Note: I’ve found this slide on the internet, if anybody could point me
+out to the source, I’d be glad to include it.</p>
+</blockquote>
+
+<h3 id="cleaner-code">Cleaner code</h3>
+
+<p>Compare :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">coef</span><span class="p">(</span><span class="n">summary</span><span class="p">(</span><span class="n">lm</span><span class="p">(</span><span class="n">Sepal.Length</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">)))</span><span class="w">
+</span><span class="n">coef</span><span class="p">(</span><span class="n">summary</span><span class="p">(</span><span class="n">lm</span><span class="p">(</span><span class="n">Pepal.Length</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">)))</span><span class="w">
+</span><span class="n">coef</span><span class="p">(</span><span class="n">summary</span><span class="p">(</span><span class="n">lm</span><span class="p">(</span><span class="n">Sepal.Width</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">irirs</span><span class="p">)))</span><span class="w">
+</span><span class="n">coef</span><span class="p">(</span><span class="n">summary</span><span class="p">(</span><span class="n">lm</span><span class="p">(</span><span class="n">Sepal.Length</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">)))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>to</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">coef_lm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">compose</span><span class="p">(</span><span class="n">coef</span><span class="p">,</span><span class="w"> </span><span class="n">summary</span><span class="p">,</span><span class="w"> </span><span class="n">lm</span><span class="p">)</span><span class="w">
+</span><span class="n">coef_lm</span><span class="p">(</span><span class="n">Sepal.Length</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">)</span><span class="w">
+</span><span class="n">coef_lm</span><span class="p">(</span><span class="n">Petal.Length</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">)</span><span class="w">
+</span><span class="n">coef_lm</span><span class="p">(</span><span class="n">Sepal.Width</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">)</span><span class="w">
+</span><span class="n">coef_lm</span><span class="p">(</span><span class="n">Petal.Width</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The first portion is definitely more verbose, and a lot of code is
+unnecessarily repeated. There is so much repetitions that you didn’t
+notice the typos. When you are repeating the same series of functions,
+<code class="highlighter-rouge">compose</code> allows you to build a new function that will do exactly this
+series, but with a less verbose code.</p>
+
+<h3 id="less-code-more-rock">Less code, more rock</h3>
+
+<p>Here is another case.</p>
+
+<p>Compare:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sapply</span><span class="p">(</span><span class="n">airquality</span><span class="p">,</span><span class="w"> </span><span class="n">mean</span><span class="p">,</span><span class="w"> </span><span class="n">trim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> 
+</span><span class="n">sapply</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">mean</span><span class="p">,</span><span class="w"> </span><span class="n">trim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">sapply</span><span class="p">(</span><span class="n">volcano</span><span class="p">,</span><span class="w"> </span><span class="n">mean</span><span class="p">,</span><span class="w"> </span><span class="n">trim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>to</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_mean</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">partial</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span><span class="w"> </span><span class="n">trim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">map_dbl</span><span class="p">(</span><span class="n">airquality</span><span class="p">,</span><span class="w"> </span><span class="n">my_mean</span><span class="p">)</span><span class="w">
+</span><span class="n">map_dbl</span><span class="p">(</span><span class="n">mtcars</span><span class="p">,</span><span class="w"> </span><span class="n">my_mean</span><span class="p">)</span><span class="w">
+</span><span class="n">map_dbl</span><span class="p">(</span><span class="n">volcano</span><span class="p">,</span><span class="w"> </span><span class="n">my_mean</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here, in the first chunk, if I need to change the <code class="highlighter-rouge">trim</code> or the <code class="highlighter-rouge">na.rm</code>
+argument, I’ll have to do this three times. Which seems easy, but let’s
+imagine you have the three somewhere inside a 2000 lines scripts, of if
+you have to change this 20 times. Finding a needle in a haystack, yes.</p>
+
+<p><code class="highlighter-rouge">partial</code> is a function that allows you to prefill a function, so that
+when you need to change a param, you’ll have to change it only once,
+instead of multiple times.</p>
+
+<h3 id="i-am-groot">I Am Groot</h3>
+
+<p>If you are a little bit in a rush and want to apply a function without
+bothering about errors, <code class="highlighter-rouge">possibly</code> is your new best friend:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Will fail</span><span class="w">
+</span><span class="n">sapply</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Will work</span><span class="w">
+</span><span class="n">sapply</span><span class="p">(</span><span class="n">airquality</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Will fail</span><span class="w">
+</span><span class="n">sapply</span><span class="p">(</span><span class="n">volcano</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Will fail</span><span class="w">
+</span><span class="n">sapply</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>VS</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">possible_max</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">possibly</span><span class="p">(</span><span class="n">max</span><span class="p">,</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Will all work</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">possible_max</span><span class="p">)</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="n">airquality</span><span class="p">,</span><span class="w"> </span><span class="n">possible_max</span><span class="p">)</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="n">volcano</span><span class="p">,</span><span class="w"> </span><span class="n">possible_max</span><span class="p">)</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">possible_max</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>What <code class="highlighter-rouge">possibly</code> does is taking a function, an <code class="highlighter-rouge">otherwise</code> param, and
+when this newly function is used, either the result or the <code class="highlighter-rouge">otherwise</code>
+element is returned.</p>
+
+<p>One use case can be webscraping, when you want to scrape hundreds of
+url, but don’t want your iteration to stop because one out of x urls
+fails.</p>
+
+<h3 id="predicates">Predicates</h3>
+
+<p>Finally, let’s look at <code class="highlighter-rouge">keep</code> and <code class="highlighter-rouge">discard</code>, two predicates that allow
+to do conditional selection or removal in a list.</p>
+
+<p>Yes, <code class="highlighter-rouge">keep</code> and <code class="highlighter-rouge">discard</code> do exactly what you expect them to do, <strong>which
+make using them a little bit clearer</strong> than using a base solution:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iris</span><span class="p">[</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">sapply</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">is.numeric</span><span class="p">)</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>VS</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">keep</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">is.numeric</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p> </p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iris</span><span class="p">[,</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">sapply</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">is.numeric</span><span class="p">)</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>VS</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">discard</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">is.numeric</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="pipeline">Pipeline</h3>
+
+<p>Here’s a pipeline example of using {purrr} for getting the rounded mean
+of each column of two data.frames. As you can see, if I want to change
+something, I’ll only have to do it once!</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rounded_mean</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">compose</span><span class="p">(</span><span class="w">
+  </span><span class="n">partial</span><span class="p">(</span><span class="n">round</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w">
+  </span><span class="n">partial</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span><span class="w"> </span><span class="n">trim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="w">
+  </span><span class="nf">list</span><span class="p">(</span><span class="n">airquality</span><span class="p">,</span><span class="w"> </span><span class="n">mtcars</span><span class="p">),</span><span class="w"> 
+  </span><span class="o">~</span><span class="w"> </span><span class="n">map_dbl</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">rounded_mean</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [[1]]
+##   Ozone Solar.R    Wind    Temp   Month     Day 
+##    31.5   205.0     9.7    79.0     7.0    16.0 
+## 
+## [[2]]
+##   mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb 
+##  19.2   6.0 196.3 123.0   3.7   3.3  17.7   0.0   0.0   4.0   2.0
+</code></pre></div></div>
+
+<h2 id="slides">Slides</h2>
+
+<p>The slides from the talk are available
+here:</p>
+
+<p><a href="https://github.com/ColinFay/conf/blob/master/2018-07-rencontresr-rennes/purrr-lightning.pdf">https://github.com/ColinFay/conf/blob/master/2018-07-rencontresr-rennes/purrr-lightning.pdf</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#purrr" class="page__taxonomy-item" rel="tag">purrr</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-07-07T00:00:00+02:00">July 07, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Happy+dev+with+%7Bpurrr%7D%20http%3A%2F%2Flocalhost%3A4000%2Fhappy-dev-purrr%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fhappy-dev-purrr%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fhappy-dev-purrr%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fhappy-dev-purrr%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/frying-pane/" class="pagination--pager" title="Serve your dataset in RStudio Connection Pane with {fryingpane}
+">←</a>
+    
+    
+      <a href="/web-dev-r/" class="pagination--pager" title="[Web2Day] Producing web content with R
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/happy-dev-purrr/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/happy-dev-with-purrr"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

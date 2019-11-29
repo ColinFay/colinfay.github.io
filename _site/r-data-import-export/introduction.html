@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Data Import/Export</title>
+  <meta name="description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Data Import/Export" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  <meta name="github-repo" content="ColinFay/r-data-import-export" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Data Import/Export" />
+  
+  <meta name="twitter:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="acknowledgements.html">
+<link rel="next" href="spreadsheet-like-data.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Data Import/Export</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Data Import/Export</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="spreadsheet-like-data.html"><a href="spreadsheet-like-data.html"><i class="fa fa-check"></i><b>2</b> Spreadsheet-like data</a></li>
+<li class="chapter" data-level="3" data-path="importing-from-other-statistical-systems.html"><a href="importing-from-other-statistical-systems.html"><i class="fa fa-check"></i><b>3</b> Importing from other statistical systems</a></li>
+<li class="chapter" data-level="4" data-path="relational-databases.html"><a href="relational-databases.html"><i class="fa fa-check"></i><b>4</b> Relational databases</a></li>
+<li class="chapter" data-level="5" data-path="binary-files.html"><a href="binary-files.html"><i class="fa fa-check"></i><b>5</b> Binary files</a></li>
+<li class="chapter" data-level="6" data-path="image-files.html"><a href="image-files.html"><i class="fa fa-check"></i><b>6</b> Image files</a></li>
+<li class="chapter" data-level="7" data-path="connections.html"><a href="connections.html"><i class="fa fa-check"></i><b>7</b> Connections</a></li>
+<li class="chapter" data-level="8" data-path="network-interfaces.html"><a href="network-interfaces.html"><i class="fa fa-check"></i><b>8</b> Network interfaces</a></li>
+<li class="chapter" data-level="9" data-path="reading-excel-spreadsheets.html"><a href="reading-excel-spreadsheets.html"><i class="fa fa-check"></i><b>9</b> Reading Excel spreadsheets</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>10</b> Appendix A References</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and variable index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Import/Export</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
+<p>
+Reading data into a statistical system for analysis and exporting the results to some other system for report writing can be frustrating tasks that can take far more time than the statistical analysis itself, even though most readers will find the latter far more appealing.
+</p>
+<p>
+This manual describes the import and export facilities available either in R itself or via packages which are available from CRAN or elsewhere.
+</p>
+<p>
+Unless otherwise stated, everything described in this manual is (at least in principle) available on all platforms running R.
+</p>
+<p>
+In general, statistical systems like R are not particularly well suited to manipulations of large-scale data. Some other systems are better than R at this, and part of the thrust of this manual is to suggest that rather than duplicating functionality in R we can make another system do the work! (For example Therneau &amp; Grambsch (2000) commented that they preferred to do data manipulation in SAS and then use package <a href="https://CRAN.R-project.org/package=survival"><strong>survival</strong></a> in S for the analysis.) Database manipulation systems are often very suitable for manipulating and extracting data: several packages to interact with DBMSs are discussed here.
+</p>
+<p>
+There are packages to allow functionality developed in languages such as <code class="calibre2">Java</code>, <code class="calibre2">perl</code> and <code class="calibre2">python</code> to be directly integrated with R code, making the use of facilities in these languages even more appropriate. (See the <a href="https://CRAN.R-project.org/package=rJava"><strong>rJava</strong></a> package from CRAN and the <strong>SJava</strong>, <strong>RSPerl</strong> and <strong>RSPython</strong> packages from the Omegahat project, <a href="http://www.omegahat.net" class="uri">http://www.omegahat.net</a>.)
+</p>
+<p>
+<a href="" id="index-Unix-tools"></a> <a href="" id="index-awk"></a> <a href="" id="index-perl"></a>
+</p>
+<p>
+It is also worth remembering that R like S comes from the Unix tradition of small re-usable tools, and it can be rewarding to use tools such as <code class="calibre2">awk</code> and <code class="calibre2">perl</code> to manipulate data before import or after export. The case study in Becker, Chambers &amp; Wilks (1988, Chapter 9) is an example of this, where Unix tools were used to check and manipulate the data before input to S. The traditional Unix tools are now much more widely available, including for Windows.
+</p>
+<p>
+This manual was first written in 2000, and the number of scope of R packages has increased a hundredfold since. For specialist data formats it is worth searching to see if a suitable package already exists.
+</p>
+<hr />
+<p>
+<a href="" id="Imports"></a> <a href="" id="Imports-1"></a>
+</p>
+<h3 id="imports" class="section">
+1.1 Imports
+</h3>
+<p>
+<a href="" id="index-scan"></a>
+</p>
+<p>
+The easiest form of data to import into R is a simple text file, and this will often be acceptable for problems of small or medium scale. The primary function to import from a text file is <code class="calibre2">scan</code>, and this underlies most of the more convenient functions discussed in <a href="spreadsheet-like-data.html">Spreadsheet-like data</a>.
+</p>
+<p>
+However, all statistical consultants are familiar with being presented by a client with a memory stick (formerly, a floppy disc or CD-R) of data in some proprietary binary format, for example ‘an Excel spreadsheet’ or ‘an SPSS file’. Often the simplest thing to do is to use the originating application to export the data as a text file (and statistical consultants will have copies of the most common applications on their computers for that purpose). However, this is not always possible, and <a href="importing-from-other-statistical-systems.html">Importing from other statistical systems</a> discusses what facilities are available to access such files directly from R. For Excel spreadsheets, the available methods are summarized in <a href="reading-Excel-spreadsheets.thml">Reading Excel spreadsheets</a>.
+</p>
+<p>
+In a few cases, data have been stored in a binary form for compactness and speed of access. One application of this that we have seen several times is imaging data, which is normally stored as a stream of bytes as represented in memory, possibly preceded by a header. Such data formats are discussed in <a href="binary-files.html">Binary files</a> and <a href="connections.html#Binary-connections">Binary connections</a>.
+</p>
+<p>
+For much larger databases it is common to handle the data using a database management system (DBMS). There is once again the option of using the DBMS to extract a plain file, but for many such DBMSs the extraction operation can be done directly from an R package: See <a href="relational-databases.html">Relational databases</a>. Importing data via network connections is discussed in <a href="network-interfaces.html">Network interfaces</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Encodings"></a> <a href="" id="Encodings-1"></a>
+</p>
+<h4 id="encodings" class="subsection">
+1.1.1 Encodings
+</h4>
+<p>
+<a href="" id="index-Encodings"></a>
+</p>
+<p>
+Unless the file to be imported from is entirely in ASCII, it is usually necessary to know how it was encoded. For text files, a good way to find out something about its structure is the <code class="calibre2">file</code> command-line tool (for Windows, included in <code class="calibre2">Rtools</code>). This reports something like
+</p>
+<div class="example">
+<pre class="example1"><code>text.Rd: UTF-8 Unicode English text
+text2.dat: ISO-8859 English text
+text3.dat: Little-endian UTF-16 Unicode English character data,
+   with CRLF line terminators
+intro.dat: UTF-8 Unicode text
+intro.dat: UTF-8 Unicode (with BOM) text</code></pre>
+</div>
+<p>
+Modern Unix-alike systems, including macOS, are likely to produce UTF-8 files. Windows may produce what it calls ‘Unicode’ files (<code class="calibre2">UCS-2LE</code> or just possibly <code class="calibre2">UTF-16LE</code><a href="concept-index.html#FOOT1" id="DOCF1"><sup>1</sup></a>). Otherwise most files will be in a 8-bit encoding unless from a Chinese/Japanese/Korean locale (which have a wide range of encodings in common use). It is not possible to automatically detect with certainty which 8-bit encoding (although guesses may be possible and <code class="calibre2">file</code> may guess as it did in the example above), so you may simply have to ask the originator for some clues (e.g. ‘Russian on Windows’).
+</p>
+<p>
+‘BOMs’ (Byte Order Marks, <a href="https://en.wikipedia.org/wiki/Byte_order_mark" class="uri">https://en.wikipedia.org/wiki/Byte_order_mark</a>) cause problems for Unicode files. In the Unix world BOMs are rarely used, whereas in the Windows world they almost always are for UCS-2/UTF-16 files, and often are for UTF-8 files. The <code class="calibre2">file</code> utility will not even recognize UCS-2 files without a BOM, but many other utilities will refuse to read files with a BOM and the IANA standards for <code class="calibre2">UTF-16LE</code> and <code class="calibre2">UTF-16BE</code> prohibit it. We have too often been reduced to looking at the file with the command-line utility <code class="calibre2">od</code> or a hex editor to work out its encoding.
+</p>
+<p>
+Note that <code class="calibre2">utf8</code> is not a valid encoding name (<code class="calibre2">UTF-8</code> is), and <code class="calibre2">macintosh</code> is the most portable name for what is sometimes called ‘Mac Roman’ encoding.
+</p>
+<hr />
+<p>
+<a href="" id="Export-to-text-files"></a> <a href="" id="Export-to-text-files-1"></a>
+</p>
+<h3 id="export-to-text-files" class="section">
+1.2 Export to text files
+</h3>
+<p>
+<a href="" id="index-Exporting-to-a-text-file"></a>
+</p>
+<p>
+Exporting results from R is usually a less contentious task, but there are still a number of pitfalls. There will be a target application in mind, and often a text file will be the most convenient interchange vehicle. (If a binary file is required, see <a href="binary-files.html">Binary files</a>.)
+</p>
+<p>
+<a href="" id="index-cat"></a>
+</p>
+<p>
+Function <code class="calibre2">cat</code> underlies the functions for exporting data. It takes a <code class="calibre2">file</code> argument, and the <code class="calibre2">append</code> argument allows a text file to be written via successive calls to <code class="calibre2">cat</code>. Better, especially if this is to be done many times, is to open a <code class="calibre2">file</code> connection for writing or appending, and <code class="calibre2">cat</code> to that connection, then <code class="calibre2">close</code> it.
+</p>
+<p>
+<a href="" id="index-write"></a> <a href="" id="index-write_002etable"></a>
+</p>
+<p>
+The most common task is to write a matrix or data frame to file as a rectangular grid of numbers, possibly with row and column labels. This can be done by the functions <code class="calibre2">write.table</code> and <code class="calibre2">write</code>. Function <code class="calibre2">write</code> just writes out a matrix or vector in a specified number of columns (and transposes a matrix). Function <code class="calibre2">write.table</code> is more convenient, and writes out a data frame (or an object that can be coerced to a data frame) with row and column labels.
+</p>
+<p>
+There are a number of issues that need to be considered in writing out a data frame to a text file.
+</p>
+<ol>
+<li>
+<p>
+<a href="" id="index-format"></a> <strong>Precision</strong>
+</p>
+<p>
+Most of the conversions of real/complex numbers done by these functions is to full precision, but those by <code class="calibre2">write</code> are governed by the current setting of <code class="calibre2">options(digits)</code>. For more control, use <code class="calibre2">format</code> on a data frame, possibly column-by-column.
+</p>
+</li>
+<li>
+<p>
+<strong>Header line</strong>
+</p>
+<p>
+R prefers the header line to have no entry for the row names, so the file looks like
+</p>
+<div class="example">
+<pre class="example1"><code>                dist    climb   time
+Greenmantle     2.5     650     16.083
+   ...</code></pre>
+</div>
+<p>
+Some other systems require a (possibly empty) entry for the row names, which is what <code class="calibre2">write.table</code> will provide if argument <code class="calibre2">col.names = NA</code> is specified. Excel is one such system.
+</p>
+</li>
+<li>
+<p>
+<strong>Separator</strong> <a href="" id="index-CSV-files"></a> <a href="" id="index-comma-separated-values"></a> <a href="" id="index-write_002ecsv"></a> <a href="" id="index-write_002ecsv2"></a>
+</p>
+<p>
+A common field separator to use in the file is a comma, as that is unlikely to appear in any of the fields in English-speaking countries. Such files are known as CSV (comma separated values) files, and wrapper function <code class="calibre2">write.csv</code> provides appropriate defaults. In some locales the comma is used as the decimal point (set this in <code class="calibre2">write.table</code> by <code class="calibre2">dec = “,”</code>) and there CSV files use the semicolon as the field separator: use <code class="calibre2">write.csv2</code> for appropriate defaults. There is an IETF standard for CSV files (which mandates commas and CRLF line endings, for which use <code class="calibre2">eol = “\r\n”</code>), RFC4180 (see <a href="https://tools.ietf.org/html/rfc4180" class="uri">https://tools.ietf.org/html/rfc4180</a>), but what is more important in practice is that the file is readable by the application it is targeted at.
+</p>
+<p>
+Using a semicolon or tab (<code class="calibre2">sep = “\t”</code>) are probably the safest options.
+</p>
+</li>
+<li>
+<p>
+<strong>Missing values</strong> <a href="" id="index-Missing-values"></a>
+</p>
+<p>
+By default missing values are output as <code class="calibre2">NA</code>, but this may be changed by argument <code class="calibre2">na</code>. Note that <code class="calibre2">NaN</code>s are treated as <code class="calibre2">NA</code> by <code class="calibre2">write.table</code>, but not by <code class="calibre2">cat</code> nor <code class="calibre2">write</code>.
+</p>
+</li>
+<li>
+<p>
+<strong>Quoting strings</strong> <a href="" id="index-Quoting-strings"></a>
+</p>
+<p>
+By default strings are quoted (including the row and column names). Argument <code class="calibre2">quote</code> controls if character and factor variables are quoted: some programs, for example <strong>Mondrian</strong> (<a href="https://en.wikipedia.org/wiki/Mondrian_(software)" class="uri">https://en.wikipedia.org/wiki/Mondrian_(software)</a>), do not accept quoted strings.
+</p>
+<p>
+Some care is needed if the strings contain embedded quotes. Three useful forms are
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; df &lt;- data.frame(a = I(&quot;a &#92;&quot; quote&quot;))
+&gt; write.table(df)
+&quot;a&quot;
+&quot;1&quot; &quot;a &#92;&quot; quote&quot;
+&gt; write.table(df, qmethod = &quot;double&quot;)
+&quot;a&quot;
+&quot;1&quot; &quot;a &quot;&quot; quote&quot;
+&gt; write.table(df, quote = FALSE, sep = &quot;,&quot;)
+a
+1,a &quot; quote</code></pre>
+</div>
+<p>
+The second is the form of escape commonly used by spreadsheets.
+</p>
+</li>
+<li>
+<p>
+<strong>Encodings</strong> <a href="" id="index-Encodings-1"></a>
+</p>
+<p>
+Text files do not contain metadata on their encodings, so for non-ASCII data the file needs to be targetted to the application intended to read it. All of these functions can write to a <em>connection</em> which allows an encoding to be specified for the file, and <code class="calibre2">write.table</code> has a <code class="calibre2">fileEncoding</code> argument to make this easier.
+</p>
+<p>
+The hard part is to know what file encoding to use. For use on Windows, it is best to use what Windows calls ‘Unicode’<a href="concept-index.html#FOOT2" id="DOCF2"><sup>2</sup></a>, that is <code class="calibre2">“UTF-16LE”</code>. Using UTF-8 is a good way to make portable files that will not easily be confused with any other encoding, but even macOS applications (where UTF-8 is the system encoding) may not recognize them, and Windows applications are most unlikely to. Apparently Excel:mac 2004/8 expected <code class="calibre2">.csv</code> files in <code class="calibre2">“macroman”</code> encoding (the encoding used in much earlier versions of Mac OS).
+</p>
+</li>
+</ol>
+<p>
+<a href="" id="index-write_002ematrix"></a>
+</p>
+<p>
+Function <code class="calibre2">write.matrix</code> in package <a href="https://CRAN.R-project.org/package=MASS"><strong>MASS</strong></a> provides a specialized interface for writing matrices, with the option of writing them in blocks and thereby reducing memory usage.
+</p>
+<p>
+<a href="" id="index-sink"></a>
+</p>
+<p>
+It is possible to use <code class="calibre2">sink</code> to divert the standard R output to a file, and thereby capture the output of (possibly implicit) <code class="calibre2">print</code> statements. This is not usually the most efficient route, and the <code class="calibre2">options(width)</code> setting may need to be increased.
+</p>
+<p>
+<a href="" id="index-write_002eforeign"></a>
+</p>
+<p>
+Function <code class="calibre2">write.foreign</code> in package <a href="https://CRAN.R-project.org/package=foreign"><strong>foreign</strong></a> uses <code class="calibre2">write.table</code> to produce a text file and also writes a code file that will read this text file into another statistical package. There is currently support for export to <code class="calibre2">SAS</code>, <code class="calibre2">SPSS</code> and <code class="calibre2">Stata</code>.
+</p>
+<hr />
+<p>
+<a href="" id="XML"></a> <a href="" id="XML-1"></a>
+</p>
+<h3 id="xml" class="section">
+1.3 XML
+</h3>
+<p>
+<a href="" id="index-XML"></a>
+</p>
+<p>
+When reading data from text files, it is the responsibility of the user to know and to specify the conventions used to create that file, e.g. the comment character, whether a header line is present, the value separator, the representation for missing values (and so on) described in <a href="introduction.html#Export-to-text-files">Export to text files</a>. A markup language which can be used to describe not only content but also the structure of the content can make a file self-describing, so that one need not provide these details to the software reading the data.
+</p>
+<p>
+The eXtensible Markup Language – more commonly known simply as XML – can be used to provide such structure, not only for standard datasets but also more complex data structures. XML is becoming extremely popular and is emerging as a standard for general data markup and exchange. It is being used by different communities to describe geographical data such as maps, graphical displays, mathematics and so on.
+</p>
+<p>
+XML provides a way to specify the file’s encoding, e.g.
+</p>
+<div class="example">
+<pre class="example1"><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</code></pre>
+</div>
+<p>
+although it does not require it.
+</p>
+<p>
+The <a href="https://CRAN.R-project.org/package=XML"><strong>XML</strong></a> package provides general facilities for reading and writing XML documents within R. Package <a href="https://CRAN.R-project.org/package=StatDataML"><strong>StatDataML</strong></a> on CRAN is one example building on <a href="https://CRAN.R-project.org/package=XML"><strong>XML</strong></a>. Another interface to the <strong>libxml2</strong> C library is provided by package <a href="https://CRAN.R-project.org/package=xml2"><strong>xml2</strong></a>.
+</p>
+<p>
+<a href="" id="index-yaml"></a>
+</p>
+<p>
+yaml is another system for structuring text data, with emphasis on human-readability: it is supported by package <a href="https://CRAN.R-project.org/package=yaml"><strong>yaml</strong></a>.
+</p>
+<hr />
+<p>
+<a href="" id="Spreadsheet_002dlike-data"></a> <a href="" id="Spreadsheet_002dlike-data-1"></a>
+</p>
+<div id="calibre_pb_6" class="calibre11">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="acknowledgements.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="spreadsheet-like-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

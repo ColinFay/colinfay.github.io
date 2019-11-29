@@ -1,0 +1,818 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>{attempt} 0.3.0 is now on CRAN - Colin Fay</title>
+<meta name="description" content="Last week, a new version of {attempt} was published on CRAN. Thisversion includes some improvements in the current code base, and theaddition of new functions.You can get it with our old friend install.packagesinstall.packages(&quot;attempt&quot;)News in version 0.3.0library(attempt)packageVersion(&quot;attempt&quot;)## [1] &#39;0.3.0&#39;Newcomers in this version:  The is_try_error() function, that tests if an object is of class“try-error”.x &lt;- attempt(log(letters), silent = TRUE)is_try_error(x)## [1] TRUE  The on_error() function, that behaves as on.exit() except ithappens only when there is an error in the function, and can forexample be used to write logs to a file.y &lt;- function(x){  on_error(~ print(&quot;ouch&quot;)) # or on_error(~ write(&quot;error&quot;, &quot;error.logs&quot;))  log(x)}y(12)y(&quot;a&quot;)[1] 2.484907Error in log(x) : non-numeric argument to mathematical function[1] &quot;ouch&quot;  discretly(), for removing warnings and message.y &lt;- function(x){  warning(&quot;ouch\n&quot;)  message(&quot;bla&quot;)  x * 10}y(10)## Warning in y(10): ouch## bla## [1] 100discrete_y &lt;- discretly(y)discrete_y(10)## [1] 100About {attempt}{attempt} is a package that provides a series of tools for defensiveprogramming. It’s mainly designed for (package) developers, as itprovides easier ways to handle exceptions and to manipulate functionsfor messages, warnings and errors. It’s also a very lightweight package,as it only depends on {rlang}, which itself has no dependencies.For example, let’s say you have a function that needs at least oneargument to be not-null. You would be tempted to write something likethis:this &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(is.null(a), is.null(b), is.null(c))){    stop(&quot;a, b and c can&#39;t be all NULL&quot;)  }  list(a, b, c)}this()## Error in this(): a, b and c can&#39;t be all NULL# Orthis &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(vapply(c(a, b, c), is.null, logical(1)))){    stop(&quot;a, b and c can&#39;t be all NULL&quot;)  }  list(a, b, c)}this()## Error in this(): a, b and c can&#39;t be all NULLthis(a = 1)## [[1]]## [1] 1## ## [[2]]## NULL## ## [[3]]## NULLWith {attempt}, you can refactor your code this way:library(attempt)this &lt;- function(a = NULL, b = NULL, c = NULL){  stop_if_all(c(a, b, c), is.null, &quot;a, b and c can&#39;t be all NULL&quot;)   list(a, b, c)}this()## Error: a, b and c can&#39;t be all NULL# Mappers can also be usedthis &lt;- function(a){  stop_if(a, ~ .x &lt; 5, &quot;a must be over 5&quot;)}this(1)## Error: a must be over 5To handle all cases, there is a series of function combining stop_if /warn_if / message_if &amp; all, any and none. See ?stop_if for alist of all functions.The idea being of course that if you have a series of tests, this candrastically reduce the amount of code at the beginning of the function,and make it more readable on the long run. So you can refactor this:this &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(is.null(a), is.null(b), is.null(c))){    stop(&quot;a, b and c can&#39;t be all NULL\n&quot;)  }  if (any(vapply(c(a, b, c), function(x) x &lt; 5, logical(1)))){    warning(&quot;using input below 5 is not recommended\n&quot;)  }  if (!any(c(a == 13, b == 13, c == 13))){    message(&quot;No input equal to 13\n&quot;)  }  # Do things}this()## Error in this(): a, b and c can&#39;t be all NULLthis(a = 3)## Warning in this(a = 3): using input below 5 is not recommended## No input equal to 13this(a = 10)## No input equal to 13To this:this &lt;- function(a = NULL, b = NULL, c = NULL){  stop_if_all(c(a, b, c), is.null, &quot;a, b and c can&#39;t be all NULL&quot;)    warn_if_any(c(a, b, c), ~ .x &lt; 5, &quot;using input below 5 is not recommended&quot;)    message_if_none(c(a, b, c), ~ .x == 13, &quot;No input equal to 13&quot;)  # Do things}The attempt() function, along with try_catch, are friendlier versionof try() and tryCatch(). They behave exactly like the basefunctions, but provide an easier interface. For example, if you need totry something and throw a message if it fails, with base, you’ll do:x &lt;- try(log(&quot;a&quot;), silent = TRUE)if (class(x)[1] == &quot;try-error&quot;){  stop(&quot;There was an error in your code&quot;)}## Error in eval(expr, envir, enclos): There was an error in your codeattempt() provides a concise way to send a message on error:attempt(log(&quot;a&quot;), &quot;There was an error in your code&quot;)## Error: There was an error in your codeAdverbs, finally, transform functions behavior:  silently returns nothing unless an error occurssilent_log &lt;- silently(log)silent_log(1)silent_log(&quot;a&quot;)## Error in .f(...) : non-numeric argument to mathematical function  surely will wrap the function in an attempt call:sure_log &lt;- surely(log)sure_log(1)## [1] 0sure_log(&quot;a&quot;)## Error: non-numeric argument to mathematical function  The with_message() / with_warning() &amp; without_message() /without_warning() / discretly() functions add or remove messagesandwarnings:matrix(1:3, ncol = 2)## Warning in matrix(1:3, ncol = 2): data length [3] is not a sub-multiple or## multiple of the number of rows [2]##      [,1] [,2]## [1,]    1    3## [2,]    2    1no_warning_matrix &lt;- without_warning(matrix)no_warning_matrix(1:3, ncol = 2)##      [,1] [,2]## [1,]    1    3## [2,]    2    1Know moreSee the GitHub repo for more.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="{attempt} 0.3.0 is now on CRAN">
+<meta property="og:url" content="http://localhost:4000/attempt-0-3-0/">
+
+
+  <meta property="og:description" content="Last week, a new version of {attempt} was published on CRAN. Thisversion includes some improvements in the current code base, and theaddition of new functions.You can get it with our old friend install.packagesinstall.packages(&quot;attempt&quot;)News in version 0.3.0library(attempt)packageVersion(&quot;attempt&quot;)## [1] &#39;0.3.0&#39;Newcomers in this version:  The is_try_error() function, that tests if an object is of class“try-error”.x &lt;- attempt(log(letters), silent = TRUE)is_try_error(x)## [1] TRUE  The on_error() function, that behaves as on.exit() except ithappens only when there is an error in the function, and can forexample be used to write logs to a file.y &lt;- function(x){  on_error(~ print(&quot;ouch&quot;)) # or on_error(~ write(&quot;error&quot;, &quot;error.logs&quot;))  log(x)}y(12)y(&quot;a&quot;)[1] 2.484907Error in log(x) : non-numeric argument to mathematical function[1] &quot;ouch&quot;  discretly(), for removing warnings and message.y &lt;- function(x){  warning(&quot;ouch\n&quot;)  message(&quot;bla&quot;)  x * 10}y(10)## Warning in y(10): ouch## bla## [1] 100discrete_y &lt;- discretly(y)discrete_y(10)## [1] 100About {attempt}{attempt} is a package that provides a series of tools for defensiveprogramming. It’s mainly designed for (package) developers, as itprovides easier ways to handle exceptions and to manipulate functionsfor messages, warnings and errors. It’s also a very lightweight package,as it only depends on {rlang}, which itself has no dependencies.For example, let’s say you have a function that needs at least oneargument to be not-null. You would be tempted to write something likethis:this &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(is.null(a), is.null(b), is.null(c))){    stop(&quot;a, b and c can&#39;t be all NULL&quot;)  }  list(a, b, c)}this()## Error in this(): a, b and c can&#39;t be all NULL# Orthis &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(vapply(c(a, b, c), is.null, logical(1)))){    stop(&quot;a, b and c can&#39;t be all NULL&quot;)  }  list(a, b, c)}this()## Error in this(): a, b and c can&#39;t be all NULLthis(a = 1)## [[1]]## [1] 1## ## [[2]]## NULL## ## [[3]]## NULLWith {attempt}, you can refactor your code this way:library(attempt)this &lt;- function(a = NULL, b = NULL, c = NULL){  stop_if_all(c(a, b, c), is.null, &quot;a, b and c can&#39;t be all NULL&quot;)   list(a, b, c)}this()## Error: a, b and c can&#39;t be all NULL# Mappers can also be usedthis &lt;- function(a){  stop_if(a, ~ .x &lt; 5, &quot;a must be over 5&quot;)}this(1)## Error: a must be over 5To handle all cases, there is a series of function combining stop_if /warn_if / message_if &amp; all, any and none. See ?stop_if for alist of all functions.The idea being of course that if you have a series of tests, this candrastically reduce the amount of code at the beginning of the function,and make it more readable on the long run. So you can refactor this:this &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(is.null(a), is.null(b), is.null(c))){    stop(&quot;a, b and c can&#39;t be all NULL\n&quot;)  }  if (any(vapply(c(a, b, c), function(x) x &lt; 5, logical(1)))){    warning(&quot;using input below 5 is not recommended\n&quot;)  }  if (!any(c(a == 13, b == 13, c == 13))){    message(&quot;No input equal to 13\n&quot;)  }  # Do things}this()## Error in this(): a, b and c can&#39;t be all NULLthis(a = 3)## Warning in this(a = 3): using input below 5 is not recommended## No input equal to 13this(a = 10)## No input equal to 13To this:this &lt;- function(a = NULL, b = NULL, c = NULL){  stop_if_all(c(a, b, c), is.null, &quot;a, b and c can&#39;t be all NULL&quot;)    warn_if_any(c(a, b, c), ~ .x &lt; 5, &quot;using input below 5 is not recommended&quot;)    message_if_none(c(a, b, c), ~ .x == 13, &quot;No input equal to 13&quot;)  # Do things}The attempt() function, along with try_catch, are friendlier versionof try() and tryCatch(). They behave exactly like the basefunctions, but provide an easier interface. For example, if you need totry something and throw a message if it fails, with base, you’ll do:x &lt;- try(log(&quot;a&quot;), silent = TRUE)if (class(x)[1] == &quot;try-error&quot;){  stop(&quot;There was an error in your code&quot;)}## Error in eval(expr, envir, enclos): There was an error in your codeattempt() provides a concise way to send a message on error:attempt(log(&quot;a&quot;), &quot;There was an error in your code&quot;)## Error: There was an error in your codeAdverbs, finally, transform functions behavior:  silently returns nothing unless an error occurssilent_log &lt;- silently(log)silent_log(1)silent_log(&quot;a&quot;)## Error in .f(...) : non-numeric argument to mathematical function  surely will wrap the function in an attempt call:sure_log &lt;- surely(log)sure_log(1)## [1] 0sure_log(&quot;a&quot;)## Error: non-numeric argument to mathematical function  The with_message() / with_warning() &amp; without_message() /without_warning() / discretly() functions add or remove messagesandwarnings:matrix(1:3, ncol = 2)## Warning in matrix(1:3, ncol = 2): data length [3] is not a sub-multiple or## multiple of the number of rows [2]##      [,1] [,2]## [1,]    1    3## [2,]    2    1no_warning_matrix &lt;- without_warning(matrix)no_warning_matrix(1:3, ncol = 2)##      [,1] [,2]## [1,]    1    3## [2,]    2    1Know moreSee the GitHub repo for more.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="{attempt} 0.3.0 is now on CRAN">
+  <meta name="twitter:description" content="Last week, a new version of {attempt} was published on CRAN. Thisversion includes some improvements in the current code base, and theaddition of new functions.You can get it with our old friend install.packagesinstall.packages(&quot;attempt&quot;)News in version 0.3.0library(attempt)packageVersion(&quot;attempt&quot;)## [1] &#39;0.3.0&#39;Newcomers in this version:  The is_try_error() function, that tests if an object is of class“try-error”.x &lt;- attempt(log(letters), silent = TRUE)is_try_error(x)## [1] TRUE  The on_error() function, that behaves as on.exit() except ithappens only when there is an error in the function, and can forexample be used to write logs to a file.y &lt;- function(x){  on_error(~ print(&quot;ouch&quot;)) # or on_error(~ write(&quot;error&quot;, &quot;error.logs&quot;))  log(x)}y(12)y(&quot;a&quot;)[1] 2.484907Error in log(x) : non-numeric argument to mathematical function[1] &quot;ouch&quot;  discretly(), for removing warnings and message.y &lt;- function(x){  warning(&quot;ouch\n&quot;)  message(&quot;bla&quot;)  x * 10}y(10)## Warning in y(10): ouch## bla## [1] 100discrete_y &lt;- discretly(y)discrete_y(10)## [1] 100About {attempt}{attempt} is a package that provides a series of tools for defensiveprogramming. It’s mainly designed for (package) developers, as itprovides easier ways to handle exceptions and to manipulate functionsfor messages, warnings and errors. It’s also a very lightweight package,as it only depends on {rlang}, which itself has no dependencies.For example, let’s say you have a function that needs at least oneargument to be not-null. You would be tempted to write something likethis:this &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(is.null(a), is.null(b), is.null(c))){    stop(&quot;a, b and c can&#39;t be all NULL&quot;)  }  list(a, b, c)}this()## Error in this(): a, b and c can&#39;t be all NULL# Orthis &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(vapply(c(a, b, c), is.null, logical(1)))){    stop(&quot;a, b and c can&#39;t be all NULL&quot;)  }  list(a, b, c)}this()## Error in this(): a, b and c can&#39;t be all NULLthis(a = 1)## [[1]]## [1] 1## ## [[2]]## NULL## ## [[3]]## NULLWith {attempt}, you can refactor your code this way:library(attempt)this &lt;- function(a = NULL, b = NULL, c = NULL){  stop_if_all(c(a, b, c), is.null, &quot;a, b and c can&#39;t be all NULL&quot;)   list(a, b, c)}this()## Error: a, b and c can&#39;t be all NULL# Mappers can also be usedthis &lt;- function(a){  stop_if(a, ~ .x &lt; 5, &quot;a must be over 5&quot;)}this(1)## Error: a must be over 5To handle all cases, there is a series of function combining stop_if /warn_if / message_if &amp; all, any and none. See ?stop_if for alist of all functions.The idea being of course that if you have a series of tests, this candrastically reduce the amount of code at the beginning of the function,and make it more readable on the long run. So you can refactor this:this &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(is.null(a), is.null(b), is.null(c))){    stop(&quot;a, b and c can&#39;t be all NULL\n&quot;)  }  if (any(vapply(c(a, b, c), function(x) x &lt; 5, logical(1)))){    warning(&quot;using input below 5 is not recommended\n&quot;)  }  if (!any(c(a == 13, b == 13, c == 13))){    message(&quot;No input equal to 13\n&quot;)  }  # Do things}this()## Error in this(): a, b and c can&#39;t be all NULLthis(a = 3)## Warning in this(a = 3): using input below 5 is not recommended## No input equal to 13this(a = 10)## No input equal to 13To this:this &lt;- function(a = NULL, b = NULL, c = NULL){  stop_if_all(c(a, b, c), is.null, &quot;a, b and c can&#39;t be all NULL&quot;)    warn_if_any(c(a, b, c), ~ .x &lt; 5, &quot;using input below 5 is not recommended&quot;)    message_if_none(c(a, b, c), ~ .x == 13, &quot;No input equal to 13&quot;)  # Do things}The attempt() function, along with try_catch, are friendlier versionof try() and tryCatch(). They behave exactly like the basefunctions, but provide an easier interface. For example, if you need totry something and throw a message if it fails, with base, you’ll do:x &lt;- try(log(&quot;a&quot;), silent = TRUE)if (class(x)[1] == &quot;try-error&quot;){  stop(&quot;There was an error in your code&quot;)}## Error in eval(expr, envir, enclos): There was an error in your codeattempt() provides a concise way to send a message on error:attempt(log(&quot;a&quot;), &quot;There was an error in your code&quot;)## Error: There was an error in your codeAdverbs, finally, transform functions behavior:  silently returns nothing unless an error occurssilent_log &lt;- silently(log)silent_log(1)silent_log(&quot;a&quot;)## Error in .f(...) : non-numeric argument to mathematical function  surely will wrap the function in an attempt call:sure_log &lt;- surely(log)sure_log(1)## [1] 0sure_log(&quot;a&quot;)## Error: non-numeric argument to mathematical function  The with_message() / with_warning() &amp; without_message() /without_warning() / discretly() functions add or remove messagesandwarnings:matrix(1:3, ncol = 2)## Warning in matrix(1:3, ncol = 2): data length [3] is not a sub-multiple or## multiple of the number of rows [2]##      [,1] [,2]## [1,]    1    3## [2,]    2    1no_warning_matrix &lt;- without_warning(matrix)no_warning_matrix(1:3, ncol = 2)##      [,1] [,2]## [1,]    1    3## [2,]    2    1Know moreSee the GitHub repo for more.">
+  <meta name="twitter:url" content="http://localhost:4000/attempt-0-3-0/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2019-04-15T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/attempt-0-3-0/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="{attempt} 0.3.0 is now on CRAN">
+    <meta itemprop="description" content="Last week, a new version of {attempt} was published on CRAN. Thisversion includes some improvements in the current code base, and theaddition of new functions.You can get it with our old friend install.packagesinstall.packages(&quot;attempt&quot;)News in version 0.3.0library(attempt)packageVersion(&quot;attempt&quot;)## [1] &#39;0.3.0&#39;Newcomers in this version:  The is_try_error() function, that tests if an object is of class“try-error”.x &lt;- attempt(log(letters), silent = TRUE)is_try_error(x)## [1] TRUE  The on_error() function, that behaves as on.exit() except ithappens only when there is an error in the function, and can forexample be used to write logs to a file.y &lt;- function(x){  on_error(~ print(&quot;ouch&quot;)) # or on_error(~ write(&quot;error&quot;, &quot;error.logs&quot;))  log(x)}y(12)y(&quot;a&quot;)[1] 2.484907Error in log(x) : non-numeric argument to mathematical function[1] &quot;ouch&quot;  discretly(), for removing warnings and message.y &lt;- function(x){  warning(&quot;ouch\n&quot;)  message(&quot;bla&quot;)  x * 10}y(10)## Warning in y(10): ouch## bla## [1] 100discrete_y &lt;- discretly(y)discrete_y(10)## [1] 100About {attempt}{attempt} is a package that provides a series of tools for defensiveprogramming. It’s mainly designed for (package) developers, as itprovides easier ways to handle exceptions and to manipulate functionsfor messages, warnings and errors. It’s also a very lightweight package,as it only depends on {rlang}, which itself has no dependencies.For example, let’s say you have a function that needs at least oneargument to be not-null. You would be tempted to write something likethis:this &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(is.null(a), is.null(b), is.null(c))){    stop(&quot;a, b and c can&#39;t be all NULL&quot;)  }  list(a, b, c)}this()## Error in this(): a, b and c can&#39;t be all NULL# Orthis &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(vapply(c(a, b, c), is.null, logical(1)))){    stop(&quot;a, b and c can&#39;t be all NULL&quot;)  }  list(a, b, c)}this()## Error in this(): a, b and c can&#39;t be all NULLthis(a = 1)## [[1]]## [1] 1## ## [[2]]## NULL## ## [[3]]## NULLWith {attempt}, you can refactor your code this way:library(attempt)this &lt;- function(a = NULL, b = NULL, c = NULL){  stop_if_all(c(a, b, c), is.null, &quot;a, b and c can&#39;t be all NULL&quot;)   list(a, b, c)}this()## Error: a, b and c can&#39;t be all NULL# Mappers can also be usedthis &lt;- function(a){  stop_if(a, ~ .x &lt; 5, &quot;a must be over 5&quot;)}this(1)## Error: a must be over 5To handle all cases, there is a series of function combining stop_if /warn_if / message_if &amp; all, any and none. See ?stop_if for alist of all functions.The idea being of course that if you have a series of tests, this candrastically reduce the amount of code at the beginning of the function,and make it more readable on the long run. So you can refactor this:this &lt;- function(a = NULL, b = NULL, c = NULL){  if (all(is.null(a), is.null(b), is.null(c))){    stop(&quot;a, b and c can&#39;t be all NULL\n&quot;)  }  if (any(vapply(c(a, b, c), function(x) x &lt; 5, logical(1)))){    warning(&quot;using input below 5 is not recommended\n&quot;)  }  if (!any(c(a == 13, b == 13, c == 13))){    message(&quot;No input equal to 13\n&quot;)  }  # Do things}this()## Error in this(): a, b and c can&#39;t be all NULLthis(a = 3)## Warning in this(a = 3): using input below 5 is not recommended## No input equal to 13this(a = 10)## No input equal to 13To this:this &lt;- function(a = NULL, b = NULL, c = NULL){  stop_if_all(c(a, b, c), is.null, &quot;a, b and c can&#39;t be all NULL&quot;)    warn_if_any(c(a, b, c), ~ .x &lt; 5, &quot;using input below 5 is not recommended&quot;)    message_if_none(c(a, b, c), ~ .x == 13, &quot;No input equal to 13&quot;)  # Do things}The attempt() function, along with try_catch, are friendlier versionof try() and tryCatch(). They behave exactly like the basefunctions, but provide an easier interface. For example, if you need totry something and throw a message if it fails, with base, you’ll do:x &lt;- try(log(&quot;a&quot;), silent = TRUE)if (class(x)[1] == &quot;try-error&quot;){  stop(&quot;There was an error in your code&quot;)}## Error in eval(expr, envir, enclos): There was an error in your codeattempt() provides a concise way to send a message on error:attempt(log(&quot;a&quot;), &quot;There was an error in your code&quot;)## Error: There was an error in your codeAdverbs, finally, transform functions behavior:  silently returns nothing unless an error occurssilent_log &lt;- silently(log)silent_log(1)silent_log(&quot;a&quot;)## Error in .f(...) : non-numeric argument to mathematical function  surely will wrap the function in an attempt call:sure_log &lt;- surely(log)sure_log(1)## [1] 0sure_log(&quot;a&quot;)## Error: non-numeric argument to mathematical function  The with_message() / with_warning() &amp; without_message() /without_warning() / discretly() functions add or remove messagesandwarnings:matrix(1:3, ncol = 2)## Warning in matrix(1:3, ncol = 2): data length [3] is not a sub-multiple or## multiple of the number of rows [2]##      [,1] [,2]## [1,]    1    3## [2,]    2    1no_warning_matrix &lt;- without_warning(matrix)no_warning_matrix(1:3, ncol = 2)##      [,1] [,2]## [1,]    1    3## [2,]    2    1Know moreSee the GitHub repo for more.">
+    <meta itemprop="datePublished" content="April 15, 2019">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">{attempt} 0.3.0 is now on CRAN
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  4 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Last week, a new version of <code class="highlighter-rouge">{attempt}</code> was published on CRAN. This
+version includes some improvements in the current code base, and the
+addition of new functions.</p>
+
+<p>You can get it with our old friend <code class="highlighter-rouge">install.packages</code></p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="s2">"attempt"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="news-in-version-030">News in version 0.3.0</h2>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">attempt</span><span class="p">)</span><span class="w">
+</span><span class="n">packageVersion</span><span class="p">(</span><span class="s2">"attempt"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] '0.3.0'
+</code></pre></div></div>
+
+<p>Newcomers in this version:</p>
+
+<ul>
+  <li>The <code class="highlighter-rouge">is_try_error()</code> function, that tests if an object is of class
+“try-error”.</li>
+</ul>
+
+<!-- end list -->
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">attempt</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="nb">letters</span><span class="p">),</span><span class="w"> </span><span class="n">silent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">is_try_error</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] TRUE
+</code></pre></div></div>
+
+<ul>
+  <li>The <code class="highlighter-rouge">on_error()</code> function, that behaves as <code class="highlighter-rouge">on.exit()</code> except it
+happens only when there is an error in the function, and can for
+example be used to write logs to a file.</li>
+</ul>
+
+<!-- end list -->
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+  </span><span class="n">on_error</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">print</span><span class="p">(</span><span class="s2">"ouch"</span><span class="p">))</span><span class="w"> </span><span class="c1"># or on_error(~ write("error", "error.logs"))</span><span class="w">
+  </span><span class="nf">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">y</span><span class="p">(</span><span class="m">12</span><span class="p">)</span><span class="w">
+</span><span class="n">y</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="w">
+
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">2.484907</span><span class="w">
+</span><span class="n">Error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">non</span><span class="o">-</span><span class="n">numeric</span><span class="w"> </span><span class="n">argument</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">mathematical</span><span class="w"> </span><span class="k">function</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"ouch"</span><span class="w">
+</span></code></pre></div></div>
+
+<ul>
+  <li><code class="highlighter-rouge">discretly()</code>, for removing warnings and message.</li>
+</ul>
+
+<!-- end list -->
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+  </span><span class="n">warning</span><span class="p">(</span><span class="s2">"ouch\n"</span><span class="p">)</span><span class="w">
+  </span><span class="n">message</span><span class="p">(</span><span class="s2">"bla"</span><span class="p">)</span><span class="w">
+  </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">y</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Warning in y(10): ouch
+
+## bla
+
+## [1] 100
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">discrete_y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">discretly</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w">
+</span><span class="n">discrete_y</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 100
+</code></pre></div></div>
+
+<h2 id="about-attempt">About <code class="highlighter-rouge">{attempt}</code></h2>
+
+<p><code class="highlighter-rouge">{attempt}</code> is a package that provides a series of tools for defensive
+programming. It’s mainly designed for (package) developers, as it
+provides easier ways to handle exceptions and to manipulate functions
+for messages, warnings and errors. It’s also a very lightweight package,
+as it only depends on <code class="highlighter-rouge">{rlang}</code>, which itself has no dependencies.</p>
+
+<p>For example, let’s say you have a function that needs at least one
+argument to be not-null. You would be tempted to write something like
+this:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">this</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">){</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">all</span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="nf">is.null</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="nf">is.null</span><span class="p">(</span><span class="n">c</span><span class="p">))){</span><span class="w">
+    </span><span class="n">stop</span><span class="p">(</span><span class="s2">"a, b and c can't be all NULL"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="nf">list</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">this</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error in this(): a, b and c can't be all NULL
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Or</span><span class="w">
+</span><span class="n">this</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">){</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">all</span><span class="p">(</span><span class="n">vapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">),</span><span class="w"> </span><span class="n">is.null</span><span class="p">,</span><span class="w"> </span><span class="n">logical</span><span class="p">(</span><span class="m">1</span><span class="p">)))){</span><span class="w">
+    </span><span class="n">stop</span><span class="p">(</span><span class="s2">"a, b and c can't be all NULL"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="nf">list</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">this</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error in this(): a, b and c can't be all NULL
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">this</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [[1]]
+## [1] 1
+## 
+## [[2]]
+## NULL
+## 
+## [[3]]
+## NULL
+</code></pre></div></div>
+
+<p>With <code class="highlighter-rouge">{attempt}</code>, you can refactor your code this way:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">attempt</span><span class="p">)</span><span class="w">
+</span><span class="n">this</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">){</span><span class="w">
+  </span><span class="n">stop_if_all</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">),</span><span class="w"> </span><span class="n">is.null</span><span class="p">,</span><span class="w"> </span><span class="s2">"a, b and c can't be all NULL"</span><span class="p">)</span><span class="w"> 
+  </span><span class="nf">list</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">this</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error: a, b and c can't be all NULL
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Mappers can also be used</span><span class="w">
+</span><span class="n">this</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">){</span><span class="w">
+  </span><span class="n">stop_if</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="s2">"a must be over 5"</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">this</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error: a must be over 5
+</code></pre></div></div>
+
+<p>To handle all cases, there is a series of function combining <code class="highlighter-rouge">stop_if</code> /
+<code class="highlighter-rouge">warn_if</code> / <code class="highlighter-rouge">message_if</code> &amp; <code class="highlighter-rouge">all</code>, <code class="highlighter-rouge">any</code> and <code class="highlighter-rouge">none</code>. See <code class="highlighter-rouge">?stop_if</code> for a
+list of all functions.</p>
+
+<p>The idea being of course that if you have a series of tests, this can
+drastically reduce the amount of code at the beginning of the function,
+and make it more readable on the long run. So you can refactor this:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">this</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">){</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">all</span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="nf">is.null</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="nf">is.null</span><span class="p">(</span><span class="n">c</span><span class="p">))){</span><span class="w">
+    </span><span class="n">stop</span><span class="p">(</span><span class="s2">"a, b and c can't be all NULL\n"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">any</span><span class="p">(</span><span class="n">vapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">),</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="n">logical</span><span class="p">(</span><span class="m">1</span><span class="p">)))){</span><span class="w">
+    </span><span class="n">warning</span><span class="p">(</span><span class="s2">"using input below 5 is not recommended\n"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">any</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">13</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">13</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">13</span><span class="p">))){</span><span class="w">
+    </span><span class="n">message</span><span class="p">(</span><span class="s2">"No input equal to 13\n"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="c1"># Do things</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">this</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error in this(): a, b and c can't be all NULL
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">this</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Warning in this(a = 3): using input below 5 is not recommended
+
+## No input equal to 13
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">this</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No input equal to 13
+</code></pre></div></div>
+
+<p>To this:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">this</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">){</span><span class="w">
+  </span><span class="n">stop_if_all</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">),</span><span class="w"> </span><span class="n">is.null</span><span class="p">,</span><span class="w"> </span><span class="s2">"a, b and c can't be all NULL"</span><span class="p">)</span><span class="w">  
+  </span><span class="n">warn_if_any</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="s2">"using input below 5 is not recommended"</span><span class="p">)</span><span class="w">  
+  </span><span class="n">message_if_none</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">13</span><span class="p">,</span><span class="w"> </span><span class="s2">"No input equal to 13"</span><span class="p">)</span><span class="w">
+  </span><span class="c1"># Do things</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">attempt()</code> function, along with <code class="highlighter-rouge">try_catch</code>, are friendlier version
+of <code class="highlighter-rouge">try()</code> and <code class="highlighter-rouge">tryCatch()</code>. They behave exactly like the base
+functions, but provide an easier interface. For example, if you need to
+try something and throw a message if it fails, with base, you’ll do:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">try</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="s2">"a"</span><span class="p">),</span><span class="w"> </span><span class="n">silent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">class</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"try-error"</span><span class="p">){</span><span class="w">
+  </span><span class="n">stop</span><span class="p">(</span><span class="s2">"There was an error in your code"</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error in eval(expr, envir, enclos): There was an error in your code
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">attempt()</code> provides a concise way to send a message on error:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">attempt</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="s2">"a"</span><span class="p">),</span><span class="w"> </span><span class="s2">"There was an error in your code"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error: There was an error in your code
+</code></pre></div></div>
+
+<p>Adverbs, finally, transform functions behavior:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">silently</code> returns nothing unless an error occurs</li>
+</ul>
+
+<!-- end list -->
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">silent_log</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">silently</span><span class="p">(</span><span class="n">log</span><span class="p">)</span><span class="w">
+</span><span class="n">silent_log</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="n">silent_log</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error in .f(...) : non-numeric argument to mathematical function
+</code></pre></div></div>
+
+<ul>
+  <li><code class="highlighter-rouge">surely</code> will wrap the function in an <code class="highlighter-rouge">attempt</code> call:</li>
+</ul>
+
+<!-- end list -->
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sure_log</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">surely</span><span class="p">(</span><span class="n">log</span><span class="p">)</span><span class="w">
+</span><span class="n">sure_log</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 0
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sure_log</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error: non-numeric argument to mathematical function
+</code></pre></div></div>
+
+<ul>
+  <li>The <code class="highlighter-rouge">with_message()</code> / <code class="highlighter-rouge">with_warning()</code> &amp; <code class="highlighter-rouge">without_message()</code> /
+<code class="highlighter-rouge">without_warning()</code> / <code class="highlighter-rouge">discretly()</code> functions add or remove messages
+and
+warnings:</li>
+</ul>
+
+<!-- end list -->
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">matrix</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Warning in matrix(1:3, ncol = 2): data length [3] is not a sub-multiple or
+## multiple of the number of rows [2]
+
+##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    1
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">no_warning_matrix</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">without_warning</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span><span class="w">
+</span><span class="n">no_warning_matrix</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    1
+</code></pre></div></div>
+
+<h2 id="know-more">Know more</h2>
+
+<p>See the <a href="https://github.com/ColinFay/attempt">GitHub repo</a> for more.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2019-04-15T00:00:00+02:00">April 15, 2019</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=%7Battempt%7D+0.3.0+is+now+on+CRAN%20http%3A%2F%2Flocalhost%3A4000%2Fattempt-0-3-0%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fattempt-0-3-0%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fattempt-0-3-0%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fattempt-0-3-0%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/see-you-user-2019" class="pagination--pager" title="See you at useR! Toulouse
+">←</a>
+    
+    
+      <a href="/create-r-cli-npm/" class="pagination--pager" title="Create a CLI for R with npm
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/attempt-0-3-0/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/new-attempt"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

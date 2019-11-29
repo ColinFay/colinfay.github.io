@@ -1,0 +1,1193 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>About lazy evaluation - Colin Fay</title>
+<meta name="description" content="A follow-up on Thomas Lumley follow-upposton Miles McBain post aboutquotation.In this post, Thomas is continuing Miles exploration of the concept ofquoting and evaluation in R. Thomas speaks a little bit about lazyevaluation, and I decided to continue to explore this concept. Notably Iwish to start over from on this quote from the blog post:  “In reality, to allow for lazy evaluation, R has a special datastructure called a promise, which stores the expression until you lookat it then evaluates it. R also has substitute() to get the expressionout of the promise.”Lazy Eval: a starting pointI’ve already written about lazyevaluation, but here is more about that concept.A quick definitionLazy evaluation is a programming strategy that allows a symbol to beevaluated only when needed. In other words, a symbol can be defined(e.g in a function), and it will only be evaluated when it is needed(and that moment can be never). This is why you can do:plop &lt;- function(a, b){  a * 10}plop(4)## [1] 40Here, b is defined as a function argument, but never evaluated. So noerror. This strategy is called “lazy” as it does “the strict minimum” ofevaluation (remember that evaluation is looking for the value of asymbol).Lazy evaluation means you can also do:plop(a = 4, b = non_existing_variable)## [1] 40As b is never evaluated, we don’t have any problem, R never tries tolook for the value of non_existing_variable.We can also find it in control structure:if (TRUE){  12} else {  no_variable}## [1] 12And of course this works on the other side:if (FALSE){  no_variable} else {  12}## [1] 12Only the TRUE part is evaluated. You can also find it in :if (TRUE || no_variable) {  12}## [1] 12Note that this won’t work with |, as:  The shorter form performs elementwise comparisons in much the same wayas arithmetic operators. The longer form evaluates left to rightexamining only the first element of each vector. Evaluation proceedsonly until the result is determined. (from ?base::Logic)if (TRUE | no_variable) {  12}## Error in eval(expr, envir, enclos): objet &#39;no_variable&#39; introuvableWhy lazy evalLazy evaluation is not R-restricted: it is also found in other languages(mainly functional languages). Its opposite is strict/eager evaluation,which is the default in most programming languages.Lazy evaluation is implemented in R as it allows a program to be moreefficient when used interactively: only the necessary symbols areevaluated, that is to say that only the needed objects will be loaded inmemory and/or looked for. The downside being that it can make aprogram less predictable, as you are never 100% sure a symbol will beevaluated (but this is for more advanced use-cases).It’s a typical mechanism for functional language, as it allows functionsto be defined without any values in it. That means that you can createthis object without a and b having a value.ping &lt;- function(a,b){  a + b}To quote R: a language for data analysis andgraphics:  The expression given as function arguments are not evaluated beforethe function is called. Instead, the expressions are packaged togetherwith the environment in which they should be evaluated and it is thispackage that is passed to the function. Evaluation only takes placewhen the argument is required.In fact, you’re already familiar with it, as I’m sure you can predictthe output of this function:mean_of_that &lt;- function(x, mean_of = mean(x)){  # Of course I could use na.rm, it&#39;s an example ;)  x &lt;- x[!is.na(x)]  print(x)  cat(&quot;The mean of x is&quot;, mean_of)}mean_of_that(c(1,2,3,4,NA))## [1] 1 2 3 4## The mean of x is 2.5Here, if the output does not surprise you, it’s because you already haveunderstood what is lazy eval (good news, right!): when R tries toaccess the value of mean_of, it looks for the value of x. At thatexact moment, as the value of x has changed (no NA), you have the meanof the new x. If mean_of had been evaluated as soon as the functionwas called, the value of mean_of would have been NA.See also :ping &lt;- function(a = Sys.time(), b = Sys.time(), c = Sys.time()){  print(a)  Sys.sleep(1)  print(b)  Sys.sleep(1)  print(c)}ping()## [1] &quot;2018-09-04 08:27:00 CEST&quot;## [1] &quot;2018-09-04 08:27:01 CEST&quot;## [1] &quot;2018-09-04 08:27:02 CEST&quot;You can see that each element has a different value. If the elements hadbeen evaluated at the moment the function was called, they would allhave the same value (i.e the Sys.time of when the function is called).LazyData, and promisesIf specified in the DESCRIPTION, datasets from packages are lazilyloaded. It means two things :  When library(pkg), the datasets are not loaded in the environment(definitely more efficient)  That you can “preload” them with data(&quot;dataset&quot;), and get apromise backIf you run this in a fresh R session:library(ggplot2)data(&quot;diamonds&quot;)This is what you’re going to get:A &lt;Promise&gt;.At this point, as I still don’t have called the dataset, the symbols(diamonds) holds a promise to this dataset, which is still not inmemory:library(pryr)mem_used()## 44.6 MB#Now I need diamondsnrow(diamonds)## [1] 53940mem_used()## 48.1 MBAs you can see, the memory used by my R session has changed when Iactually needed diamonds. This latter is no longer a promise, but aloaded dataset in my environment.Note that substitute doesn’t “break the promise”:data(&quot;txhousing&quot;)mem_used()## 48.1 MBsubstitute(txhousing)## txhousingmem_used()## 48.1 MBnrow(txhousing)## [1] 8602mem_used()## 48.6 MBHere is an example of Non-standard evaluation with substitute: even ifI’m passing txhousing as a symbol, substitute(txhousing) does notbehave as nrow(txhousing). The symbol is not evaluated in the standardway, the promise is still a promise, and the symbol txhousing does notbring the object in the environment.Let’s just put it into a function:substiplop &lt;- function(dataset){  # deparse turns a symbol into a character  name &lt;- deparse(substitute(dataset))  paste(&quot;You called&quot;, name)}library(ggplot2)mem_used()## 48.6 MBsubstiplop(dataset = economics_long)## [1] &quot;You called economics_long&quot;mem_used()## 48.6 MBAs you can see, no economics_long has been evaluated. Now compare:nrowplop &lt;- function(dataset){  paste(&quot;You called a dataset with&quot;, nrow(dataset))}mem_used()## 48.6 MBnrowplop(dataset = economics_long)## [1] &quot;You called a dataset with 2870&quot;mem_used()## 48.7 MBKeep all this in mind, we’ll be back to it in a few.More about lazy evaluationOk, now, now let’s dig deeper into lazy evaluation.RTFMLet’s start with the beginning: the R-Manuals. promises and lazyevaluation are referred to several times in the R LanguageDefinition.If we go to Promiseobjects,we learn that :  Promise objects are part of R’s lazy evaluation mechanism. Theycontain three slots: a value, an expression, and anenvironment. When a function is called the arguments are matchedand then each of the formal arguments is bound to a promise. Theexpression that was given for that formal argument and a pointer tothe environment the function was called from are stored in thepromise.What that means is that: when calling a function, arguments are turnedinto promises. These promises contain: an expression, and anenvironment (no value at first). In a sense, what this object holds isnot a value, but a recipe for a value, saying “evaluate thisexpression in this environment”, and this recipe is called only when weneed it.  Until that argument is accessed there is no value associated withthe promise. When the argument is accessed, the stored expression isevaluated in the stored environment, and the result is returned. Theresult is also saved by the promise. The substitute function willextract the content of the expression slot. This allows the programmerto access either the value or the expression associated with thepromise.So, here’s a clear definition for the substitute function: an“expression slot content extractor” :) In other words, when passingarguments to a function, they are immediately turned into a promise, adata structure with an expression, and a recipe for a value. But here’sthe thing: thanks to lazy evaluation, you can access this expressionwithout having to actually give an argument a value (i.e., withouthaving to look for its value).Remember our function plop, and :plop(a = 4, b = non_existing_variable)## [1] 40With our newly acquired knowledge, we can tell what’s happening here:b is created as a promise, containing the expressionnon_existing_variable. It contains no value, but as we never try toactually evaluate it (i.e. try to access its value), there is no error.Let’s continue on that note: b is created as a promise (expression +environment), and substitute allows to get the expression out of apromise. So we could modify our function to play with the expressioncontained in b:plop &lt;- function(a, b) {  cat(&quot;You entered&quot;, deparse(substitute(b)), &quot;as `b` \n&quot;)  a * 10}plop(a = 4, b = non_existing_variable)## You entered non_existing_variable as `b`## [1] 40But that also means we can evaluate b the way we want (for example tocreate a dplyr::pull-like function)plop &lt;- function(a, b) {  eval(substitute(b), envir = a)}plop(iris, Species)[1:10]##  [1] setosa setosa setosa setosa setosa setosa setosa setosa setosa setosa## Levels: setosa versicolor virginicaplop(iris, Sepal.Length)[1:10]##  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9(More about environment evaluationhere)Or, even, that we could write a dplyr::mutate-like function:mutator &lt;- function(a, col_name_computation){  # In three steps here to detail the process, could be one line of code  col_name_computation_sub &lt;- substitute(col_name_computation)  res &lt;- eval(col_name_computation_sub, envir = a)  a$new_col &lt;- res  a}mutator(head(iris), Sepal.Length * 10)##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species new_col## 1          5.1         3.5          1.4         0.2  setosa      51## 2          4.9         3.0          1.4         0.2  setosa      49## 3          4.7         3.2          1.3         0.2  setosa      47## 4          4.6         3.1          1.5         0.2  setosa      46## 5          5.0         3.6          1.4         0.2  setosa      50## 6          5.4         3.9          1.7         0.4  setosa      54(Of course, the real dplyr::mutate does A LOT more, it’s just for theexample)Let’s sum up what is happening here :  I give a and new_col expressions as inputs  Both a and new_col become promises, linked to the expressionsgiven as inputs. None are evaluated at this point, thanks to lazyevaluation  R extracts the expression contained in col_name_computation, putsit in col_name_computation_sub, which is at that stage a call.  I have defined a custom rule for evaluation, and this call isevaluated in the context of the dataframe given (remember thatdataframes are lists, and you can eval a symbol inside a list).  This newly created vector is put inside the dataframe as a column  The modified data.frame is returnedTo dissect a little bit what is happening:mutator &lt;- function(a, col_name_computation){  col_name_computation_sub &lt;- substitute(col_name_computation)  cat(&quot;`col_name_computation_sub` is: &quot;)  print(col_name_computation_sub)  cat(&quot;its class is: &quot;)  print(class(col_name_computation_sub))  cat(&quot;it is evaluated in: &quot;)  print(substitute(a))    res &lt;- eval(col_name_computation_sub, envir = a)  cat(&quot;`res` is: &quot;)  print(res)    a$new_col &lt;- res  invisible(a)}mutator(head(iris), Sepal.Length * 10)## `col_name_computation_sub` is: Sepal.Length * 10## its class is: [1] &quot;call&quot;## it is evaluated in: head(iris)## `res` is: [1] 51 49 47 46 50 54mutator(head(mtcars), mpg * disp)## `col_name_computation_sub` is: mpg * disp## its class is: [1] &quot;call&quot;## it is evaluated in: head(mtcars)## `res` is: [1] 3360.0 3360.0 2462.4 5521.2 6732.0 4072.5Detecting promisesIn case you were wondering how to check if something is a promise… let’scontinue from the manual:  Within the R language, promise objects are almost only seenimplicitly: actual function arguments are of this type. There is alsoa delayedAssign function that will make a promise out of anexpression. There is generally no way in R code to check whether anobject is a promise or not, nor is there a way to use R code todetermine the environment of a promise.There is a way to create a promise, through the delayedAssignfunction. At the time of writing I haven’t found a use case for that,but I’ll be glad to hear about one in the comment!delayedAssign(&quot;a&quot;, this_var)a## Error in eval(expr, envir, enclos): objet &#39;this_var&#39; introuvablethis_var &lt;- 12a## Warning: redémarrage de l&#39;évaluation d&#39;une promesse interrompue## [1] 12Evaluation, and force()ing evaluationFrom Argumentevaluation:  The process of filling the value slot of a promise by evaluating thecontents of the expression slot in the promise’s environment is calledforcing the promise. A promise will only be forced once, the valueslot content being used directly later on. A promise is forced whenits value is needed.Forcing is “filling” the value slot of a promise. This can be done bysimply calling the object, or by using the force function (note thatforce is just semantic sugar). Let’s see how this can be useful with aplot (fromSubstitutions)logplot &lt;- function(y, ylab = deparse(substitute(y))) {    y &lt;- log(y)    plot(y, ylab = ylab)}logplot(1:10)Here, as ylab is forced after y has changed, the labels is the onefrom the modified y. Which can be changed if we force the ylab before:logplot &lt;- function(y, ylab = deparse(substitute(y))) {    force(ylab)    y &lt;- log(y)    plot(y, ylab = ylab)}logplot(1:10)As said before: the promise is only forced once, so ylab finds itsvalue in the first line of code.Remember our mean_of_that function from before. Look at how it changesif I force the evaluation of mean_of before changing x:mean_of_that &lt;- function(x, mean_of = mean(x)){  force(mean_of)  x &lt;- x[!is.na(x)]  print(x)  cat(&quot;The mean of x is&quot;, mean_of)}mean_of_that(c(1,2,3,4,NA))## [1] 1 2 3 4## The mean of x is NAMore about lazy evaluationHere are some random quotes and elements found on the internet, notnecessarily linked to R:      R: a language for data analysis andgraphics        Lazy Evaluation at the Portland PatternRepository    Lazy evaluation : Waiting until the last possible moment to evaluatean expression, especially for the purpose of optimizing an algorithmthat may not use the value of the expression.      Advanced R on Functionarguments        Why Functional ProgrammingMatters    Since this method of evaluation runs f as little as possible, it iscalled “lazy evaluation”. It makes it practical to modularize aprogram as a generator that constructs a large number of possibleanswers, and a selector that chooses the appropriate one. While someother systems allow programs to be run together in this manner, onlyfunctional languages (and not even all of them) use lazy evaluationuniformly for every function call, allowing any part of a program tobe modularized in this way. Lazy evaluation is perhaps the mostpowerful tool for modularization in the functional programmer’srepertoire.      A Natural Semantics for LazyEvaluation        How Lazy Evaluation Works inHaskell        LAZYEVALUATION    Lazy evaluation (or call-by-need) delays evaluating an expressionuntil it is actually needed; when it is evaluated, the result is savedso repeated evaluation is not needed. Lazy evaluation is a techniquethat can make some algorithms easier to express compactly or much moreefficiently, or both. It is the normal evaluation mechanism for strictfunctional (side-effect-free) languages such as Haskell. However,automatic lazy evaluation is awkward to combine with side-effects suchas input-output. It can also be difficult to implement lazy evaluationefficiently, as it requires more book-keeping.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="About lazy evaluation">
+<meta property="og:url" content="http://localhost:4000/lazyeval/">
+
+
+  <meta property="og:description" content="A follow-up on Thomas Lumley follow-upposton Miles McBain post aboutquotation.In this post, Thomas is continuing Miles exploration of the concept ofquoting and evaluation in R. Thomas speaks a little bit about lazyevaluation, and I decided to continue to explore this concept. Notably Iwish to start over from on this quote from the blog post:  “In reality, to allow for lazy evaluation, R has a special datastructure called a promise, which stores the expression until you lookat it then evaluates it. R also has substitute() to get the expressionout of the promise.”Lazy Eval: a starting pointI’ve already written about lazyevaluation, but here is more about that concept.A quick definitionLazy evaluation is a programming strategy that allows a symbol to beevaluated only when needed. In other words, a symbol can be defined(e.g in a function), and it will only be evaluated when it is needed(and that moment can be never). This is why you can do:plop &lt;- function(a, b){  a * 10}plop(4)## [1] 40Here, b is defined as a function argument, but never evaluated. So noerror. This strategy is called “lazy” as it does “the strict minimum” ofevaluation (remember that evaluation is looking for the value of asymbol).Lazy evaluation means you can also do:plop(a = 4, b = non_existing_variable)## [1] 40As b is never evaluated, we don’t have any problem, R never tries tolook for the value of non_existing_variable.We can also find it in control structure:if (TRUE){  12} else {  no_variable}## [1] 12And of course this works on the other side:if (FALSE){  no_variable} else {  12}## [1] 12Only the TRUE part is evaluated. You can also find it in :if (TRUE || no_variable) {  12}## [1] 12Note that this won’t work with |, as:  The shorter form performs elementwise comparisons in much the same wayas arithmetic operators. The longer form evaluates left to rightexamining only the first element of each vector. Evaluation proceedsonly until the result is determined. (from ?base::Logic)if (TRUE | no_variable) {  12}## Error in eval(expr, envir, enclos): objet &#39;no_variable&#39; introuvableWhy lazy evalLazy evaluation is not R-restricted: it is also found in other languages(mainly functional languages). Its opposite is strict/eager evaluation,which is the default in most programming languages.Lazy evaluation is implemented in R as it allows a program to be moreefficient when used interactively: only the necessary symbols areevaluated, that is to say that only the needed objects will be loaded inmemory and/or looked for. The downside being that it can make aprogram less predictable, as you are never 100% sure a symbol will beevaluated (but this is for more advanced use-cases).It’s a typical mechanism for functional language, as it allows functionsto be defined without any values in it. That means that you can createthis object without a and b having a value.ping &lt;- function(a,b){  a + b}To quote R: a language for data analysis andgraphics:  The expression given as function arguments are not evaluated beforethe function is called. Instead, the expressions are packaged togetherwith the environment in which they should be evaluated and it is thispackage that is passed to the function. Evaluation only takes placewhen the argument is required.In fact, you’re already familiar with it, as I’m sure you can predictthe output of this function:mean_of_that &lt;- function(x, mean_of = mean(x)){  # Of course I could use na.rm, it&#39;s an example ;)  x &lt;- x[!is.na(x)]  print(x)  cat(&quot;The mean of x is&quot;, mean_of)}mean_of_that(c(1,2,3,4,NA))## [1] 1 2 3 4## The mean of x is 2.5Here, if the output does not surprise you, it’s because you already haveunderstood what is lazy eval (good news, right!): when R tries toaccess the value of mean_of, it looks for the value of x. At thatexact moment, as the value of x has changed (no NA), you have the meanof the new x. If mean_of had been evaluated as soon as the functionwas called, the value of mean_of would have been NA.See also :ping &lt;- function(a = Sys.time(), b = Sys.time(), c = Sys.time()){  print(a)  Sys.sleep(1)  print(b)  Sys.sleep(1)  print(c)}ping()## [1] &quot;2018-09-04 08:27:00 CEST&quot;## [1] &quot;2018-09-04 08:27:01 CEST&quot;## [1] &quot;2018-09-04 08:27:02 CEST&quot;You can see that each element has a different value. If the elements hadbeen evaluated at the moment the function was called, they would allhave the same value (i.e the Sys.time of when the function is called).LazyData, and promisesIf specified in the DESCRIPTION, datasets from packages are lazilyloaded. It means two things :  When library(pkg), the datasets are not loaded in the environment(definitely more efficient)  That you can “preload” them with data(&quot;dataset&quot;), and get apromise backIf you run this in a fresh R session:library(ggplot2)data(&quot;diamonds&quot;)This is what you’re going to get:A &lt;Promise&gt;.At this point, as I still don’t have called the dataset, the symbols(diamonds) holds a promise to this dataset, which is still not inmemory:library(pryr)mem_used()## 44.6 MB#Now I need diamondsnrow(diamonds)## [1] 53940mem_used()## 48.1 MBAs you can see, the memory used by my R session has changed when Iactually needed diamonds. This latter is no longer a promise, but aloaded dataset in my environment.Note that substitute doesn’t “break the promise”:data(&quot;txhousing&quot;)mem_used()## 48.1 MBsubstitute(txhousing)## txhousingmem_used()## 48.1 MBnrow(txhousing)## [1] 8602mem_used()## 48.6 MBHere is an example of Non-standard evaluation with substitute: even ifI’m passing txhousing as a symbol, substitute(txhousing) does notbehave as nrow(txhousing). The symbol is not evaluated in the standardway, the promise is still a promise, and the symbol txhousing does notbring the object in the environment.Let’s just put it into a function:substiplop &lt;- function(dataset){  # deparse turns a symbol into a character  name &lt;- deparse(substitute(dataset))  paste(&quot;You called&quot;, name)}library(ggplot2)mem_used()## 48.6 MBsubstiplop(dataset = economics_long)## [1] &quot;You called economics_long&quot;mem_used()## 48.6 MBAs you can see, no economics_long has been evaluated. Now compare:nrowplop &lt;- function(dataset){  paste(&quot;You called a dataset with&quot;, nrow(dataset))}mem_used()## 48.6 MBnrowplop(dataset = economics_long)## [1] &quot;You called a dataset with 2870&quot;mem_used()## 48.7 MBKeep all this in mind, we’ll be back to it in a few.More about lazy evaluationOk, now, now let’s dig deeper into lazy evaluation.RTFMLet’s start with the beginning: the R-Manuals. promises and lazyevaluation are referred to several times in the R LanguageDefinition.If we go to Promiseobjects,we learn that :  Promise objects are part of R’s lazy evaluation mechanism. Theycontain three slots: a value, an expression, and anenvironment. When a function is called the arguments are matchedand then each of the formal arguments is bound to a promise. Theexpression that was given for that formal argument and a pointer tothe environment the function was called from are stored in thepromise.What that means is that: when calling a function, arguments are turnedinto promises. These promises contain: an expression, and anenvironment (no value at first). In a sense, what this object holds isnot a value, but a recipe for a value, saying “evaluate thisexpression in this environment”, and this recipe is called only when weneed it.  Until that argument is accessed there is no value associated withthe promise. When the argument is accessed, the stored expression isevaluated in the stored environment, and the result is returned. Theresult is also saved by the promise. The substitute function willextract the content of the expression slot. This allows the programmerto access either the value or the expression associated with thepromise.So, here’s a clear definition for the substitute function: an“expression slot content extractor” :) In other words, when passingarguments to a function, they are immediately turned into a promise, adata structure with an expression, and a recipe for a value. But here’sthe thing: thanks to lazy evaluation, you can access this expressionwithout having to actually give an argument a value (i.e., withouthaving to look for its value).Remember our function plop, and :plop(a = 4, b = non_existing_variable)## [1] 40With our newly acquired knowledge, we can tell what’s happening here:b is created as a promise, containing the expressionnon_existing_variable. It contains no value, but as we never try toactually evaluate it (i.e. try to access its value), there is no error.Let’s continue on that note: b is created as a promise (expression +environment), and substitute allows to get the expression out of apromise. So we could modify our function to play with the expressioncontained in b:plop &lt;- function(a, b) {  cat(&quot;You entered&quot;, deparse(substitute(b)), &quot;as `b` \n&quot;)  a * 10}plop(a = 4, b = non_existing_variable)## You entered non_existing_variable as `b`## [1] 40But that also means we can evaluate b the way we want (for example tocreate a dplyr::pull-like function)plop &lt;- function(a, b) {  eval(substitute(b), envir = a)}plop(iris, Species)[1:10]##  [1] setosa setosa setosa setosa setosa setosa setosa setosa setosa setosa## Levels: setosa versicolor virginicaplop(iris, Sepal.Length)[1:10]##  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9(More about environment evaluationhere)Or, even, that we could write a dplyr::mutate-like function:mutator &lt;- function(a, col_name_computation){  # In three steps here to detail the process, could be one line of code  col_name_computation_sub &lt;- substitute(col_name_computation)  res &lt;- eval(col_name_computation_sub, envir = a)  a$new_col &lt;- res  a}mutator(head(iris), Sepal.Length * 10)##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species new_col## 1          5.1         3.5          1.4         0.2  setosa      51## 2          4.9         3.0          1.4         0.2  setosa      49## 3          4.7         3.2          1.3         0.2  setosa      47## 4          4.6         3.1          1.5         0.2  setosa      46## 5          5.0         3.6          1.4         0.2  setosa      50## 6          5.4         3.9          1.7         0.4  setosa      54(Of course, the real dplyr::mutate does A LOT more, it’s just for theexample)Let’s sum up what is happening here :  I give a and new_col expressions as inputs  Both a and new_col become promises, linked to the expressionsgiven as inputs. None are evaluated at this point, thanks to lazyevaluation  R extracts the expression contained in col_name_computation, putsit in col_name_computation_sub, which is at that stage a call.  I have defined a custom rule for evaluation, and this call isevaluated in the context of the dataframe given (remember thatdataframes are lists, and you can eval a symbol inside a list).  This newly created vector is put inside the dataframe as a column  The modified data.frame is returnedTo dissect a little bit what is happening:mutator &lt;- function(a, col_name_computation){  col_name_computation_sub &lt;- substitute(col_name_computation)  cat(&quot;`col_name_computation_sub` is: &quot;)  print(col_name_computation_sub)  cat(&quot;its class is: &quot;)  print(class(col_name_computation_sub))  cat(&quot;it is evaluated in: &quot;)  print(substitute(a))    res &lt;- eval(col_name_computation_sub, envir = a)  cat(&quot;`res` is: &quot;)  print(res)    a$new_col &lt;- res  invisible(a)}mutator(head(iris), Sepal.Length * 10)## `col_name_computation_sub` is: Sepal.Length * 10## its class is: [1] &quot;call&quot;## it is evaluated in: head(iris)## `res` is: [1] 51 49 47 46 50 54mutator(head(mtcars), mpg * disp)## `col_name_computation_sub` is: mpg * disp## its class is: [1] &quot;call&quot;## it is evaluated in: head(mtcars)## `res` is: [1] 3360.0 3360.0 2462.4 5521.2 6732.0 4072.5Detecting promisesIn case you were wondering how to check if something is a promise… let’scontinue from the manual:  Within the R language, promise objects are almost only seenimplicitly: actual function arguments are of this type. There is alsoa delayedAssign function that will make a promise out of anexpression. There is generally no way in R code to check whether anobject is a promise or not, nor is there a way to use R code todetermine the environment of a promise.There is a way to create a promise, through the delayedAssignfunction. At the time of writing I haven’t found a use case for that,but I’ll be glad to hear about one in the comment!delayedAssign(&quot;a&quot;, this_var)a## Error in eval(expr, envir, enclos): objet &#39;this_var&#39; introuvablethis_var &lt;- 12a## Warning: redémarrage de l&#39;évaluation d&#39;une promesse interrompue## [1] 12Evaluation, and force()ing evaluationFrom Argumentevaluation:  The process of filling the value slot of a promise by evaluating thecontents of the expression slot in the promise’s environment is calledforcing the promise. A promise will only be forced once, the valueslot content being used directly later on. A promise is forced whenits value is needed.Forcing is “filling” the value slot of a promise. This can be done bysimply calling the object, or by using the force function (note thatforce is just semantic sugar). Let’s see how this can be useful with aplot (fromSubstitutions)logplot &lt;- function(y, ylab = deparse(substitute(y))) {    y &lt;- log(y)    plot(y, ylab = ylab)}logplot(1:10)Here, as ylab is forced after y has changed, the labels is the onefrom the modified y. Which can be changed if we force the ylab before:logplot &lt;- function(y, ylab = deparse(substitute(y))) {    force(ylab)    y &lt;- log(y)    plot(y, ylab = ylab)}logplot(1:10)As said before: the promise is only forced once, so ylab finds itsvalue in the first line of code.Remember our mean_of_that function from before. Look at how it changesif I force the evaluation of mean_of before changing x:mean_of_that &lt;- function(x, mean_of = mean(x)){  force(mean_of)  x &lt;- x[!is.na(x)]  print(x)  cat(&quot;The mean of x is&quot;, mean_of)}mean_of_that(c(1,2,3,4,NA))## [1] 1 2 3 4## The mean of x is NAMore about lazy evaluationHere are some random quotes and elements found on the internet, notnecessarily linked to R:      R: a language for data analysis andgraphics        Lazy Evaluation at the Portland PatternRepository    Lazy evaluation : Waiting until the last possible moment to evaluatean expression, especially for the purpose of optimizing an algorithmthat may not use the value of the expression.      Advanced R on Functionarguments        Why Functional ProgrammingMatters    Since this method of evaluation runs f as little as possible, it iscalled “lazy evaluation”. It makes it practical to modularize aprogram as a generator that constructs a large number of possibleanswers, and a selector that chooses the appropriate one. While someother systems allow programs to be run together in this manner, onlyfunctional languages (and not even all of them) use lazy evaluationuniformly for every function call, allowing any part of a program tobe modularized in this way. Lazy evaluation is perhaps the mostpowerful tool for modularization in the functional programmer’srepertoire.      A Natural Semantics for LazyEvaluation        How Lazy Evaluation Works inHaskell        LAZYEVALUATION    Lazy evaluation (or call-by-need) delays evaluating an expressionuntil it is actually needed; when it is evaluated, the result is savedso repeated evaluation is not needed. Lazy evaluation is a techniquethat can make some algorithms easier to express compactly or much moreefficiently, or both. It is the normal evaluation mechanism for strictfunctional (side-effect-free) languages such as Haskell. However,automatic lazy evaluation is awkward to combine with side-effects suchas input-output. It can also be difficult to implement lazy evaluationefficiently, as it requires more book-keeping.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="About lazy evaluation">
+  <meta name="twitter:description" content="A follow-up on Thomas Lumley follow-upposton Miles McBain post aboutquotation.In this post, Thomas is continuing Miles exploration of the concept ofquoting and evaluation in R. Thomas speaks a little bit about lazyevaluation, and I decided to continue to explore this concept. Notably Iwish to start over from on this quote from the blog post:  “In reality, to allow for lazy evaluation, R has a special datastructure called a promise, which stores the expression until you lookat it then evaluates it. R also has substitute() to get the expressionout of the promise.”Lazy Eval: a starting pointI’ve already written about lazyevaluation, but here is more about that concept.A quick definitionLazy evaluation is a programming strategy that allows a symbol to beevaluated only when needed. In other words, a symbol can be defined(e.g in a function), and it will only be evaluated when it is needed(and that moment can be never). This is why you can do:plop &lt;- function(a, b){  a * 10}plop(4)## [1] 40Here, b is defined as a function argument, but never evaluated. So noerror. This strategy is called “lazy” as it does “the strict minimum” ofevaluation (remember that evaluation is looking for the value of asymbol).Lazy evaluation means you can also do:plop(a = 4, b = non_existing_variable)## [1] 40As b is never evaluated, we don’t have any problem, R never tries tolook for the value of non_existing_variable.We can also find it in control structure:if (TRUE){  12} else {  no_variable}## [1] 12And of course this works on the other side:if (FALSE){  no_variable} else {  12}## [1] 12Only the TRUE part is evaluated. You can also find it in :if (TRUE || no_variable) {  12}## [1] 12Note that this won’t work with |, as:  The shorter form performs elementwise comparisons in much the same wayas arithmetic operators. The longer form evaluates left to rightexamining only the first element of each vector. Evaluation proceedsonly until the result is determined. (from ?base::Logic)if (TRUE | no_variable) {  12}## Error in eval(expr, envir, enclos): objet &#39;no_variable&#39; introuvableWhy lazy evalLazy evaluation is not R-restricted: it is also found in other languages(mainly functional languages). Its opposite is strict/eager evaluation,which is the default in most programming languages.Lazy evaluation is implemented in R as it allows a program to be moreefficient when used interactively: only the necessary symbols areevaluated, that is to say that only the needed objects will be loaded inmemory and/or looked for. The downside being that it can make aprogram less predictable, as you are never 100% sure a symbol will beevaluated (but this is for more advanced use-cases).It’s a typical mechanism for functional language, as it allows functionsto be defined without any values in it. That means that you can createthis object without a and b having a value.ping &lt;- function(a,b){  a + b}To quote R: a language for data analysis andgraphics:  The expression given as function arguments are not evaluated beforethe function is called. Instead, the expressions are packaged togetherwith the environment in which they should be evaluated and it is thispackage that is passed to the function. Evaluation only takes placewhen the argument is required.In fact, you’re already familiar with it, as I’m sure you can predictthe output of this function:mean_of_that &lt;- function(x, mean_of = mean(x)){  # Of course I could use na.rm, it&#39;s an example ;)  x &lt;- x[!is.na(x)]  print(x)  cat(&quot;The mean of x is&quot;, mean_of)}mean_of_that(c(1,2,3,4,NA))## [1] 1 2 3 4## The mean of x is 2.5Here, if the output does not surprise you, it’s because you already haveunderstood what is lazy eval (good news, right!): when R tries toaccess the value of mean_of, it looks for the value of x. At thatexact moment, as the value of x has changed (no NA), you have the meanof the new x. If mean_of had been evaluated as soon as the functionwas called, the value of mean_of would have been NA.See also :ping &lt;- function(a = Sys.time(), b = Sys.time(), c = Sys.time()){  print(a)  Sys.sleep(1)  print(b)  Sys.sleep(1)  print(c)}ping()## [1] &quot;2018-09-04 08:27:00 CEST&quot;## [1] &quot;2018-09-04 08:27:01 CEST&quot;## [1] &quot;2018-09-04 08:27:02 CEST&quot;You can see that each element has a different value. If the elements hadbeen evaluated at the moment the function was called, they would allhave the same value (i.e the Sys.time of when the function is called).LazyData, and promisesIf specified in the DESCRIPTION, datasets from packages are lazilyloaded. It means two things :  When library(pkg), the datasets are not loaded in the environment(definitely more efficient)  That you can “preload” them with data(&quot;dataset&quot;), and get apromise backIf you run this in a fresh R session:library(ggplot2)data(&quot;diamonds&quot;)This is what you’re going to get:A &lt;Promise&gt;.At this point, as I still don’t have called the dataset, the symbols(diamonds) holds a promise to this dataset, which is still not inmemory:library(pryr)mem_used()## 44.6 MB#Now I need diamondsnrow(diamonds)## [1] 53940mem_used()## 48.1 MBAs you can see, the memory used by my R session has changed when Iactually needed diamonds. This latter is no longer a promise, but aloaded dataset in my environment.Note that substitute doesn’t “break the promise”:data(&quot;txhousing&quot;)mem_used()## 48.1 MBsubstitute(txhousing)## txhousingmem_used()## 48.1 MBnrow(txhousing)## [1] 8602mem_used()## 48.6 MBHere is an example of Non-standard evaluation with substitute: even ifI’m passing txhousing as a symbol, substitute(txhousing) does notbehave as nrow(txhousing). The symbol is not evaluated in the standardway, the promise is still a promise, and the symbol txhousing does notbring the object in the environment.Let’s just put it into a function:substiplop &lt;- function(dataset){  # deparse turns a symbol into a character  name &lt;- deparse(substitute(dataset))  paste(&quot;You called&quot;, name)}library(ggplot2)mem_used()## 48.6 MBsubstiplop(dataset = economics_long)## [1] &quot;You called economics_long&quot;mem_used()## 48.6 MBAs you can see, no economics_long has been evaluated. Now compare:nrowplop &lt;- function(dataset){  paste(&quot;You called a dataset with&quot;, nrow(dataset))}mem_used()## 48.6 MBnrowplop(dataset = economics_long)## [1] &quot;You called a dataset with 2870&quot;mem_used()## 48.7 MBKeep all this in mind, we’ll be back to it in a few.More about lazy evaluationOk, now, now let’s dig deeper into lazy evaluation.RTFMLet’s start with the beginning: the R-Manuals. promises and lazyevaluation are referred to several times in the R LanguageDefinition.If we go to Promiseobjects,we learn that :  Promise objects are part of R’s lazy evaluation mechanism. Theycontain three slots: a value, an expression, and anenvironment. When a function is called the arguments are matchedand then each of the formal arguments is bound to a promise. Theexpression that was given for that formal argument and a pointer tothe environment the function was called from are stored in thepromise.What that means is that: when calling a function, arguments are turnedinto promises. These promises contain: an expression, and anenvironment (no value at first). In a sense, what this object holds isnot a value, but a recipe for a value, saying “evaluate thisexpression in this environment”, and this recipe is called only when weneed it.  Until that argument is accessed there is no value associated withthe promise. When the argument is accessed, the stored expression isevaluated in the stored environment, and the result is returned. Theresult is also saved by the promise. The substitute function willextract the content of the expression slot. This allows the programmerto access either the value or the expression associated with thepromise.So, here’s a clear definition for the substitute function: an“expression slot content extractor” :) In other words, when passingarguments to a function, they are immediately turned into a promise, adata structure with an expression, and a recipe for a value. But here’sthe thing: thanks to lazy evaluation, you can access this expressionwithout having to actually give an argument a value (i.e., withouthaving to look for its value).Remember our function plop, and :plop(a = 4, b = non_existing_variable)## [1] 40With our newly acquired knowledge, we can tell what’s happening here:b is created as a promise, containing the expressionnon_existing_variable. It contains no value, but as we never try toactually evaluate it (i.e. try to access its value), there is no error.Let’s continue on that note: b is created as a promise (expression +environment), and substitute allows to get the expression out of apromise. So we could modify our function to play with the expressioncontained in b:plop &lt;- function(a, b) {  cat(&quot;You entered&quot;, deparse(substitute(b)), &quot;as `b` \n&quot;)  a * 10}plop(a = 4, b = non_existing_variable)## You entered non_existing_variable as `b`## [1] 40But that also means we can evaluate b the way we want (for example tocreate a dplyr::pull-like function)plop &lt;- function(a, b) {  eval(substitute(b), envir = a)}plop(iris, Species)[1:10]##  [1] setosa setosa setosa setosa setosa setosa setosa setosa setosa setosa## Levels: setosa versicolor virginicaplop(iris, Sepal.Length)[1:10]##  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9(More about environment evaluationhere)Or, even, that we could write a dplyr::mutate-like function:mutator &lt;- function(a, col_name_computation){  # In three steps here to detail the process, could be one line of code  col_name_computation_sub &lt;- substitute(col_name_computation)  res &lt;- eval(col_name_computation_sub, envir = a)  a$new_col &lt;- res  a}mutator(head(iris), Sepal.Length * 10)##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species new_col## 1          5.1         3.5          1.4         0.2  setosa      51## 2          4.9         3.0          1.4         0.2  setosa      49## 3          4.7         3.2          1.3         0.2  setosa      47## 4          4.6         3.1          1.5         0.2  setosa      46## 5          5.0         3.6          1.4         0.2  setosa      50## 6          5.4         3.9          1.7         0.4  setosa      54(Of course, the real dplyr::mutate does A LOT more, it’s just for theexample)Let’s sum up what is happening here :  I give a and new_col expressions as inputs  Both a and new_col become promises, linked to the expressionsgiven as inputs. None are evaluated at this point, thanks to lazyevaluation  R extracts the expression contained in col_name_computation, putsit in col_name_computation_sub, which is at that stage a call.  I have defined a custom rule for evaluation, and this call isevaluated in the context of the dataframe given (remember thatdataframes are lists, and you can eval a symbol inside a list).  This newly created vector is put inside the dataframe as a column  The modified data.frame is returnedTo dissect a little bit what is happening:mutator &lt;- function(a, col_name_computation){  col_name_computation_sub &lt;- substitute(col_name_computation)  cat(&quot;`col_name_computation_sub` is: &quot;)  print(col_name_computation_sub)  cat(&quot;its class is: &quot;)  print(class(col_name_computation_sub))  cat(&quot;it is evaluated in: &quot;)  print(substitute(a))    res &lt;- eval(col_name_computation_sub, envir = a)  cat(&quot;`res` is: &quot;)  print(res)    a$new_col &lt;- res  invisible(a)}mutator(head(iris), Sepal.Length * 10)## `col_name_computation_sub` is: Sepal.Length * 10## its class is: [1] &quot;call&quot;## it is evaluated in: head(iris)## `res` is: [1] 51 49 47 46 50 54mutator(head(mtcars), mpg * disp)## `col_name_computation_sub` is: mpg * disp## its class is: [1] &quot;call&quot;## it is evaluated in: head(mtcars)## `res` is: [1] 3360.0 3360.0 2462.4 5521.2 6732.0 4072.5Detecting promisesIn case you were wondering how to check if something is a promise… let’scontinue from the manual:  Within the R language, promise objects are almost only seenimplicitly: actual function arguments are of this type. There is alsoa delayedAssign function that will make a promise out of anexpression. There is generally no way in R code to check whether anobject is a promise or not, nor is there a way to use R code todetermine the environment of a promise.There is a way to create a promise, through the delayedAssignfunction. At the time of writing I haven’t found a use case for that,but I’ll be glad to hear about one in the comment!delayedAssign(&quot;a&quot;, this_var)a## Error in eval(expr, envir, enclos): objet &#39;this_var&#39; introuvablethis_var &lt;- 12a## Warning: redémarrage de l&#39;évaluation d&#39;une promesse interrompue## [1] 12Evaluation, and force()ing evaluationFrom Argumentevaluation:  The process of filling the value slot of a promise by evaluating thecontents of the expression slot in the promise’s environment is calledforcing the promise. A promise will only be forced once, the valueslot content being used directly later on. A promise is forced whenits value is needed.Forcing is “filling” the value slot of a promise. This can be done bysimply calling the object, or by using the force function (note thatforce is just semantic sugar). Let’s see how this can be useful with aplot (fromSubstitutions)logplot &lt;- function(y, ylab = deparse(substitute(y))) {    y &lt;- log(y)    plot(y, ylab = ylab)}logplot(1:10)Here, as ylab is forced after y has changed, the labels is the onefrom the modified y. Which can be changed if we force the ylab before:logplot &lt;- function(y, ylab = deparse(substitute(y))) {    force(ylab)    y &lt;- log(y)    plot(y, ylab = ylab)}logplot(1:10)As said before: the promise is only forced once, so ylab finds itsvalue in the first line of code.Remember our mean_of_that function from before. Look at how it changesif I force the evaluation of mean_of before changing x:mean_of_that &lt;- function(x, mean_of = mean(x)){  force(mean_of)  x &lt;- x[!is.na(x)]  print(x)  cat(&quot;The mean of x is&quot;, mean_of)}mean_of_that(c(1,2,3,4,NA))## [1] 1 2 3 4## The mean of x is NAMore about lazy evaluationHere are some random quotes and elements found on the internet, notnecessarily linked to R:      R: a language for data analysis andgraphics        Lazy Evaluation at the Portland PatternRepository    Lazy evaluation : Waiting until the last possible moment to evaluatean expression, especially for the purpose of optimizing an algorithmthat may not use the value of the expression.      Advanced R on Functionarguments        Why Functional ProgrammingMatters    Since this method of evaluation runs f as little as possible, it iscalled “lazy evaluation”. It makes it practical to modularize aprogram as a generator that constructs a large number of possibleanswers, and a selector that chooses the appropriate one. While someother systems allow programs to be run together in this manner, onlyfunctional languages (and not even all of them) use lazy evaluationuniformly for every function call, allowing any part of a program tobe modularized in this way. Lazy evaluation is perhaps the mostpowerful tool for modularization in the functional programmer’srepertoire.      A Natural Semantics for LazyEvaluation        How Lazy Evaluation Works inHaskell        LAZYEVALUATION    Lazy evaluation (or call-by-need) delays evaluating an expressionuntil it is actually needed; when it is evaluated, the result is savedso repeated evaluation is not needed. Lazy evaluation is a techniquethat can make some algorithms easier to express compactly or much moreefficiently, or both. It is the normal evaluation mechanism for strictfunctional (side-effect-free) languages such as Haskell. However,automatic lazy evaluation is awkward to combine with side-effects suchas input-output. It can also be difficult to implement lazy evaluationefficiently, as it requires more book-keeping.">
+  <meta name="twitter:url" content="http://localhost:4000/lazyeval/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-07-30T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/lazyeval/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="About lazy evaluation">
+    <meta itemprop="description" content="A follow-up on Thomas Lumley follow-upposton Miles McBain post aboutquotation.In this post, Thomas is continuing Miles exploration of the concept ofquoting and evaluation in R. Thomas speaks a little bit about lazyevaluation, and I decided to continue to explore this concept. Notably Iwish to start over from on this quote from the blog post:  “In reality, to allow for lazy evaluation, R has a special datastructure called a promise, which stores the expression until you lookat it then evaluates it. R also has substitute() to get the expressionout of the promise.”Lazy Eval: a starting pointI’ve already written about lazyevaluation, but here is more about that concept.A quick definitionLazy evaluation is a programming strategy that allows a symbol to beevaluated only when needed. In other words, a symbol can be defined(e.g in a function), and it will only be evaluated when it is needed(and that moment can be never). This is why you can do:plop &lt;- function(a, b){  a * 10}plop(4)## [1] 40Here, b is defined as a function argument, but never evaluated. So noerror. This strategy is called “lazy” as it does “the strict minimum” ofevaluation (remember that evaluation is looking for the value of asymbol).Lazy evaluation means you can also do:plop(a = 4, b = non_existing_variable)## [1] 40As b is never evaluated, we don’t have any problem, R never tries tolook for the value of non_existing_variable.We can also find it in control structure:if (TRUE){  12} else {  no_variable}## [1] 12And of course this works on the other side:if (FALSE){  no_variable} else {  12}## [1] 12Only the TRUE part is evaluated. You can also find it in :if (TRUE || no_variable) {  12}## [1] 12Note that this won’t work with |, as:  The shorter form performs elementwise comparisons in much the same wayas arithmetic operators. The longer form evaluates left to rightexamining only the first element of each vector. Evaluation proceedsonly until the result is determined. (from ?base::Logic)if (TRUE | no_variable) {  12}## Error in eval(expr, envir, enclos): objet &#39;no_variable&#39; introuvableWhy lazy evalLazy evaluation is not R-restricted: it is also found in other languages(mainly functional languages). Its opposite is strict/eager evaluation,which is the default in most programming languages.Lazy evaluation is implemented in R as it allows a program to be moreefficient when used interactively: only the necessary symbols areevaluated, that is to say that only the needed objects will be loaded inmemory and/or looked for. The downside being that it can make aprogram less predictable, as you are never 100% sure a symbol will beevaluated (but this is for more advanced use-cases).It’s a typical mechanism for functional language, as it allows functionsto be defined without any values in it. That means that you can createthis object without a and b having a value.ping &lt;- function(a,b){  a + b}To quote R: a language for data analysis andgraphics:  The expression given as function arguments are not evaluated beforethe function is called. Instead, the expressions are packaged togetherwith the environment in which they should be evaluated and it is thispackage that is passed to the function. Evaluation only takes placewhen the argument is required.In fact, you’re already familiar with it, as I’m sure you can predictthe output of this function:mean_of_that &lt;- function(x, mean_of = mean(x)){  # Of course I could use na.rm, it&#39;s an example ;)  x &lt;- x[!is.na(x)]  print(x)  cat(&quot;The mean of x is&quot;, mean_of)}mean_of_that(c(1,2,3,4,NA))## [1] 1 2 3 4## The mean of x is 2.5Here, if the output does not surprise you, it’s because you already haveunderstood what is lazy eval (good news, right!): when R tries toaccess the value of mean_of, it looks for the value of x. At thatexact moment, as the value of x has changed (no NA), you have the meanof the new x. If mean_of had been evaluated as soon as the functionwas called, the value of mean_of would have been NA.See also :ping &lt;- function(a = Sys.time(), b = Sys.time(), c = Sys.time()){  print(a)  Sys.sleep(1)  print(b)  Sys.sleep(1)  print(c)}ping()## [1] &quot;2018-09-04 08:27:00 CEST&quot;## [1] &quot;2018-09-04 08:27:01 CEST&quot;## [1] &quot;2018-09-04 08:27:02 CEST&quot;You can see that each element has a different value. If the elements hadbeen evaluated at the moment the function was called, they would allhave the same value (i.e the Sys.time of when the function is called).LazyData, and promisesIf specified in the DESCRIPTION, datasets from packages are lazilyloaded. It means two things :  When library(pkg), the datasets are not loaded in the environment(definitely more efficient)  That you can “preload” them with data(&quot;dataset&quot;), and get apromise backIf you run this in a fresh R session:library(ggplot2)data(&quot;diamonds&quot;)This is what you’re going to get:A &lt;Promise&gt;.At this point, as I still don’t have called the dataset, the symbols(diamonds) holds a promise to this dataset, which is still not inmemory:library(pryr)mem_used()## 44.6 MB#Now I need diamondsnrow(diamonds)## [1] 53940mem_used()## 48.1 MBAs you can see, the memory used by my R session has changed when Iactually needed diamonds. This latter is no longer a promise, but aloaded dataset in my environment.Note that substitute doesn’t “break the promise”:data(&quot;txhousing&quot;)mem_used()## 48.1 MBsubstitute(txhousing)## txhousingmem_used()## 48.1 MBnrow(txhousing)## [1] 8602mem_used()## 48.6 MBHere is an example of Non-standard evaluation with substitute: even ifI’m passing txhousing as a symbol, substitute(txhousing) does notbehave as nrow(txhousing). The symbol is not evaluated in the standardway, the promise is still a promise, and the symbol txhousing does notbring the object in the environment.Let’s just put it into a function:substiplop &lt;- function(dataset){  # deparse turns a symbol into a character  name &lt;- deparse(substitute(dataset))  paste(&quot;You called&quot;, name)}library(ggplot2)mem_used()## 48.6 MBsubstiplop(dataset = economics_long)## [1] &quot;You called economics_long&quot;mem_used()## 48.6 MBAs you can see, no economics_long has been evaluated. Now compare:nrowplop &lt;- function(dataset){  paste(&quot;You called a dataset with&quot;, nrow(dataset))}mem_used()## 48.6 MBnrowplop(dataset = economics_long)## [1] &quot;You called a dataset with 2870&quot;mem_used()## 48.7 MBKeep all this in mind, we’ll be back to it in a few.More about lazy evaluationOk, now, now let’s dig deeper into lazy evaluation.RTFMLet’s start with the beginning: the R-Manuals. promises and lazyevaluation are referred to several times in the R LanguageDefinition.If we go to Promiseobjects,we learn that :  Promise objects are part of R’s lazy evaluation mechanism. Theycontain three slots: a value, an expression, and anenvironment. When a function is called the arguments are matchedand then each of the formal arguments is bound to a promise. Theexpression that was given for that formal argument and a pointer tothe environment the function was called from are stored in thepromise.What that means is that: when calling a function, arguments are turnedinto promises. These promises contain: an expression, and anenvironment (no value at first). In a sense, what this object holds isnot a value, but a recipe for a value, saying “evaluate thisexpression in this environment”, and this recipe is called only when weneed it.  Until that argument is accessed there is no value associated withthe promise. When the argument is accessed, the stored expression isevaluated in the stored environment, and the result is returned. Theresult is also saved by the promise. The substitute function willextract the content of the expression slot. This allows the programmerto access either the value or the expression associated with thepromise.So, here’s a clear definition for the substitute function: an“expression slot content extractor” :) In other words, when passingarguments to a function, they are immediately turned into a promise, adata structure with an expression, and a recipe for a value. But here’sthe thing: thanks to lazy evaluation, you can access this expressionwithout having to actually give an argument a value (i.e., withouthaving to look for its value).Remember our function plop, and :plop(a = 4, b = non_existing_variable)## [1] 40With our newly acquired knowledge, we can tell what’s happening here:b is created as a promise, containing the expressionnon_existing_variable. It contains no value, but as we never try toactually evaluate it (i.e. try to access its value), there is no error.Let’s continue on that note: b is created as a promise (expression +environment), and substitute allows to get the expression out of apromise. So we could modify our function to play with the expressioncontained in b:plop &lt;- function(a, b) {  cat(&quot;You entered&quot;, deparse(substitute(b)), &quot;as `b` \n&quot;)  a * 10}plop(a = 4, b = non_existing_variable)## You entered non_existing_variable as `b`## [1] 40But that also means we can evaluate b the way we want (for example tocreate a dplyr::pull-like function)plop &lt;- function(a, b) {  eval(substitute(b), envir = a)}plop(iris, Species)[1:10]##  [1] setosa setosa setosa setosa setosa setosa setosa setosa setosa setosa## Levels: setosa versicolor virginicaplop(iris, Sepal.Length)[1:10]##  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9(More about environment evaluationhere)Or, even, that we could write a dplyr::mutate-like function:mutator &lt;- function(a, col_name_computation){  # In three steps here to detail the process, could be one line of code  col_name_computation_sub &lt;- substitute(col_name_computation)  res &lt;- eval(col_name_computation_sub, envir = a)  a$new_col &lt;- res  a}mutator(head(iris), Sepal.Length * 10)##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species new_col## 1          5.1         3.5          1.4         0.2  setosa      51## 2          4.9         3.0          1.4         0.2  setosa      49## 3          4.7         3.2          1.3         0.2  setosa      47## 4          4.6         3.1          1.5         0.2  setosa      46## 5          5.0         3.6          1.4         0.2  setosa      50## 6          5.4         3.9          1.7         0.4  setosa      54(Of course, the real dplyr::mutate does A LOT more, it’s just for theexample)Let’s sum up what is happening here :  I give a and new_col expressions as inputs  Both a and new_col become promises, linked to the expressionsgiven as inputs. None are evaluated at this point, thanks to lazyevaluation  R extracts the expression contained in col_name_computation, putsit in col_name_computation_sub, which is at that stage a call.  I have defined a custom rule for evaluation, and this call isevaluated in the context of the dataframe given (remember thatdataframes are lists, and you can eval a symbol inside a list).  This newly created vector is put inside the dataframe as a column  The modified data.frame is returnedTo dissect a little bit what is happening:mutator &lt;- function(a, col_name_computation){  col_name_computation_sub &lt;- substitute(col_name_computation)  cat(&quot;`col_name_computation_sub` is: &quot;)  print(col_name_computation_sub)  cat(&quot;its class is: &quot;)  print(class(col_name_computation_sub))  cat(&quot;it is evaluated in: &quot;)  print(substitute(a))    res &lt;- eval(col_name_computation_sub, envir = a)  cat(&quot;`res` is: &quot;)  print(res)    a$new_col &lt;- res  invisible(a)}mutator(head(iris), Sepal.Length * 10)## `col_name_computation_sub` is: Sepal.Length * 10## its class is: [1] &quot;call&quot;## it is evaluated in: head(iris)## `res` is: [1] 51 49 47 46 50 54mutator(head(mtcars), mpg * disp)## `col_name_computation_sub` is: mpg * disp## its class is: [1] &quot;call&quot;## it is evaluated in: head(mtcars)## `res` is: [1] 3360.0 3360.0 2462.4 5521.2 6732.0 4072.5Detecting promisesIn case you were wondering how to check if something is a promise… let’scontinue from the manual:  Within the R language, promise objects are almost only seenimplicitly: actual function arguments are of this type. There is alsoa delayedAssign function that will make a promise out of anexpression. There is generally no way in R code to check whether anobject is a promise or not, nor is there a way to use R code todetermine the environment of a promise.There is a way to create a promise, through the delayedAssignfunction. At the time of writing I haven’t found a use case for that,but I’ll be glad to hear about one in the comment!delayedAssign(&quot;a&quot;, this_var)a## Error in eval(expr, envir, enclos): objet &#39;this_var&#39; introuvablethis_var &lt;- 12a## Warning: redémarrage de l&#39;évaluation d&#39;une promesse interrompue## [1] 12Evaluation, and force()ing evaluationFrom Argumentevaluation:  The process of filling the value slot of a promise by evaluating thecontents of the expression slot in the promise’s environment is calledforcing the promise. A promise will only be forced once, the valueslot content being used directly later on. A promise is forced whenits value is needed.Forcing is “filling” the value slot of a promise. This can be done bysimply calling the object, or by using the force function (note thatforce is just semantic sugar). Let’s see how this can be useful with aplot (fromSubstitutions)logplot &lt;- function(y, ylab = deparse(substitute(y))) {    y &lt;- log(y)    plot(y, ylab = ylab)}logplot(1:10)Here, as ylab is forced after y has changed, the labels is the onefrom the modified y. Which can be changed if we force the ylab before:logplot &lt;- function(y, ylab = deparse(substitute(y))) {    force(ylab)    y &lt;- log(y)    plot(y, ylab = ylab)}logplot(1:10)As said before: the promise is only forced once, so ylab finds itsvalue in the first line of code.Remember our mean_of_that function from before. Look at how it changesif I force the evaluation of mean_of before changing x:mean_of_that &lt;- function(x, mean_of = mean(x)){  force(mean_of)  x &lt;- x[!is.na(x)]  print(x)  cat(&quot;The mean of x is&quot;, mean_of)}mean_of_that(c(1,2,3,4,NA))## [1] 1 2 3 4## The mean of x is NAMore about lazy evaluationHere are some random quotes and elements found on the internet, notnecessarily linked to R:      R: a language for data analysis andgraphics        Lazy Evaluation at the Portland PatternRepository    Lazy evaluation : Waiting until the last possible moment to evaluatean expression, especially for the purpose of optimizing an algorithmthat may not use the value of the expression.      Advanced R on Functionarguments        Why Functional ProgrammingMatters    Since this method of evaluation runs f as little as possible, it iscalled “lazy evaluation”. It makes it practical to modularize aprogram as a generator that constructs a large number of possibleanswers, and a selector that chooses the appropriate one. While someother systems allow programs to be run together in this manner, onlyfunctional languages (and not even all of them) use lazy evaluationuniformly for every function call, allowing any part of a program tobe modularized in this way. Lazy evaluation is perhaps the mostpowerful tool for modularization in the functional programmer’srepertoire.      A Natural Semantics for LazyEvaluation        How Lazy Evaluation Works inHaskell        LAZYEVALUATION    Lazy evaluation (or call-by-need) delays evaluating an expressionuntil it is actually needed; when it is evaluated, the result is savedso repeated evaluation is not needed. Lazy evaluation is a techniquethat can make some algorithms easier to express compactly or much moreefficiently, or both. It is the normal evaluation mechanism for strictfunctional (side-effect-free) languages such as Haskell. However,automatic lazy evaluation is awkward to combine with side-effects suchas input-output. It can also be difficult to implement lazy evaluationefficiently, as it requires more book-keeping.">
+    <meta itemprop="datePublished" content="July 30, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">About lazy evaluation
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  13 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>A follow-up on Thomas Lumley <a href="http://notstatschat.rbind.io/2018/07/30/quoting-and-macros-in-r/">follow-up
+post</a>
+on Miles McBain <a href="https://milesmcbain.xyz/the-roots-of-quotation/">post about
+quotation</a>.</p>
+
+<p>In this post, Thomas is continuing Miles exploration of the concept of
+quoting and evaluation in R. Thomas speaks a little bit about lazy
+evaluation, and I decided to continue to explore this concept. Notably I
+wish to start over from on this quote from the blog post:</p>
+
+<blockquote>
+  <p>“In reality, to allow for lazy evaluation, R has a special data
+structure called a promise, which stores the expression until you look
+at it then evaluates it. R also has substitute() to get the expression
+out of the promise.”</p>
+</blockquote>
+
+<h2 id="lazy-eval-a-starting-point">Lazy Eval: a starting point</h2>
+
+<p><a href="https://colinfay.me/tidyeval-1/">I’ve already written about</a> lazy
+evaluation, but here is more about that concept.</p>
+
+<h3 id="a-quick-definition">A quick definition</h3>
+
+<p>Lazy evaluation is a programming strategy that allows a <strong>symbol to be
+evaluated only when needed</strong>. In other words, a symbol can be defined
+(e.g in a function), and it will only be evaluated when it is needed
+(and that moment can be never). This is why you can do:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">){</span><span class="w">
+  </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">plop</span><span class="p">(</span><span class="m">4</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 40
+</code></pre></div></div>
+
+<p>Here, <code class="highlighter-rouge">b</code> is defined as a function argument, but never evaluated. So no
+error. This strategy is called “lazy” as it does “the strict minimum” of
+evaluation (remember that evaluation is looking for the value of a
+symbol).</p>
+
+<p>Lazy evaluation means you can also do:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plop</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">non_existing_variable</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 40
+</code></pre></div></div>
+
+<p>As <code class="highlighter-rouge">b</code> is never evaluated, we don’t have any problem, R never tries to
+look for the value of <code class="highlighter-rouge">non_existing_variable</code>.</p>
+
+<p>We can also find it in control structure:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kc">TRUE</span><span class="p">){</span><span class="w">
+  </span><span class="m">12</span><span class="w">
+</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">no_variable</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 12
+</code></pre></div></div>
+
+<p>And of course this works on the other side:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kc">FALSE</span><span class="p">){</span><span class="w">
+  </span><span class="n">no_variable</span><span class="w">
+</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="m">12</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 12
+</code></pre></div></div>
+
+<p>Only the <code class="highlighter-rouge">TRUE</code> part is evaluated. You can also find it in :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kc">TRUE</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">no_variable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="m">12</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 12
+</code></pre></div></div>
+
+<p>Note that this won’t work with <code class="highlighter-rouge">|</code>, as:</p>
+
+<blockquote>
+  <p>The shorter form performs elementwise comparisons in much the same way
+as arithmetic operators. The longer form evaluates left to right
+examining only the first element of each vector. Evaluation proceeds
+only until the result is determined. (from <code class="highlighter-rouge">?base::Logic</code>)</p>
+</blockquote>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kc">TRUE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">no_variable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="m">12</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error in eval(expr, envir, enclos): objet 'no_variable' introuvable
+</code></pre></div></div>
+
+<h3 id="why-lazy-eval">Why lazy eval</h3>
+
+<p>Lazy evaluation is not R-restricted: it is also found in other languages
+(mainly functional languages). Its opposite is strict/eager evaluation,
+which is the default in most programming languages.</p>
+
+<p>Lazy evaluation is implemented in R as it allows a program to be more
+efficient when used interactively: <strong>only the necessary symbols are
+evaluated, that is to say that only the needed objects will be loaded in
+memory and/or looked for</strong>. The downside being that it can make a
+program less predictable, as you are never 100% sure a symbol will be
+evaluated (but this is for more advanced use-cases).</p>
+
+<p>It’s a typical mechanism for functional language, as it allows functions
+to be defined without any values in it. That means that you can create
+this object without <code class="highlighter-rouge">a</code> and <code class="highlighter-rouge">b</code> having a value.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ping</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">){</span><span class="w">
+  </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>To quote <a href="http://www.aliquote.org/cours/2012_biomed/biblio/Ihaka1996.pdf">R: a language for data analysis and
+graphics</a>:</p>
+
+<blockquote>
+  <p>The expression given as function arguments are not evaluated before
+the function is called. Instead, the expressions are packaged together
+with the environment in which they should be evaluated and it is this
+package that is passed to the function. Evaluation only takes place
+when the argument is required.</p>
+</blockquote>
+
+<p>In fact, you’re already familiar with it, as I’m sure you can predict
+the output of this function:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mean_of_that</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">mean_of</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)){</span><span class="w">
+  </span><span class="c1"># Of course I could use na.rm, it's an example ;)</span><span class="w">
+  </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">
+  </span><span class="n">cat</span><span class="p">(</span><span class="s2">"The mean of x is"</span><span class="p">,</span><span class="w"> </span><span class="n">mean_of</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">mean_of_that</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="kc">NA</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 1 2 3 4
+## The mean of x is 2.5
+</code></pre></div></div>
+
+<p>Here, if the output does not surprise you, it’s because you already have
+understood what is lazy eval (good news, right!): when R tries to
+access the value of <code class="highlighter-rouge">mean_of</code>, it looks for the value of <code class="highlighter-rouge">x</code>. At that
+exact moment, as the value of <code class="highlighter-rouge">x</code> has changed (no NA), you have the mean
+of the new <code class="highlighter-rouge">x</code>. If <code class="highlighter-rouge">mean_of</code> had been evaluated as soon as the function
+was called, the value of <code class="highlighter-rouge">mean_of</code> would have been <code class="highlighter-rouge">NA</code>.</p>
+
+<p>See also :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ping</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Sys.time</span><span class="p">(),</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Sys.time</span><span class="p">(),</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Sys.time</span><span class="p">()){</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w">
+  </span><span class="n">Sys.sleep</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="w">
+  </span><span class="n">Sys.sleep</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">ping</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "2018-09-04 08:27:00 CEST"
+## [1] "2018-09-04 08:27:01 CEST"
+## [1] "2018-09-04 08:27:02 CEST"
+</code></pre></div></div>
+
+<p>You can see that each element has a different value. If the elements had
+been evaluated at the moment the function was called, they would all
+have the same value (i.e the <code class="highlighter-rouge">Sys.time</code> of when the function is called).</p>
+
+<h3 id="lazydata-and-promises">LazyData, and promises</h3>
+
+<p>If specified in the DESCRIPTION, datasets from packages are lazily
+loaded. It means two things :</p>
+
+<ul>
+  <li>When <code class="highlighter-rouge">library(pkg)</code>, the datasets are not loaded in the environment
+(definitely more efficient)</li>
+  <li>That you can “preload” them with <code class="highlighter-rouge">data("dataset")</code>, and get a
+promise back</li>
+</ul>
+
+<p>If you run this in a fresh R session:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+</span><span class="n">data</span><span class="p">(</span><span class="s2">"diamonds"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This is what you’re going to get:</p>
+
+<p><img src="../assets/img/promises.png" alt="" /></p>
+
+<p>A <code class="highlighter-rouge">&lt;Promise&gt;</code>.</p>
+
+<p>At this point, as I still don’t have called the dataset, the symbols
+(<code class="highlighter-rouge">diamonds</code>) holds a promise to this dataset, which is still not in
+memory:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">pryr</span><span class="p">)</span><span class="w">
+</span><span class="n">mem_used</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 44.6 MB
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#Now I need diamonds</span><span class="w">
+</span><span class="n">nrow</span><span class="p">(</span><span class="n">diamonds</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 53940
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mem_used</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 48.1 MB
+</code></pre></div></div>
+
+<p>As you can see, the memory used by my R session has changed when I
+actually needed <code class="highlighter-rouge">diamonds</code>. This latter is no longer a promise, but a
+loaded dataset in my environment.</p>
+
+<p>Note that <code class="highlighter-rouge">substitute</code> doesn’t “break the promise”:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span><span class="p">(</span><span class="s2">"txhousing"</span><span class="p">)</span><span class="w">
+</span><span class="n">mem_used</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 48.1 MB
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">substitute</span><span class="p">(</span><span class="n">txhousing</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## txhousing
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mem_used</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 48.1 MB
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">nrow</span><span class="p">(</span><span class="n">txhousing</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 8602
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mem_used</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 48.6 MB
+</code></pre></div></div>
+
+<p>Here is an example of Non-standard evaluation with <code class="highlighter-rouge">substitute</code>: even if
+I’m passing <code class="highlighter-rouge">txhousing</code> as a symbol, <code class="highlighter-rouge">substitute(txhousing)</code> does not
+behave as <code class="highlighter-rouge">nrow(txhousing)</code>. The symbol is not evaluated in the standard
+way, the promise is still a promise, and the symbol <code class="highlighter-rouge">txhousing</code> does not
+bring the object in the environment.</p>
+
+<p>Let’s just put it into a function:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">substiplop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">dataset</span><span class="p">){</span><span class="w">
+  </span><span class="c1"># deparse turns a symbol into a character</span><span class="w">
+  </span><span class="n">name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">deparse</span><span class="p">(</span><span class="nf">substitute</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span><span class="w">
+  </span><span class="n">paste</span><span class="p">(</span><span class="s2">"You called"</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+</span><span class="n">mem_used</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 48.6 MB
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">substiplop</span><span class="p">(</span><span class="n">dataset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">economics_long</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "You called economics_long"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mem_used</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 48.6 MB
+</code></pre></div></div>
+
+<p>As you can see, no <code class="highlighter-rouge">economics_long</code> has been evaluated. Now compare:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">nrowplop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">dataset</span><span class="p">){</span><span class="w">
+  </span><span class="n">paste</span><span class="p">(</span><span class="s2">"You called a dataset with"</span><span class="p">,</span><span class="w"> </span><span class="n">nrow</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">mem_used</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 48.6 MB
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">nrowplop</span><span class="p">(</span><span class="n">dataset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">economics_long</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "You called a dataset with 2870"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mem_used</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 48.7 MB
+</code></pre></div></div>
+
+<p>Keep all this in mind, we’ll be back to it in a few.</p>
+
+<h2 id="more-about-lazy-evaluation">More about lazy evaluation</h2>
+
+<p>Ok, now, now let’s dig deeper into lazy evaluation.</p>
+
+<h3 id="rtfm">RTFM</h3>
+
+<p>Let’s start with the beginning: the R-Manuals. <code class="highlighter-rouge">promises</code> and <code class="highlighter-rouge">lazy
+evaluation</code> are referred to several times in the <a href="http://colinfay.me/r-language-definition/">R Language
+Definition</a>.</p>
+
+<p>If we go to <a href="http://colinfay.me/r-language-definition/objects.html#promise-objects">Promise
+objects</a>,
+we learn that :</p>
+
+<blockquote>
+  <p>Promise objects are part of R’s <strong>lazy evaluation</strong> mechanism. They
+contain three slots: a <strong>value</strong>, an <strong>expression</strong>, and an
+<strong>environment</strong>. When a function is called the arguments are matched
+and then each of the formal arguments is bound to a promise. The
+expression that was given for that formal argument and a pointer to
+the environment the function was called from are stored in the
+promise.</p>
+</blockquote>
+
+<p>What that means is that: when calling a function, arguments are turned
+into <code class="highlighter-rouge">promises</code>. These <code class="highlighter-rouge">promises</code> contain: an expression, and an
+environment (no value at first). In a sense, what this object holds is
+not a value, but <strong>a recipe for a value</strong>, saying “evaluate this
+expression in this environment”, and this recipe is called only when we
+need it.</p>
+
+<blockquote>
+  <p>Until that argument is accessed there is <strong>no value associated with
+the promise</strong>. When the argument is accessed, the stored expression is
+evaluated in the stored environment, and the result is returned. The
+result is also saved by the promise. <strong>The substitute function will
+extract the content of the expression slot. This allows the programmer
+to access either the value or the expression associated with the
+promise</strong>.</p>
+</blockquote>
+
+<p>So, here’s a clear definition for the <code class="highlighter-rouge">substitute</code> function: an
+“expression slot content extractor” :) In other words, when passing
+arguments to a function, they are immediately turned into a promise, a
+data structure with an expression, and a recipe for a value. But here’s
+the thing: thanks to lazy evaluation, <strong>you can access this expression
+without having to actually give an argument a value</strong> (i.e., without
+having to look for its value).</p>
+
+<p>Remember our function <code class="highlighter-rouge">plop</code>, and :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plop</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">non_existing_variable</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 40
+</code></pre></div></div>
+
+<p>With our newly acquired knowledge, we can tell what’s happening here:
+<code class="highlighter-rouge">b</code> is created as a promise, containing the expression
+<code class="highlighter-rouge">non_existing_variable</code>. It contains no value, but as we never try to
+actually evaluate it (i.e. try to access its value), there is no error.</p>
+
+<p>Let’s continue on that note: <code class="highlighter-rouge">b</code> is created as a promise (expression +
+environment), and <code class="highlighter-rouge">substitute</code> allows to get the expression out of a
+promise. So we could modify our function to play with the expression
+contained in <code class="highlighter-rouge">b</code>:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">cat</span><span class="p">(</span><span class="s2">"You entered"</span><span class="p">,</span><span class="w"> </span><span class="n">deparse</span><span class="p">(</span><span class="nf">substitute</span><span class="p">(</span><span class="n">b</span><span class="p">)),</span><span class="w"> </span><span class="s2">"as `b` \n"</span><span class="p">)</span><span class="w">
+  </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">plop</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">non_existing_variable</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## You entered non_existing_variable as `b`
+
+## [1] 40
+</code></pre></div></div>
+
+<p>But that also means we can evaluate <code class="highlighter-rouge">b</code> the way we want (for example to
+create a <code class="highlighter-rouge">dplyr::pull</code>-like function)</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">eval</span><span class="p">(</span><span class="nf">substitute</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="n">envir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">plop</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">Species</span><span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1] setosa setosa setosa setosa setosa setosa setosa setosa setosa setosa
+## Levels: setosa versicolor virginica
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plop</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">Sepal.Length</span><span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9
+</code></pre></div></div>
+
+<p>(More about environment evaluation
+<a href="https://colinfay.me/explain-environments-eli5/">here</a>)</p>
+
+<p>Or, even, that we could write a <code class="highlighter-rouge">dplyr::mutate</code>-like function:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mutator</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">col_name_computation</span><span class="p">){</span><span class="w">
+  </span><span class="c1"># In three steps here to detail the process, could be one line of code</span><span class="w">
+  </span><span class="n">col_name_computation_sub</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">substitute</span><span class="p">(</span><span class="n">col_name_computation</span><span class="p">)</span><span class="w">
+  </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">eval</span><span class="p">(</span><span class="n">col_name_computation_sub</span><span class="p">,</span><span class="w"> </span><span class="n">envir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w">
+  </span><span class="n">a</span><span class="o">$</span><span class="n">new_col</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="w">
+  </span><span class="n">a</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">mutator</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">iris</span><span class="p">),</span><span class="w"> </span><span class="n">Sepal.Length</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species new_col
+## 1          5.1         3.5          1.4         0.2  setosa      51
+## 2          4.9         3.0          1.4         0.2  setosa      49
+## 3          4.7         3.2          1.3         0.2  setosa      47
+## 4          4.6         3.1          1.5         0.2  setosa      46
+## 5          5.0         3.6          1.4         0.2  setosa      50
+## 6          5.4         3.9          1.7         0.4  setosa      54
+</code></pre></div></div>
+
+<p>(Of course, the real <code class="highlighter-rouge">dplyr::mutate</code> does A LOT more, it’s just for the
+example)</p>
+
+<p>Let’s sum up what is happening here :</p>
+
+<ul>
+  <li>I give <code class="highlighter-rouge">a</code> and <code class="highlighter-rouge">new_col</code> expressions as inputs</li>
+  <li>Both <code class="highlighter-rouge">a</code> and <code class="highlighter-rouge">new_col</code> become promises, linked to the expressions
+given as inputs. None are evaluated at this point, thanks to lazy
+evaluation</li>
+  <li>R extracts the expression contained in <code class="highlighter-rouge">col_name_computation</code>, puts
+it in <code class="highlighter-rouge">col_name_computation_sub</code>, which is at that stage a <code class="highlighter-rouge">call</code>.</li>
+  <li>I have defined a custom rule for evaluation, and this <code class="highlighter-rouge">call</code> is
+evaluated in the context of the dataframe given (remember that
+dataframes are lists, and you can <code class="highlighter-rouge">eval</code> a symbol inside a list).</li>
+  <li>This newly created vector is put inside the dataframe as a column</li>
+  <li>The modified data.frame is returned</li>
+</ul>
+
+<p>To dissect a little bit what is happening:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mutator</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">col_name_computation</span><span class="p">){</span><span class="w">
+  </span><span class="n">col_name_computation_sub</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">substitute</span><span class="p">(</span><span class="n">col_name_computation</span><span class="p">)</span><span class="w">
+  </span><span class="n">cat</span><span class="p">(</span><span class="s2">"`col_name_computation_sub` is: "</span><span class="p">)</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">col_name_computation_sub</span><span class="p">)</span><span class="w">
+  </span><span class="n">cat</span><span class="p">(</span><span class="s2">"its class is: "</span><span class="p">)</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="nf">class</span><span class="p">(</span><span class="n">col_name_computation_sub</span><span class="p">))</span><span class="w">
+  </span><span class="n">cat</span><span class="p">(</span><span class="s2">"it is evaluated in: "</span><span class="p">)</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="nf">substitute</span><span class="p">(</span><span class="n">a</span><span class="p">))</span><span class="w">
+  
+  </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">eval</span><span class="p">(</span><span class="n">col_name_computation_sub</span><span class="p">,</span><span class="w"> </span><span class="n">envir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w">
+  </span><span class="n">cat</span><span class="p">(</span><span class="s2">"`res` is: "</span><span class="p">)</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w">
+  
+  </span><span class="n">a</span><span class="o">$</span><span class="n">new_col</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="w">
+  </span><span class="nf">invisible</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">mutator</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">iris</span><span class="p">),</span><span class="w"> </span><span class="n">Sepal.Length</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## `col_name_computation_sub` is: Sepal.Length * 10
+## its class is: [1] "call"
+## it is evaluated in: head(iris)
+## `res` is: [1] 51 49 47 46 50 54
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mutator</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">mtcars</span><span class="p">),</span><span class="w"> </span><span class="n">mpg</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">disp</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## `col_name_computation_sub` is: mpg * disp
+## its class is: [1] "call"
+## it is evaluated in: head(mtcars)
+## `res` is: [1] 3360.0 3360.0 2462.4 5521.2 6732.0 4072.5
+</code></pre></div></div>
+
+<h3 id="detecting-promises">Detecting <code class="highlighter-rouge">promises</code></h3>
+
+<p>In case you were wondering how to check if something is a promise… let’s
+continue from the manual:</p>
+
+<blockquote>
+  <p>Within the R language, promise objects are almost only seen
+implicitly: actual function arguments are of this type. There is also
+a delayedAssign function that will make a promise out of an
+expression. There is generally <strong>no way in R code to check whether an
+object is a promise or not</strong>, <strong>nor is there a way to use R code to
+determine the environment of a promise</strong>.</p>
+</blockquote>
+
+<p>There is a way to create a <code class="highlighter-rouge">promise</code>, through the <code class="highlighter-rouge">delayedAssign</code>
+function. At the time of writing I haven’t found a use case for that,
+but I’ll be glad to hear about one in the comment!</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">delayedAssign</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span><span class="w"> </span><span class="n">this_var</span><span class="p">)</span><span class="w">
+</span><span class="n">a</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Error in eval(expr, envir, enclos): objet 'this_var' introuvable
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">this_var</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span><span class="n">a</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Warning: redémarrage de l'évaluation d'une promesse interrompue
+
+## [1] 12
+</code></pre></div></div>
+
+<h3 id="evaluation-and-forceing-evaluation">Evaluation, and <code class="highlighter-rouge">force()</code>ing evaluation</h3>
+
+<p>From <a href="http://colinfay.me/r-language-definition/functions.html#argument-evaluation">Argument
+evaluation</a>:</p>
+
+<blockquote>
+  <p>The process of filling the value slot of a promise by evaluating the
+contents of the expression slot in the promise’s environment is called
+<strong>forcing the promise</strong>. A promise will only be forced once, the value
+slot content being used directly later on. A promise is forced when
+its value is needed.</p>
+</blockquote>
+
+<p>Forcing is “filling” the value slot of a promise. This can be done by
+simply calling the object, or by using the <code class="highlighter-rouge">force</code> function (note that
+<code class="highlighter-rouge">force</code> is just semantic sugar). Let’s see how this can be useful with a
+plot (from
+<a href="http://colinfay.me/r-language-definition/computing-on-the-language.html#substitutions">Substitutions</a>)</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">logplot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deparse</span><span class="p">(</span><span class="nf">substitute</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w">
+    </span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ylab</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">logplot</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="../assets/img/unnamed-chunk-21-1.png" alt="" /><!-- --></p>
+
+<p>Here, as <code class="highlighter-rouge">ylab</code> is forced after <code class="highlighter-rouge">y</code> has changed, the labels is the one
+from the modified <code class="highlighter-rouge">y</code>. Which can be changed if we force the ylab before:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">logplot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">deparse</span><span class="p">(</span><span class="nf">substitute</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">force</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span><span class="w">
+    </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w">
+    </span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ylab</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">logplot</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="../assets/img/unnamed-chunk-22-1.png" alt="" /><!-- --></p>
+
+<p>As said before: the promise is only forced once, so <code class="highlighter-rouge">ylab</code> finds its
+value in the first line of code.</p>
+
+<p>Remember our <code class="highlighter-rouge">mean_of_that</code> function from before. Look at how it changes
+if I force the evaluation of mean_of before changing <code class="highlighter-rouge">x</code>:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mean_of_that</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">mean_of</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)){</span><span class="w">
+  </span><span class="n">force</span><span class="p">(</span><span class="n">mean_of</span><span class="p">)</span><span class="w">
+  </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">
+  </span><span class="n">cat</span><span class="p">(</span><span class="s2">"The mean of x is"</span><span class="p">,</span><span class="w"> </span><span class="n">mean_of</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">mean_of_that</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="kc">NA</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 1 2 3 4
+## The mean of x is NA
+</code></pre></div></div>
+
+<h2 id="more-about-lazy-evaluation-1">More about lazy evaluation</h2>
+
+<p>Here are some random quotes and elements found on the internet, not
+necessarily linked to R:</p>
+
+<ul>
+  <li>
+    <p><a href="http://www.aliquote.org/cours/2012_biomed/biblio/Ihaka1996.pdf">R: a language for data analysis and
+graphics</a></p>
+  </li>
+  <li>
+    <p>Lazy Evaluation at the <a href="http://wiki.c2.com/?LazyEvaluation">Portland Pattern
+Repository</a></p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>Lazy evaluation : Waiting until the last possible moment to evaluate
+an expression, especially for the purpose of optimizing an algorithm
+that may not use the value of the expression.</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>Advanced R on <a href="http://adv-r.had.co.nz/Functions.html#function-arguments">Function
+arguments</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf">Why Functional Programming
+Matters</a></p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>Since this method of evaluation runs f as little as possible, it is
+called “lazy evaluation”. It makes it practical to modularize a
+program as a generator that constructs a large number of possible
+answers, and a selector that chooses the appropriate one. While some
+other systems allow programs to be run together in this manner, only
+functional languages (and not even all of them) use lazy evaluation
+uniformly for every function call, allowing any part of a program to
+be modularized in this way. Lazy evaluation is perhaps the most
+powerful tool for modularization in the functional programmer’s
+repertoire.</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p><a href="http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=B2849D427F1D4ECA34174900D4FC9931?doi=10.1.1.35.2016&amp;rep=rep1&amp;type=pdf">A Natural Semantics for Lazy
+Evaluation</a></p>
+  </li>
+  <li>
+    <p><a href="https://hackhands.com/lazy-evaluation-works-haskell/">How Lazy Evaluation Works in
+Haskell</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.gnu.org/software/kawa/Lazy-evaluation.html">LAZY
+EVALUATION</a></p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>Lazy evaluation (or call-by-need) delays evaluating an expression
+until it is actually needed; when it is evaluated, the result is saved
+so repeated evaluation is not needed. Lazy evaluation is a technique
+that can make some algorithms easier to express compactly or much more
+efficiently, or both. It is the normal evaluation mechanism for strict
+functional (side-effect-free) languages such as Haskell. However,
+automatic lazy evaluation is awkward to combine with side-effects such
+as input-output. It can also be difficult to implement lazy evaluation
+efficiently, as it requires more book-keeping.</p>
+</blockquote>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-07-30T00:00:00+02:00">July 30, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=About+lazy+evaluation%20http%3A%2F%2Flocalhost%3A4000%2Flazyeval%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Flazyeval%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Flazyeval%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Flazyeval%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/worldemojiday" class="pagination--pager" title="A quick #WorldEmojiDay exploration
+">←</a>
+    
+    
+      <a href="/wikileaks/" class="pagination--pager" title="Wrangling Wikileaks DMs
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/lazyeval/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/lazyeval"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="writing-your-own-functions.html">
+<link rel="next" href="graphical-procedures.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="statistical-models-in-r" class="section level1">
+<h1><span class="header-section-number">Chapter 11</span> Statistical models in R</h1>
+<p>
+<a href="" id="index-Statistical-models"></a>
+</p>
+<p>
+This section presumes the reader has some familiarity with statistical methodology, in particular with regression analysis and the analysis of variance. Later we make some rather more ambitious presumptions, namely that something is known about generalized linear models and nonlinear regression.
+</p>
+<p>
+The requirements for fitting statistical models are sufficiently well defined to make it possible to construct general tools that apply in a broad spectrum of problems.
+</p>
+<p>
+R provides an interlocking suite of facilities that make fitting statistical models very simple. As we mention in the introduction, the basic output is minimal, and one needs to ask for the details by calling extractor functions.
+</p>
+<hr />
+<p>
+<a href="" id="Formulae-for-statistical-models"></a> <a href="" id="Defining-statistical-models_003b-formulae"></a>
+</p>
+<h3 id="defining-statistical-models-formulae" class="section">
+11.1 Defining statistical models; formulae
+</h3>
+<p>
+<a href="" id="index-Formulae"></a>
+</p>
+<p>
+The template for a statistical model is a linear regression model with independent, homoscedastic errors
+</p>
+<div class="example">
+<pre class="display"><code>y_i = sum_{j=0}^p beta_j x_{ij} + e_i,     i = 1, …, n,</code></pre>
+</div>
+<p>
+where the e_i are NID(0, sigma^2). In matrix terms this would be written
+</p>
+<div class="example">
+<pre class="display"><code>y = X  beta + e</code></pre>
+</div>
+<p>
+where the <em>y</em> is the response vector, <em>X</em> is the <em>model matrix</em> or <em>design matrix</em> and has columns <em>x_0, x_1, …, x_p</em>, the determining variables. Very often <em>x_0</em> will be a column of ones defining an <em>intercept</em> term.
+</p>
+<p>
+<a href="" id="Examples"></a>
+</p>
+<h4 id="examples" class="subheading">
+Examples
+</h4>
+<p>
+Before giving a formal specification, a few examples may usefully set the picture.
+</p>
+<p>
+Suppose <code class="calibre2">y</code>, <code class="calibre2">x</code>, <code class="calibre2">x0</code>, <code class="calibre2">x1</code>, <code class="calibre2">x2</code>, … are numeric variables, <code class="calibre2">X</code> is a matrix and <code class="calibre2">A</code>, <code class="calibre2">B</code>, <code class="calibre2">C</code>, … are factors. The following formulae on the left side below specify statistical models as described on the right.
+</p>
+<dl>
+<dt>
+<code class="calibre2">y ~ x</code><br /> <code class="calibre2">y ~ 1 + x</code>
+</dt>
+<dd>
+<p>
+Both imply the same simple linear regression model of <em>y</em> on <em>x</em>. The first has an implicit intercept term, and the second an explicit one.
+</p>
+</dd>
+<dt>
+<code class="calibre2">y ~ 0 + x</code><br /> <code class="calibre2">y ~ -1 + x</code><br /> <code class="calibre2">y ~ x - 1</code>
+</dt>
+<dd>
+<p>
+Simple linear regression of <em>y</em> on <em>x</em> through the origin (that is, without an intercept term).
+</p>
+</dd>
+<dt>
+<code class="calibre2">log(y) ~ x1 + x2</code>
+</dt>
+<dd>
+<p>
+Multiple regression of the transformed variable, log(y), on <em>x1</em> and <em>x2</em> (with an implicit intercept term).
+</p>
+</dd>
+<dt>
+<code class="calibre2">y ~ poly(x,2)</code><br /> <code class="calibre2">y ~ 1 + x + I(x^2)</code>
+</dt>
+<dd>
+<p>
+Polynomial regression of <em>y</em> on <em>x</em> of degree 2. The first form uses orthogonal polynomials, and the second uses explicit powers, as basis.
+</p>
+</dd>
+<dt>
+<code class="calibre2">y ~ X + poly(x,2)</code>
+</dt>
+<dd>
+<p>
+Multiple regression <em>y</em> with model matrix consisting of the matrix <em>X</em> as well as polynomial terms in <em>x</em> to degree 2.
+</p>
+</dd>
+<dt>
+<code class="calibre2">y ~ A</code>
+</dt>
+<dd>
+<p>
+Single classification analysis of variance model of <em>y</em>, with classes determined by <em>A</em>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">y ~ A + x</code>
+</dt>
+<dd>
+<p>
+Single classification analysis of covariance model of <em>y</em>, with classes determined by <em>A</em>, and with covariate <em>x</em>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">y ~ A*B</code><br /> <code class="calibre2">y ~ A + B + A:B</code><br /> <code class="calibre2">y ~ B %in% A</code><br /> <code class="calibre2">y ~ A/B</code>
+</dt>
+<dd>
+<p>
+Two factor non-additive model of <em>y</em> on <em>A</em> and <em>B</em>. The first two specify the same crossed classification and the second two specify the same nested classification. In abstract terms all four specify the same model subspace.
+</p>
+</dd>
+<dt>
+<code class="calibre2">y ~ (A + B + C)^2</code><br /> <code class="calibre2">y ~ A<em>B</em>C - A:B:C</code>
+</dt>
+<dd>
+<p>
+Three factor experiment but with a model containing main effects and two factor interactions only. Both formulae specify the same model.
+</p>
+</dd>
+<dt>
+<code class="calibre2">y ~ A * x</code><br /> <code class="calibre2">y ~ A/x</code><br /> <code class="calibre2">y ~ A/(1 + x) - 1</code>
+</dt>
+<dd>
+<p>
+Separate simple linear regression models of <em>y</em> on <em>x</em> within the levels of <em>A</em>, with different codings. The last form produces explicit estimates of as many different intercepts and slopes as there are levels in <em>A</em>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">y ~ A*B + Error(C)</code>
+</dt>
+<dd>
+<p>
+An experiment with two treatment factors, <em>A</em> and <em>B</em>, and error strata determined by factor <em>C</em>. For example a split plot experiment, with whole plots (and hence also subplots), determined by factor <em>C</em>.
+</p>
+</dd>
+</dl>
+<p>
+<a href="" id="index-_007e"></a>
+</p>
+<p>
+The operator <code class="calibre2">~</code> is used to define a <em>model formula</em> in R. The form, for an ordinary linear model, is
+</p>
+<div class="example">
+<pre class="example1"><code>response ~ op_1 term_1 op_2 term_2 op_3 term_3 …</code></pre>
+</div>
+<p>
+where
+</p>
+<dl>
+<dt>
+response
+</dt>
+<dd>
+<p>
+is a vector or matrix, (or expression evaluating to a vector or matrix) defining the response variable(s).
+</p>
+</dd>
+<dt>
+op_i
+</dt>
+<dd>
+<p>
+is an operator, either <code class="calibre2">+</code> or <code class="calibre2">-</code>, implying the inclusion or exclusion of a term in the model, (the first is optional).
+</p>
+</dd>
+<dt>
+term_i
+</dt>
+<dd>
+<p>
+is either
+</p>
+<ul>
+<li>
+a vector or matrix expression, or <code class="calibre2">1</code>,
+</li>
+<li>
+a factor, or
+</li>
+<li>
+a <em>formula expression</em> consisting of factors, vectors or matrices connected by <em>formula operators</em>.
+</li>
+</ul>
+<p>
+In all cases each term defines a collection of columns either to be added to or removed from the model matrix. A <code class="calibre2">1</code> stands for an intercept column and is by default included in the model matrix unless explicitly removed.
+</p>
+</dd>
+</dl>
+<p>
+The <em>formula operators</em> are similar in effect to the Wilkinson and Rogers notation used by such programs as Glim and Genstat. One inevitable change is that the operator ‘<code class="calibre2">.</code>’ becomes ‘<code class="calibre2">:</code>’ since the period is a valid name character in R.
+</p>
+<p>
+The notation is summarized below (based on Chambers &amp; Hastie, 1992, p.29):
+</p>
+<dl>
+<dt>
+<code class="calibre2">Y ~ M</code>
+</dt>
+<dd>
+<p>
+Y is modeled as M.
+</p>
+</dd>
+<dt>
+<code class="calibre2">M_1 + M_2</code>
+</dt>
+<dd>
+<p>
+Include M_1 and M_2.
+</p>
+</dd>
+<dt>
+<code class="calibre2">M_1 - M_2</code>
+</dt>
+<dd>
+<p>
+Include M_1 leaving out terms of M_2.
+</p>
+</dd>
+<dt>
+<code class="calibre2">M_1 : M_2</code>
+</dt>
+<dd>
+<p>
+The tensor product of M_1 and M_2. If both terms are factors, then the “subclasses” factor.
+</p>
+</dd>
+<dt>
+<code class="calibre2">M_1 %in% M_2</code>
+</dt>
+<dd>
+<p>
+Similar to <code class="calibre2">M_1:M_2</code>, but with a different coding.
+</p>
+</dd>
+<dt>
+<code class="calibre2">M_1 * M_2</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">M_1 + M_2 + M_1:M_2</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">M_1 / M_2</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">M_1 + M_2 %in% M_1</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">M^n</code>
+</dt>
+<dd>
+<p>
+All terms in M together with “interactions” up to order n
+</p>
+</dd>
+<dt>
+<code class="calibre2">I(M)</code>
+</dt>
+<dd>
+<p>
+Insulate M. Inside M all operators have their normal arithmetic meaning, and that term appears in the model matrix.
+</p>
+</dd>
+</dl>
+<p>
+Note that inside the parentheses that usually enclose function arguments all operators have their normal arithmetic meaning. The function <code class="calibre2">I()</code> is an identity function used to allow terms in model formulae to be defined using arithmetic operators.
+</p>
+<p>
+Note particularly that the model formulae specify the <em>columns of the model matrix</em>, the specification of the parameters being implicit. This is not the case in other contexts, for example in specifying nonlinear models.
+</p>
+<hr />
+<p>
+<a href="" id="Contrasts"></a> <a href="" id="Contrasts-1"></a>
+</p>
+<h4 id="contrasts" class="subheading">
+11.1.1 Contrasts
+</h4>
+<p>
+<a href="" id="index-Contrasts"></a>
+</p>
+<p>
+We need at least some idea how the model formulae specify the columns of the model matrix. This is easy if we have continuous variables, as each provides one column of the model matrix (and the intercept will provide a column of ones if included in the model).
+</p>
+<p>
+<a href="" id="index-Factors-1"></a> <a href="" id="index-Ordered-factors-1"></a>
+</p>
+<p>
+What about a <em>k</em>-level factor <code class="calibre2">A</code>? The answer differs for unordered and ordered factors. For <em>unordered</em> factors <em>k - 1</em> columns are generated for the indicators of the second, …, <em>k</em>th levels of the factor. (Thus the implicit parameterization is to contrast the response at each level with that at the first.) For <em>ordered</em> factors the <em>k - 1</em> columns are the orthogonal polynomials on <em>1, …, k</em>, omitting the constant term.
+</p>
+<p>
+Although the answer is already complicated, it is not the whole story. First, if the intercept is omitted in a model that contains a factor term, the first such term is encoded into <em>k</em> columns giving the indicators for all the levels. Second, the whole behavior can be changed by the <code class="calibre2">options</code> setting for <code class="calibre2">contrasts</code>. The default setting in R is
+</p>
+<div class="example">
+<pre class="example1"><code>options(contrasts = c(&quot;contr.treatment&quot;, &quot;contr.poly&quot;))</code></pre>
+</div>
+<p>
+The main reason for mentioning this is that R and S have different defaults for unordered factors, S using Helmert contrasts. So if you need to compare your results to those of a textbook or paper which used S-PLUS, you will need to set
+</p>
+<div class="example">
+<pre class="example1"><code>options(contrasts = c(&quot;contr.helmert&quot;, &quot;contr.poly&quot;))</code></pre>
+</div>
+<p>
+This is a deliberate difference, as treatment contrasts (R’s default) are thought easier for newcomers to interpret.
+</p>
+<p>
+We have still not finished, as the contrast scheme to be used can be set for each term in the model using the functions <code class="calibre2">contrasts</code> and <code class="calibre2">C</code>. <a href="" id="index-contrasts"></a> <a href="" id="index-C"></a>
+</p>
+<p>
+We have not yet considered interaction terms: these generate the products of the columns introduced for their component terms.
+</p>
+<p>
+Although the details are complicated, model formulae in R will normally generate the models that an expert statistician would expect, provided that marginality is preserved. Fitting, for example, a model with an interaction but not the corresponding main effects will in general lead to surprising results, and is for experts only.
+</p>
+<hr />
+<p>
+<a href="" id="Linear-models"></a> <a href="" id="Linear-models-1"></a>
+</p>
+<h3 id="linear-models" class="section">
+11.2 Linear models
+</h3>
+<p>
+<a href="" id="index-Linear-models"></a>
+</p>
+<p>
+The basic function for fitting ordinary multiple models is <code class="calibre2">lm()</code>, and a streamlined version of the call is as follows: <a href="" id="index-lm"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fitted.model &lt;- lm(formula, data = data.frame)</code></pre>
+</div>
+<p>
+For example
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fm2 &lt;- lm(y ~ x1 + x2, data = production)</code></pre>
+</div>
+<p>
+would fit a multiple regression model of <em>y</em> on <em>x1</em> and <em>x2</em> (with implicit intercept term).
+</p>
+<p>
+The important (but technically optional) parameter <code class="calibre2">data = production</code> specifies that any variables needed to construct the model should come first from the <code class="calibre2">production</code> <em>data frame</em>. <em>This is the case regardless of whether data frame <code class="calibre2">production</code> has been attached on the search path or not</em>.
+</p>
+<hr />
+<p>
+<a href="" id="Generic-functions-for-extracting-model-information"></a> <a href="" id="Generic-functions-for-extracting-model-information-1"></a>
+</p>
+<h3 id="generic-functions-for-extracting-model-information" class="section">
+11.3 Generic functions for extracting model information
+</h3>
+<p>
+The value of <code class="calibre2">lm()</code> is a fitted model object; technically a list of results of class <code class="calibre2">“lm”</code>. Information about the fitted model can then be displayed, extracted, plotted and so on by using generic functions that orient themselves to objects of class <code class="calibre2">“lm”</code>. These include
+</p>
+<div class="example">
+<pre class="example1"><code>add1    deviance   formula      predict  step
+alias   drop1      kappa        print    summary
+anova   effects    labels       proj     vcov
+coef    family     plot         residuals</code></pre>
+</div>
+<p>
+A brief description of the most commonly used ones is given below.
+</p>
+<p>
+<a href="" id="index-anova"></a>
+</p>
+<p>
+<code class="calibre2">anova(object_1, object_2)</code>
+</p>
+<p>
+Compare a submodel with an outer model and produce an analysis of variance table.
+</p>
+<p>
+<a href="" id="index-coefficients"></a> <a href="" id="index-coef"></a>
+</p>
+<p>
+<code class="calibre2">coef(object)</code>
+</p>
+<p>
+Extract the regression coefficient (matrix).
+</p>
+<p>
+Long form: <code class="calibre2">coefficients(object)</code>.
+</p>
+<p>
+<a href="" id="index-deviance"></a>
+</p>
+<p>
+<code class="calibre2">deviance(object)</code>
+</p>
+<p>
+Residual sum of squares, weighted if appropriate.
+</p>
+<p>
+<a href="" id="index-formula"></a>
+</p>
+<p>
+<code class="calibre2">formula(object)</code>
+</p>
+<p>
+Extract the model formula.
+</p>
+<p>
+<a href="" id="index-plot"></a>
+</p>
+<p>
+<code class="calibre2">plot(object)</code>
+</p>
+<p>
+Produce four plots, showing residuals, fitted values and some diagnostics.
+</p>
+<p>
+<a href="" id="index-predict"></a>
+</p>
+<p>
+<code class="calibre2">predict(object, newdata=data.frame)</code>
+</p>
+<p>
+The data frame supplied must have variables specified with the same labels as the original. The value is a vector or matrix of predicted values corresponding to the determining variable values in data.frame.
+</p>
+<p>
+<a href="" id="index-print"></a>
+</p>
+<p>
+<code class="calibre2">print(object)</code>
+</p>
+<p>
+Print a concise version of the object. Most often used implicitly.
+</p>
+<p>
+<a href="" id="index-residuals"></a> <a href="" id="index-resid"></a>
+</p>
+<p>
+<code class="calibre2">residuals(object)</code>
+</p>
+<p>
+Extract the (matrix of) residuals, weighted as appropriate.
+</p>
+<p>
+Short form: <code class="calibre2">resid(object)</code>.
+</p>
+<p>
+<a href="" id="index-step"></a>
+</p>
+<p>
+<code class="calibre2">step(object)</code>
+</p>
+<p>
+Select a suitable model by adding or dropping terms and preserving hierarchies. The model with the smallest value of AIC (Akaike’s An Information Criterion) discovered in the stepwise search is returned.
+</p>
+<p>
+<a href="" id="index-summary-1"></a>
+</p>
+<p>
+<code class="calibre2">summary(object)</code>
+</p>
+<p>
+Print a comprehensive summary of the results of the regression analysis.
+</p>
+<p>
+<a href="" id="index-vcov"></a>
+</p>
+<p>
+<code class="calibre2">vcov(object)</code>
+</p>
+<p>
+Returns the variance-covariance matrix of the main parameters of a fitted model object.
+</p>
+<hr />
+<p>
+<a href="" id="Analysis-of-variance-and-model-comparison"></a> <a href="" id="Analysis-of-variance-and-model-comparison-1"></a>
+</p>
+<h3 id="analysis-of-variance-and-model-comparison" class="section">
+11.4 Analysis of variance and model comparison
+</h3>
+<p>
+<a href="" id="index-Analysis-of-variance"></a>
+</p>
+<p>
+The model fitting function <code class="calibre2">aov(formula, data=data.frame)</code> <a href="" id="index-aov"></a> operates at the simplest level in a very similar way to the function <code class="calibre2">lm()</code>, and most of the generic functions listed in the table in <a href="statistical-models-in-r.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a> apply.
+</p>
+<p>
+It should be noted that in addition <code class="calibre2">aov()</code> allows an analysis of models with multiple error strata such as split plot experiments, or balanced incomplete block designs with recovery of inter-block information. The model formula
+</p>
+<div class="example">
+<pre class="example1"><code>response ~ mean.formula + Error(strata.formula)</code></pre>
+</div>
+<p>
+<a href="" id="index-Error"></a>
+</p>
+<p>
+specifies a multi-stratum experiment with error strata defined by the strata.formula. In the simplest case, strata.formula is simply a factor, when it defines a two strata experiment, namely between and within the levels of the factor.
+</p>
+<p>
+For example, with all determining variables factors, a model formula such as that in:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fm &lt;- aov(yield ~ v + n*p*k + Error(farms/blocks), data=farm.data)</code></pre>
+</div>
+<p>
+would typically be used to describe an experiment with mean model <code class="calibre2">v + n<em>p</em>k</code> and three error strata, namely “between farms”, “within farms, between blocks” and “within blocks”.
+</p>
+<hr />
+<p>
+<a href="" id="ANOVA-tables"></a> <a href="" id="ANOVA-tables-1"></a>
+</p>
+<h4 id="anova-tables" class="subheading">
+11.4.1 ANOVA tables
+</h4>
+<p>
+Note also that the analysis of variance table (or tables) are for a sequence of fitted models. The sums of squares shown are the decrease in the residual sums of squares resulting from an inclusion of <em>that term</em> in the model at <em>that place</em> in the sequence. Hence only for orthogonal experiments will the order of inclusion be inconsequential.
+</p>
+<p>
+For multistratum experiments the procedure is first to project the response onto the error strata, again in sequence, and to fit the mean model to each projection. For further details, see Chambers &amp; Hastie (1992).
+</p>
+<p>
+A more flexible alternative to the default full ANOVA table is to compare two or more models directly using the <code class="calibre2">anova()</code> function. <a href="" id="index-anova-1"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; anova(fitted.model.1, fitted.model.2, …)</code></pre>
+</div>
+<p>
+The display is then an ANOVA table showing the differences between the fitted models when fitted in sequence. The fitted models being compared would usually be an hierarchical sequence, of course. This does not give different information to the default, but rather makes it easier to comprehend and control.
+</p>
+<hr />
+<p>
+<a href="" id="Updating-fitted-models"></a> <a href="" id="Updating-fitted-models-1"></a>
+</p>
+<h3 id="updating-fitted-models" class="section">
+11.5 Updating fitted models
+</h3>
+<p>
+<a href="" id="index-Updating-fitted-models"></a>
+</p>
+<p>
+The <code class="calibre2">update()</code> function is largely a convenience function that allows a model to be fitted that differs from one previously fitted usually by just a few additional or removed terms. Its form is <a href="" id="index-update"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; new.model &lt;- update(old.model, new.formula)</code></pre>
+</div>
+<p>
+In the new.formula the special name consisting of a period, ‘<code class="calibre2">.</code>’, <a href="" id="index-_002e"></a> only, can be used to stand for “the corresponding part of the old model formula”. For example,
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fm05 &lt;- lm(y ~ x1 + x2 + x3 + x4 + x5, data = production)
+&gt; fm6  &lt;- update(fm05, . ~ . + x6)
+&gt; smf6 &lt;- update(fm6, sqrt(.) ~ .)</code></pre>
+</div>
+<p>
+would fit a five variate multiple regression with variables (presumably) from the data frame <code class="calibre2">production</code>, fit an additional model including a sixth regressor variable, and fit a variant on the model where the response had a square root transform applied.
+</p>
+<p>
+Note especially that if the <code class="calibre2">data=</code> argument is specified on the original call to the model fitting function, this information is passed on through the fitted model object to <code class="calibre2">update()</code> and its allies.
+</p>
+<p>
+The name ‘.’ can also be used in other contexts, but with slightly different meaning. For example
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fmfull &lt;- lm(y ~ . , data = production)</code></pre>
+</div>
+<p>
+would fit a model with response <code class="calibre2">y</code> and regressor variables <em>all other variables in the data frame <code class="calibre2">production</code></em>.
+</p>
+<p>
+Other functions for exploring incremental sequences of models are <code class="calibre2">add1()</code>, <code class="calibre2">drop1()</code> and <code class="calibre2">step()</code>. <a href="" id="index-add1"></a> <a href="" id="index-drop1"></a> <a href="" id="index-step-1"></a> The names of these give a good clue to their purpose, but for full details see the on-line help.
+</p>
+<hr />
+<p>
+<a href="" id="Generalized-linear-models"></a> <a href="" id="Generalized-linear-models-1"></a>
+</p>
+<h3 id="generalized-linear-models" class="section">
+11.6 Generalized linear models
+</h3>
+<p>
+<a href="" id="index-Generalized-linear-models"></a>
+</p>
+<p>
+Generalized linear modeling is a development of linear models to accommodate both non-normal response distributions and transformations to linearity in a clean and straightforward way. A generalized linear model may be described in terms of the following sequence of assumptions:
+</p>
+<ul>
+<li>
+There is a response, <em>y</em>, of interest and stimulus variables x_1, x_2, …, whose values influence the distribution of the response.
+</li>
+<li>
+<p>
+The stimulus variables influence the distribution of <em>y</em> through <em>a single linear function, only</em>. This linear function is called the <em>linear predictor</em>, and is usually written
+</p>
+<div class="example">
+<pre class="display"><code>eta = beta_1 x_1 + beta_2 x_2 + … + beta_p x_p,</code></pre>
+</div>
+<p>
+hence x_i has no influence on the distribution of <em>y</em> if and only if beta_i is zero.
+</p>
+</li>
+<li>
+<p>
+The distribution of <em>y</em> is of the form
+</p>
+<div class="example">
+<pre class="display"><code>f_Y(y; mu, phi)
+  = exp((A/phi) * (y lambda(mu) - gamma(lambda(mu))) + tau(y, phi))</code></pre>
+</div>
+<p>
+where phi is a <em>scale parameter</em> (possibly known), and is constant for all observations, <em>A</em> represents a prior weight, assumed known but possibly varying with the observations, and <span class="math inline">\(\mu\)</span> is the mean of <em>y</em>. So it is assumed that the distribution of <em>y</em> is determined by its mean and possibly a scale parameter as well.
+</p>
+</li>
+<li>
+<p>
+The mean, mu, is a smooth invertible function of the linear predictor:
+</p>
+<div class="example">
+<pre class="display"><code>mu = m(eta),    eta = m^{-1}(mu) = ell(mu)</code></pre>
+</div>
+<p>
+and this inverse function, ell(), is called the <em>link function</em>.
+</p>
+</li>
+</ul>
+<p>
+These assumptions are loose enough to encompass a wide class of models useful in statistical practice, but tight enough to allow the development of a unified methodology of estimation and inference, at least approximately. The reader is referred to any of the current reference works on the subject for full details, such as McCullagh &amp; Nelder (1989) or Dobson (1990).
+</p>
+<hr />
+<p>
+<a href="" id="Families"></a> <a href="" id="Families-1"></a>
+</p>
+<h4 id="families" class="subheading">
+11.6.1 Families
+</h4>
+<p>
+<a href="" id="index-Families"></a>
+</p>
+<p>
+The class of generalized linear models handled by facilities supplied in R includes <em>gaussian</em>, <em>binomial</em>, <em>poisson</em>, <em>inverse gaussian</em> and <em>gamma</em> response distributions and also <em>quasi-likelihood</em> models where the response distribution is not explicitly specified. In the latter case the <em>variance function</em> must be specified as a function of the mean, but in other cases this function is implied by the response distribution.
+</p>
+<p>
+Each response distribution admits a variety of link functions to connect the mean with the linear predictor. Those automatically available are shown in the following table:
+</p>
+<blockquote>
+<table>
+<thead>
+<tr class="header">
+<th align="left">
+Family name
+</th>
+<th align="left">
+Link functions
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">binomial</code>
+</td>
+<td align="left">
+<code class="calibre2">logit</code>, <code class="calibre2">probit</code>, <code class="calibre2">log</code>, <code class="calibre2">cloglog</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">gaussian</code>
+</td>
+<td align="left">
+<code class="calibre2">identity</code>, <code class="calibre2">log</code>, <code class="calibre2">inverse</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">Gamma</code>
+</td>
+<td align="left">
+<code class="calibre2">identity</code>, <code class="calibre2">inverse</code>, <code class="calibre2">log</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">inverse.gaussian</code>
+</td>
+<td align="left">
+<code class="calibre2">1/mu^2</code>, <code class="calibre2">identity</code>, <code class="calibre2">inverse</code>, <code class="calibre2">log</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">poisson</code>
+</td>
+<td align="left">
+<code class="calibre2">identity</code>, <code class="calibre2">log</code>, <code class="calibre2">sqrt</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">quasi</code>
+</td>
+<td align="left">
+<code class="calibre2">logit</code>, <code class="calibre2">probit</code>, <code class="calibre2">cloglog</code>, <code class="calibre2">identity</code>, <code class="calibre2">inverse</code>, <code class="calibre2">log</code>, <code class="calibre2">1/mu^2</code>, <code class="calibre2">sqrt</code>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+The combination of a response distribution, a link function and various other pieces of information that are needed to carry out the modeling exercise is called the <em>family</em> of the generalized linear model.
+</p>
+<hr />
+<p>
+<a href="" id="The-glm_0028_0029-function"></a> <a href="" id="The-glm_0028_0029-function-1"></a>
+</p>
+<h4 id="the-glm-function" class="subheading">
+11.6.2 The <code class="calibre2">glm()</code> function
+</h4>
+<p>
+<a href="" id="index-glm"></a>
+</p>
+<p>
+Since the distribution of the response depends on the stimulus variables through a single linear function <em>only</em>, the same mechanism as was used for linear models can still be used to specify the linear part of a generalized model. The family has to be specified in a different way.
+</p>
+<p>
+The R function to fit a generalized linear model is <code class="calibre2">glm()</code> which uses the form
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fitted.model &lt;- glm(formula, family=family.generator, data=data.frame)</code></pre>
+</div>
+<p>
+The only new feature is the family.generator, which is the instrument by which the family is described. It is the name of a function that generates a list of functions and expressions that together define and control the model and estimation process. Although this may seem a little complicated at first sight, its use is quite simple.
+</p>
+<p>
+The names of the standard, supplied family generators are given under “Family Name” in the table in <a href="statistical-models-in-r.html#Families">Families</a>. Where there is a choice of links, the name of the link may also be supplied with the family name, in parentheses as a parameter. In the case of the <code class="calibre2">quasi</code> family, the variance function may also be specified in this way.
+</p>
+<p>
+Some examples make the process clear.
+</p>
+<p>
+<a href="" id="The-gaussian-family"></a>
+</p>
+<h4 id="the-gaussian-family" class="subheading">
+The <code class="calibre2">gaussian</code> family
+</h4>
+<p>
+A call such as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fm &lt;- glm(y ~ x1 + x2, family = gaussian, data = sales)</code></pre>
+</div>
+<p>
+achieves the same result as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fm &lt;- lm(y ~ x1+x2, data=sales)</code></pre>
+</div>
+<p>
+but much less efficiently. Note how the gaussian family is not automatically provided with a choice of links, so no parameter is allowed. If a problem requires a gaussian family with a nonstandard link, this can usually be achieved through the <code class="calibre2">quasi</code> family, as we shall see later.
+</p>
+<p>
+<a href="" id="The-binomial-family"></a>
+</p>
+<h4 id="the-binomial-family" class="subheading">
+The <code class="calibre2">binomial</code> family
+</h4>
+<p>
+Consider a small, artificial example, from Silvey (1970).
+</p>
+<p>
+On the Aegean island of Kalythos the male inhabitants suffer from a congenital eye disease, the effects of which become more marked with increasing age. Samples of islander males of various ages were tested for blindness and the results recorded. The data is shown below:
+</p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Age:
+</td>
+<td align="left">
+20
+</td>
+<td align="left">
+35
+</td>
+<td align="left">
+45
+</td>
+<td align="left">
+55
+</td>
+<td align="left">
+70
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+No. tested:
+</td>
+<td align="left">
+50
+</td>
+<td align="left">
+50
+</td>
+<td align="left">
+50
+</td>
+<td align="left">
+50
+</td>
+<td align="left">
+50
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+No. blind:
+</td>
+<td align="left">
+ 6
+</td>
+<td align="left">
+17
+</td>
+<td align="left">
+26
+</td>
+<td align="left">
+37
+</td>
+<td align="left">
+44
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+The problem we consider is to fit both logistic and probit models to this data, and to estimate for each model the LD50, that is the age at which the chance of blindness for a male inhabitant is 50%.
+</p>
+<p>
+If <em>y</em> is the number of blind at age <em>x</em> and <em>n</em> the number tested, both models have the form y ~ B(n, F(beta_0 + beta_1 x)) where for the probit case, F(z) = Phi(z) is the standard normal distribution function, and in the logit case (the default), F(z) = e<sup>z/(1+e</sup>z). In both cases the LD50 is LD50 = - beta_0/beta_1 that is, the point at which the argument of the distribution function is zero.
+</p>
+<p>
+The first step is to set the data up as a data frame
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; kalythos &lt;- data.frame(x = c(20,35,45,55,70), n = rep(50,5),
+                         y = c(6,17,26,37,44))</code></pre>
+</div>
+<p>
+To fit a binomial model using <code class="calibre2">glm()</code> there are three possibilities for the response:
+</p>
+<ul>
+<li>
+If the response is a <em>vector</em> it is assumed to hold <em>binary</em> data, and so must be a <em>0/1</em> vector.
+</li>
+<li>
+If the response is a <em>two-column matrix</em> it is assumed that the first column holds the number of successes for the trial and the second holds the number of failures.
+</li>
+<li>
+If the response is a <em>factor</em>, its first level is taken as failure (0) and all other levels as ‘success’ (1).
+</li>
+</ul>
+<p>
+Here we need the second of these conventions, so we add a matrix to our data frame:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; kalythos$Ymat &lt;- cbind(kalythos$y, kalythos$n - kalythos$y)</code></pre>
+</div>
+<p>
+To fit the models we use
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fmp &lt;- glm(Ymat ~ x, family = binomial(link=probit), data = kalythos)
+&gt; fml &lt;- glm(Ymat ~ x, family = binomial, data = kalythos)</code></pre>
+</div>
+<p>
+Since the logit link is the default the parameter may be omitted on the second call. To see the results of each fit we could use
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; summary(fmp)
+&gt; summary(fml)</code></pre>
+</div>
+<p>
+Both models fit (all too) well. To find the LD50 estimate we can use a simple function:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ld50 &lt;- function(b) -b[1]/b[2]
+&gt; ldp &lt;- ld50(coef(fmp)); ldl &lt;- ld50(coef(fml)); c(ldp, ldl)</code></pre>
+</div>
+<p>
+The actual estimates from this data are 43.663 years and 43.601 years respectively.
+</p>
+<p>
+<a href="" id="Poisson-models"></a>
+</p>
+<h4 id="poisson-models" class="subheading">
+Poisson models
+</h4>
+<p>
+With the Poisson family the default link is the <code class="calibre2">log</code>, and in practice the major use of this family is to fit surrogate Poisson log-linear models to frequency data, whose actual distribution is often multinomial. This is a large and important subject we will not discuss further here. It even forms a major part of the use of non-gaussian generalized models overall.
+</p>
+<p>
+Occasionally genuinely Poisson data arises in practice and in the past it was often analyzed as gaussian data after either a log or a square-root transformation. As a graceful alternative to the latter, a Poisson generalized linear model may be fitted as in the following example:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fmod &lt;- glm(y ~ A + B + x, family = poisson(link=sqrt),
+              data = worm.counts)</code></pre>
+</div>
+<p>
+<a href="" id="Quasi_002dlikelihood-models"></a>
+</p>
+<h4 id="quasi-likelihood-models" class="subheading">
+Quasi-likelihood models
+</h4>
+<p>
+For all families the variance of the response will depend on the mean and will have the scale parameter as a multiplier. The form of dependence of the variance on the mean is a characteristic of the response distribution; for example for the poisson distribution Var(y) = mu.
+</p>
+<p>
+For quasi-likelihood estimation and inference the precise response distribution is not specified, but rather only a link function and the form of the variance function as it depends on the mean. Since quasi-likelihood estimation uses formally identical techniques to those for the gaussian distribution, this family provides a way of fitting gaussian models with non-standard link functions or variance functions, incidentally.
+</p>
+<p>
+For example, consider fitting the non-linear regression y = theta_1 z_1 / (z_2 - theta_2) + e which may be written alternatively as y = 1 / (beta_1 x_1 + beta_2 x_2) + e where x_1 = z_2/z_1, x_2 = -1/z_1, beta_1 = 1/theta_1, and beta_2 = theta_2/theta_1. Supposing a suitable data frame to be set up we could fit this non-linear regression as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; nlfit &lt;- glm(y ~ x1 + x2 - 1,
+               family = quasi(link=inverse, variance=constant),
+               data = biochem)</code></pre>
+</div>
+<p>
+The reader is referred to the manual and the help document for further information, as needed.
+</p>
+<hr />
+<p>
+<a href="" id="Nonlinear-least-squares-and-maximum-likelihood-models"></a> <a href="" id="Nonlinear-least-squares-and-maximum-likelihood-models-1"></a>
+</p>
+<h3 id="nonlinear-least-squares-and-maximum-likelihood-models" class="section">
+11.7 Nonlinear least squares and maximum likelihood models
+</h3>
+<p>
+<a href="" id="index-Nonlinear-least-squares"></a>
+</p>
+<p>
+Certain forms of nonlinear model can be fitted by Generalized Linear Models (<code class="calibre2">glm()</code>). But in the majority of cases we have to approach the nonlinear curve fitting problem as one of nonlinear optimization. R’s nonlinear optimization routines are <code class="calibre2">optim()</code>, <code class="calibre2">nlm()</code> and <code class="calibre2">nlminb()</code>, <a href="" id="index-nlm"></a> <a href="" id="index-optim"></a> <a href="" id="index-nlminb"></a> which provide the functionality (and more) of S-PLUS’s <code class="calibre2">ms()</code> and <code class="calibre2">nlminb()</code>. We seek the parameter values that minimize some index of lack-of-fit, and they do this by trying out various parameter values iteratively. Unlike linear regression for example, there is no guarantee that the procedure will converge on satisfactory estimates. All the methods require initial guesses about what parameter values to try, and convergence may depend critically upon the quality of the starting values.
+</p>
+<hr />
+<p>
+<a href="" id="Least-squares"></a> <a href="" id="Least-squares-1"></a>
+</p>
+<h4 id="least-squares" class="subheading">
+11.7.1 Least squares
+</h4>
+<p>
+One way to fit a nonlinear model is by minimizing the sum of the squared errors (SSE) or residuals. This method makes sense if the observed errors could have plausibly arisen from a normal distribution.
+</p>
+<p>
+Here is an example from Bates &amp; Watts (1988), page 51. The data are:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; x &lt;- c(0.02, 0.02, 0.06, 0.06, 0.11, 0.11, 0.22, 0.22, 0.56, 0.56,
+         1.10, 1.10)
+&gt; y &lt;- c(76, 47, 97, 107, 123, 139, 159, 152, 191, 201, 207, 200)</code></pre>
+</div>
+<p>
+The fit criterion to be minimized is:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fn &lt;- function(p) sum((y - (p[1] * x)/(p[2] + x))^2)</code></pre>
+</div>
+<p>
+In order to do the fit we need initial estimates of the parameters. One way to find sensible starting values is to plot the data, guess some parameter values, and superimpose the model curve using those values.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; plot(x, y)
+&gt; xfit &lt;- seq(.02, 1.1, .05)
+&gt; yfit &lt;- 200 * xfit/(0.1 + xfit)
+&gt; lines(spline(xfit, yfit))</code></pre>
+</div>
+<p>
+We could do better, but these starting values of 200 and 0.1 seem adequate. Now do the fit:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; out &lt;- nlm(fn, p = c(200, 0.1), hessian = TRUE)</code></pre>
+</div>
+<p>
+<a href="" id="index-nlm-1"></a>
+</p>
+<p>
+After the fitting, <code class="calibre2">out<span class="math inline">\(minimum&lt;/code&gt; is the SSE, and &lt;code class=&quot;calibre2&quot;&gt;out\)</span>estimate</code> are the least squares estimates of the parameters. To obtain the approximate standard errors (SE) of the estimates we do:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; sqrt(diag(2*out$minimum/(length(y) - 2) * solve(out$hessian)))</code></pre>
+</div>
+<p>
+The <code class="calibre2">2</code> which is subtracted in the line above represents the number of parameters. A 95% confidence interval would be the parameter estimate +/- 1.96 SE. We can superimpose the least squares fit on a new plot:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; plot(x, y)
+&gt; xfit &lt;- seq(.02, 1.1, .05)
+&gt; yfit &lt;- 212.68384222 * xfit/(0.06412146 + xfit)
+&gt; lines(spline(xfit, yfit))</code></pre>
+</div>
+<p>
+The standard package <strong>stats</strong> provides much more extensive facilities for fitting non-linear models by least squares. The model we have just fitted is the Michaelis-Menten model, so we can use
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; df &lt;- data.frame(x=x, y=y)
+&gt; fit &lt;- nls(y ~ SSmicmen(x, Vm, K), df)
+&gt; fit
+Nonlinear regression model
+  model:  y ~ SSmicmen(x, Vm, K)
+   data:  df
+          Vm            K
+212.68370711   0.06412123
+ residual sum-of-squares:  1195.449
+&gt; summary(fit)
+
+Formula: y ~ SSmicmen(x, Vm, K)
+
+Parameters:
+    Estimate Std. Error t value Pr(&gt;|t|)
+Vm 2.127e+02  6.947e+00  30.615 3.24e-11
+K  6.412e-02  8.281e-03   7.743 1.57e-05
+
+Residual standard error: 10.93 on 10 degrees of freedom
+
+Correlation of Parameter Estimates:
+      Vm
+K 0.7651</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Maximum-likelihood"></a> <a href="" id="Maximum-likelihood-1"></a>
+</p>
+<h4 id="maximum-likelihood" class="subheading">
+11.7.2 Maximum likelihood
+</h4>
+<p>
+<a href="" id="index-Maximum-likelihood"></a>
+</p>
+<p>
+Maximum likelihood is a method of nonlinear model fitting that applies even if the errors are not normal. The method finds the parameter values which maximize the log likelihood, or equivalently which minimize the negative log-likelihood. Here is an example from Dobson (1990), pp. 108–111. This example fits a logistic model to dose-response data, which clearly could also be fit by <code class="calibre2">glm()</code>. The data are:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; x &lt;- c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113,
+         1.8369, 1.8610, 1.8839)
+&gt; y &lt;- c( 6, 13, 18, 28, 52, 53, 61, 60)
+&gt; n &lt;- c(59, 60, 62, 56, 63, 59, 62, 60)</code></pre>
+</div>
+<p>
+The negative log-likelihood to minimize is:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fn &lt;- function(p)
+   sum( - (y*(p[1]+p[2]*x) - n*log(1+exp(p[1]+p[2]*x))
+           + log(choose(n, y)) ))</code></pre>
+</div>
+<p>
+We pick sensible starting values and do the fit:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; out &lt;- nlm(fn, p = c(-50,20), hessian = TRUE)</code></pre>
+</div>
+<p>
+<a href="" id="index-nlm-2"></a>
+</p>
+<p>
+After the fitting, <code class="calibre2">out<span class="math inline">\(minimum&lt;/code&gt; is the negative log-likelihood, and &lt;code class=&quot;calibre2&quot;&gt;out\)</span>estimate</code> are the maximum likelihood estimates of the parameters. To obtain the approximate SEs of the estimates we do:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; sqrt(diag(solve(out$hessian)))</code></pre>
+</div>
+<p>
+A 95% confidence interval would be the parameter estimate +/- 1.96 SE.
+</p>
+<hr />
+<p>
+<a href="" id="Some-non_002dstandard-models"></a> <a href="" id="Some-non_002dstandard-models-1"></a>
+</p>
+<h3 id="some-non-standard-models" class="section">
+11.8 Some non-standard models
+</h3>
+<p>
+We conclude this chapter with just a brief mention of some of the other facilities available in R for special regression and data analysis problems.
+</p>
+<ul>
+<li>
+<a href="" id="index-Mixed-models"></a> <strong>Mixed models.</strong> The recommended <a href="https://CRAN.R-project.org/package=nlme"><strong>nlme</strong></a> package provides functions <code class="calibre2">lme()</code> and <code class="calibre2">nlme()</code> <a href="" id="index-lme"></a> <a href="" id="index-nlme"></a> for linear and non-linear mixed-effects models, that is linear and non-linear regressions in which some of the coefficients correspond to random effects. These functions make heavy use of formulae to specify the models.
+</li>
+<li>
+<p>
+<a href="" id="index-Local-approximating-regressions"></a> <strong>Local approximating regressions.</strong> The <code class="calibre2">loess()</code> <a href="" id="index-loess"></a> function fits a nonparametric regression by using a locally weighted regression. Such regressions are useful for highlighting a trend in messy data or for data reduction to give some insight into a large data set.
+</p>
+<p>
+Function <code class="calibre2">loess</code> is in the standard package <strong>stats</strong>, together with code for projection pursuit regression. <a href="" id="index-loess-1"></a>
+</p>
+</li>
+<li>
+<a href="" id="index-Robust-regression"></a> <strong>Robust regression.</strong> There are several functions available for fitting regression models in a way resistant to the influence of extreme outliers in the data. Function <code class="calibre2">lqs</code> <a href="" id="index-lqs"></a> in the recommended package <a href="https://CRAN.R-project.org/package=MASS"><strong>MASS</strong></a> provides state-of-art algorithms for highly-resistant fits. Less resistant but statistically more efficient methods are available in packages, for example function <code class="calibre2">rlm</code> <a href="" id="index-rlm"></a> in package <a href="https://CRAN.R-project.org/package=MASS"><strong>MASS</strong></a>.
+</li>
+<li>
+<a href="" id="index-Additive-models"></a> <strong>Additive models.</strong> This technique aims to construct a regression function from smooth additive functions of the determining variables, usually one for each determining variable. Functions <code class="calibre2">avas</code> and <code class="calibre2">ace</code> <a href="" id="index-avas"></a> <a href="" id="index-ace"></a> in package <a href="https://CRAN.R-project.org/package=acepack"><strong>acepack</strong></a> and functions <code class="calibre2">bruto</code> and <code class="calibre2">mars</code> <a href="" id="index-bruto"></a> <a href="" id="index-mars"></a> in package <a href="https://CRAN.R-project.org/package=mda"><strong>mda</strong></a> provide some examples of these techniques in user-contributed packages to R. An extension is <strong>Generalized Additive Models</strong>, implemented in user-contributed packages <a href="https://CRAN.R-project.org/package=gam"><strong>gam</strong></a> and <a href="https://CRAN.R-project.org/package=mgcv"><strong>mgcv</strong></a>.
+</li>
+<li>
+<p>
+<a href="" id="index-Tree_002dbased-models"></a> <strong>Tree-based models.</strong> Rather than seek an explicit global linear model for prediction or interpretation, tree-based models seek to bifurcate the data, recursively, at critical points of the determining variables in order to partition the data ultimately into groups that are as homogeneous as possible within, and as heterogeneous as possible between. The results often lead to insights that other data analysis methods tend not to yield.
+</p>
+<p>
+Models are again specified in the ordinary linear model form. The model fitting function is <code class="calibre2">tree()</code>, <a href="" id="index-tree"></a> but many other generic functions such as <code class="calibre2">plot()</code> and <code class="calibre2">text()</code> are well adapted to displaying the results of a tree-based model fit in a graphical way.
+</p>
+<p>
+Tree models are available in R <em>via</em> the user-contributed packages <a href="https://CRAN.R-project.org/package=rpart"><strong>rpart</strong></a> and <a href="https://CRAN.R-project.org/package=tree"><strong>tree</strong></a>.
+</p>
+</li>
+</ul>
+<hr />
+<p>
+<a href="" id="Graphics"></a> <a href="" id="Graphical-procedures"></a>
+</p>
+<div id="calibre_pb_26" class="calibre8">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="writing-your-own-functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="graphical-procedures.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

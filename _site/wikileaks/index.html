@@ -1,0 +1,987 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Wrangling Wikileaks DMs - Colin Fay</title>
+<meta name="description" content="Using R to turn raw data into browsable and reusable content.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Wrangling Wikileaks DMs">
+<meta property="og:url" content="http://localhost:4000/wikileaks/">
+
+
+  <meta property="og:description" content="Using R to turn raw data into browsable and reusable content.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Wrangling Wikileaks DMs">
+  <meta name="twitter:description" content="Using R to turn raw data into browsable and reusable content.">
+  <meta name="twitter:url" content="http://localhost:4000/wikileaks/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-08-06T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/wikileaks/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Wrangling Wikileaks DMs">
+    <meta itemprop="description" content="Using R to turn raw data into browsable and reusable content.">
+    <meta itemprop="datePublished" content="August 06, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Wrangling Wikileaks DMs
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  10 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Using R to turn raw data into browsable and reusable content.</p>
+
+<!--more-->
+
+<h2 id="about">About</h2>
+
+<p>On the 29th of July 2018, Emma Best published on her website the copy of
+11k+ wikileaks Twitter DM :
+<a href="https://emma.best/2018/07/29/11000-messages-from-private-wikileaks-chat-released/">https://emma.best/2018/07/29/11000-messages-from-private-wikileaks-chat-released/</a></p>
+
+<p>To be honnest, I’m not really interested in the content of this dataset.
+What really interested me is that it’s <strong>raw data</strong> (copied and pasted
+text) waiting to be parsed, and that I could <strong>use R to turn these
+elements into a reusable and browsable content</strong>.</p>
+
+<h2 id="the-results">The results</h2>
+
+<p>Here are the links to the pages I’ve created with R from this dataset:</p>
+
+<ul>
+  <li><a href="https://colinfay.me/wikileaksdm/index.html">Home</a> has the full
+dataset, to search and download.</li>
+  <li><a href="https://colinfay.me/wikileaksdm/timeline.html">Timeline</a> has a
+series of time-related content: notably DMs by years, and daily
+count of DMs.</li>
+  <li><a href="https://colinfay.me/wikileaksdm/users.html">Users</a> holds the
+dataset for each users.</li>
+  <li><a href="https://colinfay.me/wikileaksdm/mention_urls.html">mentions_urls</a>
+holds the extracted mentions and urls</li>
+  <li><a href="https://colinfay.me/wikileaksdm/methodo.html">methodo</a> contains the
+methodology used for the data wrangling</li>
+</ul>
+
+<h2 id="methodology">Methodology</h2>
+
+<h3 id="extracting-the-content">Extracting the content</h3>
+
+<p>As I wanted to use the data offline (and not re-download it each time I
+compile the outputs), I’ve first extracted and saved the dataset as a
+.txt. You can now see it at <a href="https://colinfay.me/wikileaksdm/raw.txt">https://colinfay.me/wikileaksdm/raw.txt</a>.</p>
+
+<p>Here is the code used:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## ── Attaching packages ───────── tidyverse 1.2.1 ──
+
+## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
+## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0
+
+## ── Conflicts ──────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">rvest</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Loading required package: xml2
+
+## 
+## Attaching package: 'rvest'
+
+## The following object is masked from 'package:purrr':
+## 
+##     pluck
+
+## The following object is masked from 'package:readr':
+## 
+##     guess_encoding
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Reading the page</span><span class="w">
+</span><span class="n">doc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_html</span><span class="p">(</span><span class="s2">"https://emma.best/2018/07/29/11000-messages-from-private-wikileaks-chat-released/"</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Extracting the paragraphs</span><span class="w">
+</span><span class="n">doc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="c1"># Getting the p</span><span class="w">
+  </span><span class="n">html_nodes</span><span class="p">(</span><span class="s2">"p"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="c1"># Getting the text</span><span class="w">
+  </span><span class="n">html_text</span><span class="p">()</span><span class="w">
+
+</span><span class="c1"># Removing the empty lines</span><span class="w">
+</span><span class="n">doc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">doc</span><span class="p">[</span><span class="o">!</span><span class="w"> </span><span class="n">nchar</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span><span class="w">  </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
+</span><span class="c1"># Lines 1 to 9 are the content of the blogpost, not the content of the conversation. </span><span class="w">
+</span><span class="n">doc</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">9</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "“Objectivity is short-hand for not having a significant pre-conceived agenda, eliding facts the audience would be interested in, or engaging in obvious falsehoods.” ~ WikiLeaks"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+## [2] "Presented below are over 11,000 messages from the WikiLeaks + 10 chat, from which only excerpts have previously been published."                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+## [3] "The chat is presented nearly in its entirety, with only a handful redactions made to protect the privacy and personal information of innocent, third parties as well as the already public name of an individual who has sent hate mail, made legal threats and who the source for the DMs considers a threat. It is at the request of the source that Mark’s full name is redacted, leaving only his first name and his initials (which he specified is alright). Though MGT’s full name is already public and easily discoverable, the source’s wishes are being respected. Beyond this individual, the redactions don’t include any information that’s relevant to understanding WikiLeaks or their activities."
+## [4] "The chat log shows WikiLeaks’ private attitudes, their use of FOIA laws, as well as discussions about WikiLeaks’ lobbying and attempts to “humiliate” politicians, PR and propaganda efforts (such as establishing a “medium term truth” for “phase 2”), troll operations, attempts to engineer situations where WikiLeaks would be able to sue their critics, and in some instances where WikiLeaks helped direct lawsuits filed by third parties or encouraged criminal investigations against their opponents. In some instances, the chats are revealing. In others, they show a mundane consistency with WikiLeaks’ public stances. A few are provocative and confounding."                                   
+## [5] "The extract below was created using DMArchiver, and is presented as pure text to make it easier to search and to provide as much metadata as possible (i.e. times as well as dates). The formatting is presented as-is, and shows users’ display names rather than their twitter handles. (Note: Emmy B is @GreekEmmy, not the author.)"                                                                                                                                                                                                                                                                                                                                                                           
+## [6] "CW: At various points in the chat, there are examples of homophobia, transphobia, ableism, sexism, racism, antisemitism and other objectionable content and language. Some of these are couched as jokes, but are still likely to (and should) offend, as a racist or sexist jokes doesn’t cease to be racist or sexist because of an expected or desired laugh. Attempts to dismiss of these comments as “ironic” or “just trolling” merely invites comparisons to 4chan and ironic nazis. These comments, though offensive, are included in order to present as full and complete a record as possible and to let readers judge the context, purpose and merit of these comments for themselves."                
+## [7] " "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+## [8] "If any current or former staffers, volunteers or hackers wants to add to my growing collection of leaks from within #WikiLeaks, please reach out. DMs are open and I’m EmmaBest on Wire."                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+## [9] "— Emma Best (\u1d1c//ғ\u1d0f\u1d1c\u1d0f) \U0001f3f3️‍\U0001f308 (@NatSecGeek) June 28, 2018"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">doc</span><span class="p">[</span><span class="m">10</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "[2015-05-01 13:52:11] &lt;noll&gt; group Dm on Wls related trolls activity, incoming events &amp; general topics."
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Removing these lines:</span><span class="w">
+</span><span class="n">doc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">doc</span><span class="p">[</span><span class="m">10</span><span class="o">:</span><span class="nf">length</span><span class="p">(</span><span class="n">doc</span><span class="p">)]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>And then simply save it as a txt:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">write</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span><span class="w"> </span><span class="s2">"raw.txt"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>I can now easily reaccess it.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.delim</span><span class="p">(</span><span class="s2">"https://colinfay.me/wikileaksdm/raw.txt"</span><span class="p">,</span><span class="w"> 
+                      </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\n"</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="c1"># Turning the character vector into a tibbe</span><span class="w">
+  </span><span class="n">as.tibble</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="c1"># Renaming the V1 columné</span><span class="w">
+  </span><span class="n">rename</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="n">res_raw</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 11,377 x 1
+##    value                                                                   
+##    &lt;fct&gt;                                                                   
+##  1 [2015-05-01 13:52:11] &lt;noll&gt; group Dm on Wls related trolls activity, i…
+##  2 [2015-05-01 13:53:39] &lt;WikiLeaks&gt; There’s a race on now to ‘spoil’ our …
+##  3 [2015-05-01 13:55:02] &lt;WikiLeaks&gt; Greenberg, who palled up with the ope…
+##  4 [2015-05-01 13:55:53] &lt;WikiLeaks&gt; ..stripped the hostility. We’re putti…
+##  5 [2015-05-01 13:56:03] &lt;WikiLeaks&gt; suppressed.                           
+##  6 [2015-05-01 14:01:26] &lt;noll&gt; yes, both Wired &amp; Verge contained DDB’s li…
+##  7 [2015-05-01 14:02:37] &lt;noll&gt; – cyber attacks. must be one of, if not th…
+##  8 [2015-05-01 14:03:55] &lt;WikiLeaks&gt; Greenberg is a partisan. Fraudulent t…
+##  9 [2015-05-01 14:29:48] &lt;noll&gt; [Tweet] https://twitter.com/m_cetera/statu…
+## 10 [2015-05-01 14:32:09] &lt;WISE Up Action&gt; Hi all. More comfortable discuss…
+## # ... with 11,367 more rows
+</code></pre></div></div>
+
+<h3 id="cleaning-the-data">Cleaning the data</h3>
+
+<p>DMs have a specific structure: <code class="highlighter-rouge">[date hour] &lt;author&gt; text</code>, except for
+one “author”, <code class="highlighter-rouge">&lt;DMConversationEntry&gt;</code>, which is the meta-information
+about the conversation (renaming of the channel, user joining and
+leaving, etc). In order to tidy the format, let’s add
+<code class="highlighter-rouge">&lt;DMConversationEntry&gt;</code> as an author.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_raw</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_replace_all</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> 
+                                 </span><span class="s2">"\\[DMConversationEntry\\]"</span><span class="p">,</span><span class="w">
+                                 </span><span class="s2">"&lt;DMConversationEntry&gt;"</span><span class="p">))</span><span class="w"> 
+</span></code></pre></div></div>
+
+<p>Also I’ll remove, the last entry of the corpus, which doesn’t fit the
+conversation format:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="p">[</span><span class="n">nrow</span><span class="p">(</span><span class="n">res</span><span class="p">),]</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 1 x 1
+##   value                             
+##   &lt;chr&gt;                             
+## 1 [LatestTweetID] 931704226425856001
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">filter</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">str_detect</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="s2">"931704226425856001"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Some messages are splitted between lines. These lines don’t start with a
+date (they are the middle of a DM). I’ll then paste the content of these
+lines at the end of the line before.</p>
+
+<p>Here is an example with lines 93 &amp;
+94:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: right">value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right">“[2015-05-02 14:12:27] <WISE Up="" Wales=""> OK, thanks H. Security issues were about who was on the list then?”</WISE></td>
+    </tr>
+    <tr>
+      <td style="text-align: right">“Never quite know who you’re dealing with online I guess. I don’t, anyway!”</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Here, 94 will be pasted at the end of 93 and removed.</p>
+
+<p>Let’s loop this:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">nrow</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">:</span><span class="m">1</span><span class="p">){</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">grepl</span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\\[.{4}-.{2}-.{2} .{2}:.{2}:.{2}\\]|DMConversationEntry"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">,])){</span><span class="w">
+    </span><span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="m">-1</span><span class="p">,]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="m">-1</span><span class="p">,],</span><span class="w"> </span><span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">,])</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="c1"># Remove lines with no date or no DMConversationEntry</span><span class="w">
+</span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">has_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_detect</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\\[.{4}-.{2}-.{2} .{2}:.{2}:.{2}\\]|DMConversationEntry"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">has_date</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">select</span><span class="p">(</span><span class="o">-</span><span class="n">has_date</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="extract-key-elements">Extract key elements</h3>
+
+<p>We’ll now need to split the content in three: <code class="highlighter-rouge">user</code>, <code class="highlighter-rouge">date</code>, and
+<code class="highlighter-rouge">text</code>.</p>
+
+<p>My first try was with :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">extract</span><span class="p">(</span><span class="w">
+    </span><span class="n">value</span><span class="p">,</span><span class="w">
+    </span><span class="nf">c</span><span class="p">(</span><span class="s2">"date"</span><span class="p">,</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w"> </span><span class="s2">"text"</span><span class="p">),</span><span class="w"> 
+    </span><span class="n">regex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\\[(.{4}-.{2}-.{2} .{2}:.{2}:.{2})\\] &lt;([a-zA-Z0-9 ]*)&gt;  (.*)"</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>But that didn’t fit well: the <code class="highlighter-rouge">DMConversationEntry</code> has no date (I will
+fill them later), so I need a NA here, hence the three steps process:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">extract</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="s2">"user"</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;([a-zA-Z0-9 ]*)&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">remove</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">extract</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="s2">"date"</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\\[(.{4}-.{2}-.{2} .{2}:.{2}:.{2})\\] .*"</span><span class="p">,</span><span class="w"> </span><span class="n">remove</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">extract</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="s2">"text"</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&lt;[a-zA-Z0-9 ]*&gt; (.*)"</span><span class="p">,</span><span class="w"> </span><span class="n">remove</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">select</span><span class="p">(</span><span class="o">-</span><span class="n">value</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>When date is missing, it’s because it’s a <code class="highlighter-rouge">DMConversationEntry</code>. Let’s
+verify that:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"DMConversationEntry"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarize</span><span class="p">(</span><span class="n">nas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">date</span><span class="p">)),</span><span class="w"> 
+            </span><span class="n">nrow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="p">())</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 1 x 2
+##     nas  nrow
+##   &lt;int&gt; &lt;int&gt;
+## 1    20    20
+</code></pre></div></div>
+
+<p>In order to have a date here, we will fill this with the directly
+preceeding date:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fill</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">date</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="saving-data">Saving data</h2>
+
+<h3 id="global">Global</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">write_csv</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="s2">"wikileaks_dm.csv"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="year">Year</h3>
+
+<p>Find the min and max years:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">range</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">date</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "2015-05-01 13:52:11" "2017-11-10 04:30:46"
+</code></pre></div></div>
+
+<p>Filter and save a csv for each year:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">walk</span><span class="p">(</span><span class="m">2015</span><span class="o">:</span><span class="m">2017</span><span class="p">,</span><span class="w"> 
+    </span><span class="o">~</span><span class="w"> </span><span class="n">filter</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">lubridate</span><span class="o">::</span><span class="n">year</span><span class="p">(</span><span class="n">date</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">.x</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">write_csv</span><span class="p">(</span><span class="n">glue</span><span class="o">::</span><span class="n">glue</span><span class="p">(</span><span class="s2">"{.x}.csv"</span><span class="p">))</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="user">User</h3>
+
+<p>Filter and save a csv for each user:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">walk</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">user</span><span class="p">),</span><span class="w"> 
+    </span><span class="o">~</span><span class="w"> </span><span class="n">filter</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">.x</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">write_csv</span><span class="p">(</span><span class="n">glue</span><span class="o">::</span><span class="n">glue</span><span class="p">(</span><span class="s2">"user_{make.names(.x)}.csv"</span><span class="p">))</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="counting-users-participation">Counting users participation</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">count</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">write_csv</span><span class="p">(</span><span class="s2">"user_count.csv"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="counting-activity-by-days">Counting activity by days</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lubridate</span><span class="o">::</span><span class="n">ymd_hms</span><span class="p">(</span><span class="n">date</span><span class="p">),</span><span class="w"> 
+         </span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lubridate</span><span class="o">::</span><span class="n">date</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">count</span><span class="p">(</span><span class="n">date</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">write_csv</span><span class="p">(</span><span class="s2">"daily.csv"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="adding-extra-info">Adding extra info</h3>
+
+<p>Extracting all the mentions (<code class="highlighter-rouge">@something</code>):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mentions</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">mention</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_extract_all</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="s2">"@[a-zA-Z0-9_]+"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">unnest</span><span class="p">(</span><span class="n">mention</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">mention</span><span class="p">,</span><span class="w"> </span><span class="n">everything</span><span class="p">())</span><span class="w">
+</span><span class="n">write_csv</span><span class="p">(</span><span class="n">mentions</span><span class="p">,</span><span class="w"> </span><span class="s2">"mentions.csv"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Count them</span><span class="w">
+
+</span><span class="n">mentions</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">count</span><span class="p">(</span><span class="n">mention</span><span class="p">,</span><span class="w"> </span><span class="n">sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">write_csv</span><span class="p">(</span><span class="s2">"mentions_count.csv"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Extracting all the urls (<code class="highlighter-rouge">http(s)</code>something):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_extract_all</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="s2">"http.+"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">unnest</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="w"> </span><span class="n">everything</span><span class="p">())</span><span class="w">
+</span><span class="n">write_csv</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span><span class="w"> </span><span class="s2">"urls.csv"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="adding-json-format">Adding JSON format</h3>
+
+<p>I’ve also chosen to export JSON format of the csv.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">list.files</span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">walk</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">o</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_csv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">
+    </span><span class="n">jsonlite</span><span class="o">::</span><span class="n">write_json</span><span class="p">(</span><span class="w">
+      </span><span class="n">o</span><span class="p">,</span><span class="w">
+      </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glue</span><span class="o">::</span><span class="n">glue</span><span class="p">(</span><span class="s2">"{tools::file_path_sans_ext(x)}.json"</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+  </span><span class="p">})</span><span class="w">
+</span><span class="n">dir.create</span><span class="p">(</span><span class="s2">"json"</span><span class="p">)</span><span class="w">
+</span><span class="n">list.files</span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"json"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">walk</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+    </span><span class="n">file.copy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">glue</span><span class="o">::</span><span class="n">glue</span><span class="p">(</span><span class="s2">"json/{x}"</span><span class="p">))</span><span class="w">
+    </span><span class="n">unlink</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">
+  </span><span class="p">})</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="building-a-website-with-markdown-and-github">Building a website with Markdown and GitHub</h2>
+
+<p>Here’s a list of random elements from the process of building these
+pages with R.</p>
+
+<h3 id="hosting">Hosting</h3>
+
+<p>My website in hosted on
+<a href="https://github.com/ColinFay/colinfay.github.io">GitHub</a>, with the home
+url (colinfay.me) pointing to the root of this repo. If I create a new
+folder <code class="highlighter-rouge">pouet</code>, and put inside this folder a file called <code class="highlighter-rouge">index.html</code>, I
+can then go to colinfay.me/pouet, and get a new website from there. As
+the wikileaks extraction already had its own repo, I’ve chosen to list
+this repo <a href="https://github.com/ColinFay/wikileaksdm">https://github.com/ColinFay/wikileaksdm</a> as a submodule of my
+website’s repo.</p>
+
+<p>More about submodules:
+<a href="https://git-scm.com/book/en/v2/Git-Tools-Submodules">https://git-scm.com/book/en/v2/Git-Tools-Submodules</a></p>
+
+<p>Inside this wikileaksdm project, I gathered all the data, an <code class="highlighter-rouge">index.Rmd</code>
+which will be used as a homepage, and other Rmd for other pages. Each
+are compiled as html.</p>
+
+<h3 id="styling-the-pages">Styling the pages</h3>
+
+<p>Markdown default style is nice, but I wanted something different. This
+is why I used <code class="highlighter-rouge">{markdowntemplates}</code>, with the skeleton template. The
+yaml looks like:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+title: "Wikileaks Twitter DM - Home"
+author: '@_colinfay'
+date: "2018-10-17"
+fig_width: 10
+fig_height: 4 
+navlink: "[Wikileaks Twitter DM](https://colinfay.me/wikileaksdm)"
+og:
+  type: "article"
+  title: "Wikileaks Twitter DM"
+footer:
+  - content: '&lt;a href="https://colinfay.me"&gt;colinfay.me&lt;/a&gt; • &lt;a href="https://twitter.com/_ColinFay"&gt;@_colinfay&lt;/a&gt;&lt;br/&gt;'
+output: markdowntemplates::skeleton
+---
+</code></pre></div></div>
+
+<p>Here, you can see some new things: footer content, og for open graph
+data, and navlink for the content of the header.</p>
+
+<h3 id="include-the-same-markdown-content-several-time">Include the same markdown content several time</h3>
+
+<p>All the pages have the same intro content, so I can use
+<code class="highlighter-rouge">shiny::includeMarkdown</code> to include it on each page (this way, I’ll only
+need to update the content once if needed). Put it between backticks
+with an <code class="highlighter-rouge">r</code>, and the markdown is integrated at compilation time as html.</p>
+
+<p>See here, line 21:
+<a href="https://raw.githubusercontent.com/ColinFay/wikileaksdm/master/index.Rmd">https://raw.githubusercontent.com/ColinFay/wikileaksdm/master/index.Rmd</a></p>
+
+<h3 id="include-font-awesome-icons">Include font awesome icons</h3>
+
+<p>Before every link, there is a:</p>
+<svg style="height:0.8em;top:.04em;position:relative;" viewBox="0 0 512 512"><path d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z" /></svg>
+
+<p>This could have been done with CSS, but I’ve used the <code class="highlighter-rouge">{fontawesome}</code>
+package, also between backticks and with an <code class="highlighter-rouge">r</code>, to include them.</p>
+
+<p>See here, line 33:
+<a href="https://raw.githubusercontent.com/ColinFay/wikileaksdm/master/index.Rmd">https://raw.githubusercontent.com/ColinFay/wikileaksdm/master/index.Rmd</a></p>
+
+<h3 id="page-content">Page content</h3>
+
+<p>All the pages include interactive elements, and a static plot.
+Interactive tables have been rendered with the <code class="highlighter-rouge">{DT}</code> package, and the
+timeline with <code class="highlighter-rouge">{dygraphs}</code>. Under each dygraph, there is a static plot
+made with <code class="highlighter-rouge">{ggplot2}</code>. In order to organise this two plots (interactive
+and none), the second plot is put inside a <code class="highlighter-rouge">&lt;details&gt;</code> HTML tag. This
+allows to create a foldable content inside the page.</p>
+
+<p>See: <a href="https://twitter.com/_ColinFay/status/1022836135452663809">https://twitter.com/_ColinFay/status/1022836135452663809</a></p>
+
+<h3 id="prefilling-functions">Prefilling functions</h3>
+
+<p>I use <code class="highlighter-rouge">dygraph</code> and <code class="highlighter-rouge">datatable</code> several times, with the same defaut
+arguments (e.g <code class="highlighter-rouge">extensions = "Buttons",options = list(scrollX = TRUE,
+dom = "Bfrtip", buttons = c("copy", "csv")</code>). As I didn’t want to retype
+these elements each time, I’ve called <code class="highlighter-rouge">purrr::partial</code> on it:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">partial</span><span class="p">(</span><span class="w">
+  </span><span class="n">datatable</span><span class="p">,</span><span class="w">
+  </span><span class="n">extensions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Buttons"</span><span class="p">,</span><span class="w">
+  </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+    </span><span class="n">scrollX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> 
+    </span><span class="n">dom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bfrtip"</span><span class="p">,</span><span class="w"> 
+    </span><span class="n">buttons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"copy"</span><span class="p">,</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This new <code class="highlighter-rouge">dt</code> function is then used as the defaut <code class="highlighter-rouge">datatable</code> rendering.</p>
+
+<h2 id="read-more">Read more</h2>
+
+<p>If you want to read the code and discover the content, feel free to
+browse the website and the github repo:</p>
+
+<ul>
+  <li><a href="https://colinfay.me/wikileaksdm">Website</a></li>
+  <li><a href="https://github.com/ColinFay/wikileaksdm">GitHub repo</a></li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-08-06T00:00:00+02:00">August 06, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Wrangling+Wikileaks+DMs%20http%3A%2F%2Flocalhost%3A4000%2Fwikileaks%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fwikileaks%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fwikileaks%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fwikileaks%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/lazyeval/" class="pagination--pager" title="About lazy evaluation
+">←</a>
+    
+    
+      <a href="/r-assignment/" class="pagination--pager" title="Why do we use arrow as an assignment operator?
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/wikileaks/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/wikileaks"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

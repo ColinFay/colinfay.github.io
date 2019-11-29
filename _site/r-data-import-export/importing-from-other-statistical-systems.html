@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Data Import/Export</title>
+  <meta name="description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Data Import/Export" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  <meta name="github-repo" content="ColinFay/r-data-import-export" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Data Import/Export" />
+  
+  <meta name="twitter:description" content="R Data Import/Export describes the import and export facilities available either in R itself or via packages which are available from CRAN." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="spreadsheet-like-data.html">
+<link rel="next" href="relational-databases.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Data Import/Export</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Data Import/Export</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="spreadsheet-like-data.html"><a href="spreadsheet-like-data.html"><i class="fa fa-check"></i><b>2</b> Spreadsheet-like data</a></li>
+<li class="chapter" data-level="3" data-path="importing-from-other-statistical-systems.html"><a href="importing-from-other-statistical-systems.html"><i class="fa fa-check"></i><b>3</b> Importing from other statistical systems</a></li>
+<li class="chapter" data-level="4" data-path="relational-databases.html"><a href="relational-databases.html"><i class="fa fa-check"></i><b>4</b> Relational databases</a></li>
+<li class="chapter" data-level="5" data-path="binary-files.html"><a href="binary-files.html"><i class="fa fa-check"></i><b>5</b> Binary files</a></li>
+<li class="chapter" data-level="6" data-path="image-files.html"><a href="image-files.html"><i class="fa fa-check"></i><b>6</b> Image files</a></li>
+<li class="chapter" data-level="7" data-path="connections.html"><a href="connections.html"><i class="fa fa-check"></i><b>7</b> Connections</a></li>
+<li class="chapter" data-level="8" data-path="network-interfaces.html"><a href="network-interfaces.html"><i class="fa fa-check"></i><b>8</b> Network interfaces</a></li>
+<li class="chapter" data-level="9" data-path="reading-excel-spreadsheets.html"><a href="reading-excel-spreadsheets.html"><i class="fa fa-check"></i><b>9</b> Reading Excel spreadsheets</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>10</b> Appendix A References</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and variable index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Import/Export</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="importing-from-other-statistical-systems" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Importing from other statistical systems</h1>
+<p>
+<a href="" id="index-Importing-from-other-statistical-systems"></a>
+</p>
+<p>
+In this chapter we consider the problem of reading a binary data file written by another statistical system. This is often best avoided, but may be unavoidable if the originating system is not available.
+</p>
+<p>
+In all cases the facilities described were written for data files from specific versions of the other system (often in the early 2000s), and have not necessarily been updated for the most recent versions of the other system.
+</p>
+<hr />
+<p>
+<a href="" id="EpiInfo-Minitab-SAS-S_002dPLUS-SPSS-Stata-Systat"></a> <a href="" id="EpiInfo_002c-Minitab_002c-S_002dPLUS_002c-SAS_002c-SPSS_002c-Stata_002c-Systat"></a>
+</p>
+<h3 id="epiinfo-minitab-s-plus-sas-spss-stata-systat" class="section">
+3.1 EpiInfo, Minitab, S-PLUS, SAS, SPSS, Stata, Systat
+</h3>
+<p>
+The recommended package <a href="https://CRAN.R-project.org/package=foreign"><strong>foreign</strong></a> provides import facilities for files produced by these statistical systems, and for export to Stata. In some cases these functions may require substantially less memory than <code class="calibre2">read.table</code> would. <code class="calibre2">write.foreign</code> (See <a href="introduction.html#Export-to-text-files">Export to text files</a>) provides an export mechanism with support currently for <code class="calibre2">SAS</code>, <code class="calibre2">SPSS</code> and <code class="calibre2">Stata</code>.
+</p>
+<p>
+<a href="" id="index-EpiInfo"></a> <a href="" id="index-EpiData"></a> <a href="" id="index-read_002eepiinfo"></a>
+</p>
+<p>
+EpiInfo versions 5 and 6 stored data in a self-describing fixed-width text format. <code class="calibre2">read.epiinfo</code> will read these .REC files into an R data frame. EpiData also produces data in this format.
+</p>
+<p>
+<a href="" id="index-Minitab"></a> <a href="" id="index-read_002emtp"></a>
+</p>
+<p>
+Function <code class="calibre2">read.mtp</code> imports a ‘Minitab Portable Worksheet’. This returns the components of the worksheet as an R list.
+</p>
+<p>
+<a href="" id="index-SAS"></a> <a href="" id="index-read_002export"></a>
+</p>
+<p>
+Function <code class="calibre2">read.xport</code> reads a file in SAS Transport (XPORT) format and return a list of data frames. If SAS is available on your system, function <code class="calibre2">read.ssd</code> can be used to create and run a SAS script that saves a SAS permanent dataset (.ssd or .sas7bdat) in Transport format. It then calls <code class="calibre2">read.xport</code> to read the resulting file. (Package <a href="https://CRAN.R-project.org/package=Hmisc"><strong>Hmisc</strong></a> has a similar function <code class="calibre2">sas.get</code>, also running SAS.) For those without access to SAS but running on Windows, the SAS System Viewer (a zero-cost download) can be used to open SAS datasets and export them to e.g. .csv format.
+</p>
+<p>
+<a href="" id="index-S_002dPLUS"></a> <a href="" id="index-read_002eS"></a> <a href="" id="index-data_002erestore"></a>
+</p>
+<p>
+Function <code class="calibre2">read.S</code> which can read binary objects produced by S-PLUS 3.x, 4.x or 2000 on (32-bit) Unix or Windows (and can read them on a different OS). This is able to read many but not all S objects: in particular it can read vectors, matrices and data frames and lists containing those.
+</p>
+<p>
+Function <code class="calibre2">data.restore</code> reads S-PLUS data dumps (created by <code class="calibre2">data.dump</code>) with the same restrictions (except that dumps from the Alpha platform can also be read). It should be possible to read data dumps from S-PLUS 5.x and later written with <code class="calibre2">data.dump(oldStyle=T)</code>.
+</p>
+<p>
+If you have access to S-PLUS, it is usually more reliable to <code class="calibre2">dump</code> the object(s) in S-PLUS and <code class="calibre2">source</code> the dump file in R. For S-PLUS 5.x and later you may need to use <code class="calibre2">dump(…, oldStyle=T)</code>, and to read in very large objects it may be preferable to use the dump file as a batch script rather than use the <code class="calibre2">source</code> function.
+</p>
+<p>
+<a href="" id="index-SPSS"></a> <a href="" id="index-SPSS-Data-Entry"></a> <a href="" id="index-read_002espss"></a>
+</p>
+<p>
+Function <code class="calibre2">read.spss</code> can read files created by the ‘save’ and ‘export’ commands in SPSS. It returns a list with one component for each variable in the saved data set. SPSS variables with value labels are optionally converted to R factors.
+</p>
+<p>
+SPSS Data Entry is an application for creating data entry forms. By default it creates data files with extra formatting information that <code class="calibre2">read.spss</code> cannot handle, but it is possible to export the data in an ordinary SPSS format.
+</p>
+<p>
+Some third-party applications claim to produce data ‘in SPSS format’ but with differences in the formats: <code class="calibre2">read.spss</code> may or may not be able to handle these.
+</p>
+<p>
+<a href="" id="index-Stata"></a> <a href="" id="index-read_002edta"></a> <a href="" id="index-write_002edta"></a>
+</p>
+<p>
+Stata .dta files are a binary file format. Files from versions 5 up to 12 of Stata can be read and written by functions <code class="calibre2">read.dta</code> and <code class="calibre2">write.dta</code>. Stata variables with value labels are optionally converted to (and from) R factors. For Stata versions 13 and later see CRAN packages <a href="https://CRAN.R-project.org/package=readstata13"><strong>readstata13</strong></a> and <a href="https://CRAN.R-project.org/package=haven"><strong>haven</strong></a>.
+</p>
+<p>
+<a href="" id="index-Systat"></a> <a href="" id="index-read_002esystat"></a>
+</p>
+<p>
+<code class="calibre2">read.systat</code> reads those Systat <code class="calibre2">SAVE</code> files that are rectangular data files (<code class="calibre2">mtype = 1</code>) written on little-endian machines (such as from Windows). These have extension .sys or (more recently) .syd.
+</p>
+<hr />
+<p>
+<a href="" id="Octave"></a> <a href="" id="Octave-1"></a>
+</p>
+<h3 id="octave" class="section">
+3.2 Octave
+</h3>
+<p>
+<a href="" id="index-Octave"></a> <a href="" id="index-read_002eoctave"></a>
+</p>
+<p>
+Octave is a numerical linear algebra system (<a href="http://www.octave.org" class="uri">http://www.octave.org</a>), and function <code class="calibre2">read.octave</code> in package <a href="https://CRAN.R-project.org/package=foreign"><strong>foreign</strong></a> can read in files in Octave text data format created using the Octave command <code class="calibre2">save -ascii</code>, with support for most of the common types of variables, including the standard atomic (real and complex scalars, matrices, and <em>N</em>-d arrays, strings, ranges, and boolean scalars and matrices) and recursive (structs, cells, and lists) ones.
+</p>
+<hr />
+<p>
+<a href="" id="Relational-databases"></a> <a href="" id="Relational-databases-1"></a>
+</p>
+<div id="calibre_pb_10" class="calibre11">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="spreadsheet-like-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="relational-databases.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

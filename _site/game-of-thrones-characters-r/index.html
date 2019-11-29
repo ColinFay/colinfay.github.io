@@ -1,0 +1,900 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Why Can’t I Remember Game of Thrones Characters? An Analysis in R - Colin Fay</title>
+<meta name="description" content="A quick exploration of Game of Thrones characters names, and the beginning of an answer to the question “Why on earth can’t I remember them all?”First, get the dataFor this exploration, we first need to get the names of all characters from the show. Quick and easy thanks to the beta serie API.library(httr)library(jsonlite)library(tidyverse)library(magrittr)# Add your API key hereapi_key &lt;- &quot;XXXX&quot;Let’s build the API request.# You need id of the serie to request more infoget_beta_serie &lt;- function(show, api_key){  res &lt;- GET(url = paste0(&quot;https://api.betaseries.com/shows/search?title=&quot;,show),      accept_json(),       add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$shows}# Get the id get_beta_id &lt;- function(df, title){  return(df$id[which(df$title == title)])}GoT_id &lt;- get_beta_serie(show = &quot;game+of+thrones&quot;, api_key = api_key) %&gt;%  get_beta_id(&quot;Game of Thrones&quot;)# Get characters get_bet_char &lt;- function(id){  res &lt;- GET(url = paste0(&quot;https://api.betaseries.com/shows/characters?id=&quot;,id,&quot;&amp;=&quot;),             accept_json(),              add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                       &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$characters }GoT_char &lt;- get_bet_char(GoT_id)nrow(GoT_char)[1] 9898 characters… there’s 98 CHARACTERS!Something to compare withList of seriesOK, but before getting really crazy about 98 characters, let’s temperate a little: is this common? To answer that question, we need more DATA.Here, I just have to thank Betaseries again for their cool API :  which doesn’t limit the number of call you can make  which can return a random serie from their list# Random serieget_random_beta &lt;- function(){    res &lt;- GET(url = &quot;https://api.betaseries.com/shows/random?=&quot;,      accept_json(),       add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$shows %&gt;% .$id}get_random_beta()[1] 5321Cool. How about getting mooooooore data.Get 1000 random series id, and their characters# 1000 random serieslist_id_beta &lt;- replicate(1000, get_random_beta())# How much unique series?length(unique(list_id_beta))[1] 970list_id_beta %&lt;&gt;% unique# Get characters for all seriesrandom_char &lt;- map_df(.x = list_id_beta, get_bet_char)nrow(unique(random_char))[1] 3811So, here are 3811 characters from 970 random series picked on the API. Let’s compare!Are there too many characters in Game of Thrones?# Make a full dataframerandom_char$show_name &lt;- &quot;Not_GoT&quot;GoT_char$show_name &lt;- &quot;GoT&quot;full_char &lt;- rbind(random_char, GoT_char)# Create a quick themecustom_theme &lt;- theme_minimal() + theme(plot.title = element_text(hjust = 0.5))#Visualisefull_char %&gt;%  group_by(show_id) %&gt;%  summarise(char_in_show = n()) %&gt;%  ggplot(aes(x = &quot;&quot;, char_in_show)) +   geom_boxplot() +  geom_point(aes(y = 98), color = &quot;red&quot;, size = 2) +   coord_flip() +  labs(title = &quot;Number of characters in 970 random series \nand in Game of Thrones (red dot)&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;&quot;,        y = &quot;Number of characters in the show&quot;) +  custom_themeOK… So there’s definitely way more characters in Game of Thrones than in other shows — the second most populated show has “only” 48 characters.But, is there another answer to our original question? (“Why can’t I remember their names?”)What’s in a name?LengthLet’s formulate some hypotheses. First: maybe their names are too long? I mean, “Melisandre of Asshai” is quite a long name, as is “Xaro Xhoan Daxos”.full_char %&gt;%  group_by(show_id, show_name) %&gt;%  mutate(char_name_length = nchar(name))%&gt;%  ggplot(aes(char_name_length, color = show_name)) +   geom_freqpoly(bins = 50) +   facet_grid(show_name ~., scales = &quot;free_y&quot;) +   scale_color_manual(name = &quot;Show&quot;, values = c(&quot;#973232&quot;, &quot;#1E5B5B&quot;)) +  labs(title = &quot;Length of characters names in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;Length of character name in the show&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_themeNop, that’s not it either. Let’s try something else.Occurences of lettersAre the letters similarly distributed in Game of Thrones and in the other shows?library(stringr)#Let&#39;s clean up a little bitletter_strip &lt;- function(vec){  vec %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    tm::removeNumbers() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_replace_all(&quot;àäâá&quot;, &quot;a&quot;) %&gt;%    str_replace_all(&quot;éèë&quot;, &quot;e&quot;) %&gt;%    str_replace_all(&quot;ïí&quot;, &quot;i&quot;) %&gt;%    str_replace_all(&quot;ōôó&quot;, &quot;o&quot;) %&gt;%    str_replace_all(&quot;üū&quot;, &quot;u&quot;) %&gt;%    str_split(pattern = &quot;&quot;) %&gt;%    unlist() %&gt;%     iconv(from = &quot;Latin1&quot;,&quot;ASCII&quot;, sub =&quot;&quot;) %&gt;%    table() %&gt;%    as.tibble()}# That removed 146 non ASCII lettersfull_char %&gt;%  group_by(show_id, show_name) %&gt;%  summarise(table_letter = list(letter_strip(name))) %&gt;%  unnest() %&gt;%  rename(letter = &quot;.&quot;) %&gt;%  ggplot(aes(letter, n)) +  geom_col() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +     labs(title = &quot;Distribution of letters in the name of the characters in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_theme  Nop, still quite the same. Ok, maybe that’s because their names are composed of repeated letters (remember… Xaro Xhoan Daxos)?Repeated letters# Diff letters function diff_letters &lt;- function(word){  li &lt;- word %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    tm::removeNumbers() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_split(pattern = &quot;&quot;) %&gt;%    unlist  moy &lt;- length(unique(li)) / length(li)  return(moy)}# Here, a result of 1 means all letters are different. The closer the result get to zero, the more repeated they are. diff_letters(&quot;Xaro Xhoan Daxos&quot;) [1] 0.5714286diff_letters(&quot;Colin Fay&quot;)[1] 1Cool. Let’s visualize that.full_char %&gt;%  group_by(id) %&gt;%  mutate(diff_in_letters = diff_letters(name)) %&gt;%  ggplot(aes(diff_in_letters, color = show_name)) +   geom_freqpoly(bins = 50) +   facet_grid(show_name ~., scales = &quot;free_y&quot;) +   scale_color_manual(name = &quot;Show&quot;, values = c(&quot;#973232&quot;, &quot;#1E5B5B&quot;)) +  labs(title = &quot;Letter difference in the names of characters in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;Length of character name in the show&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_themeOk, nothing fancy here… Now, let’s try some string dist approach.String distChosing a string distance algorithmMy main point while watching GoT is that “every names sound the same”. Like, why on earth should you name your character “Bran” and “Bronn”, “Tyron and Tywinn”, “Tommen” and “Tormund”… and there is literally a “Robb”, a “Robert” and a “Robin”.Can we see it with string distance? My first intuition is that string distances should be shorter in Game of Thrones than in other shows. Let’s try several methods to find out.Levenshtein distanceThe Levenshtein distance counts the number of deletions, insertions and substitutions necessary to turn b into a. For example, stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method = &quot;lv&quot;) returns 1.library(stringdist)# Just cleaning the namesname_strip &lt;- function(vec){  vec %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_replace_all(&quot;é&quot;, &quot;e&quot;) %&gt;%    str_replace_all(&quot;à&quot;, &quot;a&quot;) %&gt;%    str_replace_all(&quot;é&quot;, &quot;e&quot;)}string_dist_lv &lt;- function(vec){  stringdistmatrix(vec, method = &quot;lv&quot;) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_lv(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones and in 970 random series&quot;,        subtitle = &quot;computed using the Levenshtein distance&quot;) +   custom_themeOK, Levenshtein is not on my side.Longest common substringThis method finds the longest string that can be obtained by pairing characters from a and b, by removing non common characters while keeping the order of characters intact. The result is the number of deletions made to obtain this string.For example, stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method = &quot;lcs&quot;) returns 2, because you need to remove the n and the s — the longest common substring being “Coli”. stringdist(&quot;Brann&quot;, &quot;Bron&quot;, method = &quot;lcs&quot;) returns 3, as you have to remove a, n and n. The lcs is “Brn”. The closer the result is to 0, the closer the strings are.string_dist_lcs &lt;- function(vec){  stringdistmatrix(vec, method = &quot;lcs&quot;) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_lcs(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones (red line) and in 970 random series&quot;,        subtitle = &quot;computed using the longest common substring method&quot;) +   custom_themeNeither on my side…Jaro distanceJaro distance returns a number between 0 and 1, 0 being exact match, 1 complete dissimilarity. stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method=&#39;jw&#39;, p=0) returns 0.1333333. stringdist(&quot;Brann&quot;, &quot;Bron&quot;, method=&#39;jw&#39;, p=0) returns 0.2166667. Let’s try this last one.string_dist_jac &lt;- function(vec){  stringdistmatrix(vec, method=&#39;jw&#39;, p=0) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_jac(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones and in 970 random series&quot;,        subtitle = &quot;computed using the Jaro distance&quot;) +   custom_themeWell, Jaro is neither corroborating my initial idea… So, I’ll stick with my original though: there are sooooooo many characters in this show :)">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Why Can’t I Remember Game of Thrones Characters? An Analysis in R">
+<meta property="og:url" content="http://localhost:4000/game-of-thrones-characters-r/">
+
+
+  <meta property="og:description" content="A quick exploration of Game of Thrones characters names, and the beginning of an answer to the question “Why on earth can’t I remember them all?”First, get the dataFor this exploration, we first need to get the names of all characters from the show. Quick and easy thanks to the beta serie API.library(httr)library(jsonlite)library(tidyverse)library(magrittr)# Add your API key hereapi_key &lt;- &quot;XXXX&quot;Let’s build the API request.# You need id of the serie to request more infoget_beta_serie &lt;- function(show, api_key){  res &lt;- GET(url = paste0(&quot;https://api.betaseries.com/shows/search?title=&quot;,show),      accept_json(),       add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$shows}# Get the id get_beta_id &lt;- function(df, title){  return(df$id[which(df$title == title)])}GoT_id &lt;- get_beta_serie(show = &quot;game+of+thrones&quot;, api_key = api_key) %&gt;%  get_beta_id(&quot;Game of Thrones&quot;)# Get characters get_bet_char &lt;- function(id){  res &lt;- GET(url = paste0(&quot;https://api.betaseries.com/shows/characters?id=&quot;,id,&quot;&amp;=&quot;),             accept_json(),              add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                       &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$characters }GoT_char &lt;- get_bet_char(GoT_id)nrow(GoT_char)[1] 9898 characters… there’s 98 CHARACTERS!Something to compare withList of seriesOK, but before getting really crazy about 98 characters, let’s temperate a little: is this common? To answer that question, we need more DATA.Here, I just have to thank Betaseries again for their cool API :  which doesn’t limit the number of call you can make  which can return a random serie from their list# Random serieget_random_beta &lt;- function(){    res &lt;- GET(url = &quot;https://api.betaseries.com/shows/random?=&quot;,      accept_json(),       add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$shows %&gt;% .$id}get_random_beta()[1] 5321Cool. How about getting mooooooore data.Get 1000 random series id, and their characters# 1000 random serieslist_id_beta &lt;- replicate(1000, get_random_beta())# How much unique series?length(unique(list_id_beta))[1] 970list_id_beta %&lt;&gt;% unique# Get characters for all seriesrandom_char &lt;- map_df(.x = list_id_beta, get_bet_char)nrow(unique(random_char))[1] 3811So, here are 3811 characters from 970 random series picked on the API. Let’s compare!Are there too many characters in Game of Thrones?# Make a full dataframerandom_char$show_name &lt;- &quot;Not_GoT&quot;GoT_char$show_name &lt;- &quot;GoT&quot;full_char &lt;- rbind(random_char, GoT_char)# Create a quick themecustom_theme &lt;- theme_minimal() + theme(plot.title = element_text(hjust = 0.5))#Visualisefull_char %&gt;%  group_by(show_id) %&gt;%  summarise(char_in_show = n()) %&gt;%  ggplot(aes(x = &quot;&quot;, char_in_show)) +   geom_boxplot() +  geom_point(aes(y = 98), color = &quot;red&quot;, size = 2) +   coord_flip() +  labs(title = &quot;Number of characters in 970 random series \nand in Game of Thrones (red dot)&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;&quot;,        y = &quot;Number of characters in the show&quot;) +  custom_themeOK… So there’s definitely way more characters in Game of Thrones than in other shows — the second most populated show has “only” 48 characters.But, is there another answer to our original question? (“Why can’t I remember their names?”)What’s in a name?LengthLet’s formulate some hypotheses. First: maybe their names are too long? I mean, “Melisandre of Asshai” is quite a long name, as is “Xaro Xhoan Daxos”.full_char %&gt;%  group_by(show_id, show_name) %&gt;%  mutate(char_name_length = nchar(name))%&gt;%  ggplot(aes(char_name_length, color = show_name)) +   geom_freqpoly(bins = 50) +   facet_grid(show_name ~., scales = &quot;free_y&quot;) +   scale_color_manual(name = &quot;Show&quot;, values = c(&quot;#973232&quot;, &quot;#1E5B5B&quot;)) +  labs(title = &quot;Length of characters names in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;Length of character name in the show&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_themeNop, that’s not it either. Let’s try something else.Occurences of lettersAre the letters similarly distributed in Game of Thrones and in the other shows?library(stringr)#Let&#39;s clean up a little bitletter_strip &lt;- function(vec){  vec %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    tm::removeNumbers() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_replace_all(&quot;àäâá&quot;, &quot;a&quot;) %&gt;%    str_replace_all(&quot;éèë&quot;, &quot;e&quot;) %&gt;%    str_replace_all(&quot;ïí&quot;, &quot;i&quot;) %&gt;%    str_replace_all(&quot;ōôó&quot;, &quot;o&quot;) %&gt;%    str_replace_all(&quot;üū&quot;, &quot;u&quot;) %&gt;%    str_split(pattern = &quot;&quot;) %&gt;%    unlist() %&gt;%     iconv(from = &quot;Latin1&quot;,&quot;ASCII&quot;, sub =&quot;&quot;) %&gt;%    table() %&gt;%    as.tibble()}# That removed 146 non ASCII lettersfull_char %&gt;%  group_by(show_id, show_name) %&gt;%  summarise(table_letter = list(letter_strip(name))) %&gt;%  unnest() %&gt;%  rename(letter = &quot;.&quot;) %&gt;%  ggplot(aes(letter, n)) +  geom_col() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +     labs(title = &quot;Distribution of letters in the name of the characters in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_theme  Nop, still quite the same. Ok, maybe that’s because their names are composed of repeated letters (remember… Xaro Xhoan Daxos)?Repeated letters# Diff letters function diff_letters &lt;- function(word){  li &lt;- word %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    tm::removeNumbers() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_split(pattern = &quot;&quot;) %&gt;%    unlist  moy &lt;- length(unique(li)) / length(li)  return(moy)}# Here, a result of 1 means all letters are different. The closer the result get to zero, the more repeated they are. diff_letters(&quot;Xaro Xhoan Daxos&quot;) [1] 0.5714286diff_letters(&quot;Colin Fay&quot;)[1] 1Cool. Let’s visualize that.full_char %&gt;%  group_by(id) %&gt;%  mutate(diff_in_letters = diff_letters(name)) %&gt;%  ggplot(aes(diff_in_letters, color = show_name)) +   geom_freqpoly(bins = 50) +   facet_grid(show_name ~., scales = &quot;free_y&quot;) +   scale_color_manual(name = &quot;Show&quot;, values = c(&quot;#973232&quot;, &quot;#1E5B5B&quot;)) +  labs(title = &quot;Letter difference in the names of characters in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;Length of character name in the show&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_themeOk, nothing fancy here… Now, let’s try some string dist approach.String distChosing a string distance algorithmMy main point while watching GoT is that “every names sound the same”. Like, why on earth should you name your character “Bran” and “Bronn”, “Tyron and Tywinn”, “Tommen” and “Tormund”… and there is literally a “Robb”, a “Robert” and a “Robin”.Can we see it with string distance? My first intuition is that string distances should be shorter in Game of Thrones than in other shows. Let’s try several methods to find out.Levenshtein distanceThe Levenshtein distance counts the number of deletions, insertions and substitutions necessary to turn b into a. For example, stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method = &quot;lv&quot;) returns 1.library(stringdist)# Just cleaning the namesname_strip &lt;- function(vec){  vec %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_replace_all(&quot;é&quot;, &quot;e&quot;) %&gt;%    str_replace_all(&quot;à&quot;, &quot;a&quot;) %&gt;%    str_replace_all(&quot;é&quot;, &quot;e&quot;)}string_dist_lv &lt;- function(vec){  stringdistmatrix(vec, method = &quot;lv&quot;) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_lv(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones and in 970 random series&quot;,        subtitle = &quot;computed using the Levenshtein distance&quot;) +   custom_themeOK, Levenshtein is not on my side.Longest common substringThis method finds the longest string that can be obtained by pairing characters from a and b, by removing non common characters while keeping the order of characters intact. The result is the number of deletions made to obtain this string.For example, stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method = &quot;lcs&quot;) returns 2, because you need to remove the n and the s — the longest common substring being “Coli”. stringdist(&quot;Brann&quot;, &quot;Bron&quot;, method = &quot;lcs&quot;) returns 3, as you have to remove a, n and n. The lcs is “Brn”. The closer the result is to 0, the closer the strings are.string_dist_lcs &lt;- function(vec){  stringdistmatrix(vec, method = &quot;lcs&quot;) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_lcs(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones (red line) and in 970 random series&quot;,        subtitle = &quot;computed using the longest common substring method&quot;) +   custom_themeNeither on my side…Jaro distanceJaro distance returns a number between 0 and 1, 0 being exact match, 1 complete dissimilarity. stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method=&#39;jw&#39;, p=0) returns 0.1333333. stringdist(&quot;Brann&quot;, &quot;Bron&quot;, method=&#39;jw&#39;, p=0) returns 0.2166667. Let’s try this last one.string_dist_jac &lt;- function(vec){  stringdistmatrix(vec, method=&#39;jw&#39;, p=0) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_jac(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones and in 970 random series&quot;,        subtitle = &quot;computed using the Jaro distance&quot;) +   custom_themeWell, Jaro is neither corroborating my initial idea… So, I’ll stick with my original though: there are sooooooo many characters in this show :)">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Why Can’t I Remember Game of Thrones Characters? An Analysis in R">
+  <meta name="twitter:description" content="A quick exploration of Game of Thrones characters names, and the beginning of an answer to the question “Why on earth can’t I remember them all?”First, get the dataFor this exploration, we first need to get the names of all characters from the show. Quick and easy thanks to the beta serie API.library(httr)library(jsonlite)library(tidyverse)library(magrittr)# Add your API key hereapi_key &lt;- &quot;XXXX&quot;Let’s build the API request.# You need id of the serie to request more infoget_beta_serie &lt;- function(show, api_key){  res &lt;- GET(url = paste0(&quot;https://api.betaseries.com/shows/search?title=&quot;,show),      accept_json(),       add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$shows}# Get the id get_beta_id &lt;- function(df, title){  return(df$id[which(df$title == title)])}GoT_id &lt;- get_beta_serie(show = &quot;game+of+thrones&quot;, api_key = api_key) %&gt;%  get_beta_id(&quot;Game of Thrones&quot;)# Get characters get_bet_char &lt;- function(id){  res &lt;- GET(url = paste0(&quot;https://api.betaseries.com/shows/characters?id=&quot;,id,&quot;&amp;=&quot;),             accept_json(),              add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                       &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$characters }GoT_char &lt;- get_bet_char(GoT_id)nrow(GoT_char)[1] 9898 characters… there’s 98 CHARACTERS!Something to compare withList of seriesOK, but before getting really crazy about 98 characters, let’s temperate a little: is this common? To answer that question, we need more DATA.Here, I just have to thank Betaseries again for their cool API :  which doesn’t limit the number of call you can make  which can return a random serie from their list# Random serieget_random_beta &lt;- function(){    res &lt;- GET(url = &quot;https://api.betaseries.com/shows/random?=&quot;,      accept_json(),       add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$shows %&gt;% .$id}get_random_beta()[1] 5321Cool. How about getting mooooooore data.Get 1000 random series id, and their characters# 1000 random serieslist_id_beta &lt;- replicate(1000, get_random_beta())# How much unique series?length(unique(list_id_beta))[1] 970list_id_beta %&lt;&gt;% unique# Get characters for all seriesrandom_char &lt;- map_df(.x = list_id_beta, get_bet_char)nrow(unique(random_char))[1] 3811So, here are 3811 characters from 970 random series picked on the API. Let’s compare!Are there too many characters in Game of Thrones?# Make a full dataframerandom_char$show_name &lt;- &quot;Not_GoT&quot;GoT_char$show_name &lt;- &quot;GoT&quot;full_char &lt;- rbind(random_char, GoT_char)# Create a quick themecustom_theme &lt;- theme_minimal() + theme(plot.title = element_text(hjust = 0.5))#Visualisefull_char %&gt;%  group_by(show_id) %&gt;%  summarise(char_in_show = n()) %&gt;%  ggplot(aes(x = &quot;&quot;, char_in_show)) +   geom_boxplot() +  geom_point(aes(y = 98), color = &quot;red&quot;, size = 2) +   coord_flip() +  labs(title = &quot;Number of characters in 970 random series \nand in Game of Thrones (red dot)&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;&quot;,        y = &quot;Number of characters in the show&quot;) +  custom_themeOK… So there’s definitely way more characters in Game of Thrones than in other shows — the second most populated show has “only” 48 characters.But, is there another answer to our original question? (“Why can’t I remember their names?”)What’s in a name?LengthLet’s formulate some hypotheses. First: maybe their names are too long? I mean, “Melisandre of Asshai” is quite a long name, as is “Xaro Xhoan Daxos”.full_char %&gt;%  group_by(show_id, show_name) %&gt;%  mutate(char_name_length = nchar(name))%&gt;%  ggplot(aes(char_name_length, color = show_name)) +   geom_freqpoly(bins = 50) +   facet_grid(show_name ~., scales = &quot;free_y&quot;) +   scale_color_manual(name = &quot;Show&quot;, values = c(&quot;#973232&quot;, &quot;#1E5B5B&quot;)) +  labs(title = &quot;Length of characters names in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;Length of character name in the show&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_themeNop, that’s not it either. Let’s try something else.Occurences of lettersAre the letters similarly distributed in Game of Thrones and in the other shows?library(stringr)#Let&#39;s clean up a little bitletter_strip &lt;- function(vec){  vec %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    tm::removeNumbers() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_replace_all(&quot;àäâá&quot;, &quot;a&quot;) %&gt;%    str_replace_all(&quot;éèë&quot;, &quot;e&quot;) %&gt;%    str_replace_all(&quot;ïí&quot;, &quot;i&quot;) %&gt;%    str_replace_all(&quot;ōôó&quot;, &quot;o&quot;) %&gt;%    str_replace_all(&quot;üū&quot;, &quot;u&quot;) %&gt;%    str_split(pattern = &quot;&quot;) %&gt;%    unlist() %&gt;%     iconv(from = &quot;Latin1&quot;,&quot;ASCII&quot;, sub =&quot;&quot;) %&gt;%    table() %&gt;%    as.tibble()}# That removed 146 non ASCII lettersfull_char %&gt;%  group_by(show_id, show_name) %&gt;%  summarise(table_letter = list(letter_strip(name))) %&gt;%  unnest() %&gt;%  rename(letter = &quot;.&quot;) %&gt;%  ggplot(aes(letter, n)) +  geom_col() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +     labs(title = &quot;Distribution of letters in the name of the characters in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_theme  Nop, still quite the same. Ok, maybe that’s because their names are composed of repeated letters (remember… Xaro Xhoan Daxos)?Repeated letters# Diff letters function diff_letters &lt;- function(word){  li &lt;- word %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    tm::removeNumbers() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_split(pattern = &quot;&quot;) %&gt;%    unlist  moy &lt;- length(unique(li)) / length(li)  return(moy)}# Here, a result of 1 means all letters are different. The closer the result get to zero, the more repeated they are. diff_letters(&quot;Xaro Xhoan Daxos&quot;) [1] 0.5714286diff_letters(&quot;Colin Fay&quot;)[1] 1Cool. Let’s visualize that.full_char %&gt;%  group_by(id) %&gt;%  mutate(diff_in_letters = diff_letters(name)) %&gt;%  ggplot(aes(diff_in_letters, color = show_name)) +   geom_freqpoly(bins = 50) +   facet_grid(show_name ~., scales = &quot;free_y&quot;) +   scale_color_manual(name = &quot;Show&quot;, values = c(&quot;#973232&quot;, &quot;#1E5B5B&quot;)) +  labs(title = &quot;Letter difference in the names of characters in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;Length of character name in the show&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_themeOk, nothing fancy here… Now, let’s try some string dist approach.String distChosing a string distance algorithmMy main point while watching GoT is that “every names sound the same”. Like, why on earth should you name your character “Bran” and “Bronn”, “Tyron and Tywinn”, “Tommen” and “Tormund”… and there is literally a “Robb”, a “Robert” and a “Robin”.Can we see it with string distance? My first intuition is that string distances should be shorter in Game of Thrones than in other shows. Let’s try several methods to find out.Levenshtein distanceThe Levenshtein distance counts the number of deletions, insertions and substitutions necessary to turn b into a. For example, stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method = &quot;lv&quot;) returns 1.library(stringdist)# Just cleaning the namesname_strip &lt;- function(vec){  vec %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_replace_all(&quot;é&quot;, &quot;e&quot;) %&gt;%    str_replace_all(&quot;à&quot;, &quot;a&quot;) %&gt;%    str_replace_all(&quot;é&quot;, &quot;e&quot;)}string_dist_lv &lt;- function(vec){  stringdistmatrix(vec, method = &quot;lv&quot;) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_lv(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones and in 970 random series&quot;,        subtitle = &quot;computed using the Levenshtein distance&quot;) +   custom_themeOK, Levenshtein is not on my side.Longest common substringThis method finds the longest string that can be obtained by pairing characters from a and b, by removing non common characters while keeping the order of characters intact. The result is the number of deletions made to obtain this string.For example, stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method = &quot;lcs&quot;) returns 2, because you need to remove the n and the s — the longest common substring being “Coli”. stringdist(&quot;Brann&quot;, &quot;Bron&quot;, method = &quot;lcs&quot;) returns 3, as you have to remove a, n and n. The lcs is “Brn”. The closer the result is to 0, the closer the strings are.string_dist_lcs &lt;- function(vec){  stringdistmatrix(vec, method = &quot;lcs&quot;) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_lcs(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones (red line) and in 970 random series&quot;,        subtitle = &quot;computed using the longest common substring method&quot;) +   custom_themeNeither on my side…Jaro distanceJaro distance returns a number between 0 and 1, 0 being exact match, 1 complete dissimilarity. stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method=&#39;jw&#39;, p=0) returns 0.1333333. stringdist(&quot;Brann&quot;, &quot;Bron&quot;, method=&#39;jw&#39;, p=0) returns 0.2166667. Let’s try this last one.string_dist_jac &lt;- function(vec){  stringdistmatrix(vec, method=&#39;jw&#39;, p=0) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_jac(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones and in 970 random series&quot;,        subtitle = &quot;computed using the Jaro distance&quot;) +   custom_themeWell, Jaro is neither corroborating my initial idea… So, I’ll stick with my original though: there are sooooooo many characters in this show :)">
+  <meta name="twitter:url" content="http://localhost:4000/game-of-thrones-characters-r/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-08-23T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/game-of-thrones-characters-r/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Why Can’t I Remember Game of Thrones Characters? An Analysis in R">
+    <meta itemprop="description" content="A quick exploration of Game of Thrones characters names, and the beginning of an answer to the question “Why on earth can’t I remember them all?”First, get the dataFor this exploration, we first need to get the names of all characters from the show. Quick and easy thanks to the beta serie API.library(httr)library(jsonlite)library(tidyverse)library(magrittr)# Add your API key hereapi_key &lt;- &quot;XXXX&quot;Let’s build the API request.# You need id of the serie to request more infoget_beta_serie &lt;- function(show, api_key){  res &lt;- GET(url = paste0(&quot;https://api.betaseries.com/shows/search?title=&quot;,show),      accept_json(),       add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$shows}# Get the id get_beta_id &lt;- function(df, title){  return(df$id[which(df$title == title)])}GoT_id &lt;- get_beta_serie(show = &quot;game+of+thrones&quot;, api_key = api_key) %&gt;%  get_beta_id(&quot;Game of Thrones&quot;)# Get characters get_bet_char &lt;- function(id){  res &lt;- GET(url = paste0(&quot;https://api.betaseries.com/shows/characters?id=&quot;,id,&quot;&amp;=&quot;),             accept_json(),              add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                       &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$characters }GoT_char &lt;- get_bet_char(GoT_id)nrow(GoT_char)[1] 9898 characters… there’s 98 CHARACTERS!Something to compare withList of seriesOK, but before getting really crazy about 98 characters, let’s temperate a little: is this common? To answer that question, we need more DATA.Here, I just have to thank Betaseries again for their cool API :  which doesn’t limit the number of call you can make  which can return a random serie from their list# Random serieget_random_beta &lt;- function(){    res &lt;- GET(url = &quot;https://api.betaseries.com/shows/random?=&quot;,      accept_json(),       add_headers(.headers = c(&quot;X-BetaSeries-Key&quot;= api_key,                                &quot;Authorization&quot; = &quot;Bearer c3aa0a5ff128&quot;)))  res$content %&gt;% rawToChar() %&gt;% fromJSON() %&gt;% .$shows %&gt;% .$id}get_random_beta()[1] 5321Cool. How about getting mooooooore data.Get 1000 random series id, and their characters# 1000 random serieslist_id_beta &lt;- replicate(1000, get_random_beta())# How much unique series?length(unique(list_id_beta))[1] 970list_id_beta %&lt;&gt;% unique# Get characters for all seriesrandom_char &lt;- map_df(.x = list_id_beta, get_bet_char)nrow(unique(random_char))[1] 3811So, here are 3811 characters from 970 random series picked on the API. Let’s compare!Are there too many characters in Game of Thrones?# Make a full dataframerandom_char$show_name &lt;- &quot;Not_GoT&quot;GoT_char$show_name &lt;- &quot;GoT&quot;full_char &lt;- rbind(random_char, GoT_char)# Create a quick themecustom_theme &lt;- theme_minimal() + theme(plot.title = element_text(hjust = 0.5))#Visualisefull_char %&gt;%  group_by(show_id) %&gt;%  summarise(char_in_show = n()) %&gt;%  ggplot(aes(x = &quot;&quot;, char_in_show)) +   geom_boxplot() +  geom_point(aes(y = 98), color = &quot;red&quot;, size = 2) +   coord_flip() +  labs(title = &quot;Number of characters in 970 random series \nand in Game of Thrones (red dot)&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;&quot;,        y = &quot;Number of characters in the show&quot;) +  custom_themeOK… So there’s definitely way more characters in Game of Thrones than in other shows — the second most populated show has “only” 48 characters.But, is there another answer to our original question? (“Why can’t I remember their names?”)What’s in a name?LengthLet’s formulate some hypotheses. First: maybe their names are too long? I mean, “Melisandre of Asshai” is quite a long name, as is “Xaro Xhoan Daxos”.full_char %&gt;%  group_by(show_id, show_name) %&gt;%  mutate(char_name_length = nchar(name))%&gt;%  ggplot(aes(char_name_length, color = show_name)) +   geom_freqpoly(bins = 50) +   facet_grid(show_name ~., scales = &quot;free_y&quot;) +   scale_color_manual(name = &quot;Show&quot;, values = c(&quot;#973232&quot;, &quot;#1E5B5B&quot;)) +  labs(title = &quot;Length of characters names in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;Length of character name in the show&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_themeNop, that’s not it either. Let’s try something else.Occurences of lettersAre the letters similarly distributed in Game of Thrones and in the other shows?library(stringr)#Let&#39;s clean up a little bitletter_strip &lt;- function(vec){  vec %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    tm::removeNumbers() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_replace_all(&quot;àäâá&quot;, &quot;a&quot;) %&gt;%    str_replace_all(&quot;éèë&quot;, &quot;e&quot;) %&gt;%    str_replace_all(&quot;ïí&quot;, &quot;i&quot;) %&gt;%    str_replace_all(&quot;ōôó&quot;, &quot;o&quot;) %&gt;%    str_replace_all(&quot;üū&quot;, &quot;u&quot;) %&gt;%    str_split(pattern = &quot;&quot;) %&gt;%    unlist() %&gt;%     iconv(from = &quot;Latin1&quot;,&quot;ASCII&quot;, sub =&quot;&quot;) %&gt;%    table() %&gt;%    as.tibble()}# That removed 146 non ASCII lettersfull_char %&gt;%  group_by(show_id, show_name) %&gt;%  summarise(table_letter = list(letter_strip(name))) %&gt;%  unnest() %&gt;%  rename(letter = &quot;.&quot;) %&gt;%  ggplot(aes(letter, n)) +  geom_col() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +     labs(title = &quot;Distribution of letters in the name of the characters in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_theme  Nop, still quite the same. Ok, maybe that’s because their names are composed of repeated letters (remember… Xaro Xhoan Daxos)?Repeated letters# Diff letters function diff_letters &lt;- function(word){  li &lt;- word %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    tm::removeNumbers() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_split(pattern = &quot;&quot;) %&gt;%    unlist  moy &lt;- length(unique(li)) / length(li)  return(moy)}# Here, a result of 1 means all letters are different. The closer the result get to zero, the more repeated they are. diff_letters(&quot;Xaro Xhoan Daxos&quot;) [1] 0.5714286diff_letters(&quot;Colin Fay&quot;)[1] 1Cool. Let’s visualize that.full_char %&gt;%  group_by(id) %&gt;%  mutate(diff_in_letters = diff_letters(name)) %&gt;%  ggplot(aes(diff_in_letters, color = show_name)) +   geom_freqpoly(bins = 50) +   facet_grid(show_name ~., scales = &quot;free_y&quot;) +   scale_color_manual(name = &quot;Show&quot;, values = c(&quot;#973232&quot;, &quot;#1E5B5B&quot;)) +  labs(title = &quot;Letter difference in the names of characters in 970 random series and in Game of Thrones&quot;,        subtitle = &quot; data gathered from BetaSeries API&quot;,       x = &quot;Length of character name in the show&quot;,        y = &quot;&quot;,        guide = &quot;Show&quot;) +  custom_themeOk, nothing fancy here… Now, let’s try some string dist approach.String distChosing a string distance algorithmMy main point while watching GoT is that “every names sound the same”. Like, why on earth should you name your character “Bran” and “Bronn”, “Tyron and Tywinn”, “Tommen” and “Tormund”… and there is literally a “Robb”, a “Robert” and a “Robin”.Can we see it with string distance? My first intuition is that string distances should be shorter in Game of Thrones than in other shows. Let’s try several methods to find out.Levenshtein distanceThe Levenshtein distance counts the number of deletions, insertions and substitutions necessary to turn b into a. For example, stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method = &quot;lv&quot;) returns 1.library(stringdist)# Just cleaning the namesname_strip &lt;- function(vec){  vec %&gt;%     tolower() %&gt;%    tm::removePunctuation() %&gt;%    str_replace_all(&quot; &quot;, &quot;&quot;) %&gt;%    str_replace_all(&quot;é&quot;, &quot;e&quot;) %&gt;%    str_replace_all(&quot;à&quot;, &quot;a&quot;) %&gt;%    str_replace_all(&quot;é&quot;, &quot;e&quot;)}string_dist_lv &lt;- function(vec){  stringdistmatrix(vec, method = &quot;lv&quot;) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_lv(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones and in 970 random series&quot;,        subtitle = &quot;computed using the Levenshtein distance&quot;) +   custom_themeOK, Levenshtein is not on my side.Longest common substringThis method finds the longest string that can be obtained by pairing characters from a and b, by removing non common characters while keeping the order of characters intact. The result is the number of deletions made to obtain this string.For example, stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method = &quot;lcs&quot;) returns 2, because you need to remove the n and the s — the longest common substring being “Coli”. stringdist(&quot;Brann&quot;, &quot;Bron&quot;, method = &quot;lcs&quot;) returns 3, as you have to remove a, n and n. The lcs is “Brn”. The closer the result is to 0, the closer the strings are.string_dist_lcs &lt;- function(vec){  stringdistmatrix(vec, method = &quot;lcs&quot;) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_lcs(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones (red line) and in 970 random series&quot;,        subtitle = &quot;computed using the longest common substring method&quot;) +   custom_themeNeither on my side…Jaro distanceJaro distance returns a number between 0 and 1, 0 being exact match, 1 complete dissimilarity. stringdist(&quot;Colin&quot;, &quot;Colis&quot;, method=&#39;jw&#39;, p=0) returns 0.1333333. stringdist(&quot;Brann&quot;, &quot;Bron&quot;, method=&#39;jw&#39;, p=0) returns 0.2166667. Let’s try this last one.string_dist_jac &lt;- function(vec){  stringdistmatrix(vec, method=&#39;jw&#39;, p=0) %&gt;% as.vector()}full_char %&gt;%  mutate(name = name_strip(name)) %&gt;%  group_by(show_id, show_name) %&gt;%  summarize(dist_name_length = list(string_dist_jac(vec = name))) %&gt;%   unnest() %&gt;%  ggplot(aes(&quot;&quot;,dist_name_length)) +   geom_boxplot() +   coord_flip() +   facet_grid(show_name ~ ., scale = &quot;free_y&quot;) +  labs(title = &quot;String distance between the names of the characters \nin Game of Thrones and in 970 random series&quot;,        subtitle = &quot;computed using the Jaro distance&quot;) +   custom_themeWell, Jaro is neither corroborating my initial idea… So, I’ll stick with my original though: there are sooooooo many characters in this show :)">
+    <meta itemprop="datePublished" content="August 23, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Why Can’t I Remember Game of Thrones Characters? An Analysis in R
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  7 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>A quick exploration of Game of Thrones characters names, and the beginning of an answer to the question “Why on earth can’t I remember them all?”</p>
+
+<h2 id="first-get-the-data">First, get the data</h2>
+
+<p>For this exploration, we first need to get the names of all characters from the show. Quick and easy thanks to <a href="https://www.betaseries.com/api/">the beta serie API</a>.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">magrittr</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Add your API key here</span><span class="w">
+</span><span class="n">api_key</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"XXXX"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Let’s build the API request.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># You need id of the serie to request more info</span><span class="w">
+
+</span><span class="n">get_beta_serie</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">show</span><span class="p">,</span><span class="w"> </span><span class="n">api_key</span><span class="p">){</span><span class="w">
+  </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"https://api.betaseries.com/shows/search?title="</span><span class="p">,</span><span class="n">show</span><span class="p">),</span><span class="w">
+      </span><span class="n">accept_json</span><span class="p">(),</span><span class="w"> 
+      </span><span class="n">add_headers</span><span class="p">(</span><span class="n">.headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"X-BetaSeries-Key"</span><span class="o">=</span><span class="w"> </span><span class="n">api_key</span><span class="p">,</span><span class="w"> 
+                               </span><span class="s2">"Authorization"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bearer c3aa0a5ff128"</span><span class="p">)))</span><span class="w">
+  </span><span class="n">res</span><span class="o">$</span><span class="n">content</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">rawToChar</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">.</span><span class="o">$</span><span class="n">shows</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># Get the id </span><span class="w">
+
+</span><span class="n">get_beta_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">){</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">id</span><span class="p">[</span><span class="n">which</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">title</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">title</span><span class="p">)])</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">GoT_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">get_beta_serie</span><span class="p">(</span><span class="n">show</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"game+of+thrones"</span><span class="p">,</span><span class="w"> </span><span class="n">api_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">api_key</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">get_beta_id</span><span class="p">(</span><span class="s2">"Game of Thrones"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Get characters </span><span class="w">
+
+</span><span class="n">get_bet_char</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">id</span><span class="p">){</span><span class="w">
+  </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"https://api.betaseries.com/shows/characters?id="</span><span class="p">,</span><span class="n">id</span><span class="p">,</span><span class="s2">"&amp;="</span><span class="p">),</span><span class="w">
+             </span><span class="n">accept_json</span><span class="p">(),</span><span class="w"> 
+             </span><span class="n">add_headers</span><span class="p">(</span><span class="n">.headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"X-BetaSeries-Key"</span><span class="o">=</span><span class="w"> </span><span class="n">api_key</span><span class="p">,</span><span class="w"> 
+                                      </span><span class="s2">"Authorization"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bearer c3aa0a5ff128"</span><span class="p">)))</span><span class="w">
+  </span><span class="n">res</span><span class="o">$</span><span class="n">content</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">rawToChar</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">.</span><span class="o">$</span><span class="n">characters</span><span class="w"> 
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">GoT_char</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">get_bet_char</span><span class="p">(</span><span class="n">GoT_id</span><span class="p">)</span><span class="w">
+</span><span class="n">nrow</span><span class="p">(</span><span class="n">GoT_char</span><span class="p">)</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">98</span><span class="w">
+</span></code></pre></div></div>
+
+<p>98 characters… there’s 98 CHARACTERS!</p>
+
+<h2 id="something-to-compare-with">Something to compare with</h2>
+
+<h3 id="list-of-series">List of series</h3>
+
+<p>OK, but before getting really crazy about 98 characters, let’s temperate a little: is this common? To answer that question, we need more DATA.</p>
+
+<p><img src="http://awecomm.com/blog/wp-content/uploads/2015/10/hardware-data.jpg" alt="" /></p>
+
+<p>Here, I just have to thank Betaseries again for their cool API :</p>
+<ul>
+  <li>which doesn’t limit the number of call you can make</li>
+  <li>which can return a random serie from their list</li>
+</ul>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Random serie</span><span class="w">
+</span><span class="n">get_random_beta</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(){</span><span class="w">
+    </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://api.betaseries.com/shows/random?="</span><span class="p">,</span><span class="w">
+      </span><span class="n">accept_json</span><span class="p">(),</span><span class="w"> 
+      </span><span class="n">add_headers</span><span class="p">(</span><span class="n">.headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"X-BetaSeries-Key"</span><span class="o">=</span><span class="w"> </span><span class="n">api_key</span><span class="p">,</span><span class="w"> 
+                               </span><span class="s2">"Authorization"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Bearer c3aa0a5ff128"</span><span class="p">)))</span><span class="w">
+  </span><span class="n">res</span><span class="o">$</span><span class="n">content</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">rawToChar</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">fromJSON</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">.</span><span class="o">$</span><span class="n">shows</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">.</span><span class="o">$</span><span class="n">id</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">get_random_beta</span><span class="p">()</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">5321</span><span class="w">
+
+</span></code></pre></div></div>
+
+<p>Cool. How about getting mooooooore data.</p>
+
+<h3 id="get-1000-random-series-id-and-their-characters">Get 1000 random series id, and their characters</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 1000 random series</span><span class="w">
+</span><span class="n">list_id_beta</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">replicate</span><span class="p">(</span><span class="m">1000</span><span class="p">,</span><span class="w"> </span><span class="n">get_random_beta</span><span class="p">())</span><span class="w">
+
+</span><span class="c1"># How much unique series?</span><span class="w">
+</span><span class="nf">length</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">list_id_beta</span><span class="p">))</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">970</span><span class="w">
+</span><span class="n">list_id_beta</span><span class="w"> </span><span class="o">%&lt;&gt;%</span><span class="w"> </span><span class="n">unique</span><span class="w">
+
+</span><span class="c1"># Get characters for all series</span><span class="w">
+</span><span class="n">random_char</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map_df</span><span class="p">(</span><span class="n">.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list_id_beta</span><span class="p">,</span><span class="w"> </span><span class="n">get_bet_char</span><span class="p">)</span><span class="w">
+
+</span><span class="n">nrow</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">random_char</span><span class="p">))</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">3811</span><span class="w">
+</span></code></pre></div></div>
+
+<p>So, here are 3811 characters from 970 random series picked on the API. Let’s compare!</p>
+
+<p><img src="https://media.giphy.com/media/3oge8jsFsuxymZ8hEY/giphy.gif" alt="" /></p>
+
+<h3 id="are-there-too-many-characters-in-game-of-thrones">Are there too many characters in Game of Thrones?</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Make a full dataframe</span><span class="w">
+</span><span class="n">random_char</span><span class="o">$</span><span class="n">show_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Not_GoT"</span><span class="w">
+</span><span class="n">GoT_char</span><span class="o">$</span><span class="n">show_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"GoT"</span><span class="w">
+</span><span class="n">full_char</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rbind</span><span class="p">(</span><span class="n">random_char</span><span class="p">,</span><span class="w"> </span><span class="n">GoT_char</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Create a quick theme</span><span class="w">
+</span><span class="n">custom_theme</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">theme_minimal</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">theme</span><span class="p">(</span><span class="n">plot.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">))</span><span class="w">
+
+</span><span class="c1">#Visualise</span><span class="w">
+</span><span class="n">full_char</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">show_id</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">char_in_show</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">char_in_show</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_boxplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">98</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"red"</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Number of characters in 970 random series \nand in Game of Thrones (red dot)"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" data gathered from BetaSeries API"</span><span class="p">,</span><span class="w">
+       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Number of characters in the show"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">custom_theme</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/blog/chr_shows_game_of_thrones.png" alt="" /></p>
+
+<p>OK… So there’s definitely way more characters in Game of Thrones than in other shows — the second most populated show has “only” 48 characters.</p>
+
+<p>But, is there another answer to our original question? (“Why can’t I remember their names?”)</p>
+
+<h2 id="whats-in-a-name">What’s in a name?</h2>
+
+<h3 id="length">Length</h3>
+
+<p>Let’s formulate some hypotheses. First: maybe their names are too long? I mean, “Melisandre of Asshai” is quite a long name, as is “Xaro Xhoan Daxos”.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">full_char</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">show_id</span><span class="p">,</span><span class="w"> </span><span class="n">show_name</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">char_name_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nchar</span><span class="p">(</span><span class="n">name</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">char_name_length</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">show_name</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_freqpoly</span><span class="p">(</span><span class="n">bins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">facet_grid</span><span class="p">(</span><span class="n">show_name</span><span class="w"> </span><span class="o">~</span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">scales</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"free_y"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">scale_color_manual</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Show"</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"#973232"</span><span class="p">,</span><span class="w"> </span><span class="s2">"#1E5B5B"</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Length of characters names in 970 random series and in Game of Thrones"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" data gathered from BetaSeries API"</span><span class="p">,</span><span class="w">
+       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Length of character name in the show"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">guide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Show"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">custom_theme</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/blog/length_char_name.png" alt="" /></p>
+
+<p>Nop, that’s not it either. Let’s try something else.</p>
+
+<h3 id="occurences-of-letters">Occurences of letters</h3>
+
+<p>Are the letters similarly distributed in Game of Thrones and in the other shows?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span><span class="w">
+
+</span><span class="c1">#Let's clean up a little bit</span><span class="w">
+
+</span><span class="n">letter_strip</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">vec</span><span class="p">){</span><span class="w">
+  </span><span class="n">vec</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">tolower</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">tm</span><span class="o">::</span><span class="n">removePunctuation</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">tm</span><span class="o">::</span><span class="n">removeNumbers</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"àäâá"</span><span class="p">,</span><span class="w"> </span><span class="s2">"a"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"éèë"</span><span class="p">,</span><span class="w"> </span><span class="s2">"e"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"ïí"</span><span class="p">,</span><span class="w"> </span><span class="s2">"i"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"ōôó"</span><span class="p">,</span><span class="w"> </span><span class="s2">"o"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"üū"</span><span class="p">,</span><span class="w"> </span><span class="s2">"u"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_split</span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">unlist</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">iconv</span><span class="p">(</span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Latin1"</span><span class="p">,</span><span class="s2">"ASCII"</span><span class="p">,</span><span class="w"> </span><span class="n">sub</span><span class="w"> </span><span class="o">=</span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">table</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">as.tibble</span><span class="p">()</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="c1"># That removed 146 non ASCII letters</span><span class="w">
+
+</span><span class="n">full_char</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">show_id</span><span class="p">,</span><span class="w"> </span><span class="n">show_name</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="n">table_letter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">letter_strip</span><span class="p">(</span><span class="n">name</span><span class="p">)))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">unnest</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">rename</span><span class="p">(</span><span class="n">letter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"."</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">letter</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_col</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">facet_grid</span><span class="p">(</span><span class="n">show_name</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"free_y"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+    </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Distribution of letters in the name of the characters in 970 random series and in Game of Thrones"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" data gathered from BetaSeries API"</span><span class="p">,</span><span class="w">
+       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">guide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Show"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">custom_theme</span><span class="w">
+  
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/blog/letter_distrib_game_of_thrones.png" alt="" /></p>
+
+<p>Nop, still quite the same. Ok, maybe that’s because their names are composed of repeated letters (remember… Xaro Xhoan Daxos)?</p>
+
+<h3 id="repeated-letters">Repeated letters</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Diff letters function </span><span class="w">
+
+</span><span class="n">diff_letters</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">word</span><span class="p">){</span><span class="w">
+  </span><span class="n">li</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">tolower</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">tm</span><span class="o">::</span><span class="n">removePunctuation</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">tm</span><span class="o">::</span><span class="n">removeNumbers</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_split</span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">unlist</span><span class="w">
+  </span><span class="n">moy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">li</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">li</span><span class="p">)</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">moy</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="c1"># Here, a result of 1 means all letters are different. The closer the result get to zero, the more repeated they are. </span><span class="w">
+
+</span><span class="n">diff_letters</span><span class="p">(</span><span class="s2">"Xaro Xhoan Daxos"</span><span class="p">)</span><span class="w"> 
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">0.5714286</span><span class="w">
+</span><span class="n">diff_letters</span><span class="p">(</span><span class="s2">"Colin Fay"</span><span class="p">)</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Cool. Let’s visualize that.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">full_char</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">diff_in_letters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">diff_letters</span><span class="p">(</span><span class="n">name</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">diff_in_letters</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">show_name</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_freqpoly</span><span class="p">(</span><span class="n">bins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">facet_grid</span><span class="p">(</span><span class="n">show_name</span><span class="w"> </span><span class="o">~</span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">scales</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"free_y"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">scale_color_manual</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Show"</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"#973232"</span><span class="p">,</span><span class="w"> </span><span class="s2">"#1E5B5B"</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Letter difference in the names of characters in 970 random series and in Game of Thrones"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" data gathered from BetaSeries API"</span><span class="p">,</span><span class="w">
+       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Length of character name in the show"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">guide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Show"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">custom_theme</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/blog/length_char_name.png" alt="" /></p>
+
+<p>Ok, nothing fancy here… Now, let’s try some string dist approach.</p>
+
+<h2 id="string-dist">String dist</h2>
+
+<h3 id="chosing-a-string-distance-algorithm">Chosing a string distance algorithm</h3>
+
+<p>My main point while watching GoT is that “every names sound the same”. Like, why on earth should you name your character “Bran” and “Bronn”, “Tyron and Tywinn”, “Tommen” and “Tormund”… and there is literally a “Robb”, a “Robert” and a “Robin”.</p>
+
+<p>Can we see it with string distance? My first intuition is that string distances should be shorter in Game of Thrones than in other shows. Let’s try several methods to find out.</p>
+
+<h3 id="levenshtein-distance">Levenshtein distance</h3>
+
+<p>The Levenshtein distance counts the number of deletions, insertions and substitutions necessary to turn b into a. For example, <code class="highlighter-rouge">stringdist("Colin", "Colis", method = "lv")</code> returns 1.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">stringdist</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Just cleaning the names</span><span class="w">
+</span><span class="n">name_strip</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">vec</span><span class="p">){</span><span class="w">
+  </span><span class="n">vec</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">tolower</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">tm</span><span class="o">::</span><span class="n">removePunctuation</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"é"</span><span class="p">,</span><span class="w"> </span><span class="s2">"e"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"à"</span><span class="p">,</span><span class="w"> </span><span class="s2">"a"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"é"</span><span class="p">,</span><span class="w"> </span><span class="s2">"e"</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">string_dist_lv</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">vec</span><span class="p">){</span><span class="w">
+  </span><span class="n">stringdistmatrix</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lv"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">as.vector</span><span class="p">()</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">full_char</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name_strip</span><span class="p">(</span><span class="n">name</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">show_id</span><span class="p">,</span><span class="w"> </span><span class="n">show_name</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarize</span><span class="p">(</span><span class="n">dist_name_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">string_dist_lv</span><span class="p">(</span><span class="n">vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">)))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">unnest</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span><span class="n">dist_name_length</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_boxplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">facet_grid</span><span class="p">(</span><span class="n">show_name</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"free_y"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"String distance between the names of the characters \nin Game of Thrones and in 970 random series"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"computed using the Levenshtein distance"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">custom_theme</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/blog/lv_string_dist_game_of_thrones.png" alt="" /></p>
+
+<p>OK, Levenshtein is not on my side.</p>
+
+<h3 id="longest-common-substring">Longest common substring</h3>
+
+<p>This method finds the longest string that can be obtained by pairing characters from a and b, by removing non common characters while keeping the order of characters intact. The result is the number of deletions made to obtain this string.</p>
+
+<p>For example, <code class="highlighter-rouge">stringdist("Colin", "Colis", method = "lcs")</code> returns 2, because you need to remove the n and the s — the longest common substring being “Coli”. <code class="highlighter-rouge">stringdist("Brann", "Bron", method = "lcs")</code> returns 3, as you have to remove a, n and n. The lcs is “Brn”. The closer the result is to 0, the closer the strings are.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">string_dist_lcs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">vec</span><span class="p">){</span><span class="w">
+  </span><span class="n">stringdistmatrix</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lcs"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">as.vector</span><span class="p">()</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">full_char</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name_strip</span><span class="p">(</span><span class="n">name</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">show_id</span><span class="p">,</span><span class="w"> </span><span class="n">show_name</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarize</span><span class="p">(</span><span class="n">dist_name_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">string_dist_lcs</span><span class="p">(</span><span class="n">vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">)))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">unnest</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span><span class="n">dist_name_length</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_boxplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">facet_grid</span><span class="p">(</span><span class="n">show_name</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"free_y"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"String distance between the names of the characters \nin Game of Thrones (red line) and in 970 random series"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"computed using the longest common substring method"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">custom_theme</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/blog/2017/08/lcs_string_dist_game_of_thrones.png" alt="" /></p>
+
+<p>Neither on my side…</p>
+
+<h3 id="jaro-distance">Jaro distance</h3>
+
+<p>Jaro distance returns a number between 0 and 1, 0 being exact match, 1 complete dissimilarity. <code class="highlighter-rouge">stringdist("Colin", "Colis", method='jw', p=0)</code> returns 0.1333333. <code class="highlighter-rouge">stringdist("Brann", "Bron", method='jw', p=0)</code> returns 0.2166667. Let’s try this last one.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">string_dist_jac</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">vec</span><span class="p">){</span><span class="w">
+  </span><span class="n">stringdistmatrix</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s1">'jw'</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">=</span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">as.vector</span><span class="p">()</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">full_char</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name_strip</span><span class="p">(</span><span class="n">name</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">show_id</span><span class="p">,</span><span class="w"> </span><span class="n">show_name</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarize</span><span class="p">(</span><span class="n">dist_name_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">string_dist_jac</span><span class="p">(</span><span class="n">vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">)))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">unnest</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span><span class="n">dist_name_length</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_boxplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">facet_grid</span><span class="p">(</span><span class="n">show_name</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"free_y"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"String distance between the names of the characters \nin Game of Thrones and in 970 random series"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"computed using the Jaro distance"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">custom_theme</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/blog/jaro_string_dist_game_of_thrones.png" alt="" /></p>
+
+<p>Well, Jaro is neither corroborating my initial idea… So, I’ll stick with my original though: there are sooooooo many characters in this show :)</p>
+
+<p><img src="https://media.giphy.com/media/1iAQLpW2DRW2k/giphy.gif" alt="" /></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#r" class="page__taxonomy-item" rel="tag">r</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#random" class="page__taxonomy-item" rel="tag">random</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-08-23T00:00:00+02:00">August 23, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Why+Can%27t+I+Remember+Game+of+Thrones+Characters%3F+An+Analysis+in+R%20http%3A%2F%2Flocalhost%3A4000%2Fgame-of-thrones-characters-r%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fgame-of-thrones-characters-r%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fgame-of-thrones-characters-r%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fgame-of-thrones-characters-r%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/r6-shared-objects/" class="pagination--pager" title="R6 and shared objects
+">←</a>
+    
+    
+      <a href="/r6-parent-exposure/" class="pagination--pager" title="R6 and parent exposure
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/game-of-thrones-characters-r/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/r-game-of-thrones"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

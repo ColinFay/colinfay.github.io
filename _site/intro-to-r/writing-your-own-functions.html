@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="grouping-loops-and-conditional-execution.html">
+<link rel="next" href="statistical-models-in-r.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="writing-your-own-functions" class="section level1">
+<h1><span class="header-section-number">Chapter 10</span> Writing your own functions</h1>
+<p>
+<a href="" id="index-Writing-functions"></a>
+</p>
+<p>
+As we have seen informally along the way, the R language allows the user to create objects of mode <em>function</em>. These are true R functions that are stored in a special internal form and may be used in further expressions and so on. In the process, the language gains enormously in power, convenience and elegance, and learning to write useful functions is one of the main ways to make your use of R comfortable and productive.
+</p>
+<p>
+It should be emphasized that most of the functions supplied as part of the R system, such as <code class="calibre2">mean()</code>, <code class="calibre2">var()</code>, <code class="calibre2">postscript()</code> and so on, are themselves written in R and thus do not differ materially from user written functions.
+</p>
+<p>
+A function is defined by an assignment of the form
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; name &lt;- function(arg_1, arg_2, …) expression</code></pre>
+</div>
+<p>
+<a href="" id="index-function"></a>
+</p>
+<p>
+The expression is an R expression, (usually a grouped expression), that uses the arguments, arg_i, to calculate a value. The value of the expression is the value returned for the function.
+</p>
+<p>
+A call to the function then usually takes the form <code class="calibre2">name(expr_1, expr_2, …)</code> and may occur anywhere a function call is legitimate.
+</p>
+<hr />
+<p>
+<a href="" id="Simple-examples"></a> <a href="" id="Simple-examples-1"></a>
+</p>
+<h3 id="simple-examples" class="section">
+10.1 Simple examples
+</h3>
+<p>
+As a first example, consider a function to calculate the two sample <em>t</em>-statistic, showing “all the steps”. This is an artificial example, of course, since there are other, simpler ways of achieving the same end.
+</p>
+<p>
+The function is defined as follows:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; twosam &lt;- function(y1, y2) {
+    n1  &lt;- length(y1); n2  &lt;- length(y2)
+    yb1 &lt;- mean(y1);   yb2 &lt;- mean(y2)
+    s1  &lt;- var(y1);    s2  &lt;- var(y2)
+    s &lt;- ((n1-1)*s1 + (n2-1)*s2)/(n1+n2-2)
+    tst &lt;- (yb1 - yb2)/sqrt(s*(1/n1 + 1/n2))
+    tst
+  }</code></pre>
+</div>
+<p>
+With this function defined, you could perform two sample <em>t</em>-tests using a call such as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; tstat &lt;- twosam(data$male, data$female); tstat</code></pre>
+</div>
+<p>
+As a second example, consider a function to emulate directly the MATLAB backslash command, which returns the coefficients of the orthogonal projection of the vector <em>y</em> onto the column space of the matrix, <em>X</em>. (This is ordinarily called the least squares estimate of the regression coefficients.) This would ordinarily be done with the <code class="calibre2">qr()</code> function; however this is sometimes a bit tricky to use directly and it pays to have a simple function such as the following to use it safely.
+</p>
+<p>
+Thus given a <em>n</em> by <em>1</em> vector <em>y</em> and an <em>n</em> by <em>p</em> matrix <em>X</em> then <em>X  y</em> is defined as (X’X)^{-}X’y, where (X’X)^{-} is a generalized inverse of <em>X’X</em>.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; bslash &lt;- function(X, y) {
+  X &lt;- qr(X)
+  qr.coef(X, y)
+}</code></pre>
+</div>
+<p>
+After this object is created it may be used in statements such as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; regcoeff &lt;- bslash(Xmat, yvar)</code></pre>
+</div>
+<p>
+and so on.
+</p>
+<p>
+The classical R function <code class="calibre2">lsfit()</code> does this job quite well, and more<a href="023-R-intro.html#FOOT22" id="DOCF22"><sup>22</sup></a>. It in turn uses the functions <code class="calibre2">qr()</code> and <code class="calibre2">qr.coef()</code> in the slightly counterintuitive way above to do this part of the calculation. Hence there is probably some value in having just this part isolated in a simple to use function if it is going to be in frequent use. If so, we may wish to make it a matrix binary operator for even more convenient use.
+</p>
+<hr />
+<p>
+<a href="" id="Defining-new-binary-operators"></a> <a href="" id="Defining-new-binary-operators-1"></a>
+</p>
+<h3 id="defining-new-binary-operators" class="section">
+10.2 Defining new binary operators
+</h3>
+<p>
+<a href="" id="index-Binary-operators"></a>
+</p>
+<p>
+Had we given the <code class="calibre2">bslash()</code> function a different name, namely one of the form
+</p>
+<div class="example">
+<pre class="example1"><code>%anything%</code></pre>
+</div>
+<p>
+it could have been used as a <em>binary operator</em> in expressions rather than in function form. Suppose, for example, we choose <code class="calibre2">!</code> for the internal character. The function definition would then start as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; &quot;%!%&quot; &lt;- function(X, y) { … }</code></pre>
+</div>
+<p>
+(Note the use of quote marks.) The function could then be used as <code class="calibre2">X %!% y</code>. (The backslash symbol itself is not a convenient choice as it presents special problems in this context.)
+</p>
+<p>
+The matrix multiplication operator, <code class="calibre2">%*%</code>, and the outer product matrix operator <code class="calibre2">%o%</code> are other examples of binary operators defined in this way.
+</p>
+<hr />
+<p>
+<a href="" id="Named-arguments-and-defaults"></a> <a href="" id="Named-arguments-and-defaults-1"></a>
+</p>
+<h3 id="named-arguments-and-defaults" class="section">
+10.3 Named arguments and defaults
+</h3>
+<p>
+<a href="" id="index-Named-arguments"></a> <a href="" id="index-Default-values"></a>
+</p>
+<p>
+As first noted in <a href="005-R-intro.html#Generating-regular-sequences">Generating regular sequences</a>, if arguments to called functions are given in the “<code class="calibre2">name=object</code>” form, they may be given in any order. Furthermore the argument sequence may begin in the unnamed, positional form, and specify named arguments after the positional arguments.
+</p>
+<p>
+Thus if there is a function <code class="calibre2">fun1</code> defined by
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fun1 &lt;- function(data, data.frame, graph, limit) {
+    [function body omitted]
+  }</code></pre>
+</div>
+<p>
+then the function may be invoked in several ways, for example
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ans &lt;- fun1(d, df, TRUE, 20)
+&gt; ans &lt;- fun1(d, df, graph=TRUE, limit=20)
+&gt; ans &lt;- fun1(data=d, limit=20, graph=TRUE, data.frame=df)</code></pre>
+</div>
+<p>
+are all equivalent.
+</p>
+<p>
+In many cases arguments can be given commonly appropriate default values, in which case they may be omitted altogether from the call when the defaults are appropriate. For example, if <code class="calibre2">fun1</code> were defined as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; fun1 &lt;- function(data, data.frame, graph=TRUE, limit=20) { … }</code></pre>
+</div>
+<p>
+it could be called as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ans &lt;- fun1(d, df)</code></pre>
+</div>
+<p>
+which is now equivalent to the three cases above, or as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; ans &lt;- fun1(d, df, limit=10)</code></pre>
+</div>
+<p>
+which changes one of the defaults.
+</p>
+<p>
+It is important to note that defaults may be arbitrary expressions, even involving other arguments to the same function; they are not restricted to be constants as in our simple example here.
+</p>
+<hr />
+<p>
+<a href="" id="The-three-dots-argument"></a> <a href="" id="The-_2026-argument"></a>
+</p>
+<h3 id="the-argument" class="section">
+10.4 The ‘…’ argument
+</h3>
+<p>
+Another frequent requirement is to allow one function to pass on argument settings to another. For example many graphics functions use the function <code class="calibre2">par()</code> and functions like <code class="calibre2">plot()</code> allow the user to pass on graphical parameters to <code class="calibre2">par()</code> to control the graphical output. (See <a href="015-R-intro.html#The-par_0028_0029-function">The par() function</a>, for more details on the <code class="calibre2">par()</code> function.) This can be done by including an extra argument, literally ‘…’, of the function, which may then be passed on. An outline example is given below.
+</p>
+<div class="example">
+<pre class="example1"><code>fun1 &lt;- function(data, data.frame, graph=TRUE, limit=20, ...) {
+  [omitted statements]
+  if (graph)
+    par(pch=&quot;*&quot;, ...)
+  [more omissions]
+}</code></pre>
+</div>
+<p>
+Less frequently, a function will need to refer to components of ‘…’. The expression <code class="calibre2">list(…)</code> evaluates all such arguments and returns them in a named list, while <code class="calibre2">..1</code>, <code class="calibre2">..2</code>, etc. evaluate them one at a time, with ‘..n’ returning the n’th unmatched argument.
+</p>
+<hr />
+<p>
+<a href="" id="Assignment-within-functions"></a> <a href="" id="Assignments-within-functions"></a>
+</p>
+<h3 id="assignments-within-functions" class="section">
+10.5 Assignments within functions
+</h3>
+<p>
+Note that <em>any ordinary assignments done within the function are local and temporary and are lost after exit from the function</em>. Thus the assignment <code class="calibre2">X &lt;- qr(X)</code> does not affect the value of the argument in the calling program.
+</p>
+<p>
+To understand completely the rules governing the scope of R assignments the reader needs to be familiar with the notion of an evaluation <em>frame</em>. This is a somewhat advanced, though hardly difficult, topic and is not covered further here.
+</p>
+<p>
+If global and permanent assignments are intended within a function, then either the “superassignment” operator, <code class="calibre2">&lt;&lt;-</code> or the function <code class="calibre2">assign()</code> can be used. See the <code class="calibre2">help</code> document for details. S-PLUS users should be aware that <code class="calibre2">&lt;&lt;-</code> has different semantics in R. These are discussed further in <a href="writing-your-own-functions.html#Scope">Scope</a>.
+</p>
+<hr />
+<p>
+<a href="" id="More-advanced-examples"></a> <a href="" id="More-advanced-examples-1"></a>
+</p>
+<h3 id="more-advanced-examples" class="section">
+10.6 More advanced examples
+</h3>
+<hr />
+<p>
+<a href="" id="Efficiency-factors-in-block-designs"></a> <a href="" id="Efficiency-factors-in-block-designs-1"></a>
+</p>
+<h4 id="efficiency-factors-in-block-designs" class="subheading">
+10.6.1 Efficiency factors in block designs
+</h4>
+<p>
+As a more complete, if a little pedestrian, example of a function, consider finding the efficiency factors for a block design. (Some aspects of this problem have already been discussed in <a href="008-R-intro.html#Index-matrices">Index matrices</a>.)
+</p>
+<p>
+A block design is defined by two factors, say <code class="calibre2">blocks</code> (<code class="calibre2">b</code> levels) and <code class="calibre2">varieties</code> (<code class="calibre2">v</code> levels). If <em>R</em> and <em>K</em> are the <em>v</em> by <em>v</em> and <em>b</em> by <em>b</em> <em>replications</em> and <em>block size</em> matrices, respectively, and <em>N</em> is the <em>b</em> by <em>v</em> incidence matrix, then the efficiency factors are defined as the eigenvalues of the matrix E = I_v - R<sup>{-1/2}N’K</sup>{-1}NR^{-1/2} = I_v - A’A, where A = K<sup>{-1/2}NR</sup>{-1/2}. One way to write the function is given below.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; bdeff &lt;- function(blocks, varieties) {
+    blocks &lt;- as.factor(blocks)             # minor safety move
+    b &lt;- length(levels(blocks))
+    varieties &lt;- as.factor(varieties)       # minor safety move
+    v &lt;- length(levels(varieties))
+    K &lt;- as.vector(table(blocks))           # remove dim attr
+    R &lt;- as.vector(table(varieties))        # remove dim attr
+    N &lt;- table(blocks, varieties)
+    A &lt;- 1/sqrt(K) * N * rep(1/sqrt(R), rep(b, v))
+    sv &lt;- svd(A)
+    list(eff=1 - sv$d^2, blockcv=sv$u, varietycv=sv$v)
+}</code></pre>
+</div>
+<p>
+It is numerically slightly better to work with the singular value decomposition on this occasion rather than the eigenvalue routines.
+</p>
+<p>
+The result of the function is a list giving not only the efficiency factors as the first component, but also the block and variety canonical contrasts, since sometimes these give additional useful qualitative information.
+</p>
+<hr />
+<p>
+<a href="" id="Dropping-all-names-in-a-printed-array"></a> <a href="" id="Dropping-all-names-in-a-printed-array-1"></a>
+</p>
+<h4 id="dropping-all-names-in-a-printed-array" class="subheading">
+10.6.2 Dropping all names in a printed array
+</h4>
+<p>
+For printing purposes with large matrices or arrays, it is often useful to print them in close block form without the array names or numbers. Removing the <code class="calibre2">dimnames</code> attribute will not achieve this effect, but rather the array must be given a <code class="calibre2">dimnames</code> attribute consisting of empty strings. For example to print a matrix, <code class="calibre2">X</code>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; temp &lt;- X
+&gt; dimnames(temp) &lt;- list(rep(&quot;&quot;, nrow(X)), rep(&quot;&quot;, ncol(X)))
+&gt; temp; rm(temp)</code></pre>
+</div>
+<p>
+This can be much more conveniently done using a function, <code class="calibre2">no.dimnames()</code>, shown below, as a “wrap around” to achieve the same result. It also illustrates how some effective and useful user functions can be quite short.
+</p>
+<div class="example">
+<pre class="example1"><code>no.dimnames &lt;- function(a) {
+  ## Remove all dimension names from an array for compact printing.
+  d &lt;- list()
+  l &lt;- 0
+  for(i in dim(a)) {
+    d[[l &lt;- l + 1]] &lt;- rep(&quot;&quot;, i)
+  }
+  dimnames(a) &lt;- d
+  a
+}</code></pre>
+</div>
+<p>
+With this function defined, an array may be printed in close format using
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; no.dimnames(X)</code></pre>
+</div>
+<p>
+This is particularly useful for large integer arrays, where patterns are the real interest rather than the values.
+</p>
+<hr />
+<p>
+<a href="" id="Recursive-numerical-integration"></a> <a href="" id="Recursive-numerical-integration-1"></a>
+</p>
+<h4 id="recursive-numerical-integration" class="subheading">
+10.6.3 Recursive numerical integration
+</h4>
+<p>
+Functions may be recursive, and may themselves define functions within themselves. Note, however, that such functions, or indeed variables, are not inherited by called functions in higher evaluation frames as they would be if they were on the search path.
+</p>
+<p>
+The example below shows a naive way of performing one-dimensional numerical integration. The integrand is evaluated at the end points of the range and in the middle. If the one-panel trapezium rule answer is close enough to the two panel, then the latter is returned as the value. Otherwise the same process is recursively applied to each panel. The result is an adaptive integration process that concentrates function evaluations in regions where the integrand is farthest from linear. There is, however, a heavy overhead, and the function is only competitive with other algorithms when the integrand is both smooth and very difficult to evaluate.
+</p>
+<p>
+The example is also given partly as a little puzzle in R programming.
+</p>
+<div class="example">
+<pre class="example1"><code>area &lt;- function(f, a, b, eps = 1.0e-06, lim = 10) {
+  fun1 &lt;- function(f, a, b, fa, fb, a0, eps, lim, fun) {
+    ## function ‘fun1’ is only visible inside ‘area’
+    d &lt;- (a + b)/2
+    h &lt;- (b - a)/4
+    fd &lt;- f(d)
+    a1 &lt;- h * (fa + fd)
+    a2 &lt;- h * (fd + fb)
+    if(abs(a0 - a1 - a2) &lt; eps || lim == 0)
+      return(a1 + a2)
+    else {
+      return(fun(f, a, d, fa, fd, a1, eps, lim - 1, fun) +
+             fun(f, d, b, fd, fb, a2, eps, lim - 1, fun))
+    }
+  }
+  fa &lt;- f(a)
+  fb &lt;- f(b)
+  a0 &lt;- ((fa + fb) * (b - a))/2
+  fun1(f, a, b, fa, fb, a0, eps, lim, fun1)
+}</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Scope"></a> <a href="" id="Scope-1"></a>
+</p>
+<h3 id="scope" class="section">
+10.7 Scope
+</h3>
+<p>
+<a href="" id="index-Scope"></a>
+</p>
+<p>
+The discussion in this section is somewhat more technical than in other parts of this document. However, it details one of the major differences between S-PLUS and R.
+</p>
+<p>
+The symbols which occur in the body of a function can be divided into three classes; formal parameters, local variables and free variables. The formal parameters of a function are those occurring in the argument list of the function. Their values are determined by the process of <em>binding</em> the actual function arguments to the formal parameters. Local variables are those whose values are determined by the evaluation of expressions in the body of the functions. Variables which are not formal parameters or local variables are called free variables. Free variables become local variables if they are assigned to. Consider the following function definition.
+</p>
+<div class="example">
+<pre class="example1"><code>f &lt;- function(x) {
+  y &lt;- 2*x
+  print(x)
+  print(y)
+  print(z)
+}</code></pre>
+</div>
+<p>
+In this function, <code class="calibre2">x</code> is a formal parameter, <code class="calibre2">y</code> is a local variable and <code class="calibre2">z</code> is a free variable.
+</p>
+<p>
+In R the free variable bindings are resolved by first looking in the environment in which the function was created. This is called <em>lexical scope</em>. First we define a function called <code class="calibre2">cube</code>.
+</p>
+<div class="example">
+<pre class="example1"><code>cube &lt;- function(n) {
+  sq &lt;- function() n*n
+  n*sq()
+}</code></pre>
+</div>
+<p>
+The variable <code class="calibre2">n</code> in the function <code class="calibre2">sq</code> is not an argument to that function. Therefore it is a free variable and the scoping rules must be used to ascertain the value that is to be associated with it. Under static scope (S-PLUS) the value is that associated with a global variable named <code class="calibre2">n</code>. Under lexical scope (R) it is the parameter to the function <code class="calibre2">cube</code> since that is the active binding for the variable <code class="calibre2">n</code> at the time the function <code class="calibre2">sq</code> was defined. The difference between evaluation in R and evaluation in S-PLUS is that S-PLUS looks for a global variable called <code class="calibre2">n</code> while R first looks for a variable called <code class="calibre2">n</code> in the environment created when <code class="calibre2">cube</code> was invoked.
+</p>
+<div class="example">
+<pre class="example1"><code>## first evaluation in S
+S&gt; cube(2)
+Error in sq(): Object &quot;n&quot; not found
+Dumped
+S&gt; n &lt;- 3
+S&gt; cube(2)
+[1] 18
+## then the same function evaluated in R
+R&gt; cube(2)
+[1] 8</code></pre>
+</div>
+<p>
+Lexical scope can also be used to give functions <em>mutable state</em>. In the following example we show how R can be used to mimic a bank account. A functioning bank account needs to have a balance or total, a function for making withdrawals, a function for making deposits and a function for stating the current balance. We achieve this by creating the three functions within <code class="calibre2">account</code> and then returning a list containing them. When <code class="calibre2">account</code> is invoked it takes a numerical argument <code class="calibre2">total</code> and returns a list containing the three functions. Because these functions are defined in an environment which contains <code class="calibre2">total</code>, they will have access to its value.
+</p>
+<p>
+The special assignment operator, <code class="calibre2">&lt;&lt;-</code>, <a href="" id="index-_003c_003c_002d"></a> is used to change the value associated with <code class="calibre2">total</code>. This operator looks back in enclosing environments for an environment that contains the symbol <code class="calibre2">total</code> and when it finds such an environment it replaces the value, in that environment, with the value of right hand side. If the global or top-level environment is reached without finding the symbol <code class="calibre2">total</code> then that variable is created and assigned to there. For most users <code class="calibre2">&lt;&lt;-</code> creates a global variable and assigns the value of the right hand side to it<a href="023-R-intro.html#FOOT23" id="DOCF23"><sup>23</sup></a>. Only when <code class="calibre2">&lt;&lt;-</code> has been used in a function that was returned as the value of another function will the special behavior described here occur.
+</p>
+<div class="example">
+<pre class="example1"><code>open.account &lt;- function(total) {
+  list(
+    deposit = function(amount) {
+      if(amount &lt;= 0)
+        stop(&quot;Deposits must be positive!\n&quot;)
+      total &lt;&lt;- total + amount
+      cat(amount, &quot;deposited.  Your balance is&quot;, total, &quot;\n\n&quot;)
+    },
+    withdraw = function(amount) {
+      if(amount &gt; total)
+        stop(&quot;You don&#39;t have that much money!\n&quot;)
+      total &lt;&lt;- total - amount
+      cat(amount, &quot;withdrawn.  Your balance is&quot;, total, &quot;\n\n&quot;)
+    },
+    balance = function() {
+      cat(&quot;Your balance is&quot;, total, &quot;\n\n&quot;)
+    }
+  )
+}
+
+ross &lt;- open.account(100)
+robert &lt;- open.account(200)
+
+ross$withdraw(30)
+ross$balance()
+robert$balance()
+
+ross$deposit(50)
+ross$balance()
+ross$withdraw(500)</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Customizing-the-environment"></a> <a href="" id="Customizing-the-environment-1"></a>
+</p>
+<h3 id="customizing-the-environment" class="section">
+10.8 Customizing the environment
+</h3>
+<p>
+<a href="" id="index-Customizing-the-environment"></a>
+</p>
+<p>
+Users can customize their environment in several different ways. There is a site initialization file and every directory can have its own special initialization file. Finally, the special functions <code class="calibre2">.First</code> and <code class="calibre2">.Last</code> can be used.
+</p>
+<p>
+The location of the site initialization file is taken from the value of the <code class="calibre2">R_PROFILE</code> environment variable. If that variable is unset, the file Rprofile.site in the R home subdirectory etc is used. This file should contain the commands that you want to execute every time R is started under your system. A second, personal, profile file named .Rprofile<a href="023-R-intro.html#FOOT24" id="DOCF24"><sup>24</sup></a> can be placed in any directory. If R is invoked in that directory then that file will be sourced. This file gives individual users control over their workspace and allows for different startup procedures in different working directories. If no .Rprofile file is found in the startup directory, then R looks for a .Rprofile file in the user’s home directory and uses that (if it exists). If the environment variable <code class="calibre2">R_PROFILE_USER</code> is set, the file it points to is used instead of the .Rprofile files.
+</p>
+<p>
+Any function named <code class="calibre2">.First()</code> in either of the two profile files or in the .RData image has a special status. It is automatically performed at the beginning of an R session and may be used to initialize the environment. For example, the definition in the example below alters the prompt to <code class="calibre2"><span class="math inline">\(&lt;/code&gt; and sets up various other useful things that can then be taken for granted in the rest of the session.&lt;/p&gt; &lt;p&gt;Thus, the sequence in which files are executed is, Rprofile.site, the user profile, .RData and then &lt;code class=&quot;calibre2&quot;&gt;.First()&lt;/code&gt;. A definition in later files will mask definitions in earlier files.&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;&amp;gt; .First &amp;lt;- function() {  options(prompt=&amp;quot;\)</span> “, continue=”+“) # $ is the prompt options(digits=5, length=999) # custom numbers and printout x11() # for graphics par(pch =”+“) # plotting character source(file.path(Sys.getenv(”HOME“),”R“,”mystuff.R“)) # my personal functions library(MASS) # attach a package }</code>
+</pre>
+</div>
+<p>
+<a href="" id="index-_002eFirst"></a>
+</p>
+<p>
+Similarly a function <code class="calibre2">.Last()</code>, if defined, is (normally) executed at the very end of the session. An example is given below.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; .Last &lt;- function() {
+  graphics.off()                        # a small safety measure.
+  cat(paste(date(),&quot;\nAdios\n&quot;))        # Is it time for lunch?
+}</code></pre>
+</div>
+<p>
+<a href="" id="index-_002eLast"></a>
+</p>
+<hr />
+<p>
+<a href="" id="Object-orientation"></a> <a href="" id="Classes_002c-generic-functions-and-object-orientation"></a>
+</p>
+<h3 id="classes-generic-functions-and-object-orientation" class="section">
+10.9 Classes, generic functions and object orientation
+</h3>
+<p>
+<a href="" id="index-Classes-1"></a> <a href="" id="index-Generic-functions"></a> <a href="" id="index-Object-orientation"></a>
+</p>
+<p>
+The class of an object determines how it will be treated by what are known as <em>generic</em> functions. Put the other way round, a generic function performs a task or action on its arguments <em>specific to the class of the argument itself</em>. If the argument lacks any <code class="calibre2">class</code> attribute, or has a class not catered for specifically by the generic function in question, there is always a <em>default action</em> provided.
+</p>
+<p>
+An example makes things clearer. The class mechanism offers the user the facility of designing and writing generic functions for special purposes. Among the other generic functions are <code class="calibre2">plot()</code> for displaying objects graphically, <code class="calibre2">summary()</code> for summarizing analyses of various types, and <code class="calibre2">anova()</code> for comparing statistical models.
+</p>
+<p>
+The number of generic functions that can treat a class in a specific way can be quite large. For example, the functions that can accommodate in some fashion objects of class <code class="calibre2">“data.frame”</code> include
+</p>
+<div class="example">
+<pre class="example1"><code>[     [[&lt;-    any    as.matrix
+[&lt;-   mean    plot   summary</code></pre>
+</div>
+<p>
+<a href="" id="index-methods"></a>
+</p>
+<p>
+A currently complete list can be got by using the <code class="calibre2">methods()</code> function:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; methods(class=&quot;data.frame&quot;)</code></pre>
+</div>
+<p>
+Conversely the number of classes a generic function can handle can also be quite large. For example the <code class="calibre2">plot()</code> function has a default method and variants for objects of classes <code class="calibre2">“data.frame”</code>, <code class="calibre2">“density”</code>, <code class="calibre2">“factor”</code>, and more. A complete list can be got again by using the <code class="calibre2">methods()</code> function:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; methods(plot)</code></pre>
+</div>
+<p>
+For many generic functions the function body is quite short, for example
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; coef
+function (object, ...)
+UseMethod(&quot;coef&quot;)</code></pre>
+</div>
+<p>
+The presence of <code class="calibre2">UseMethod</code> indicates this is a generic function. To see what methods are available we can use <code class="calibre2">methods()</code>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; methods(coef)
+[1] coef.aov*         coef.Arima*       coef.default*     coef.listof*
+[5] coef.nls*         coef.summary.nls*
+
+   Non-visible functions are asterisked</code></pre>
+</div>
+<p>
+In this example there are six methods, none of which can be seen by typing its name. We can read these by either of
+</p>
+<p>
+<a href="" id="index-getAnywhere"></a> <a href="" id="index-getS3method"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; getAnywhere(&quot;coef.aov&quot;)
+A single object matching ‘coef.aov’ was found
+It was found in the following places
+  registered S3 method for coef from namespace stats
+  namespace:stats
+with value
+
+function (object, ...)
+{
+    z &lt;- object$coef
+    z[!is.na(z)]
+}
+
+&gt; getS3method(&quot;coef&quot;, &quot;aov&quot;)
+function (object, ...)
+{
+    z &lt;- object$coef
+    z[!is.na(z)]
+}</code></pre>
+</div>
+<p>
+A function named <code class="calibre2">gen.cl</code> will be invoked by the generic <code class="calibre2">gen</code> for class <code class="calibre2">cl</code>, so do not name functions in this style unless they are intended to be methods.
+</p>
+<p>
+The reader is referred to the <em>R Language Definition</em> for a more complete discussion of this mechanism.
+</p>
+<hr />
+<p>
+<a href="" id="Statistical-models-in-R"></a> <a href="" id="Statistical-models-in-R-1"></a>
+</p>
+<div id="calibre_pb_24" class="calibre8">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="grouping-loops-and-conditional-execution.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="statistical-models-in-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

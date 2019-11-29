@@ -1,0 +1,673 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>dockerfiler is now on CRAN - Colin Fay</title>
+<meta name="description" content="{dockerfiler} is a package that comes with a simple, object oriented API for Dockerfile creation, straight from your R session. Now on CRAN.InstallationYou can install {dockerfiler} from GitHub with:# install.packages(&quot;remotes&quot;)remotes::install_github(&quot;colinfay/dockerfiler&quot;)Or from CRAN with :install.packages(&quot;dockerfiler&quot;)Basic worflowBy default, Dockerfiles are created with FROM &quot;rocker/r-base&quot;. You canset another FROM in new()library(dockerfiler)# Create a dockerfile templatemy_dock &lt;- Dockerfile$new()my_dock$MAINTAINER(&quot;Colin FAY&quot;, &quot;contact@colinfay.me&quot;)Wrap your raw R Code inside the r() function to turn it into a bashcommand with R-e.my_dock$RUN(r(install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)))Classical Docker stuffs:my_dock$RUN(&quot;mkdir /usr/scripts&quot;)my_dock$RUN(&quot;cd /usr/scripts&quot;)my_dock$COPY(&quot;plumberfile.R&quot;, &quot;/usr/scripts/plumber.R&quot;)my_dock$COPY(&quot;torun.R&quot;, &quot;/usr/scripts/torun.R&quot;)my_dock$EXPOSE(8000)my_dock$CMD(&quot;Rscript /usr/scripts/torun.R &quot;)See your Dockerfile :my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## COPY torun.R /usr/scripts/torun.R## EXPOSE 8000## CMD Rscript /usr/scripts/torun.RIf you’ve made a mistake in your script, you can switch lines with theswitch_cmd method. This function takes as arguments the positions ofthe two cmd you want to switch :# Switch line 8 and 7my_dock$switch_cmd(8, 7)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## EXPOSE 8000## COPY torun.R /usr/scripts/torun.R## CMD Rscript /usr/scripts/torun.RYou can also remove a cmd with remove_cmd:my_dock$remove_cmd(8)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## EXPOSE 8000## CMD Rscript /usr/scripts/torun.RThis also works with a vector:my_dock$remove_cmd(5:7)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## CMD Rscript /usr/scripts/torun.RSave your Dockerfile:my_dock$write()ContactQuestions and feedbacks welcome!You want to contribute ? Open aPR :) If you encountera bug or want to suggest an enhancement, please open anissue.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="dockerfiler is now on CRAN">
+<meta property="og:url" content="http://localhost:4000/dockerfiler-cran/">
+
+
+  <meta property="og:description" content="{dockerfiler} is a package that comes with a simple, object oriented API for Dockerfile creation, straight from your R session. Now on CRAN.InstallationYou can install {dockerfiler} from GitHub with:# install.packages(&quot;remotes&quot;)remotes::install_github(&quot;colinfay/dockerfiler&quot;)Or from CRAN with :install.packages(&quot;dockerfiler&quot;)Basic worflowBy default, Dockerfiles are created with FROM &quot;rocker/r-base&quot;. You canset another FROM in new()library(dockerfiler)# Create a dockerfile templatemy_dock &lt;- Dockerfile$new()my_dock$MAINTAINER(&quot;Colin FAY&quot;, &quot;contact@colinfay.me&quot;)Wrap your raw R Code inside the r() function to turn it into a bashcommand with R-e.my_dock$RUN(r(install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)))Classical Docker stuffs:my_dock$RUN(&quot;mkdir /usr/scripts&quot;)my_dock$RUN(&quot;cd /usr/scripts&quot;)my_dock$COPY(&quot;plumberfile.R&quot;, &quot;/usr/scripts/plumber.R&quot;)my_dock$COPY(&quot;torun.R&quot;, &quot;/usr/scripts/torun.R&quot;)my_dock$EXPOSE(8000)my_dock$CMD(&quot;Rscript /usr/scripts/torun.R &quot;)See your Dockerfile :my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## COPY torun.R /usr/scripts/torun.R## EXPOSE 8000## CMD Rscript /usr/scripts/torun.RIf you’ve made a mistake in your script, you can switch lines with theswitch_cmd method. This function takes as arguments the positions ofthe two cmd you want to switch :# Switch line 8 and 7my_dock$switch_cmd(8, 7)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## EXPOSE 8000## COPY torun.R /usr/scripts/torun.R## CMD Rscript /usr/scripts/torun.RYou can also remove a cmd with remove_cmd:my_dock$remove_cmd(8)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## EXPOSE 8000## CMD Rscript /usr/scripts/torun.RThis also works with a vector:my_dock$remove_cmd(5:7)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## CMD Rscript /usr/scripts/torun.RSave your Dockerfile:my_dock$write()ContactQuestions and feedbacks welcome!You want to contribute ? Open aPR :) If you encountera bug or want to suggest an enhancement, please open anissue.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="dockerfiler is now on CRAN">
+  <meta name="twitter:description" content="{dockerfiler} is a package that comes with a simple, object oriented API for Dockerfile creation, straight from your R session. Now on CRAN.InstallationYou can install {dockerfiler} from GitHub with:# install.packages(&quot;remotes&quot;)remotes::install_github(&quot;colinfay/dockerfiler&quot;)Or from CRAN with :install.packages(&quot;dockerfiler&quot;)Basic worflowBy default, Dockerfiles are created with FROM &quot;rocker/r-base&quot;. You canset another FROM in new()library(dockerfiler)# Create a dockerfile templatemy_dock &lt;- Dockerfile$new()my_dock$MAINTAINER(&quot;Colin FAY&quot;, &quot;contact@colinfay.me&quot;)Wrap your raw R Code inside the r() function to turn it into a bashcommand with R-e.my_dock$RUN(r(install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)))Classical Docker stuffs:my_dock$RUN(&quot;mkdir /usr/scripts&quot;)my_dock$RUN(&quot;cd /usr/scripts&quot;)my_dock$COPY(&quot;plumberfile.R&quot;, &quot;/usr/scripts/plumber.R&quot;)my_dock$COPY(&quot;torun.R&quot;, &quot;/usr/scripts/torun.R&quot;)my_dock$EXPOSE(8000)my_dock$CMD(&quot;Rscript /usr/scripts/torun.R &quot;)See your Dockerfile :my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## COPY torun.R /usr/scripts/torun.R## EXPOSE 8000## CMD Rscript /usr/scripts/torun.RIf you’ve made a mistake in your script, you can switch lines with theswitch_cmd method. This function takes as arguments the positions ofthe two cmd you want to switch :# Switch line 8 and 7my_dock$switch_cmd(8, 7)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## EXPOSE 8000## COPY torun.R /usr/scripts/torun.R## CMD Rscript /usr/scripts/torun.RYou can also remove a cmd with remove_cmd:my_dock$remove_cmd(8)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## EXPOSE 8000## CMD Rscript /usr/scripts/torun.RThis also works with a vector:my_dock$remove_cmd(5:7)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## CMD Rscript /usr/scripts/torun.RSave your Dockerfile:my_dock$write()ContactQuestions and feedbacks welcome!You want to contribute ? Open aPR :) If you encountera bug or want to suggest an enhancement, please open anissue.">
+  <meta name="twitter:url" content="http://localhost:4000/dockerfiler-cran/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-03-02T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/dockerfiler-cran/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="dockerfiler is now on CRAN">
+    <meta itemprop="description" content="{dockerfiler} is a package that comes with a simple, object oriented API for Dockerfile creation, straight from your R session. Now on CRAN.InstallationYou can install {dockerfiler} from GitHub with:# install.packages(&quot;remotes&quot;)remotes::install_github(&quot;colinfay/dockerfiler&quot;)Or from CRAN with :install.packages(&quot;dockerfiler&quot;)Basic worflowBy default, Dockerfiles are created with FROM &quot;rocker/r-base&quot;. You canset another FROM in new()library(dockerfiler)# Create a dockerfile templatemy_dock &lt;- Dockerfile$new()my_dock$MAINTAINER(&quot;Colin FAY&quot;, &quot;contact@colinfay.me&quot;)Wrap your raw R Code inside the r() function to turn it into a bashcommand with R-e.my_dock$RUN(r(install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)))Classical Docker stuffs:my_dock$RUN(&quot;mkdir /usr/scripts&quot;)my_dock$RUN(&quot;cd /usr/scripts&quot;)my_dock$COPY(&quot;plumberfile.R&quot;, &quot;/usr/scripts/plumber.R&quot;)my_dock$COPY(&quot;torun.R&quot;, &quot;/usr/scripts/torun.R&quot;)my_dock$EXPOSE(8000)my_dock$CMD(&quot;Rscript /usr/scripts/torun.R &quot;)See your Dockerfile :my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## COPY torun.R /usr/scripts/torun.R## EXPOSE 8000## CMD Rscript /usr/scripts/torun.RIf you’ve made a mistake in your script, you can switch lines with theswitch_cmd method. This function takes as arguments the positions ofthe two cmd you want to switch :# Switch line 8 and 7my_dock$switch_cmd(8, 7)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## EXPOSE 8000## COPY torun.R /usr/scripts/torun.R## CMD Rscript /usr/scripts/torun.RYou can also remove a cmd with remove_cmd:my_dock$remove_cmd(8)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## RUN cd /usr/scripts## COPY plumberfile.R /usr/scripts/plumber.R## EXPOSE 8000## CMD Rscript /usr/scripts/torun.RThis also works with a vector:my_dock$remove_cmd(5:7)my_dock## FROM rocker/r-base## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;## RUN R -e &#39;install.packages(&quot;attempt&quot;, repo = &quot;http://cran.irsn.fr/&quot;)&#39;## RUN mkdir /usr/scripts## CMD Rscript /usr/scripts/torun.RSave your Dockerfile:my_dock$write()ContactQuestions and feedbacks welcome!You want to contribute ? Open aPR :) If you encountera bug or want to suggest an enhancement, please open anissue.">
+    <meta itemprop="datePublished" content="March 02, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">dockerfiler is now on CRAN
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  1 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>{dockerfiler} is a package that comes with a simple, object oriented API for Dockerfile creation, straight from your R session. Now on CRAN.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>You can install {dockerfiler} from GitHub with:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># install.packages("remotes")</span><span class="w">
+</span><span class="n">remotes</span><span class="o">::</span><span class="n">install_github</span><span class="p">(</span><span class="s2">"colinfay/dockerfiler"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Or from CRAN with :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="s2">"dockerfiler"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="basic-worflow">Basic worflow</h2>
+
+<p>By default, Dockerfiles are created with <code class="highlighter-rouge">FROM "rocker/r-base"</code>. You can
+set another FROM in <code class="highlighter-rouge">new()</code></p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">dockerfiler</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Create a dockerfile template</span><span class="w">
+</span><span class="n">my_dock</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">Dockerfile</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+</span><span class="n">my_dock</span><span class="o">$</span><span class="n">MAINTAINER</span><span class="p">(</span><span class="s2">"Colin FAY"</span><span class="p">,</span><span class="w"> </span><span class="s2">"contact@colinfay.me"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Wrap your raw R Code inside the <code class="highlighter-rouge">r()</code> function to turn it into a bash
+command with <code class="highlighter-rouge">R
+-e</code>.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_dock</span><span class="o">$</span><span class="n">RUN</span><span class="p">(</span><span class="n">r</span><span class="p">(</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"attempt"</span><span class="p">,</span><span class="w"> </span><span class="n">repo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"http://cran.irsn.fr/"</span><span class="p">)))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Classical Docker stuffs:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_dock</span><span class="o">$</span><span class="n">RUN</span><span class="p">(</span><span class="s2">"mkdir /usr/scripts"</span><span class="p">)</span><span class="w">
+</span><span class="n">my_dock</span><span class="o">$</span><span class="n">RUN</span><span class="p">(</span><span class="s2">"cd /usr/scripts"</span><span class="p">)</span><span class="w">
+</span><span class="n">my_dock</span><span class="o">$</span><span class="n">COPY</span><span class="p">(</span><span class="s2">"plumberfile.R"</span><span class="p">,</span><span class="w"> </span><span class="s2">"/usr/scripts/plumber.R"</span><span class="p">)</span><span class="w">
+</span><span class="n">my_dock</span><span class="o">$</span><span class="n">COPY</span><span class="p">(</span><span class="s2">"torun.R"</span><span class="p">,</span><span class="w"> </span><span class="s2">"/usr/scripts/torun.R"</span><span class="p">)</span><span class="w">
+</span><span class="n">my_dock</span><span class="o">$</span><span class="n">EXPOSE</span><span class="p">(</span><span class="m">8000</span><span class="p">)</span><span class="w">
+</span><span class="n">my_dock</span><span class="o">$</span><span class="n">CMD</span><span class="p">(</span><span class="s2">"Rscript /usr/scripts/torun.R "</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>See your Dockerfile :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_dock</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## FROM rocker/r-base
+## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;
+## RUN R -e 'install.packages("attempt", repo = "http://cran.irsn.fr/")'
+## RUN mkdir /usr/scripts
+## RUN cd /usr/scripts
+## COPY plumberfile.R /usr/scripts/plumber.R
+## COPY torun.R /usr/scripts/torun.R
+## EXPOSE 8000
+## CMD Rscript /usr/scripts/torun.R
+</code></pre></div></div>
+
+<p>If you’ve made a mistake in your script, you can switch lines with the
+<code class="highlighter-rouge">switch_cmd</code> method. This function takes as arguments the positions of
+the two cmd you want to switch :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Switch line 8 and 7</span><span class="w">
+</span><span class="n">my_dock</span><span class="o">$</span><span class="n">switch_cmd</span><span class="p">(</span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="m">7</span><span class="p">)</span><span class="w">
+</span><span class="n">my_dock</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## FROM rocker/r-base
+## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;
+## RUN R -e 'install.packages("attempt", repo = "http://cran.irsn.fr/")'
+## RUN mkdir /usr/scripts
+## RUN cd /usr/scripts
+## COPY plumberfile.R /usr/scripts/plumber.R
+## EXPOSE 8000
+## COPY torun.R /usr/scripts/torun.R
+## CMD Rscript /usr/scripts/torun.R
+</code></pre></div></div>
+
+<p>You can also remove a cmd with <code class="highlighter-rouge">remove_cmd</code>:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_dock</span><span class="o">$</span><span class="n">remove_cmd</span><span class="p">(</span><span class="m">8</span><span class="p">)</span><span class="w">
+</span><span class="n">my_dock</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## FROM rocker/r-base
+## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;
+## RUN R -e 'install.packages("attempt", repo = "http://cran.irsn.fr/")'
+## RUN mkdir /usr/scripts
+## RUN cd /usr/scripts
+## COPY plumberfile.R /usr/scripts/plumber.R
+## EXPOSE 8000
+## CMD Rscript /usr/scripts/torun.R
+</code></pre></div></div>
+
+<p>This also works with a vector:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_dock</span><span class="o">$</span><span class="n">remove_cmd</span><span class="p">(</span><span class="m">5</span><span class="o">:</span><span class="m">7</span><span class="p">)</span><span class="w">
+</span><span class="n">my_dock</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## FROM rocker/r-base
+## MAINTAINER Colin FAY &lt;contact@colinfay.me&gt;
+## RUN R -e 'install.packages("attempt", repo = "http://cran.irsn.fr/")'
+## RUN mkdir /usr/scripts
+## CMD Rscript /usr/scripts/torun.R
+</code></pre></div></div>
+
+<p>Save your Dockerfile:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_dock</span><span class="o">$</span><span class="n">write</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="contact">Contact</h2>
+
+<p>Questions and feedbacks <a href="mailto:contact@colinfay.me">welcome</a>!</p>
+
+<p>You want to contribute ? Open a
+<a href="https://github.com/ColinFay/dockerfiler/pulls">PR</a> :) If you encounter
+a bug or want to suggest an enhancement, please <a href="https://github.com/ColinFay/dockerfiler/issues">open an
+issue</a>.</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#cran" class="page__taxonomy-item" rel="tag">cran</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#docker" class="page__taxonomy-item" rel="tag">docker</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#package" class="page__taxonomy-item" rel="tag">package</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-03-02T00:00:00+01:00">March 02, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=dockerfiler+is+now+on+CRAN%20http%3A%2F%2Flocalhost%3A4000%2Fdockerfiler-cran%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fdockerfiler-cran%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fdockerfiler-cran%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fdockerfiler-cran%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/explain-environments-eli5/" class="pagination--pager" title="Explain R environments like I’m five
+">←</a>
+    
+    
+      <a href="/purrr-adverb-tidyverse/" class="pagination--pager" title="[How to] Write a purrr-like adverb
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/dockerfiler-cran/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/dockerfiler-cran"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

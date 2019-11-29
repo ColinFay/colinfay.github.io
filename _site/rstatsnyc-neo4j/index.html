@@ -1,0 +1,1158 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Playing with #rstatsnyc, Neo4J and R - Colin Fay</title>
+<meta name="description" content="A search on Twitter, some R, and just enough Neo4J.  Disclaimer: of course everything here could be done in pure R. Buthey, where’s the fun in that?  Disclaimer bis: this blogpost relies on {neo4r}, a package still underactive development.Get the tweetslibrary(rtweet)ny &lt;- search_tweets(&quot;#rstatsnyc&quot;, n = 3000)Tweets collected at Sys.time() == “2018-04-25 12:41:49 CEST”nrow(ny)## [1] 3000I might not have everything here (as I’ve reached the limit of 3000tweets), but let’s dive into this anyway.Prepare for Neo4JLet’s get some info:range(ny$created_at)## [1] &quot;2018-04-20 18:52:27 UTC&quot; &quot;2018-04-25 09:57:44 UTC&quot;Here, every tweet was sent in the same month of the same year, so we cankeep only the day.library(dplyr)ny &lt;- ny %&gt;% mutate(day = lubridate::day(created_at))Also, as the status_id column is composed of large characters of 18numbers, let’s recode this column:library(forcats)ny &lt;- ny %&gt;% mutate(status_id = fct_anon(as_factor(status_id)),                     status_id = as.character(status_id))# Be sure we still have 3000 observationslength(unique(ny$status_id))## [1] 3000The modelHere’s a model of the graph we want to create in Neo4J, made withhttp://www.apcjones.com/arrows.Connect to Neo4Jlibrary(neo4r)con &lt;- neo4j_api$new(url = &quot;http://localhost:7474/&quot;,                      user = &quot;neo4j&quot;, password = &quot;pouetpouet&quot;)# Is the connection working?con$ping()## [1] 200Create the CSVLet’s create the CSV that will be sent to Neo4J. To do this, we need to:  Select the info  Write the csv in my Neo4J home  Send a query to Neo4J to retrieve and model these CSV  Note: we’re working on a way to natively send csv with {neo4r}, so youwon’t have to write in Neo4J home.library(readr)# CSV of tweets ny %&gt;%   select(status_id, day, text, source,          lang, favorite_count, retweet_count,          is_quote, is_retweet) %&gt;%  write_csv(&quot;~/neo4j/import/ny_tweets.csv&quot;)# CSV of usersny %&gt;%   select(status_id, screen_name) %&gt;%  write_csv(&quot;~/neo4j/import/ny_users.csv&quot;)# CSV of hashtagsny %&gt;%   select(status_id, hashtags) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_hastags.csv&quot;)# CSV of mentionsny %&gt;%   select(status_id, mentions_screen_name) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_mentions.csv&quot;)# CSV of repliesny %&gt;%   select(status_id, reply_to_status_id) %&gt;%  na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_replies.csv&quot;)Before reading the file in Neo4J, we should add some constraints toensure the nodes are unique. If you’re not familiar with thisterminology, a constraint is a property that will ensure that everylabel is unique: for example, here, we will have to ensure that everystatus_id is unique.Hence, if we try to create a node with a status_id that alreadyexists, this writting process will fail (and that’s the reason why weare using MERGE for writting the nodes with constraints).&#39;CREATE CONSTRAINT ON (t:Tweet) ASSERT t.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (d:Day) ASSERT d.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (u:User) ASSERT u.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (h:Hashtag) ASSERT h.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.  Note: the messages returned ## No data returned. are due to the factthat we haven’t retrieved anything from the DB, neither stats aboutthe call (which could be retrieved with the include_stats arguments)nor data.Importing the csv to the DB:  With include_stats = TRUE:# Tweets but no day&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_tweets.csv&quot; AS csvLineMERGE (t:Tweet { name: csvLine.status_id, text: csvLine.text, source: csvLine.source, lang: csvLine.lang, favorite_count: toInteger(csvLine.favorite_count), retweet_count: toInteger(csvLine.retweet_count), is_quote: toBoolean(csvLine.is_quote), is_retweet: toBoolean(csvLine.is_retweet)});&#39; %&gt;%  call_api(con, include_stats = TRUE)## No data returned.## # A tibble: 12 x 2##    type                   value##    &lt;chr&gt;                  &lt;dbl&gt;##  1 contains_updates          1.##  2 nodes_created          3000.##  3 nodes_deleted             0.##  4 properties_set        24000.##  5 relationships_created     0.##  6 relationship_deleted      0.##  7 labels_added           3000.##  8 labels_removed            0.##  9 indexes_added             0.## 10 indexes_removed           0.## 11 constraints_added         0.## 12 constraints_removed       0.  Without:# Days &#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_tweets.csv&quot; AS csvLineMERGE (d:Day {name : csvLine.day} )WITH csvLineMATCH (t:Tweet {name: csvLine.status_id})MATCH (d:Day {name : csvLine.day} )MERGE (t) -[:WAS_SENT]-&gt;(d);&#39; %&gt;%  call_api(con)## No data returned.# Users&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_users.csv&quot; AS csvLineMERGE (u:User { name: csvLine.screen_name})WITH csvLineMATCH (u:User { name: csvLine.screen_name})MATCH (t:Tweet {name : csvLine.status_id})MERGE (u) -[:SENT]-&gt; (t);&#39; %&gt;%  call_api(con)## No data returned.# Hashtags&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_hastags.csv&quot; AS csvLineMERGE (h:Hashtag { name: csvLine.hashtags})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (h:Hashtag { name: csvLine.hashtags})MERGE (t) -[:CONTAINS]-&gt; (h);&#39; %&gt;%  call_api(con)## No data returned.# Mentions&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_mentions.csv&quot; AS csvLineMERGE (m:User { name: csvLine.mentions_screen_name})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (m:User { name: csvLine.mentions_screen_name})MERGE (t) -[:MENTIONS]-&gt; (m);&#39; %&gt;%  call_api(con)## No data returned.# Replies&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_replies.csv&quot; AS csvLineMERGE (t:Tweet { name: csvLine.reply_to_status_id})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (r:Tweet {name: csvLine.reply_to_status_id})MERGE (t) -[:REPLIES_TO]-&gt; (r);&#39; %&gt;%  call_api(con)## No data returned.Let’s see what we’ve got:con$get_constraints()## # A tibble: 4 x 3##   label   type       property_keys##   &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;        ## 1 User    UNIQUENESS name         ## 2 Hashtag UNIQUENESS name         ## 3 Tweet   UNIQUENESS name         ## 4 Day     UNIQUENESS namecon$get_labels()## # A tibble: 4 x 1##   labels ##   &lt;chr&gt;  ## 1 Tweet  ## 2 User   ## 3 Hashtag## 4 Daycon$get_relationships()## # A tibble: 5 x 1##   relationships##   &lt;chr&gt;        ## 1 WAS_SENT     ## 2 SENT         ## 3 CONTAINS     ## 4 MENTIONS     ## 5 REPLIES_TOLet’s exploreCheck checkLet’s start with a check to see if we have everything:# Have we got all the tweets?length(unique(c(ny$status_id, ny$reply_to_status_id)))## [1] 3041&#39;MATCH (t:Tweet) RETURN COUNT(t) AS tweets_count&#39; %&gt;%  call_api(con)## $tweets_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1  3041# Have we got all the Days?length(unique(ny$day))## [1] 6&#39;MATCH (d:Day) RETURN COUNT(d) AS days_count&#39; %&gt;%  call_api(con)## $days_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1     6# Do we have all the users ? length(unique(ny$screen_name))## [1] 1021&#39;MATCH (u:User) RETURN COUNT(u) AS Users_count&#39; %&gt;%  call_api(con)## $Users_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1  1088# All the hashtags? ny %&gt;%   select(status_id, hashtags) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  distinct(hashtags) %&gt;%  nrow()## [1] 177&#39;MATCH (h:Hashtag) RETURN COUNT(h) AS Hash_count&#39; %&gt;%  call_api(con)## $Hash_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1   177Ok, so now that we have our data ready, let’s explore a little bit.Who tweeted the most?library(purrr)&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) RETURN u.name AS name, COUNT(u) AS countORDER BY COUNT(u) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;))## # A tibble: 10 x 2##    user               n##    &lt;chr&gt;          &lt;int&gt;##  1 anushasharma9x   275##  2 SK_convergence   172##  3 robinson_es      110##  4 christinezhang   105##  5 rstatsbot1234     95##  6 NoorDinTech       94##  7 drob              71##  8 b3njana           55##  9 jaredlander       48## 10 LaurusT001        43You might see something surprising here: why do we have to bind_cols?By design, {neo4r} does not bind columns for you, for the simplereason that you can retrieve information that might not fit into asingle tidy data.frame.Let’s put it straight into a dataviz:library(ggplot2)&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) RETURN u.name AS name, COUNT(u) AS countORDER BY COUNT(u) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;)) %&gt;%  ggplot() +  aes(reorder(user, n), n) +   geom_col(fill = viridis::plasma(1)) +   coord_flip() +  labs(x = &quot;user&quot;,y = &quot;tweets&quot;) +  theme_minimal()Daily tweetsHow many tweets by day?&#39;MATCH (t:Tweet) - [:WAS_SENT] -&gt; (d:Day) RETURN d.name AS day, COUNT(d) AS count&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;day&quot;, &quot;n&quot;)) %&gt;%  mutate(day  = as.numeric(day)) %&gt;%  ggplot() +  aes(day, n) +   geom_col(fill = viridis::cividis(1)) +   labs(x = &quot;day&quot;,y = &quot;tweets&quot;) +  theme_minimal()What are the most used hashtags?(excluding rstatsnyc, of course)&#39;MATCH (t:Tweet) -[r:CONTAINS]-&gt;(h:Hashtag) WHERE NOT h.name = &quot;rstatsnyc&quot;RETURN h.name as Hash, COUNT(h) AS countORDER BY COUNT(h) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;hashtags&quot;, &quot;n&quot;))## # A tibble: 10 x 2##    hashtags         n##    &lt;chr&gt;        &lt;int&gt;##  1 rstats         582##  2 nycdatamafia   102##  3 RStatsNYC       73##  4 rladies         72##  5 python          42##  6 tidyverse       36##  7 Rladies         19##  8 datascience     17##  9 rstatsNYC       14## 10 RforEveryone    10How many @drob or @robinson_es tweets?(because apparently they werefighting :)):Get the number of tweets:&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) WHERE u.name = &quot;drob&quot; OR u.name = &quot;robinson_es&quot; RETURN COUNT(u) AS count, u.name&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;n&quot;, &quot;user&quot;))## # A tibble: 2 x 2##       n user       ##   &lt;int&gt; &lt;chr&gt;      ## 1    71 drob       ## 2   110 robinson_esGet the average number of retweets:&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) WHERE u.name = &quot;drob&quot; OR u.name = &quot;robinson_es&quot; RETURN u.name AS user, COUNT(u) AS count, AVG(t.retweet_count) as mean&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;, &quot;mean_RT&quot;))## # A tibble: 2 x 3##   user            n mean_RT##   &lt;chr&gt;       &lt;int&gt;   &lt;dbl&gt;## 1 drob           71    12.8## 2 robinson_es   110    10.1Create a function…… to get the number of tweets by a userget_tweet_count &lt;- function(who){  paste0(&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User {name: &quot;&#39;, who, &#39;&quot;})   RETURN COUNT(t) AS &#39;, who, &quot;;&quot;) %&gt;%   call_api(con)}get_tweet_count(&quot;RLadiesNYC&quot;)## $RLadiesNYC## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1    12Who are the users who…… are mentionned in a tweet containing the hashtag#Rladies?&#39;MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : &quot;Rladies&quot;})RETURN u AS Name, COUNT(u) AS n&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;)) %&gt;%  arrange(desc(n)) %&gt;%  top_n(5)## Selecting by n## # A tibble: 6 x 2##   user               n##   &lt;chr&gt;          &lt;int&gt;## 1 robinson_es       11## 2 AnushkaSharma      6## 3 SK_convergence     6## 4 RLadiesNYC         6## 5 drob               5## 6 jtrnyc             5… were mentions in a tweet containing the hashtag #rdogs :library(ggraph)&#39;MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : &quot;rdogs&quot;})RETURN u, m, t&#39; %&gt;%   call_api(con, type = &quot;graph&quot;)  %&gt;%   convert_to(&quot;igraph&quot;) %&gt;%  ggraph() +   geom_edge_link()+  geom_node_label(aes(label = name,                       color = group)) +  labs(title = &quot;#rdogs and #rstatsnyc&quot;,       subtitle = &quot;data from Twitter&quot;,       caption = &quot;@_colinfay&quot;) +   theme_graph() … mention @RLadiesNYClibrary(ggraph)&#39;MATCH (u:User) - [s:SENT] -&gt; (t:Tweet) -[m:MENTIONS]-&gt; (r:User {name:&quot;RLadiesNYC&quot;}) RETURN u, s, m, r&#39; %&gt;%   call_api(con, type = &quot;graph&quot;)  %&gt;%   convert_to(&quot;igraph&quot;) %&gt;%  ggraph() +   geom_edge_link()+  geom_node_label(aes(label = name,                       color = group)) +  labs(title = &quot;Mentions of RLadiesNYC&quot;,       subtitle = &quot;data from Twitter&quot;,       caption = &quot;@_colinfay&quot;) +   theme_graph()   {neo4r} on GitHub">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Playing with #rstatsnyc, Neo4J and R">
+<meta property="og:url" content="http://localhost:4000/rstatsnyc-neo4j/">
+
+
+  <meta property="og:description" content="A search on Twitter, some R, and just enough Neo4J.  Disclaimer: of course everything here could be done in pure R. Buthey, where’s the fun in that?  Disclaimer bis: this blogpost relies on {neo4r}, a package still underactive development.Get the tweetslibrary(rtweet)ny &lt;- search_tweets(&quot;#rstatsnyc&quot;, n = 3000)Tweets collected at Sys.time() == “2018-04-25 12:41:49 CEST”nrow(ny)## [1] 3000I might not have everything here (as I’ve reached the limit of 3000tweets), but let’s dive into this anyway.Prepare for Neo4JLet’s get some info:range(ny$created_at)## [1] &quot;2018-04-20 18:52:27 UTC&quot; &quot;2018-04-25 09:57:44 UTC&quot;Here, every tweet was sent in the same month of the same year, so we cankeep only the day.library(dplyr)ny &lt;- ny %&gt;% mutate(day = lubridate::day(created_at))Also, as the status_id column is composed of large characters of 18numbers, let’s recode this column:library(forcats)ny &lt;- ny %&gt;% mutate(status_id = fct_anon(as_factor(status_id)),                     status_id = as.character(status_id))# Be sure we still have 3000 observationslength(unique(ny$status_id))## [1] 3000The modelHere’s a model of the graph we want to create in Neo4J, made withhttp://www.apcjones.com/arrows.Connect to Neo4Jlibrary(neo4r)con &lt;- neo4j_api$new(url = &quot;http://localhost:7474/&quot;,                      user = &quot;neo4j&quot;, password = &quot;pouetpouet&quot;)# Is the connection working?con$ping()## [1] 200Create the CSVLet’s create the CSV that will be sent to Neo4J. To do this, we need to:  Select the info  Write the csv in my Neo4J home  Send a query to Neo4J to retrieve and model these CSV  Note: we’re working on a way to natively send csv with {neo4r}, so youwon’t have to write in Neo4J home.library(readr)# CSV of tweets ny %&gt;%   select(status_id, day, text, source,          lang, favorite_count, retweet_count,          is_quote, is_retweet) %&gt;%  write_csv(&quot;~/neo4j/import/ny_tweets.csv&quot;)# CSV of usersny %&gt;%   select(status_id, screen_name) %&gt;%  write_csv(&quot;~/neo4j/import/ny_users.csv&quot;)# CSV of hashtagsny %&gt;%   select(status_id, hashtags) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_hastags.csv&quot;)# CSV of mentionsny %&gt;%   select(status_id, mentions_screen_name) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_mentions.csv&quot;)# CSV of repliesny %&gt;%   select(status_id, reply_to_status_id) %&gt;%  na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_replies.csv&quot;)Before reading the file in Neo4J, we should add some constraints toensure the nodes are unique. If you’re not familiar with thisterminology, a constraint is a property that will ensure that everylabel is unique: for example, here, we will have to ensure that everystatus_id is unique.Hence, if we try to create a node with a status_id that alreadyexists, this writting process will fail (and that’s the reason why weare using MERGE for writting the nodes with constraints).&#39;CREATE CONSTRAINT ON (t:Tweet) ASSERT t.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (d:Day) ASSERT d.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (u:User) ASSERT u.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (h:Hashtag) ASSERT h.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.  Note: the messages returned ## No data returned. are due to the factthat we haven’t retrieved anything from the DB, neither stats aboutthe call (which could be retrieved with the include_stats arguments)nor data.Importing the csv to the DB:  With include_stats = TRUE:# Tweets but no day&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_tweets.csv&quot; AS csvLineMERGE (t:Tweet { name: csvLine.status_id, text: csvLine.text, source: csvLine.source, lang: csvLine.lang, favorite_count: toInteger(csvLine.favorite_count), retweet_count: toInteger(csvLine.retweet_count), is_quote: toBoolean(csvLine.is_quote), is_retweet: toBoolean(csvLine.is_retweet)});&#39; %&gt;%  call_api(con, include_stats = TRUE)## No data returned.## # A tibble: 12 x 2##    type                   value##    &lt;chr&gt;                  &lt;dbl&gt;##  1 contains_updates          1.##  2 nodes_created          3000.##  3 nodes_deleted             0.##  4 properties_set        24000.##  5 relationships_created     0.##  6 relationship_deleted      0.##  7 labels_added           3000.##  8 labels_removed            0.##  9 indexes_added             0.## 10 indexes_removed           0.## 11 constraints_added         0.## 12 constraints_removed       0.  Without:# Days &#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_tweets.csv&quot; AS csvLineMERGE (d:Day {name : csvLine.day} )WITH csvLineMATCH (t:Tweet {name: csvLine.status_id})MATCH (d:Day {name : csvLine.day} )MERGE (t) -[:WAS_SENT]-&gt;(d);&#39; %&gt;%  call_api(con)## No data returned.# Users&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_users.csv&quot; AS csvLineMERGE (u:User { name: csvLine.screen_name})WITH csvLineMATCH (u:User { name: csvLine.screen_name})MATCH (t:Tweet {name : csvLine.status_id})MERGE (u) -[:SENT]-&gt; (t);&#39; %&gt;%  call_api(con)## No data returned.# Hashtags&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_hastags.csv&quot; AS csvLineMERGE (h:Hashtag { name: csvLine.hashtags})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (h:Hashtag { name: csvLine.hashtags})MERGE (t) -[:CONTAINS]-&gt; (h);&#39; %&gt;%  call_api(con)## No data returned.# Mentions&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_mentions.csv&quot; AS csvLineMERGE (m:User { name: csvLine.mentions_screen_name})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (m:User { name: csvLine.mentions_screen_name})MERGE (t) -[:MENTIONS]-&gt; (m);&#39; %&gt;%  call_api(con)## No data returned.# Replies&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_replies.csv&quot; AS csvLineMERGE (t:Tweet { name: csvLine.reply_to_status_id})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (r:Tweet {name: csvLine.reply_to_status_id})MERGE (t) -[:REPLIES_TO]-&gt; (r);&#39; %&gt;%  call_api(con)## No data returned.Let’s see what we’ve got:con$get_constraints()## # A tibble: 4 x 3##   label   type       property_keys##   &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;        ## 1 User    UNIQUENESS name         ## 2 Hashtag UNIQUENESS name         ## 3 Tweet   UNIQUENESS name         ## 4 Day     UNIQUENESS namecon$get_labels()## # A tibble: 4 x 1##   labels ##   &lt;chr&gt;  ## 1 Tweet  ## 2 User   ## 3 Hashtag## 4 Daycon$get_relationships()## # A tibble: 5 x 1##   relationships##   &lt;chr&gt;        ## 1 WAS_SENT     ## 2 SENT         ## 3 CONTAINS     ## 4 MENTIONS     ## 5 REPLIES_TOLet’s exploreCheck checkLet’s start with a check to see if we have everything:# Have we got all the tweets?length(unique(c(ny$status_id, ny$reply_to_status_id)))## [1] 3041&#39;MATCH (t:Tweet) RETURN COUNT(t) AS tweets_count&#39; %&gt;%  call_api(con)## $tweets_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1  3041# Have we got all the Days?length(unique(ny$day))## [1] 6&#39;MATCH (d:Day) RETURN COUNT(d) AS days_count&#39; %&gt;%  call_api(con)## $days_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1     6# Do we have all the users ? length(unique(ny$screen_name))## [1] 1021&#39;MATCH (u:User) RETURN COUNT(u) AS Users_count&#39; %&gt;%  call_api(con)## $Users_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1  1088# All the hashtags? ny %&gt;%   select(status_id, hashtags) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  distinct(hashtags) %&gt;%  nrow()## [1] 177&#39;MATCH (h:Hashtag) RETURN COUNT(h) AS Hash_count&#39; %&gt;%  call_api(con)## $Hash_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1   177Ok, so now that we have our data ready, let’s explore a little bit.Who tweeted the most?library(purrr)&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) RETURN u.name AS name, COUNT(u) AS countORDER BY COUNT(u) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;))## # A tibble: 10 x 2##    user               n##    &lt;chr&gt;          &lt;int&gt;##  1 anushasharma9x   275##  2 SK_convergence   172##  3 robinson_es      110##  4 christinezhang   105##  5 rstatsbot1234     95##  6 NoorDinTech       94##  7 drob              71##  8 b3njana           55##  9 jaredlander       48## 10 LaurusT001        43You might see something surprising here: why do we have to bind_cols?By design, {neo4r} does not bind columns for you, for the simplereason that you can retrieve information that might not fit into asingle tidy data.frame.Let’s put it straight into a dataviz:library(ggplot2)&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) RETURN u.name AS name, COUNT(u) AS countORDER BY COUNT(u) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;)) %&gt;%  ggplot() +  aes(reorder(user, n), n) +   geom_col(fill = viridis::plasma(1)) +   coord_flip() +  labs(x = &quot;user&quot;,y = &quot;tweets&quot;) +  theme_minimal()Daily tweetsHow many tweets by day?&#39;MATCH (t:Tweet) - [:WAS_SENT] -&gt; (d:Day) RETURN d.name AS day, COUNT(d) AS count&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;day&quot;, &quot;n&quot;)) %&gt;%  mutate(day  = as.numeric(day)) %&gt;%  ggplot() +  aes(day, n) +   geom_col(fill = viridis::cividis(1)) +   labs(x = &quot;day&quot;,y = &quot;tweets&quot;) +  theme_minimal()What are the most used hashtags?(excluding rstatsnyc, of course)&#39;MATCH (t:Tweet) -[r:CONTAINS]-&gt;(h:Hashtag) WHERE NOT h.name = &quot;rstatsnyc&quot;RETURN h.name as Hash, COUNT(h) AS countORDER BY COUNT(h) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;hashtags&quot;, &quot;n&quot;))## # A tibble: 10 x 2##    hashtags         n##    &lt;chr&gt;        &lt;int&gt;##  1 rstats         582##  2 nycdatamafia   102##  3 RStatsNYC       73##  4 rladies         72##  5 python          42##  6 tidyverse       36##  7 Rladies         19##  8 datascience     17##  9 rstatsNYC       14## 10 RforEveryone    10How many @drob or @robinson_es tweets?(because apparently they werefighting :)):Get the number of tweets:&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) WHERE u.name = &quot;drob&quot; OR u.name = &quot;robinson_es&quot; RETURN COUNT(u) AS count, u.name&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;n&quot;, &quot;user&quot;))## # A tibble: 2 x 2##       n user       ##   &lt;int&gt; &lt;chr&gt;      ## 1    71 drob       ## 2   110 robinson_esGet the average number of retweets:&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) WHERE u.name = &quot;drob&quot; OR u.name = &quot;robinson_es&quot; RETURN u.name AS user, COUNT(u) AS count, AVG(t.retweet_count) as mean&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;, &quot;mean_RT&quot;))## # A tibble: 2 x 3##   user            n mean_RT##   &lt;chr&gt;       &lt;int&gt;   &lt;dbl&gt;## 1 drob           71    12.8## 2 robinson_es   110    10.1Create a function…… to get the number of tweets by a userget_tweet_count &lt;- function(who){  paste0(&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User {name: &quot;&#39;, who, &#39;&quot;})   RETURN COUNT(t) AS &#39;, who, &quot;;&quot;) %&gt;%   call_api(con)}get_tweet_count(&quot;RLadiesNYC&quot;)## $RLadiesNYC## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1    12Who are the users who…… are mentionned in a tweet containing the hashtag#Rladies?&#39;MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : &quot;Rladies&quot;})RETURN u AS Name, COUNT(u) AS n&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;)) %&gt;%  arrange(desc(n)) %&gt;%  top_n(5)## Selecting by n## # A tibble: 6 x 2##   user               n##   &lt;chr&gt;          &lt;int&gt;## 1 robinson_es       11## 2 AnushkaSharma      6## 3 SK_convergence     6## 4 RLadiesNYC         6## 5 drob               5## 6 jtrnyc             5… were mentions in a tweet containing the hashtag #rdogs :library(ggraph)&#39;MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : &quot;rdogs&quot;})RETURN u, m, t&#39; %&gt;%   call_api(con, type = &quot;graph&quot;)  %&gt;%   convert_to(&quot;igraph&quot;) %&gt;%  ggraph() +   geom_edge_link()+  geom_node_label(aes(label = name,                       color = group)) +  labs(title = &quot;#rdogs and #rstatsnyc&quot;,       subtitle = &quot;data from Twitter&quot;,       caption = &quot;@_colinfay&quot;) +   theme_graph() … mention @RLadiesNYClibrary(ggraph)&#39;MATCH (u:User) - [s:SENT] -&gt; (t:Tweet) -[m:MENTIONS]-&gt; (r:User {name:&quot;RLadiesNYC&quot;}) RETURN u, s, m, r&#39; %&gt;%   call_api(con, type = &quot;graph&quot;)  %&gt;%   convert_to(&quot;igraph&quot;) %&gt;%  ggraph() +   geom_edge_link()+  geom_node_label(aes(label = name,                       color = group)) +  labs(title = &quot;Mentions of RLadiesNYC&quot;,       subtitle = &quot;data from Twitter&quot;,       caption = &quot;@_colinfay&quot;) +   theme_graph()   {neo4r} on GitHub">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Playing with #rstatsnyc, Neo4J and R">
+  <meta name="twitter:description" content="A search on Twitter, some R, and just enough Neo4J.  Disclaimer: of course everything here could be done in pure R. Buthey, where’s the fun in that?  Disclaimer bis: this blogpost relies on {neo4r}, a package still underactive development.Get the tweetslibrary(rtweet)ny &lt;- search_tweets(&quot;#rstatsnyc&quot;, n = 3000)Tweets collected at Sys.time() == “2018-04-25 12:41:49 CEST”nrow(ny)## [1] 3000I might not have everything here (as I’ve reached the limit of 3000tweets), but let’s dive into this anyway.Prepare for Neo4JLet’s get some info:range(ny$created_at)## [1] &quot;2018-04-20 18:52:27 UTC&quot; &quot;2018-04-25 09:57:44 UTC&quot;Here, every tweet was sent in the same month of the same year, so we cankeep only the day.library(dplyr)ny &lt;- ny %&gt;% mutate(day = lubridate::day(created_at))Also, as the status_id column is composed of large characters of 18numbers, let’s recode this column:library(forcats)ny &lt;- ny %&gt;% mutate(status_id = fct_anon(as_factor(status_id)),                     status_id = as.character(status_id))# Be sure we still have 3000 observationslength(unique(ny$status_id))## [1] 3000The modelHere’s a model of the graph we want to create in Neo4J, made withhttp://www.apcjones.com/arrows.Connect to Neo4Jlibrary(neo4r)con &lt;- neo4j_api$new(url = &quot;http://localhost:7474/&quot;,                      user = &quot;neo4j&quot;, password = &quot;pouetpouet&quot;)# Is the connection working?con$ping()## [1] 200Create the CSVLet’s create the CSV that will be sent to Neo4J. To do this, we need to:  Select the info  Write the csv in my Neo4J home  Send a query to Neo4J to retrieve and model these CSV  Note: we’re working on a way to natively send csv with {neo4r}, so youwon’t have to write in Neo4J home.library(readr)# CSV of tweets ny %&gt;%   select(status_id, day, text, source,          lang, favorite_count, retweet_count,          is_quote, is_retweet) %&gt;%  write_csv(&quot;~/neo4j/import/ny_tweets.csv&quot;)# CSV of usersny %&gt;%   select(status_id, screen_name) %&gt;%  write_csv(&quot;~/neo4j/import/ny_users.csv&quot;)# CSV of hashtagsny %&gt;%   select(status_id, hashtags) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_hastags.csv&quot;)# CSV of mentionsny %&gt;%   select(status_id, mentions_screen_name) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_mentions.csv&quot;)# CSV of repliesny %&gt;%   select(status_id, reply_to_status_id) %&gt;%  na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_replies.csv&quot;)Before reading the file in Neo4J, we should add some constraints toensure the nodes are unique. If you’re not familiar with thisterminology, a constraint is a property that will ensure that everylabel is unique: for example, here, we will have to ensure that everystatus_id is unique.Hence, if we try to create a node with a status_id that alreadyexists, this writting process will fail (and that’s the reason why weare using MERGE for writting the nodes with constraints).&#39;CREATE CONSTRAINT ON (t:Tweet) ASSERT t.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (d:Day) ASSERT d.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (u:User) ASSERT u.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (h:Hashtag) ASSERT h.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.  Note: the messages returned ## No data returned. are due to the factthat we haven’t retrieved anything from the DB, neither stats aboutthe call (which could be retrieved with the include_stats arguments)nor data.Importing the csv to the DB:  With include_stats = TRUE:# Tweets but no day&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_tweets.csv&quot; AS csvLineMERGE (t:Tweet { name: csvLine.status_id, text: csvLine.text, source: csvLine.source, lang: csvLine.lang, favorite_count: toInteger(csvLine.favorite_count), retweet_count: toInteger(csvLine.retweet_count), is_quote: toBoolean(csvLine.is_quote), is_retweet: toBoolean(csvLine.is_retweet)});&#39; %&gt;%  call_api(con, include_stats = TRUE)## No data returned.## # A tibble: 12 x 2##    type                   value##    &lt;chr&gt;                  &lt;dbl&gt;##  1 contains_updates          1.##  2 nodes_created          3000.##  3 nodes_deleted             0.##  4 properties_set        24000.##  5 relationships_created     0.##  6 relationship_deleted      0.##  7 labels_added           3000.##  8 labels_removed            0.##  9 indexes_added             0.## 10 indexes_removed           0.## 11 constraints_added         0.## 12 constraints_removed       0.  Without:# Days &#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_tweets.csv&quot; AS csvLineMERGE (d:Day {name : csvLine.day} )WITH csvLineMATCH (t:Tweet {name: csvLine.status_id})MATCH (d:Day {name : csvLine.day} )MERGE (t) -[:WAS_SENT]-&gt;(d);&#39; %&gt;%  call_api(con)## No data returned.# Users&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_users.csv&quot; AS csvLineMERGE (u:User { name: csvLine.screen_name})WITH csvLineMATCH (u:User { name: csvLine.screen_name})MATCH (t:Tweet {name : csvLine.status_id})MERGE (u) -[:SENT]-&gt; (t);&#39; %&gt;%  call_api(con)## No data returned.# Hashtags&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_hastags.csv&quot; AS csvLineMERGE (h:Hashtag { name: csvLine.hashtags})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (h:Hashtag { name: csvLine.hashtags})MERGE (t) -[:CONTAINS]-&gt; (h);&#39; %&gt;%  call_api(con)## No data returned.# Mentions&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_mentions.csv&quot; AS csvLineMERGE (m:User { name: csvLine.mentions_screen_name})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (m:User { name: csvLine.mentions_screen_name})MERGE (t) -[:MENTIONS]-&gt; (m);&#39; %&gt;%  call_api(con)## No data returned.# Replies&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_replies.csv&quot; AS csvLineMERGE (t:Tweet { name: csvLine.reply_to_status_id})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (r:Tweet {name: csvLine.reply_to_status_id})MERGE (t) -[:REPLIES_TO]-&gt; (r);&#39; %&gt;%  call_api(con)## No data returned.Let’s see what we’ve got:con$get_constraints()## # A tibble: 4 x 3##   label   type       property_keys##   &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;        ## 1 User    UNIQUENESS name         ## 2 Hashtag UNIQUENESS name         ## 3 Tweet   UNIQUENESS name         ## 4 Day     UNIQUENESS namecon$get_labels()## # A tibble: 4 x 1##   labels ##   &lt;chr&gt;  ## 1 Tweet  ## 2 User   ## 3 Hashtag## 4 Daycon$get_relationships()## # A tibble: 5 x 1##   relationships##   &lt;chr&gt;        ## 1 WAS_SENT     ## 2 SENT         ## 3 CONTAINS     ## 4 MENTIONS     ## 5 REPLIES_TOLet’s exploreCheck checkLet’s start with a check to see if we have everything:# Have we got all the tweets?length(unique(c(ny$status_id, ny$reply_to_status_id)))## [1] 3041&#39;MATCH (t:Tweet) RETURN COUNT(t) AS tweets_count&#39; %&gt;%  call_api(con)## $tweets_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1  3041# Have we got all the Days?length(unique(ny$day))## [1] 6&#39;MATCH (d:Day) RETURN COUNT(d) AS days_count&#39; %&gt;%  call_api(con)## $days_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1     6# Do we have all the users ? length(unique(ny$screen_name))## [1] 1021&#39;MATCH (u:User) RETURN COUNT(u) AS Users_count&#39; %&gt;%  call_api(con)## $Users_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1  1088# All the hashtags? ny %&gt;%   select(status_id, hashtags) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  distinct(hashtags) %&gt;%  nrow()## [1] 177&#39;MATCH (h:Hashtag) RETURN COUNT(h) AS Hash_count&#39; %&gt;%  call_api(con)## $Hash_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1   177Ok, so now that we have our data ready, let’s explore a little bit.Who tweeted the most?library(purrr)&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) RETURN u.name AS name, COUNT(u) AS countORDER BY COUNT(u) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;))## # A tibble: 10 x 2##    user               n##    &lt;chr&gt;          &lt;int&gt;##  1 anushasharma9x   275##  2 SK_convergence   172##  3 robinson_es      110##  4 christinezhang   105##  5 rstatsbot1234     95##  6 NoorDinTech       94##  7 drob              71##  8 b3njana           55##  9 jaredlander       48## 10 LaurusT001        43You might see something surprising here: why do we have to bind_cols?By design, {neo4r} does not bind columns for you, for the simplereason that you can retrieve information that might not fit into asingle tidy data.frame.Let’s put it straight into a dataviz:library(ggplot2)&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) RETURN u.name AS name, COUNT(u) AS countORDER BY COUNT(u) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;)) %&gt;%  ggplot() +  aes(reorder(user, n), n) +   geom_col(fill = viridis::plasma(1)) +   coord_flip() +  labs(x = &quot;user&quot;,y = &quot;tweets&quot;) +  theme_minimal()Daily tweetsHow many tweets by day?&#39;MATCH (t:Tweet) - [:WAS_SENT] -&gt; (d:Day) RETURN d.name AS day, COUNT(d) AS count&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;day&quot;, &quot;n&quot;)) %&gt;%  mutate(day  = as.numeric(day)) %&gt;%  ggplot() +  aes(day, n) +   geom_col(fill = viridis::cividis(1)) +   labs(x = &quot;day&quot;,y = &quot;tweets&quot;) +  theme_minimal()What are the most used hashtags?(excluding rstatsnyc, of course)&#39;MATCH (t:Tweet) -[r:CONTAINS]-&gt;(h:Hashtag) WHERE NOT h.name = &quot;rstatsnyc&quot;RETURN h.name as Hash, COUNT(h) AS countORDER BY COUNT(h) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;hashtags&quot;, &quot;n&quot;))## # A tibble: 10 x 2##    hashtags         n##    &lt;chr&gt;        &lt;int&gt;##  1 rstats         582##  2 nycdatamafia   102##  3 RStatsNYC       73##  4 rladies         72##  5 python          42##  6 tidyverse       36##  7 Rladies         19##  8 datascience     17##  9 rstatsNYC       14## 10 RforEveryone    10How many @drob or @robinson_es tweets?(because apparently they werefighting :)):Get the number of tweets:&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) WHERE u.name = &quot;drob&quot; OR u.name = &quot;robinson_es&quot; RETURN COUNT(u) AS count, u.name&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;n&quot;, &quot;user&quot;))## # A tibble: 2 x 2##       n user       ##   &lt;int&gt; &lt;chr&gt;      ## 1    71 drob       ## 2   110 robinson_esGet the average number of retweets:&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) WHERE u.name = &quot;drob&quot; OR u.name = &quot;robinson_es&quot; RETURN u.name AS user, COUNT(u) AS count, AVG(t.retweet_count) as mean&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;, &quot;mean_RT&quot;))## # A tibble: 2 x 3##   user            n mean_RT##   &lt;chr&gt;       &lt;int&gt;   &lt;dbl&gt;## 1 drob           71    12.8## 2 robinson_es   110    10.1Create a function…… to get the number of tweets by a userget_tweet_count &lt;- function(who){  paste0(&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User {name: &quot;&#39;, who, &#39;&quot;})   RETURN COUNT(t) AS &#39;, who, &quot;;&quot;) %&gt;%   call_api(con)}get_tweet_count(&quot;RLadiesNYC&quot;)## $RLadiesNYC## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1    12Who are the users who…… are mentionned in a tweet containing the hashtag#Rladies?&#39;MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : &quot;Rladies&quot;})RETURN u AS Name, COUNT(u) AS n&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;)) %&gt;%  arrange(desc(n)) %&gt;%  top_n(5)## Selecting by n## # A tibble: 6 x 2##   user               n##   &lt;chr&gt;          &lt;int&gt;## 1 robinson_es       11## 2 AnushkaSharma      6## 3 SK_convergence     6## 4 RLadiesNYC         6## 5 drob               5## 6 jtrnyc             5… were mentions in a tweet containing the hashtag #rdogs :library(ggraph)&#39;MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : &quot;rdogs&quot;})RETURN u, m, t&#39; %&gt;%   call_api(con, type = &quot;graph&quot;)  %&gt;%   convert_to(&quot;igraph&quot;) %&gt;%  ggraph() +   geom_edge_link()+  geom_node_label(aes(label = name,                       color = group)) +  labs(title = &quot;#rdogs and #rstatsnyc&quot;,       subtitle = &quot;data from Twitter&quot;,       caption = &quot;@_colinfay&quot;) +   theme_graph() … mention @RLadiesNYClibrary(ggraph)&#39;MATCH (u:User) - [s:SENT] -&gt; (t:Tweet) -[m:MENTIONS]-&gt; (r:User {name:&quot;RLadiesNYC&quot;}) RETURN u, s, m, r&#39; %&gt;%   call_api(con, type = &quot;graph&quot;)  %&gt;%   convert_to(&quot;igraph&quot;) %&gt;%  ggraph() +   geom_edge_link()+  geom_node_label(aes(label = name,                       color = group)) +  labs(title = &quot;Mentions of RLadiesNYC&quot;,       subtitle = &quot;data from Twitter&quot;,       caption = &quot;@_colinfay&quot;) +   theme_graph()   {neo4r} on GitHub">
+  <meta name="twitter:url" content="http://localhost:4000/rstatsnyc-neo4j/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-04-22T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/rstatsnyc-neo4j/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Playing with #rstatsnyc, Neo4J and R">
+    <meta itemprop="description" content="A search on Twitter, some R, and just enough Neo4J.  Disclaimer: of course everything here could be done in pure R. Buthey, where’s the fun in that?  Disclaimer bis: this blogpost relies on {neo4r}, a package still underactive development.Get the tweetslibrary(rtweet)ny &lt;- search_tweets(&quot;#rstatsnyc&quot;, n = 3000)Tweets collected at Sys.time() == “2018-04-25 12:41:49 CEST”nrow(ny)## [1] 3000I might not have everything here (as I’ve reached the limit of 3000tweets), but let’s dive into this anyway.Prepare for Neo4JLet’s get some info:range(ny$created_at)## [1] &quot;2018-04-20 18:52:27 UTC&quot; &quot;2018-04-25 09:57:44 UTC&quot;Here, every tweet was sent in the same month of the same year, so we cankeep only the day.library(dplyr)ny &lt;- ny %&gt;% mutate(day = lubridate::day(created_at))Also, as the status_id column is composed of large characters of 18numbers, let’s recode this column:library(forcats)ny &lt;- ny %&gt;% mutate(status_id = fct_anon(as_factor(status_id)),                     status_id = as.character(status_id))# Be sure we still have 3000 observationslength(unique(ny$status_id))## [1] 3000The modelHere’s a model of the graph we want to create in Neo4J, made withhttp://www.apcjones.com/arrows.Connect to Neo4Jlibrary(neo4r)con &lt;- neo4j_api$new(url = &quot;http://localhost:7474/&quot;,                      user = &quot;neo4j&quot;, password = &quot;pouetpouet&quot;)# Is the connection working?con$ping()## [1] 200Create the CSVLet’s create the CSV that will be sent to Neo4J. To do this, we need to:  Select the info  Write the csv in my Neo4J home  Send a query to Neo4J to retrieve and model these CSV  Note: we’re working on a way to natively send csv with {neo4r}, so youwon’t have to write in Neo4J home.library(readr)# CSV of tweets ny %&gt;%   select(status_id, day, text, source,          lang, favorite_count, retweet_count,          is_quote, is_retweet) %&gt;%  write_csv(&quot;~/neo4j/import/ny_tweets.csv&quot;)# CSV of usersny %&gt;%   select(status_id, screen_name) %&gt;%  write_csv(&quot;~/neo4j/import/ny_users.csv&quot;)# CSV of hashtagsny %&gt;%   select(status_id, hashtags) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_hastags.csv&quot;)# CSV of mentionsny %&gt;%   select(status_id, mentions_screen_name) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_mentions.csv&quot;)# CSV of repliesny %&gt;%   select(status_id, reply_to_status_id) %&gt;%  na.omit() %&gt;%  write_csv(&quot;~/neo4j/import/ny_replies.csv&quot;)Before reading the file in Neo4J, we should add some constraints toensure the nodes are unique. If you’re not familiar with thisterminology, a constraint is a property that will ensure that everylabel is unique: for example, here, we will have to ensure that everystatus_id is unique.Hence, if we try to create a node with a status_id that alreadyexists, this writting process will fail (and that’s the reason why weare using MERGE for writting the nodes with constraints).&#39;CREATE CONSTRAINT ON (t:Tweet) ASSERT t.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (d:Day) ASSERT d.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (u:User) ASSERT u.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.&#39;CREATE CONSTRAINT ON (h:Hashtag) ASSERT h.name IS UNIQUE&#39; %&gt;%  call_api(con)## No data returned.  Note: the messages returned ## No data returned. are due to the factthat we haven’t retrieved anything from the DB, neither stats aboutthe call (which could be retrieved with the include_stats arguments)nor data.Importing the csv to the DB:  With include_stats = TRUE:# Tweets but no day&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_tweets.csv&quot; AS csvLineMERGE (t:Tweet { name: csvLine.status_id, text: csvLine.text, source: csvLine.source, lang: csvLine.lang, favorite_count: toInteger(csvLine.favorite_count), retweet_count: toInteger(csvLine.retweet_count), is_quote: toBoolean(csvLine.is_quote), is_retweet: toBoolean(csvLine.is_retweet)});&#39; %&gt;%  call_api(con, include_stats = TRUE)## No data returned.## # A tibble: 12 x 2##    type                   value##    &lt;chr&gt;                  &lt;dbl&gt;##  1 contains_updates          1.##  2 nodes_created          3000.##  3 nodes_deleted             0.##  4 properties_set        24000.##  5 relationships_created     0.##  6 relationship_deleted      0.##  7 labels_added           3000.##  8 labels_removed            0.##  9 indexes_added             0.## 10 indexes_removed           0.## 11 constraints_added         0.## 12 constraints_removed       0.  Without:# Days &#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_tweets.csv&quot; AS csvLineMERGE (d:Day {name : csvLine.day} )WITH csvLineMATCH (t:Tweet {name: csvLine.status_id})MATCH (d:Day {name : csvLine.day} )MERGE (t) -[:WAS_SENT]-&gt;(d);&#39; %&gt;%  call_api(con)## No data returned.# Users&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_users.csv&quot; AS csvLineMERGE (u:User { name: csvLine.screen_name})WITH csvLineMATCH (u:User { name: csvLine.screen_name})MATCH (t:Tweet {name : csvLine.status_id})MERGE (u) -[:SENT]-&gt; (t);&#39; %&gt;%  call_api(con)## No data returned.# Hashtags&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_hastags.csv&quot; AS csvLineMERGE (h:Hashtag { name: csvLine.hashtags})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (h:Hashtag { name: csvLine.hashtags})MERGE (t) -[:CONTAINS]-&gt; (h);&#39; %&gt;%  call_api(con)## No data returned.# Mentions&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_mentions.csv&quot; AS csvLineMERGE (m:User { name: csvLine.mentions_screen_name})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (m:User { name: csvLine.mentions_screen_name})MERGE (t) -[:MENTIONS]-&gt; (m);&#39; %&gt;%  call_api(con)## No data returned.# Replies&#39;USING PERIODIC COMMIT 500LOAD CSV WITH HEADERS FROM &quot;file:///ny_replies.csv&quot; AS csvLineMERGE (t:Tweet { name: csvLine.reply_to_status_id})WITH csvLineMATCH (t:Tweet {name : csvLine.status_id})MATCH (r:Tweet {name: csvLine.reply_to_status_id})MERGE (t) -[:REPLIES_TO]-&gt; (r);&#39; %&gt;%  call_api(con)## No data returned.Let’s see what we’ve got:con$get_constraints()## # A tibble: 4 x 3##   label   type       property_keys##   &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;        ## 1 User    UNIQUENESS name         ## 2 Hashtag UNIQUENESS name         ## 3 Tweet   UNIQUENESS name         ## 4 Day     UNIQUENESS namecon$get_labels()## # A tibble: 4 x 1##   labels ##   &lt;chr&gt;  ## 1 Tweet  ## 2 User   ## 3 Hashtag## 4 Daycon$get_relationships()## # A tibble: 5 x 1##   relationships##   &lt;chr&gt;        ## 1 WAS_SENT     ## 2 SENT         ## 3 CONTAINS     ## 4 MENTIONS     ## 5 REPLIES_TOLet’s exploreCheck checkLet’s start with a check to see if we have everything:# Have we got all the tweets?length(unique(c(ny$status_id, ny$reply_to_status_id)))## [1] 3041&#39;MATCH (t:Tweet) RETURN COUNT(t) AS tweets_count&#39; %&gt;%  call_api(con)## $tweets_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1  3041# Have we got all the Days?length(unique(ny$day))## [1] 6&#39;MATCH (d:Day) RETURN COUNT(d) AS days_count&#39; %&gt;%  call_api(con)## $days_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1     6# Do we have all the users ? length(unique(ny$screen_name))## [1] 1021&#39;MATCH (u:User) RETURN COUNT(u) AS Users_count&#39; %&gt;%  call_api(con)## $Users_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1  1088# All the hashtags? ny %&gt;%   select(status_id, hashtags) %&gt;%  tidyr::unnest() %&gt;%   na.omit() %&gt;%  distinct(hashtags) %&gt;%  nrow()## [1] 177&#39;MATCH (h:Hashtag) RETURN COUNT(h) AS Hash_count&#39; %&gt;%  call_api(con)## $Hash_count## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1   177Ok, so now that we have our data ready, let’s explore a little bit.Who tweeted the most?library(purrr)&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) RETURN u.name AS name, COUNT(u) AS countORDER BY COUNT(u) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;))## # A tibble: 10 x 2##    user               n##    &lt;chr&gt;          &lt;int&gt;##  1 anushasharma9x   275##  2 SK_convergence   172##  3 robinson_es      110##  4 christinezhang   105##  5 rstatsbot1234     95##  6 NoorDinTech       94##  7 drob              71##  8 b3njana           55##  9 jaredlander       48## 10 LaurusT001        43You might see something surprising here: why do we have to bind_cols?By design, {neo4r} does not bind columns for you, for the simplereason that you can retrieve information that might not fit into asingle tidy data.frame.Let’s put it straight into a dataviz:library(ggplot2)&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) RETURN u.name AS name, COUNT(u) AS countORDER BY COUNT(u) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;)) %&gt;%  ggplot() +  aes(reorder(user, n), n) +   geom_col(fill = viridis::plasma(1)) +   coord_flip() +  labs(x = &quot;user&quot;,y = &quot;tweets&quot;) +  theme_minimal()Daily tweetsHow many tweets by day?&#39;MATCH (t:Tweet) - [:WAS_SENT] -&gt; (d:Day) RETURN d.name AS day, COUNT(d) AS count&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;day&quot;, &quot;n&quot;)) %&gt;%  mutate(day  = as.numeric(day)) %&gt;%  ggplot() +  aes(day, n) +   geom_col(fill = viridis::cividis(1)) +   labs(x = &quot;day&quot;,y = &quot;tweets&quot;) +  theme_minimal()What are the most used hashtags?(excluding rstatsnyc, of course)&#39;MATCH (t:Tweet) -[r:CONTAINS]-&gt;(h:Hashtag) WHERE NOT h.name = &quot;rstatsnyc&quot;RETURN h.name as Hash, COUNT(h) AS countORDER BY COUNT(h) DESCLIMIT 10&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;hashtags&quot;, &quot;n&quot;))## # A tibble: 10 x 2##    hashtags         n##    &lt;chr&gt;        &lt;int&gt;##  1 rstats         582##  2 nycdatamafia   102##  3 RStatsNYC       73##  4 rladies         72##  5 python          42##  6 tidyverse       36##  7 Rladies         19##  8 datascience     17##  9 rstatsNYC       14## 10 RforEveryone    10How many @drob or @robinson_es tweets?(because apparently they werefighting :)):Get the number of tweets:&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) WHERE u.name = &quot;drob&quot; OR u.name = &quot;robinson_es&quot; RETURN COUNT(u) AS count, u.name&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;n&quot;, &quot;user&quot;))## # A tibble: 2 x 2##       n user       ##   &lt;int&gt; &lt;chr&gt;      ## 1    71 drob       ## 2   110 robinson_esGet the average number of retweets:&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User) WHERE u.name = &quot;drob&quot; OR u.name = &quot;robinson_es&quot; RETURN u.name AS user, COUNT(u) AS count, AVG(t.retweet_count) as mean&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;, &quot;mean_RT&quot;))## # A tibble: 2 x 3##   user            n mean_RT##   &lt;chr&gt;       &lt;int&gt;   &lt;dbl&gt;## 1 drob           71    12.8## 2 robinson_es   110    10.1Create a function…… to get the number of tweets by a userget_tweet_count &lt;- function(who){  paste0(&#39;MATCH (t:Tweet) &lt;- [:SENT] - (u:User {name: &quot;&#39;, who, &#39;&quot;})   RETURN COUNT(t) AS &#39;, who, &quot;;&quot;) %&gt;%   call_api(con)}get_tweet_count(&quot;RLadiesNYC&quot;)## $RLadiesNYC## # A tibble: 1 x 1##   value##   &lt;int&gt;## 1    12Who are the users who…… are mentionned in a tweet containing the hashtag#Rladies?&#39;MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : &quot;Rladies&quot;})RETURN u AS Name, COUNT(u) AS n&#39; %&gt;%   call_api(con) %&gt;%  bind_cols() %&gt;%  set_names(c(&quot;user&quot;, &quot;n&quot;)) %&gt;%  arrange(desc(n)) %&gt;%  top_n(5)## Selecting by n## # A tibble: 6 x 2##   user               n##   &lt;chr&gt;          &lt;int&gt;## 1 robinson_es       11## 2 AnushkaSharma      6## 3 SK_convergence     6## 4 RLadiesNYC         6## 5 drob               5## 6 jtrnyc             5… were mentions in a tweet containing the hashtag #rdogs :library(ggraph)&#39;MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : &quot;rdogs&quot;})RETURN u, m, t&#39; %&gt;%   call_api(con, type = &quot;graph&quot;)  %&gt;%   convert_to(&quot;igraph&quot;) %&gt;%  ggraph() +   geom_edge_link()+  geom_node_label(aes(label = name,                       color = group)) +  labs(title = &quot;#rdogs and #rstatsnyc&quot;,       subtitle = &quot;data from Twitter&quot;,       caption = &quot;@_colinfay&quot;) +   theme_graph() … mention @RLadiesNYClibrary(ggraph)&#39;MATCH (u:User) - [s:SENT] -&gt; (t:Tweet) -[m:MENTIONS]-&gt; (r:User {name:&quot;RLadiesNYC&quot;}) RETURN u, s, m, r&#39; %&gt;%   call_api(con, type = &quot;graph&quot;)  %&gt;%   convert_to(&quot;igraph&quot;) %&gt;%  ggraph() +   geom_edge_link()+  geom_node_label(aes(label = name,                       color = group)) +  labs(title = &quot;Mentions of RLadiesNYC&quot;,       subtitle = &quot;data from Twitter&quot;,       caption = &quot;@_colinfay&quot;) +   theme_graph()   {neo4r} on GitHub">
+    <meta itemprop="datePublished" content="April 22, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Playing with #rstatsnyc, Neo4J and R
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  9 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>A search on Twitter, some R, and just enough Neo4J.</p>
+
+<blockquote>
+  <p>Disclaimer: of course everything here could be done in pure R. But
+hey, where’s the fun in that?</p>
+</blockquote>
+
+<blockquote>
+  <p>Disclaimer bis: this blogpost relies on {neo4r}, a package still under
+active development.</p>
+</blockquote>
+
+<h2 id="get-the-tweets">Get the tweets</h2>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">rtweet</span><span class="p">)</span><span class="w">
+</span><span class="n">ny</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">search_tweets</span><span class="p">(</span><span class="s2">"#rstatsnyc"</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3000</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Tweets collected at <code class="highlighter-rouge">Sys.time()</code> == “2018-04-25 12:41:49 CEST”</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">nrow</span><span class="p">(</span><span class="n">ny</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 3000
+</code></pre></div></div>
+
+<p>I might not have everything here (as I’ve reached the limit of 3000
+tweets), but let’s dive into this anyway.</p>
+
+<h2 id="prepare-for-neo4j">Prepare for Neo4J</h2>
+
+<p>Let’s get some info:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">range</span><span class="p">(</span><span class="n">ny</span><span class="o">$</span><span class="n">created_at</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "2018-04-20 18:52:27 UTC" "2018-04-25 09:57:44 UTC"
+</code></pre></div></div>
+
+<p>Here, every tweet was sent in the same month of the same year, so we can
+keep only the day.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span><span class="w">
+</span><span class="n">ny</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ny</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">mutate</span><span class="p">(</span><span class="n">day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lubridate</span><span class="o">::</span><span class="n">day</span><span class="p">(</span><span class="n">created_at</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Also, as the <code class="highlighter-rouge">status_id</code> column is composed of large characters of 18
+numbers, let’s recode this column:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">forcats</span><span class="p">)</span><span class="w">
+</span><span class="n">ny</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ny</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">mutate</span><span class="p">(</span><span class="n">status_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fct_anon</span><span class="p">(</span><span class="n">as_factor</span><span class="p">(</span><span class="n">status_id</span><span class="p">)),</span><span class="w"> 
+                    </span><span class="n">status_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="n">status_id</span><span class="p">))</span><span class="w">
+</span><span class="c1"># Be sure we still have 3000 observations</span><span class="w">
+</span><span class="nf">length</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">ny</span><span class="o">$</span><span class="n">status_id</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 3000
+</code></pre></div></div>
+
+<h3 id="the-model">The model</h3>
+
+<p>Here’s a model of the graph we want to create in Neo4J, made with
+<a href="http://www.apcjones.com/arrows">http://www.apcjones.com/arrows</a>.</p>
+
+<p><img src="../assets/img/tweet_model.png" alt="" /></p>
+
+<h3 id="connect-to-neo4j">Connect to Neo4J</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">neo4r</span><span class="p">)</span><span class="w">
+</span><span class="n">con</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">neo4j_api</span><span class="o">$</span><span class="n">new</span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"http://localhost:7474/"</span><span class="p">,</span><span class="w"> 
+                     </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"neo4j"</span><span class="p">,</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"pouetpouet"</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Is the connection working?</span><span class="w">
+</span><span class="n">con</span><span class="o">$</span><span class="n">ping</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 200
+</code></pre></div></div>
+
+<h3 id="create-the-csv">Create the CSV</h3>
+
+<p>Let’s create the CSV that will be sent to Neo4J. To do this, we need to:</p>
+
+<ul>
+  <li>Select the info</li>
+  <li>Write the csv in my Neo4J home</li>
+  <li>Send a query to Neo4J to retrieve and model these CSV</li>
+</ul>
+
+<blockquote>
+  <p>Note: we’re working on a way to natively send csv with {neo4r}, so you
+won’t have to write in Neo4J home.</p>
+</blockquote>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span><span class="w">
+</span><span class="c1"># CSV of tweets </span><span class="w">
+</span><span class="n">ny</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">status_id</span><span class="p">,</span><span class="w"> </span><span class="n">day</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">lang</span><span class="p">,</span><span class="w"> </span><span class="n">favorite_count</span><span class="p">,</span><span class="w"> </span><span class="n">retweet_count</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">is_quote</span><span class="p">,</span><span class="w"> </span><span class="n">is_retweet</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">write_csv</span><span class="p">(</span><span class="s2">"~/neo4j/import/ny_tweets.csv"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># CSV of users</span><span class="w">
+</span><span class="n">ny</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">status_id</span><span class="p">,</span><span class="w"> </span><span class="n">screen_name</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">write_csv</span><span class="p">(</span><span class="s2">"~/neo4j/import/ny_users.csv"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># CSV of hashtags</span><span class="w">
+</span><span class="n">ny</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">status_id</span><span class="p">,</span><span class="w"> </span><span class="n">hashtags</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">tidyr</span><span class="o">::</span><span class="n">unnest</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">na.omit</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">write_csv</span><span class="p">(</span><span class="s2">"~/neo4j/import/ny_hastags.csv"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># CSV of mentions</span><span class="w">
+</span><span class="n">ny</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">status_id</span><span class="p">,</span><span class="w"> </span><span class="n">mentions_screen_name</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">tidyr</span><span class="o">::</span><span class="n">unnest</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">na.omit</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">write_csv</span><span class="p">(</span><span class="s2">"~/neo4j/import/ny_mentions.csv"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># CSV of replies</span><span class="w">
+</span><span class="n">ny</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">status_id</span><span class="p">,</span><span class="w"> </span><span class="n">reply_to_status_id</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">na.omit</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">write_csv</span><span class="p">(</span><span class="s2">"~/neo4j/import/ny_replies.csv"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Before reading the file in Neo4J, we should add some constraints to
+ensure the nodes are unique. If you’re not familiar with this
+terminology, a constraint is a property that will ensure that every
+label is unique: for example, here, we will have to ensure that every
+<code class="highlighter-rouge">status_id</code> is unique.</p>
+
+<p>Hence, if we try to create a node with a <code class="highlighter-rouge">status_id</code> that already
+exists, this writting process will fail (and that’s the reason why we
+are using <code class="highlighter-rouge">MERGE</code> for writting the nodes with constraints).</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'CREATE CONSTRAINT ON (t:Tweet) ASSERT t.name IS UNIQUE'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'CREATE CONSTRAINT ON (d:Day) ASSERT d.name IS UNIQUE'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'CREATE CONSTRAINT ON (u:User) ASSERT u.name IS UNIQUE'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'CREATE CONSTRAINT ON (h:Hashtag) ASSERT h.name IS UNIQUE'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+</code></pre></div></div>
+
+<blockquote>
+  <p>Note: the messages returned <code class="highlighter-rouge">## No data returned.</code> are due to the fact
+that we haven’t retrieved anything from the DB, neither stats about
+the call (which could be retrieved with the <code class="highlighter-rouge">include_stats</code> arguments)
+nor data.</p>
+</blockquote>
+
+<p>Importing the csv to the DB:</p>
+
+<ul>
+  <li>With <code class="highlighter-rouge">include_stats = TRUE</code>:</li>
+</ul>
+
+<!-- end list -->
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Tweets but no day</span><span class="w">
+</span><span class="s1">'USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///ny_tweets.csv" AS csvLine
+MERGE (t:Tweet { name: csvLine.status_id, text: csvLine.text, source: csvLine.source, lang: csvLine.lang, favorite_count: toInteger(csvLine.favorite_count), retweet_count: toInteger(csvLine.retweet_count), is_quote: toBoolean(csvLine.is_quote), is_retweet: toBoolean(csvLine.is_retweet)});'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">,</span><span class="w"> </span><span class="n">include_stats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+
+## # A tibble: 12 x 2
+##    type                   value
+##    &lt;chr&gt;                  &lt;dbl&gt;
+##  1 contains_updates          1.
+##  2 nodes_created          3000.
+##  3 nodes_deleted             0.
+##  4 properties_set        24000.
+##  5 relationships_created     0.
+##  6 relationship_deleted      0.
+##  7 labels_added           3000.
+##  8 labels_removed            0.
+##  9 indexes_added             0.
+## 10 indexes_removed           0.
+## 11 constraints_added         0.
+## 12 constraints_removed       0.
+</code></pre></div></div>
+
+<ul>
+  <li>Without:</li>
+</ul>
+
+<!-- end list -->
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Days </span><span class="w">
+</span><span class="s1">'USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///ny_tweets.csv" AS csvLine
+MERGE (d:Day {name : csvLine.day} )
+WITH csvLine
+MATCH (t:Tweet {name: csvLine.status_id})
+MATCH (d:Day {name : csvLine.day} )
+MERGE (t) -[:WAS_SENT]-&gt;(d);'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Users</span><span class="w">
+</span><span class="s1">'USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///ny_users.csv" AS csvLine
+MERGE (u:User { name: csvLine.screen_name})
+WITH csvLine
+MATCH (u:User { name: csvLine.screen_name})
+MATCH (t:Tweet {name : csvLine.status_id})
+MERGE (u) -[:SENT]-&gt; (t);'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Hashtags</span><span class="w">
+</span><span class="s1">'USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///ny_hastags.csv" AS csvLine
+MERGE (h:Hashtag { name: csvLine.hashtags})
+WITH csvLine
+MATCH (t:Tweet {name : csvLine.status_id})
+MATCH (h:Hashtag { name: csvLine.hashtags})
+MERGE (t) -[:CONTAINS]-&gt; (h);'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Mentions</span><span class="w">
+</span><span class="s1">'USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///ny_mentions.csv" AS csvLine
+MERGE (m:User { name: csvLine.mentions_screen_name})
+WITH csvLine
+MATCH (t:Tweet {name : csvLine.status_id})
+MATCH (m:User { name: csvLine.mentions_screen_name})
+MERGE (t) -[:MENTIONS]-&gt; (m);'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Replies</span><span class="w">
+</span><span class="s1">'USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///ny_replies.csv" AS csvLine
+MERGE (t:Tweet { name: csvLine.reply_to_status_id})
+WITH csvLine
+MATCH (t:Tweet {name : csvLine.status_id})
+MATCH (r:Tweet {name: csvLine.reply_to_status_id})
+MERGE (t) -[:REPLIES_TO]-&gt; (r);'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## No data returned.
+</code></pre></div></div>
+
+<p>Let’s see what we’ve got:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">con</span><span class="o">$</span><span class="n">get_constraints</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 4 x 3
+##   label   type       property_keys
+##   &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;        
+## 1 User    UNIQUENESS name         
+## 2 Hashtag UNIQUENESS name         
+## 3 Tweet   UNIQUENESS name         
+## 4 Day     UNIQUENESS name
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">con</span><span class="o">$</span><span class="n">get_labels</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 4 x 1
+##   labels 
+##   &lt;chr&gt;  
+## 1 Tweet  
+## 2 User   
+## 3 Hashtag
+## 4 Day
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">con</span><span class="o">$</span><span class="n">get_relationships</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 5 x 1
+##   relationships
+##   &lt;chr&gt;        
+## 1 WAS_SENT     
+## 2 SENT         
+## 3 CONTAINS     
+## 4 MENTIONS     
+## 5 REPLIES_TO
+</code></pre></div></div>
+
+<h2 id="lets-explore">Let’s explore</h2>
+
+<h3 id="check-check">Check check</h3>
+
+<p>Let’s start with a check to see if we have everything:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Have we got all the tweets?</span><span class="w">
+</span><span class="nf">length</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">ny</span><span class="o">$</span><span class="n">status_id</span><span class="p">,</span><span class="w"> </span><span class="n">ny</span><span class="o">$</span><span class="n">reply_to_status_id</span><span class="p">)))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 3041
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'MATCH (t:Tweet) RETURN COUNT(t) AS tweets_count'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## $tweets_count
+## # A tibble: 1 x 1
+##   value
+##   &lt;int&gt;
+## 1  3041
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Have we got all the Days?</span><span class="w">
+</span><span class="nf">length</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">ny</span><span class="o">$</span><span class="n">day</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 6
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'MATCH (d:Day) RETURN COUNT(d) AS days_count'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## $days_count
+## # A tibble: 1 x 1
+##   value
+##   &lt;int&gt;
+## 1     6
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Do we have all the users ? </span><span class="w">
+</span><span class="nf">length</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">ny</span><span class="o">$</span><span class="n">screen_name</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 1021
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'MATCH (u:User) RETURN COUNT(u) AS Users_count'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## $Users_count
+## # A tibble: 1 x 1
+##   value
+##   &lt;int&gt;
+## 1  1088
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># All the hashtags? </span><span class="w">
+</span><span class="n">ny</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="n">status_id</span><span class="p">,</span><span class="w"> </span><span class="n">hashtags</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">tidyr</span><span class="o">::</span><span class="n">unnest</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">na.omit</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">distinct</span><span class="p">(</span><span class="n">hashtags</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">nrow</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 177
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'MATCH (h:Hashtag) RETURN COUNT(h) AS Hash_count'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## $Hash_count
+## # A tibble: 1 x 1
+##   value
+##   &lt;int&gt;
+## 1   177
+</code></pre></div></div>
+
+<p>Ok, so now that we have our data ready, let’s explore a little bit.</p>
+
+<h3 id="who-tweeted-the-most">Who tweeted the most?</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">purrr</span><span class="p">)</span><span class="w">
+</span><span class="s1">'MATCH (t:Tweet) &lt;- [:SENT] - (u:User) 
+RETURN u.name AS name, COUNT(u) AS count
+ORDER BY COUNT(u) DESC
+LIMIT 10'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">bind_cols</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">set_names</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"user"</span><span class="p">,</span><span class="w"> </span><span class="s2">"n"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 10 x 2
+##    user               n
+##    &lt;chr&gt;          &lt;int&gt;
+##  1 anushasharma9x   275
+##  2 SK_convergence   172
+##  3 robinson_es      110
+##  4 christinezhang   105
+##  5 rstatsbot1234     95
+##  6 NoorDinTech       94
+##  7 drob              71
+##  8 b3njana           55
+##  9 jaredlander       48
+## 10 LaurusT001        43
+</code></pre></div></div>
+
+<p>You might see something surprising here: why do we have to <code class="highlighter-rouge">bind_cols</code>?
+By design, <code class="highlighter-rouge">{neo4r}</code> does not bind columns for you, for the simple
+reason that you can retrieve information that might not fit into a
+single tidy data.frame.</p>
+
+<p>Let’s put it straight into a dataviz:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+</span><span class="s1">'MATCH (t:Tweet) &lt;- [:SENT] - (u:User) 
+RETURN u.name AS name, COUNT(u) AS count
+ORDER BY COUNT(u) DESC
+LIMIT 10'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">bind_cols</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">set_names</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"user"</span><span class="p">,</span><span class="w"> </span><span class="s2">"n"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">aes</span><span class="p">(</span><span class="n">reorder</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viridis</span><span class="o">::</span><span class="n">plasma</span><span class="p">(</span><span class="m">1</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"tweets"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_minimal</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="../assets/img/most_tweeted-1.png" style="display: block; margin: auto;" /></p>
+
+<h3 id="daily-tweets">Daily tweets</h3>
+
+<p>How many tweets by day?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'MATCH (t:Tweet) - [:WAS_SENT] -&gt; (d:Day) 
+RETURN d.name AS day, COUNT(d) AS count'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">bind_cols</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">set_names</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"day"</span><span class="p">,</span><span class="w"> </span><span class="s2">"n"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">day</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">day</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">aes</span><span class="p">(</span><span class="n">day</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_col</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viridis</span><span class="o">::</span><span class="n">cividis</span><span class="p">(</span><span class="m">1</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"day"</span><span class="p">,</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"tweets"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme_minimal</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="../assets/img/tweets_day-1.png" style="display: block; margin: auto;" /></p>
+
+<h3 id="what-are-the-most-used-hashtags">What are the most used hashtags?</h3>
+
+<p>(excluding rstatsnyc, of course)</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'MATCH (t:Tweet) -[r:CONTAINS]-&gt;(h:Hashtag) 
+WHERE NOT h.name = "rstatsnyc"
+RETURN h.name as Hash, COUNT(h) AS count
+ORDER BY COUNT(h) DESC
+LIMIT 10'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">bind_cols</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">set_names</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"hashtags"</span><span class="p">,</span><span class="w"> </span><span class="s2">"n"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 10 x 2
+##    hashtags         n
+##    &lt;chr&gt;        &lt;int&gt;
+##  1 rstats         582
+##  2 nycdatamafia   102
+##  3 RStatsNYC       73
+##  4 rladies         72
+##  5 python          42
+##  6 tidyverse       36
+##  7 Rladies         19
+##  8 datascience     17
+##  9 rstatsNYC       14
+## 10 RforEveryone    10
+</code></pre></div></div>
+
+<h3 id="how-many-drob-or-robinson_es-tweets">How many @drob or @robinson_es tweets?</h3>
+
+<p>(because apparently they were
+<a href="https://twitter.com/robinson_es/status/987721478853545984">fighting</a> :)
+):</p>
+
+<p>Get the number of tweets:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'MATCH (t:Tweet) &lt;- [:SENT] - (u:User) 
+WHERE u.name = "drob" OR u.name = "robinson_es" 
+RETURN COUNT(u) AS count, u.name'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">bind_cols</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">set_names</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"n"</span><span class="p">,</span><span class="w"> </span><span class="s2">"user"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 2 x 2
+##       n user       
+##   &lt;int&gt; &lt;chr&gt;      
+## 1    71 drob       
+## 2   110 robinson_es
+</code></pre></div></div>
+
+<p>Get the average number of retweets:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'MATCH (t:Tweet) &lt;- [:SENT] - (u:User) 
+WHERE u.name = "drob" OR u.name = "robinson_es" 
+RETURN u.name AS user, COUNT(u) AS count, AVG(t.retweet_count) as mean'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">bind_cols</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">set_names</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"user"</span><span class="p">,</span><span class="w"> </span><span class="s2">"n"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mean_RT"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 2 x 3
+##   user            n mean_RT
+##   &lt;chr&gt;       &lt;int&gt;   &lt;dbl&gt;
+## 1 drob           71    12.8
+## 2 robinson_es   110    10.1
+</code></pre></div></div>
+
+<h3 id="create-a-function">Create a function…</h3>
+
+<p>… to get the number of tweets by a user</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get_tweet_count</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">who</span><span class="p">){</span><span class="w">
+  </span><span class="n">paste0</span><span class="p">(</span><span class="s1">'MATCH (t:Tweet) &lt;- [:SENT] - (u:User {name: "'</span><span class="p">,</span><span class="w"> </span><span class="n">who</span><span class="p">,</span><span class="w"> </span><span class="s1">'"}) 
+  RETURN COUNT(t) AS '</span><span class="p">,</span><span class="w"> </span><span class="n">who</span><span class="p">,</span><span class="w"> </span><span class="s2">";"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">get_tweet_count</span><span class="p">(</span><span class="s2">"RLadiesNYC"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## $RLadiesNYC
+## # A tibble: 1 x 1
+##   value
+##   &lt;int&gt;
+## 1    12
+</code></pre></div></div>
+
+<h3 id="who-are-the-users-who">Who are the users who…</h3>
+
+<p>… are mentionned in a tweet containing the hashtag
+#Rladies?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : "Rladies"})
+RETURN u AS Name, COUNT(u) AS n'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">bind_cols</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">set_names</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"user"</span><span class="p">,</span><span class="w"> </span><span class="s2">"n"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">arrange</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="n">n</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">top_n</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Selecting by n
+
+## # A tibble: 6 x 2
+##   user               n
+##   &lt;chr&gt;          &lt;int&gt;
+## 1 robinson_es       11
+## 2 AnushkaSharma      6
+## 3 SK_convergence     6
+## 4 RLadiesNYC         6
+## 5 drob               5
+## 6 jtrnyc             5
+</code></pre></div></div>
+
+<p>… were mentions in a tweet containing the hashtag #rdogs :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ggraph</span><span class="p">)</span><span class="w">
+</span><span class="s1">'MATCH (u:User) &lt;- [m:MENTIONS] - (t:Tweet) - [:CONTAINS]-&gt; (:Hashtag {name : "rdogs"})
+RETURN u, m, t'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"graph"</span><span class="p">)</span><span class="w">  </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">convert_to</span><span class="p">(</span><span class="s2">"igraph"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggraph</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_edge_link</span><span class="p">()</span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_node_label</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> 
+                      </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">group</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#rdogs and #rstatsnyc"</span><span class="p">,</span><span class="w">
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"data from Twitter"</span><span class="p">,</span><span class="w">
+       </span><span class="n">caption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"@_colinfay"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">theme_graph</span><span class="p">()</span><span class="w"> 
+</span></code></pre></div></div>
+
+<p><img src="../assets/img/graph-1.png" style="display: block; margin: auto;" /></p>
+
+<p>… mention @RLadiesNYC</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ggraph</span><span class="p">)</span><span class="w">
+</span><span class="s1">'MATCH (u:User) - [s:SENT] -&gt; (t:Tweet) -[m:MENTIONS]-&gt; (r:User {name:"RLadiesNYC"}) 
+RETURN u, s, m, r'</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">call_api</span><span class="p">(</span><span class="n">con</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"graph"</span><span class="p">)</span><span class="w">  </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">convert_to</span><span class="p">(</span><span class="s2">"igraph"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggraph</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_edge_link</span><span class="p">()</span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_node_label</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> 
+                      </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">group</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Mentions of RLadiesNYC"</span><span class="p">,</span><span class="w">
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"data from Twitter"</span><span class="p">,</span><span class="w">
+       </span><span class="n">caption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"@_colinfay"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">theme_graph</span><span class="p">()</span><span class="w"> 
+</span></code></pre></div></div>
+
+<p><img src="../assets/img/graph_mentions-1.png" style="display: block; margin: auto;" /></p>
+
+<blockquote>
+  <p><a href="https://github.com/neo4j-rstats/neo4r">{neo4r} on GitHub</a></p>
+</blockquote>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-04-22T00:00:00+02:00">April 22, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Playing+with+%23rstatsnyc%2C+Neo4J+and+R%20http%3A%2F%2Flocalhost%3A4000%2Frstatsnyc-neo4j%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Frstatsnyc-neo4j%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Frstatsnyc-neo4j%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Frstatsnyc-neo4j%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/purrr-adverb-tidyverse/" class="pagination--pager" title="[How to] Write a purrr-like adverb
+">←</a>
+    
+    
+      <a href="/frying-pane/" class="pagination--pager" title="Serve your dataset in RStudio Connection Pane with {fryingpane}
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/rstatsnyc-neo4j/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/rstatsnyc-neo4j"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

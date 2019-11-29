@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The R language definition</title>
+  <meta name="description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="The R language definition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  <meta name="github-repo" content="ColinFay/r-language-definition" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The R language definition" />
+  
+  <meta name="twitter:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="introduction.html">
+<link rel="next" href="evaluation-of-expressions.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">The R language definition</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Language Definition</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="objects.html"><a href="objects.html"><i class="fa fa-check"></i><b>2</b> Objects</a></li>
+<li class="chapter" data-level="3" data-path="evaluation-of-expressions.html"><a href="evaluation-of-expressions.html"><i class="fa fa-check"></i><b>3</b> Evaluation of expressions</a></li>
+<li class="chapter" data-level="4" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>4</b> Functions</a></li>
+<li class="chapter" data-level="5" data-path="object-oriented-programming.html"><a href="object-oriented-programming.html"><i class="fa fa-check"></i><b>5</b> Object-oriented programming</a></li>
+<li class="chapter" data-level="6" data-path="computing-on-the-language.html"><a href="computing-on-the-language.html"><i class="fa fa-check"></i><b>6</b> Computing on the language</a></li>
+<li class="chapter" data-level="7" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>7</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="8" data-path="exception-handling.html"><a href="exception-handling.html"><i class="fa fa-check"></i><b>8</b> Exception handling</a></li>
+<li class="chapter" data-level="9" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>9</b> Debugging</a></li>
+<li class="chapter" data-level="10" data-path="parser.html"><a href="parser.html"><i class="fa fa-check"></i><b>10</b> Parser</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and Variable Index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept Index</a></li>
+<li class="chapter" data-level="13" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>13</b> Appendix A References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The R language definition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="objects" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Objects</h1>
+<p>
+In every computer language <a href="" id="index-variable"></a> variables provide a means of accessing the data stored in memory. R does not provide direct access to the computer’s memory but rather provides a number of specialized data structures we will refer to as <a href="" id="index-object"></a> objects. These objects are referred to through symbols or variables. In R, however, the symbols are themselves objects and can be manipulated in the same way as any other object. This is different from many other languages and has wide ranging effects.
+</p>
+<p>
+In this chapter we provide preliminary descriptions of the various data structures provided in R. More detailed discussions of many of them will be found in the subsequent chapters. The R specific function <code class="calibre7">typeof</code> <a href="" id="index-typeof"></a> <a href="" id="index-type"></a> returns the <em>type</em> of an R object. Note that in the C code underlying R, all objects are pointers to a structure with typedef <code class="calibre7">SEXPREC</code>; the different R data types are represented in C by <code class="calibre7">SEXPTYPE</code>, which determines how the information in the various parts of the structure is used.
+</p>
+<p>
+The following table describes the possible values returned by <code class="calibre7">typeof</code> and what they are.
+</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“NULL”</code>
+</td>
+<td align="left">
+NULL
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“symbol”</code>
+</td>
+<td align="left">
+a variable name
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“pairlist”</code>
+</td>
+<td align="left">
+a pairlist object (mainly internal)
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“closure”</code>
+</td>
+<td align="left">
+a function
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“environment”</code>
+</td>
+<td align="left">
+an environment <a href="" id="index-evaluation_002c-lazy"></a>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“promise”</code>
+</td>
+<td align="left">
+an object used to implement lazy evaluation
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“language”</code>
+</td>
+<td align="left">
+an R language construct
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“special”</code>
+</td>
+<td align="left">
+an internal function that does not evaluate its arguments
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“builtin”</code>
+</td>
+<td align="left">
+an internal function that evaluates its arguments
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“char”</code>
+</td>
+<td align="left">
+a ‘scalar’ string object (internal only) ***
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“logical”</code>
+</td>
+<td align="left">
+a vector containing logical values
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“integer”</code>
+</td>
+<td align="left">
+a vector containing integer values
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“double”</code>
+</td>
+<td align="left">
+a vector containing real values
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“complex”</code>
+</td>
+<td align="left">
+a vector containing complex values
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“character”</code>
+</td>
+<td align="left">
+a vector containing character values
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“…”</code>
+</td>
+<td align="left">
+the special variable length argument ***
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“any”</code>
+</td>
+<td align="left">
+a special type that matches all types: there are no objects of this type
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“expression”</code>
+</td>
+<td align="left">
+an expression object
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“list”</code>
+</td>
+<td align="left">
+a list
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“bytecode”</code>
+</td>
+<td align="left">
+byte code (internal only) ***
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“externalptr”</code>
+</td>
+<td align="left">
+an external pointer object
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“weakref”</code>
+</td>
+<td align="left">
+a weak reference object
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">“raw”</code>
+</td>
+<td align="left">
+a vector containing bytes
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">“S4”</code>
+</td>
+<td align="left">
+an S4 object which is not a simple object
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+Users cannot easily get hold of objects of types marked with a ‘***’.
+</p>
+<p>
+<a href="" id="index-mode-3"></a> <a href="" id="index-mode"></a>
+</p>
+<p>
+Function <code class="calibre7">mode</code> gives information about the <em>mode</em> of an object in the sense of Becker, Chambers &amp; Wilks (1988), and is more compatible with other implementations of the S language. <a href="" id="index-storage_002emode"></a> Finally, the function <code class="calibre7">storage.mode</code> returns the <em>storage mode</em> of its argument in the sense of Becker et al. (1988). It is generally used when calling functions written in another language, such as C or FORTRAN, to ensure that R objects have the data type expected by the routine being called. (In the S language, vectors with integer or real values are both of mode <code class="calibre7">“numeric”</code>, so their storage modes need to be distinguished.)
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; x &lt;- 1:3
+&gt; typeof(x)
+[1] &quot;integer&quot;
+&gt; mode(x)
+[1] &quot;numeric&quot;
+&gt; storage.mode(x)
+[1] &quot;integer&quot;</code></pre>
+</div>
+<p>
+R <a href="" id="index-object-1"></a> objects are often coerced to different <a href="" id="index-type-1"></a> types during computations. There are also many functions available to perform explicit <a href="" id="index-coercion"></a> coercion. When programming in the R language the type of an object generally doesn’t affect the computations, however, when dealing with foreign languages or the operating system it is often necessary to ensure that an object is of the correct type.
+</p>
+<hr />
+<p>
+<a href="" id="Basic-types"></a> <a href="" id="index-type-2"></a> <a href="" id="Basic-types-1"></a>
+</p>
+<h3 id="basic-types" class="section">
+2.1 Basic types
+</h3>
+<hr />
+<p>
+<a href="" id="Vector-objects"></a> <a href="" id="Vectors"></a>
+</p>
+<h4 id="vectors" class="subsection">
+2.1.1 Vectors
+</h4>
+<p>
+<a href="" id="index-vector"></a>
+</p>
+<p>
+Vectors can be thought of as contiguous cells containing data. Cells are accessed through <a href="" id="index-index"></a> indexing operations such as <code class="calibre7">x[5]</code>. More details are given in <a href="evaluation-of-expressions.html#Indexing">Indexing</a>.
+</p>
+<p>
+<a href="" id="index-type-3"></a> <a href="" id="index-mode-1"></a> <a href="" id="index-atomic"></a>
+</p>
+<p>
+R has six basic (‘atomic’) vector types: logical, integer, real, complex, string (or character) and raw. The modes and storage modes for the different vector types are listed in the following table.
+</p>
+<blockquote>
+<table>
+<thead>
+<tr class="header">
+<th align="left">
+typeof
+</th>
+<th align="left">
+mode
+</th>
+<th align="left">
+storage.mode
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">logical</code>
+</td>
+<td align="left">
+<code class="calibre7">logical</code>
+</td>
+<td align="left">
+<code class="calibre7">logical</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">integer</code>
+</td>
+<td align="left">
+<code class="calibre7">numeric</code>
+</td>
+<td align="left">
+<code class="calibre7">integer</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">double</code>
+</td>
+<td align="left">
+<code class="calibre7">numeric</code>
+</td>
+<td align="left">
+<code class="calibre7">double</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">complex</code>
+</td>
+<td align="left">
+<code class="calibre7">complex</code>
+</td>
+<td align="left">
+<code class="calibre7">complex</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre7">character</code>
+</td>
+<td align="left">
+<code class="calibre7">character</code>
+</td>
+<td align="left">
+<code class="calibre7">character</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre7">raw</code>
+</td>
+<td align="left">
+<code class="calibre7">raw</code>
+</td>
+<td align="left">
+<code class="calibre7">raw</code>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+Single numbers, such as <code class="calibre7">4.2</code>, and strings, such as <code class="calibre7">“four point two”</code> are still vectors, of length 1; there are no more basic types. Vectors with length zero are possible (and useful).
+</p>
+<p>
+String vectors have mode and storage mode <code class="calibre7">“character”</code>. A single element of a character vector is often referred to as a <em>character string</em>.
+</p>
+<hr />
+<p>
+<a href="" id="List-objects"></a> <a href="" id="Lists"></a>
+</p>
+<h4 id="lists" class="subsection">
+2.1.2 Lists
+</h4>
+<p>
+Lists (“generic vectors”) are another kind of data storage. Lists have elements, each of which can contain any type of R object, i.e. the elements of a list do not have to be of the same type. List elements are accessed through three different <a href="" id="index-index-1"></a> indexing operations. These are explained in detail in <a href="evaluation-of-expressions.html#Indexing">Indexing</a>.
+</p>
+<p>
+Lists are vectors, and the basic vector types are referred to as <em>atomic vectors</em> where it is necessary to exclude lists.
+</p>
+<hr />
+<p>
+<a href="" id="Language-objects"></a> <a href="" id="Language-objects-1"></a>
+</p>
+<h4 id="language-objects" class="subsection">
+2.1.3 Language objects
+</h4>
+<p>
+There are three types of objects that constitute the R language. They are <em>calls</em>, <em>expressions</em>, and <em>names</em>. <a href="" id="index-call"></a> <a href="" id="index-expression-1"></a> <a href="" id="index-name"></a> Since R has objects of type <code class="calibre7">“expression”</code> we will try to avoid the use of the word expression in other contexts. In particular syntactically correct expressions will be referred to as <em>statements</em>. <a href="" id="index-statement"></a>
+</p>
+<p>
+These objects have modes <code class="calibre7">“call”</code>, <code class="calibre7">“expression”</code>, and <code class="calibre7">“name”</code>, respectively.
+</p>
+<p>
+They can be created directly from expressions using the <code class="calibre7">quote</code> mechanism and converted to and from lists by the <code class="calibre7">as.list</code> and <code class="calibre7">as.call</code> functions. <a href="" id="index-quote"></a> <a href="" id="index-as_002elist"></a> <a href="" id="index-as_002ecall"></a> Components of the <a href="" id="index-parsing"></a> parse tree can be extracted using the standard indexing operations.
+</p>
+<hr />
+<p>
+<a href="" id="Symbol-objects"></a> <a href="" id="Symbol-objects-1"></a>
+</p>
+<h4 id="symbol-objects" class="subsection">
+2.1.3.1 Symbol objects
+</h4>
+<p>
+<a href="" id="index-symbol"></a>
+</p>
+<p>
+Symbols refer to R <a href="" id="index-object-2"></a> objects. The <a href="" id="index-name-1"></a> name of any R object is usually a symbol. Symbols can be created through the functions <code class="calibre7">as.name</code> and <code class="calibre7">quote</code>.
+</p>
+<p>
+<a href="" id="index-symbol-1"></a> <a href="" id="index-mode-2"></a>
+</p>
+<p>
+Symbols have mode <code class="calibre7">“name”</code>, storage mode <code class="calibre7">“symbol”</code>, and type <code class="calibre7">“symbol”</code>. They can be <a href="" id="index-coercion-1"></a> coerced to and from character strings using <code class="calibre7">as.character</code> and <code class="calibre7">as.name</code>. <a href="" id="index-as_002echaracter"></a> <a href="" id="index-as_002ename"></a> <a href="" id="index-parsing-1"></a> They naturally appear as atoms of parsed expressions, try e.g. <code class="calibre7">as.list(quote(x + y))</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Expression-objects"></a> <a href="" id="Expression-objects-1"></a>
+</p>
+<h4 id="expression-objects" class="subsection">
+2.1.4 Expression objects
+</h4>
+<p>
+In R one can have objects of type <code class="calibre7">“expression”</code>. An <em>expression</em> contains one or more statements. A statement is a syntactically correct collection of <a href="" id="index-token"></a> tokens. <a href="" id="index-expression-object"></a> Expression objects are special language objects which contain parsed but unevaluated R statements. The main difference is that an expression object can contain several such expressions. Another more subtle difference is that objects of type <code class="calibre7">“expression”</code> are only <a href="" id="index-evaluation_002c-expression"></a> evaluated when explicitly passed to <code class="calibre7">eval</code>, whereas other language objects may get evaluated in some unexpected cases.
+</p>
+<p>
+An <a href="" id="index-expression-object-1"></a> expression object behaves much like a list and its components should be accessed in the same way as the components of a list.
+</p>
+<hr />
+<p>
+<a href="" id="Function-objects"></a> <a href="" id="Function-objects-1"></a>
+</p>
+<h4 id="function-objects" class="subsection">
+2.1.5 Function objects
+</h4>
+<p>
+<a href="" id="index-function"></a>
+</p>
+<p>
+In R functions are objects and can be manipulated in much the same way as any other object. Functions (or more precisely, function closures) have three basic components: a formal argument list, a body and an <a href="" id="index-environment"></a> environment. The argument list is a comma-separated list of arguments. An <a href="" id="index-argument"></a> argument can be a symbol, or a ‘symbol = default’ construct, or the special argument ‘…’. The second form of argument is used to specify a default value for an argument. This value will be used if the function is called without any value specified for that argument. The ‘…’ argument is special and can contain any number of arguments. It is generally used if the number of arguments is unknown or in cases where the arguments will be passed on to another function.
+</p>
+<p>
+The body is a parsed R statement. It is usually a collection of statements in braces but it can be a single statement, a symbol or even a constant.
+</p>
+<p>
+A function’s <a href="" id="index-function-1"></a> <a href="" id="index-environment-1"></a> environment is the environment that was active at the time that the function was created. Any symbols bound in that environment are <em>captured</em> and available to the function. This combination of the code of the function and the bindings in its environment is called a ‘function closure’, a term from functional programming theory. In this document we generally use the term ‘function’, but use ‘closure’ to emphasize the importance of the attached environment.
+</p>
+<p>
+It is possible to extract and manipulate the three parts of a closure object using <code class="calibre7">formals</code>, <code class="calibre7">body</code>, and <code class="calibre7">environment</code> constructs (all three can also be used on the left hand side of <a href="" id="index-assignment"></a> assignments). <a href="" id="index-formals"></a> <a href="" id="index-body"></a> <a href="" id="index-environment-20"></a> The last of these can be used to remove unwanted environment capture.
+</p>
+<p>
+When a function is called, a new environment (called the <em>evaluation environment</em>) is created, whose enclosure (see <a href="objects.html#Environment-objects">Environment objects</a>) is the environment from the function closure. This new environment is initially populated with the unevaluated arguments to the function; as evaluation proceeds, local variables are created within it.
+</p>
+<p>
+<a href="" id="index-function-2"></a>
+</p>
+<p>
+There is also a facility for converting functions to and from list structures using <code class="calibre7">as.list</code> and <code class="calibre7">as.function</code>. <a href="" id="index-as_002efunction"></a> These have been included to provide compatibility with S and their use is discouraged.
+</p>
+<hr />
+<p>
+<a href="" id="NULL-object"></a> <a href="" id="NULL"></a>
+</p>
+<h4 id="null" class="subsection">
+2.1.6 NULL
+</h4>
+<p>
+There is a special object called <code class="calibre7">NULL</code>. It is used whenever there is a need to indicate or specify that an object is absent. It should not be confused with a vector or list of zero length. <a href="" id="index-NULL"></a>
+</p>
+<p>
+The <code class="calibre7">NULL</code> object has no type and no modifiable properties. There is only one <code class="calibre7">NULL</code> object in R, to which all instances refer. To test for <code class="calibre7">NULL</code> use <code class="calibre7">is.null</code>. You cannot set attributes on <code class="calibre7">NULL</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Builtin-objects-and-special-forms"></a> <a href="" id="Builtin-objects-and-special-forms-1"></a>
+</p>
+<h4 id="builtin-objects-and-special-forms" class="subsection">
+2.1.7 Builtin objects and special forms
+</h4>
+<p>
+These two kinds of object contain the builtin <a href="" id="index-function-3"></a> <a href="" id="index-_002ePrimitive"></a> <a href="" id="index-_002eInternal"></a> functions of R, i.e., those that are displayed as <code class="calibre7">.Primitive</code> in code listings (as well as those accessed via the <code class="calibre7">.Internal</code> function and hence not user-visible as objects). The difference between the two lies in the argument handling. Builtin functions have all their arguments evaluated and passed to the internal function, in accordance with <em>call-by-value</em>, whereas special functions pass the unevaluated arguments to the internal function.
+</p>
+<p>
+From the R language, these objects are just another kind of function. The <code class="calibre7">is.primitive</code> function can distinguish them from interpreted <a href="" id="index-function-4"></a> functions.
+</p>
+<hr />
+<p>
+<a href="" id="Promise-objects"></a> <a href="" id="Promise-objects-1"></a>
+</p>
+<h4 id="promise-objects" class="subsection">
+2.1.8 Promise objects
+</h4>
+<p>
+<a href="" id="index-promise"></a>
+</p>
+<p>
+Promise objects are part of R’s lazy evaluation mechanism. They contain three slots: a value, an expression, and an <a href="" id="index-environment-2"></a> environment. When a <a href="" id="index-function-5"></a> <a href="" id="index-function-argument"></a> function is called the arguments are matched and then each of the formal arguments is bound to a promise. The expression that was given for that formal argument and a pointer to the environment the function was called from are stored in the promise.
+</p>
+<p>
+Until that argument is accessed there is no <em>value</em> associated with the promise. When the argument is accessed, the stored expression is <a href="" id="index-evaluation_002c-expression-1"></a> evaluated in the stored environment, and the result is returned. The result is also saved by the promise. The <code class="calibre7">substitute</code> function will extract the content of the expression slot. This allows the programmer to access either the value or the expression associated with the promise.
+</p>
+<p>
+Within the R language, promise objects are almost only seen implicitly: actual function arguments are of this type. There is also a <code class="calibre7">delayedAssign</code> function that will make a promise out of an expression. There is generally no way in R code to check whether an object is a promise or not, nor is there a way to use R code to determine the environment of a promise.
+</p>
+<hr />
+<p>
+<a href="" id="Dot_002ddot_002ddot"></a> <a href="" id="Dot_002ddot_002ddot-1"></a>
+</p>
+<h4 id="dot-dot-dot" class="subsection">
+2.1.9 Dot-dot-dot
+</h4>
+<p>
+The ‘…’ object type is stored as a type of pairlist. The components of ‘…’ can be accessed in the usual pairlist manner from C code, but is not easily accessed as an object in interpreted code. The object can be captured as a list, so for example in <code class="calibre7">table</code> one sees
+</p>
+<div class="example">
+<pre class="example1"><code>    args &lt;- list(...)
+## ....
+    for (a in args) {
+## ....</code></pre>
+</div>
+<p>
+<a href="" id="index-function-6"></a> <a href="" id="index-function-argument-1"></a>
+</p>
+<p>
+If a function has ‘…’ as a formal argument then any actual arguments that do not match a formal argument are matched with ‘…’.
+</p>
+<hr />
+<p>
+<a href="" id="Environment-objects"></a> <a href="" id="Environments"></a>
+</p>
+<h4 id="environments" class="subsection">
+2.1.10 Environments
+</h4>
+<p>
+<a href="" id="index-environment-3"></a>
+</p>
+<p>
+Environments can be thought of as consisting of two things. A <em>frame</em>, consisting of a set of symbol-value pairs, and an <em>enclosure</em>, a pointer to an enclosing environment. When R looks up the value for a symbol the frame is examined and if a matching symbol is found its value will be returned. If not, the enclosing environment is then accessed and the process repeated. Environments form a tree structure in which the enclosures play the role of parents. The tree of environments is rooted in an empty <a href="" id="index-emptyenv"></a> environment, available through <code class="calibre7">emptyenv()</code>, which has no parent. It is the direct parent of the environment of the base package <a href="" id="index-baseenv"></a> (available through the <code class="calibre7">baseenv()</code> function). Formerly <code class="calibre7">baseenv()</code> had the special value <code class="calibre7">NULL</code>, but as from version 2.4.0, the use of <code class="calibre7">NULL</code> as an environment is defunct.
+</p>
+<p>
+Environments are created implicitly by function calls, as described in <a href="objects.html#Function-objects">Function objects</a> and <a href="evaluation-of-expressions.html#Indexing">Lexical environment</a>. In this case the environment contains the variables local to the function (including the arguments), and its enclosure is the environment of the currently called function. Environments may also be created directly by <code class="calibre7">new.env</code>. <a href="" id="index-new_002eenv"></a> The frame content of an environment can be accessed and manipulated by use of <code class="calibre7">ls</code>, <code class="calibre7">get</code> and <code class="calibre7">assign</code> as well as <code class="calibre7">eval</code> and <code class="calibre7">evalq</code>.
+</p>
+<p>
+The <code class="calibre7">parent.env</code> function may be used to access the enclosure of an environment.
+</p>
+<p>
+Unlike most other R objects, environments are not copied when passed to functions or used in assignments. Thus, if you assign the same environment to several symbols and change one, the others will change too. In particular, assigning attributes to an environment can lead to surprises.
+</p>
+<hr />
+<p>
+<a href="" id="Pairlist-objects"></a> <a href="" id="Pairlist-objects-1"></a>
+</p>
+<h4 id="pairlist-objects" class="subsection">
+2.1.11 Pairlist objects
+</h4>
+<p>
+Pairlist objects are similar to Lisp’s dotted-pair lists. They are used extensively in the internals of R, but are rarely visible in interpreted code, although they are returned by <code class="calibre7">formals</code>, and can be created by (e.g.) the <code class="calibre7">pairlist</code> function. A zero-length pairlist is <code class="calibre7">NULL</code>, as would be expected in Lisp but in contrast to a zero-length list. <a href="" id="index-pairlist"></a> Each such object has three slots, a CAR value, a CDR value and a TAG value. The TAG value is a text string and CAR and CDR usually represent, respectively, a list item (head) and the remainder (tail) of the list with a NULL object as terminator (the CAR/CDR terminology is traditional Lisp and originally referred to the address and decrement registers on an early 60’s IBM computer).
+</p>
+<p>
+Pairlists are handled in the R language in exactly the same way as generic vectors (“lists”). In particular, elements are accessed using the same <code class="calibre7">[[]]</code> syntax. The use of pairlists is deprecated since generic vectors are usually more efficient to use. When an internal pairlist is accessed from R it is generally (including when subsetted) converted to a generic vector.
+</p>
+<p>
+In a very few cases pairlists are user-visible: one is <code class="calibre7">.Options</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Any_002dtype"></a> <a href="" id="The-_0060_0060Any_0027_0027-type"></a>
+</p>
+<h4 id="the-any-type" class="subsection">
+2.1.12 The “Any” type
+</h4>
+<p>
+It is not really possible for an object to be of “Any” type, but it is nevertheless a valid type value. It gets used in certain (rather rare) circumstances, e.g. <code class="calibre7">as.vector(x, “any”)</code>, indicating that type <a href="" id="index-coercion-2"></a> coercion should not be done.
+</p>
+<hr />
+<p>
+<a href="" id="Attributes"></a> <a href="" id="Attributes-1"></a>
+</p>
+<h3 id="attributes" class="section">
+2.2 Attributes
+</h3>
+<p>
+<a href="" id="index-attributes"></a> <a href="" id="index-object-3"></a>
+</p>
+<p>
+All objects except <code class="calibre7">NULL</code> can have one or more attributes attached to them. Attributes are stored as a pairlist where all elements are named, but should be thought of as a set of name=value pairs. A listing of the attributes can be obtained using <code class="calibre7">attributes</code> and set by <code class="calibre7">attributes&lt;-</code>, <a href="" id="index-attributes-1"></a> <a href="" id="index-attributes_003c_002d"></a> individual components are accessed using <code class="calibre7">attr</code> and <code class="calibre7">attr&lt;-</code>. <a href="" id="index-attr"></a> <a href="" id="index-attr_003c_002d"></a>
+</p>
+<p>
+Some attributes have special accessor <a href="" id="index-function_002c-accessor"></a> functions (e.g. <code class="calibre7">levels&lt;-</code> for factors) and these should be used when available. In addition to hiding details of implementation they may perform additional operations. R attempts to intercept calls to <code class="calibre7">attr&lt;-</code> and to <code class="calibre7">attributes&lt;-</code> that involve the special attributes and enforces the consistency checks.
+</p>
+<p>
+Matrices and arrays are simply vectors with the attribute <code class="calibre7">dim</code> and optionally <code class="calibre7">dimnames</code> attached to the vector.
+</p>
+<p>
+Attributes are used to implement the class structure used in R. If an object has a <code class="calibre7">class</code> attribute then that attribute will be examined during <a href="" id="index-evaluation_002c-symbol"></a> evaluation. The class structure in R is described in detail in <a href="functions.html#Object_002doriented-programming">Object-oriented programming</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Names"></a> <a href="" id="Names-1"></a>
+</p>
+<h4 id="names" class="subsection">
+2.2.1 Names
+</h4>
+<p>
+A <code class="calibre7">names</code> attribute, when present, labels the individual elements of a vector or list. When an object is printed the <code class="calibre7">names</code> attribute, when present, is used to label the elements. The <code class="calibre7">names</code> attribute can also be used for indexing purposes, for example, <code class="calibre7">quantile(x)[“25%”]</code>.
+</p>
+<p>
+One may get and set the names using <code class="calibre7">names</code> and <code class="calibre7">names&lt;-</code> constructions. <a href="" id="index-names"></a> <a href="" id="index-names_003c_002d"></a> <a href="" id="index-type-4"></a> The latter will perform the necessary consistency checks to ensure that the names attribute has the proper type and length.
+</p>
+<p>
+Pairlists and one-dimensional arrays are treated specially. For pairlist objects, a virtual <code class="calibre7">names</code> attribute is used; the <code class="calibre7">names</code> attribute is really constructed from the tags of the list components. For one-dimensional arrays the <code class="calibre7">names</code> attribute really accesses <code class="calibre7">dimnames[[1]]</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Dimensions"></a> <a href="" id="Dimensions-1"></a>
+</p>
+<h4 id="dimensions" class="subsection">
+2.2.2 Dimensions
+</h4>
+<p>
+The <code class="calibre7">dim</code> attribute is used to implement arrays. The content of the array is stored in a vector in column-major order and the <code class="calibre7">dim</code> attribute is a vector of integers specifying the respective extents of the array. R ensures that the length of the vector is the product of the lengths of the dimensions. The length of one or more dimensions may be zero.
+</p>
+<p>
+<a href="" id="index-vector-1"></a>
+</p>
+<p>
+A vector is not the same as a one-dimensional array since the latter has a <code class="calibre7">dim</code> attribute of length one, whereas the former has no <code class="calibre7">dim</code> attribute.
+</p>
+<hr />
+<p>
+<a href="" id="Dimnames"></a> <a href="" id="Dimnames-1"></a>
+</p>
+<h4 id="dimnames" class="subsection">
+2.2.3 Dimnames
+</h4>
+<p>
+Arrays may name each dimension separately using the <code class="calibre7">dimnames</code> attribute which is a list of character vectors. The <code class="calibre7">dimnames</code> list may itself have names which are then used for extent headings when printing arrays.
+</p>
+<hr />
+<p>
+<a href="" id="Classes"></a> <a href="" id="Classes-1"></a>
+</p>
+<h4 id="classes" class="subsection">
+2.2.4 Classes
+</h4>
+<p>
+R has an elaborate class system<a href="appendix-a-references.html#FOOT1" id="DOCF1"><sup>1</sup></a>, principally controlled via the <code class="calibre7">class</code> attribute. This attribute is a character vector containing the list of classes that an object inherits from. This forms the basis of the “generic methods” functionality in R.
+</p>
+<p>
+This attribute can be accessed and manipulated virtually without restriction by users. There is no checking that an object actually contains the components that class methods expect. Thus, altering the <code class="calibre7">class</code> attribute should be done with caution, and when they are available specific creation and <a href="" id="index-coercion-3"></a> coercion functions should be preferred.
+</p>
+<hr />
+<p>
+<a href="" id="Time-series-attributes"></a> <a href="" id="Time-series-attributes-1"></a>
+</p>
+<h4 id="time-series-attributes" class="subsection">
+2.2.5 Time series attributes
+</h4>
+<p>
+The <code class="calibre7">tsp</code> attribute is used to hold parameters of time series, start, end, and frequency. This construction is mainly used to handle series with periodic substructure such as monthly or quarterly data.
+</p>
+<hr />
+<p>
+<a href="" id="Copying-of-attributes"></a> <a href="" id="Copying-of-attributes-1"></a>
+</p>
+<h4 id="copying-of-attributes" class="subsection">
+2.2.6 Copying of attributes
+</h4>
+<p>
+Whether attributes should be copied when an object is altered is a complex area, but there are some general rules (Becker, Chambers &amp; Wilks, 1988, pp. 144–6).
+</p>
+<p>
+Scalar functions (those which operate element-by-element on a vector and whose output is similar to the input) should preserve attributes (except perhaps class).
+</p>
+<p>
+Binary operations normally copy most attributes from the longer argument (and if they are of the same length from both, preferring the values on the first). Here ‘most’ means all except the <code class="calibre7">names</code>, <code class="calibre7">dim</code> and <code class="calibre7">dimnames</code> which are set appropriately by the code for the operator.
+</p>
+<p>
+Subsetting (other than by an empty index) generally drops all attributes except <code class="calibre7">names</code>, <code class="calibre7">dim</code> and <code class="calibre7">dimnames</code> which are reset as appropriate. On the other hand, subassignment generally preserves attributes even if the length is changed. Coercion drops all attributes.
+</p>
+<p>
+The default method for sorting drops all attributes except names, which are sorted along with the object.
+</p>
+<hr />
+<p>
+<a href="" id="Special-compound-objects"></a> <a href="" id="Special-compound-objects-1"></a>
+</p>
+<h3 id="special-compound-objects" class="section">
+2.3 Special compound objects
+</h3>
+<hr />
+<p>
+<a href="" id="Factors"></a> <a href="" id="Factors-1"></a>
+</p>
+<h4 id="factors" class="subsection">
+2.3.1 Factors
+</h4>
+<p>
+Factors are used to describe items that can have a finite number of values (gender, social class, etc.). A factor has a <code class="calibre7">levels</code> attribute and class <code class="calibre7">“factor”</code>. Optionally, it may also contain a <code class="calibre7">contrasts</code> attribute which controls the parametrisation used when the factor is used in a <a href="" id="index-function_002c-modeling"></a> <a href="" id="index-modeling-function"></a> modeling functions.
+</p>
+<p>
+A factor may be purely nominal or may have ordered categories. In the latter case, it should be defined as such and have a <code class="calibre7">class</code> vector <code class="calibre7">c(“ordered”,&quot; factor“)</code>.
+</p>
+<p>
+Factors are currently implemented using an integer array to specify the actual levels and a second array of names that are mapped to the integers. Rather unfortunately users often make use of the implementation in order to make some calculations easier. This, however, is an implementation issue and is not guaranteed to hold in all implementations of R.
+</p>
+<hr />
+<p>
+<a href="" id="Data-frame-objects"></a> <a href="" id="Data-frame-objects-1"></a>
+</p>
+<h4 id="data-frame-objects" class="subsection">
+2.3.2 Data frame objects
+</h4>
+<p>
+Data frames are the R structures which most closely mimic the SAS or SPSS data set, i.e. a “cases by variables” matrix of data.
+</p>
+<p>
+A data frame is a list of vectors, factors, and/or matrices all having the same length (number of rows in the case of matrices). In addition, a data frame generally has a <code class="calibre7">names</code> attribute labeling the variables and a <code class="calibre7">row.names</code> attribute for labeling the cases.
+</p>
+<p>
+A data frame can contain a list that is the same length as the other components. The list can contain elements of differing lengths thereby providing a data structure for ragged arrays. However, as of this writing such arrays are not generally handled correctly.
+</p>
+<hr />
+<p>
+<a href="" id="Evaluation-of-expressions"></a> <a href="" id="Evaluation-of-expressions-1"></a>
+</p>
+<div id="calibre_pb_7" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="evaluation-of-expressions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

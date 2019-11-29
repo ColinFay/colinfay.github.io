@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="appendix-b-invoking-r.html">
+<link rel="next" href="appendix-d-function-and-variable-index.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix-c-the-command-line-editor" class="section level1">
+<h1><span class="header-section-number">Chapter 17</span> Appendix C The command-line editor</h1>
+<p>
+<a href="" id="Preliminaries"></a>
+</p>
+<h3 id="c.1-preliminaries" class="section">
+C.1 Preliminaries
+</h3>
+<p>
+When the GNU <strong>readline</strong> library is available at the time R is configured for compilation under UNIX, an inbuilt command line editor allowing recall, editing and re-submission of prior commands is used. Note that other versions of <strong>readline</strong> exist and may be used by the inbuilt command line editor: this used to happen on macOS.
+</p>
+<p>
+It can be disabled (useful for usage with ESS <a href="023-R-intro.html#FOOT27" id="DOCF27"><sup>27</sup></a>) using the startup option –no-readline.
+</p>
+<p>
+Windows versions of R have somewhat simpler command-line editing: see ‘Console’ under the ‘Help’ menu of the GUI, and the file README.Rterm for command-line editing under <code class="calibre2">Rterm.exe</code>.
+</p>
+<p>
+When using R with GNU<a href="023-R-intro.html#FOOT28" id="DOCF28"><sup>28</sup></a> <strong>readline</strong> capabilities, the functions described below are available, as well as others (probably) documented in <code class="calibre2">man readline</code> or <code class="calibre2">info readline</code> on your system.
+</p>
+<p>
+Many of these use either Control or Meta characters. Control characters, such as Control-m, are obtained by holding the <code class="calibre2">CTRL</code> down while you press the <code class="calibre2">m</code> key, and are written as C-m below. Meta characters, such as Meta-b, are typed by holding down <code class="calibre2">META</code><a href="023-R-intro.html#FOOT29" id="DOCF29"><sup>29</sup></a> and pressing <code class="calibre2">b</code>, and written as M-b in the following. If your terminal does not have a <code class="calibre2">META</code> key enabled, you can still type Meta characters using two-character sequences starting with ESC. Thus, to enter M-b, you could type <code class="calibre2">ESC</code><code class="calibre2">b</code>. The ESC character sequences are also allowed on terminals with real Meta keys. Note that case is significant for Meta characters.
+</p>
+<p>
+Some but not all versions<a href="023-R-intro.html#FOOT30" id="DOCF30"><sup>30</sup></a> of <strong>readline</strong> will recognize resizing of the terminal window so this is best avoided.
+</p>
+<p>
+<a href="" id="Editing-actions"></a>
+</p>
+<h3 id="c.2-editing-actions" class="section">
+C.2 Editing actions
+</h3>
+<p>
+The R program keeps a history of the command lines you type, including the erroneous lines, and commands in your history may be recalled, changed if necessary, and re-submitted as new commands. In Emacs-style command-line editing any straight typing you do while in this editing phase causes the characters to be inserted in the command you are editing, displacing any characters to the right of the cursor. In <em>vi</em> mode character insertion mode is started by M-i or M-a, characters are typed and insertion mode is finished by typing a further <code class="calibre2">ESC</code>. (The default is Emacs-style, and only that is described here: for <em>vi</em> mode see the <strong>readline</strong> documentation.)
+</p>
+<p>
+Pressing the <code class="calibre2">RET</code> command at any time causes the command to be re-submitted.
+</p>
+<p>
+Other editing actions are summarized in the following table.
+</p>
+<p>
+<a href="" id="Command_002dline-editor-summary"></a>
+</p>
+<h3 id="c.3-command-line-editor-summary" class="section">
+C.3 Command-line editor summary
+</h3>
+<p>
+<a href="" id="Command-recall-and-vertical-motion"></a>
+</p>
+<h4 id="command-recall-and-vertical-motion" class="subheading">
+Command recall and vertical motion
+</h4>
+<dl>
+<dt>
+C-p
+</dt>
+<dd>
+<p>
+Go to the previous command (backwards in the history).
+</p>
+</dd>
+<dt>
+C-n
+</dt>
+<dd>
+<p>
+Go to the next command (forwards in the history).
+</p>
+</dd>
+<dt>
+C-r text
+</dt>
+<dd>
+<p>
+Find the last command with the text string in it. This can be cancelled by <code class="calibre2">C-g</code> (and on some versions of R by <code class="calibre2">C-c</code>).
+</p>
+</dd>
+</dl>
+<p>
+On most terminals, you can also use the up and down arrow keys instead of C-p and C-n, respectively.
+</p>
+<p>
+<a href="" id="Horizontal-motion-of-the-cursor"></a>
+</p>
+<h4 id="horizontal-motion-of-the-cursor" class="subheading">
+Horizontal motion of the cursor
+</h4>
+<dl>
+<dt>
+C-a
+</dt>
+<dd>
+<p>
+Go to the beginning of the command.
+</p>
+</dd>
+<dt>
+C-e
+</dt>
+<dd>
+<p>
+Go to the end of the line.
+</p>
+</dd>
+<dt>
+M-b
+</dt>
+<dd>
+<p>
+Go back one word.
+</p>
+</dd>
+<dt>
+M-f
+</dt>
+<dd>
+<p>
+Go forward one word.
+</p>
+</dd>
+<dt>
+C-b
+</dt>
+<dd>
+<p>
+Go back one character.
+</p>
+</dd>
+<dt>
+C-f
+</dt>
+<dd>
+<p>
+Go forward one character.
+</p>
+</dd>
+</dl>
+<p>
+On most terminals, you can also use the left and right arrow keys instead of C-b and C-f, respectively.
+</p>
+<p>
+<a href="" id="Editing-and-re_002dsubmission"></a>
+</p>
+<h4 id="editing-and-re-submission" class="subheading">
+Editing and re-submission
+</h4>
+<dl>
+<dt>
+text
+</dt>
+<dd>
+<p>
+Insert text at the cursor.
+</p>
+</dd>
+<dt>
+C-f text
+</dt>
+<dd>
+<p>
+Append text after the cursor.
+</p>
+</dd>
+<dt>
+<span>DEL</span>
+</dt>
+<dd>
+<p>
+Delete the previous character (left of the cursor).
+</p>
+</dd>
+<dt>
+C-d
+</dt>
+<dd>
+<p>
+Delete the character under the cursor.
+</p>
+</dd>
+<dt>
+M-d
+</dt>
+<dd>
+<p>
+Delete the rest of the word under the cursor, and “save” it.
+</p>
+</dd>
+<dt>
+C-k
+</dt>
+<dd>
+<p>
+Delete from cursor to end of command, and “save” it.
+</p>
+</dd>
+<dt>
+C-y
+</dt>
+<dd>
+<p>
+Insert (yank) the last “saved” text here.
+</p>
+</dd>
+<dt>
+C-t
+</dt>
+<dd>
+<p>
+Transpose the character under the cursor with the next.
+</p>
+</dd>
+<dt>
+M-l
+</dt>
+<dd>
+<p>
+Change the rest of the word to lower case.
+</p>
+</dd>
+<dt>
+M-c
+</dt>
+<dd>
+<p>
+Change the rest of the word to upper case.
+</p>
+</dd>
+<dt>
+<span>RET</span>
+</dt>
+<dd>
+<p>
+Re-submit the command to R.
+</p>
+</dd>
+</dl>
+<p>
+The final <code class="calibre2">RET</code> terminates the command line editing sequence.
+</p>
+<p>
+The <strong>readline</strong> key bindings can be customized in the usual way <em>via</em> a ~/.inputrc file. These customizations can be conditioned on application <code class="calibre2">R</code>, that is by including a section like
+</p>
+<div class="example">
+<pre class="example1"><code>$if R
+  &quot;\C-xd&quot;: &quot;q(&#39;no&#39;)\n&quot;
+$endif</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index"></a> <a href="" id="Function-and-variable-index-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="appendix-b-invoking-r.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-d-function-and-variable-index.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Internals</title>
+  <meta name="description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Internals" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  <meta name="github-repo" content="ColinFay/r-internals" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Internals" />
+  
+  <meta name="twitter:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="use-of-tex-dialects.html">
+<link rel="next" href="function-and-variable-index.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R internals</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Internals</a></li>
+<li class="chapter" data-level="1" data-path="r-internal-structures.html"><a href="r-internal-structures.html"><i class="fa fa-check"></i><b>1</b> R Internal Structures</a></li>
+<li class="chapter" data-level="2" data-path="internal-vs-primitive.html"><a href="internal-vs-primitive.html"><i class="fa fa-check"></i><b>2</b> <code class="calibre18">.Internal</code> vs <code class="calibre18">.Primitive</code></a></li>
+<li class="chapter" data-level="3" data-path="internationalization-in-the-r-sources.html"><a href="internationalization-in-the-r-sources.html"><i class="fa fa-check"></i><b>3</b> Internationalization in the R sources</a></li>
+<li class="chapter" data-level="4" data-path="structure-of-an-installed-package.html"><a href="structure-of-an-installed-package.html"><i class="fa fa-check"></i><b>4</b> Structure of an Installed Package</a></li>
+<li class="chapter" data-level="5" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5</b> Files</a></li>
+<li class="chapter" data-level="6" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>6</b> Graphics</a></li>
+<li class="chapter" data-level="7" data-path="gui-consoles.html"><a href="gui-consoles.html"><i class="fa fa-check"></i><b>7</b> GUI consoles</a></li>
+<li class="chapter" data-level="8" data-path="tools.html"><a href="tools.html"><i class="fa fa-check"></i><b>8</b> Tools</a></li>
+<li class="chapter" data-level="9" data-path="r-coding-standards.html"><a href="r-coding-standards.html"><i class="fa fa-check"></i><b>9</b> R coding standards</a></li>
+<li class="chapter" data-level="10" data-path="testing-r-code.html"><a href="testing-r-code.html"><i class="fa fa-check"></i><b>10</b> Testing R code</a></li>
+<li class="chapter" data-level="11" data-path="use-of-tex-dialects.html"><a href="use-of-tex-dialects.html"><i class="fa fa-check"></i><b>11</b> Use of TeX dialects</a></li>
+<li class="chapter" data-level="12" data-path="current-and-future-directions.html"><a href="current-and-future-directions.html"><i class="fa fa-check"></i><b>12</b> Current and future directions</a></li>
+<li class="chapter" data-level="13" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>13</b> Function and variable index</a></li>
+<li class="chapter" data-level="14" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>14</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Internals</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="current-and-future-directions" class="section level1">
+<h1><span class="header-section-number">Chapter 12</span> Current and future directions</h1>
+<p>
+This chapter is for notes about possible in-progress and future changes to R: there is no commitment to release such changes, let alone to a timescale.
+</p>
+<hr />
+<p>
+<a href="" id="Long-vectors"></a> <a href="" id="Long-vectors-1"></a>
+</p>
+<h3 id="long-vectors" class="section">
+12.1 Long vectors
+</h3>
+<p>
+Vectors in R 2.x.y were limited to a length of 2^31 - 1 elements (about 2 billion), as the length is stored in the <code class="calibre2">SEXPREC</code> as a C <code class="calibre2">int</code>, and that type is used extensively to record lengths and element numbers, including in packages.
+</p>
+<p>
+Note that longer vectors are effectively impossible under 32-bit platforms because of their address limit, so this section applies only on 64-bit platforms. The internals are unchanged on a 32-bit build of R.
+</p>
+<p>
+A single object with 2^31 or more elements will take up at least 8GB of memory if integer or logical and 16GB if numeric or character, so routine use of such objects is still some way off.
+</p>
+<p>
+There is now some support for long vectors. This applies to raw, logical, integer, numeric and character vectors, and lists and expression vectors. (Elements of character vectors (<code class="calibre2">CHARSXP</code>s) remain limited to 2^31 - 1 bytes.) Some considerations:
+</p>
+<ul>
+<li>
+This has been implemented by recording the length (and true length) as <code class="calibre2">-1</code> and recording the actual length as a 64-bit field at the beginning of the header. Because a fair amount of code in R uses a signed type for the length, the ‘long length’ is recorded using the signed C99 type <code class="calibre2">ptrdiff_t</code>, which is typedef-ed to <code class="calibre2">R_xlen_t</code>.
+</li>
+<li>
+These can in theory have 63-bit lengths, but note that current 64-bit OSes do not even theoretically offer 64-bit address spaces and there is currently a 52-bit limit (which exceeds the theoretical limit of current OSes and ensures that such lengths can be stored exactly in doubles).
+</li>
+<li>
+The serialization format has been changed to accommodate longer lengths, but vectors of lengths up to 2^31-1 are stored in the same way as before. Longer vectors have their length field set to <code class="calibre2">-1</code> and followed by two 32-bit fields giving the upper and lower 32-bits of the actual length. There is currently a sanity check which limits lengths to 2^48 on unserialization.
+</li>
+<li>
+The type <code class="calibre2">R_xlen_t</code> is made available to packages in C header Rinternals.h: this should be fine in C code since C99 is required. People do try to use R internals in C++, but C++98 compilers are not required to support these types.
+</li>
+<li>
+Indexing can be done via the use of doubles. The internal indexing code used to work with positive integer indices (and negative, logical and matrix indices were all converted to positive integers): it now works with either <code class="calibre2">INTSXP</code> or <code class="calibre2">REALSXP</code> indices.
+</li>
+<li>
+<p>
+R function <code class="calibre2">length</code> was documented to currently return an integer, possibly <code class="calibre2">NA</code>. A lot of code has been written that assumes that, and even code which calls <code class="calibre2">as.integer(length(x))</code> before passing to <code class="calibre2">.C</code>/<code class="calibre2">.Fortran</code> rarely checks for an <code class="calibre2">NA</code> result.
+</p>
+<p>
+There is a new function <code class="calibre2">xlength</code> which works for long vectors and returns a double value if the length exceeds 2^31-1. At present <code class="calibre2">length</code> returns <code class="calibre2">NA</code> for long vectors, but it may be safer to make that an error.
+</p>
+</li>
+</ul>
+<hr />
+<p>
+<a href="" id="g_t64_002dbit-types"></a> <a href="" id="g_t64_002dbit-types-1"></a>
+</p>
+<h3 id="bit-types" class="section">
+12.2 64-bit types
+</h3>
+<p>
+There is also some desire to be able to store larger integers in R, although the possibility of storing these as <code class="calibre2">double</code> is often overlooked (and e.g. file pointers as returned by <code class="calibre2">seek</code> are already stored as <code class="calibre2">double</code>).
+</p>
+<p>
+Different routes have been proposed:
+</p>
+<ul>
+<li>
+Add a new type to R and use that for lengths and indices—most likely this would be a 64-bit signed type, say <code class="calibre2">longint</code>. R’s usual implicit coercion rules would ensure that supplying an <code class="calibre2">integer</code> vector for indexing or <code class="calibre2">length&lt;-</code> would work.
+</li>
+<li>
+A more radical alternative is to change the existing <code class="calibre2">integer</code> type to be 64-bit on 64-bit platforms (which was the approach taken by S-PLUS for DEC/Compaq Alpha systems). Or even on all platforms.
+</li>
+<li>
+Allow either <code class="calibre2">integer</code> or <code class="calibre2">double</code> values for lengths and indices, and return <code class="calibre2">double</code> only when necessary.
+</li>
+</ul>
+<p>
+The third has the advantages of minimal disruption to existing code and not increasing memory requirements. In the first and third scenarios both R’s own code and user code would have to be adapted for lengths that were not of type <code class="calibre2">integer</code>, and in the third code branches for long vectors would be tested rarely.
+</p>
+<p>
+Most users of the <code class="calibre2">.C</code> and <code class="calibre2">.Fortran</code> interfaces use <code class="calibre2">as.integer</code> for lengths and element numbers, but a few omit these in the knowledge that these were of type <code class="calibre2">integer</code>. It may be reasonable to assume that these are never intended to be used with long vectors.
+</p>
+<p>
+The remaining interfaces will need to cope with the changed <code class="calibre2">VECTOR_SEXPREC</code> types. It seems likely that in most cases lengths are accessed by the <code class="calibre2">length</code> and <code class="calibre2">LENGTH</code> functions<a href="concept-index.html#FOOT27" id="DOCF27"><sup>27</sup></a> The current approach is to keep these returning 32-bit lengths and introduce ‘long’ versions <code class="calibre2">xlength</code> and <code class="calibre2">XLENGTH</code> which return <code class="calibre2">R_xlen_t</code> values.
+</p>
+<p>
+See also <a href="http://homepage.cs.uiowa.edu/~luke/talks/useR10.pdf" class="uri">http://homepage.cs.uiowa.edu/~luke/talks/useR10.pdf</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Large-matrices"></a> <a href="" id="Large-matrices-1"></a>
+</p>
+<h3 id="large-matrices" class="section">
+12.3 Large matrices
+</h3>
+<p>
+Matrices are stored as vectors and so were also limited to 2^31-1 elements. Now longer vectors are allowed on 64-bit platforms, matrices with more elements are supported provided that each of the dimensions is no more than 2^31-1. However, not all applications can be supported.
+</p>
+<p>
+The main problem is linear algebra done by FORTRAN code compiled with 32-bit <code class="calibre2">INTEGER</code>. Although not guaranteed, it seems that all the compilers currently used with R on a 64-bit platform allow matrices each of whose dimensions is less than 2^31 but with more than 2^31 elements, and index them correctly, and a substantial part of the support software (such as BLAS and LAPACK) also work.
+</p>
+<p>
+There are exceptions: for example some complex LAPACK auxiliary routines do use a single <code class="calibre2">INTEGER</code> index and hence overflow silently and segfault or give incorrect results. One example is <code class="calibre2">svd()</code> on a complex matrix.
+</p>
+<p>
+Since this is implementation-dependent, it is possible that optimized BLAS and LAPACK may have further restrictions, although none have yet been encountered. For matrix algebra on large matrices one almost certainly wants a machine with a lot of RAM (100s of gigabytes), many cores and a multi-threaded BLAS.
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index"></a> <a href="" id="Function-and-variable-index-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="use-of-tex-dialects.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="function-and-variable-index.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,663 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Watch if R is running from Shiny - Colin Fay</title>
+<meta name="description" content="Today I discovered that the &lt;html&gt; tag of a Shiny App gets theshiny-busy class when computation is done in the R process. Whichmeans that you can potentially watch with JavaScript if the R process isrunning.TIL — Shiny Apps switch to the ‘shiny-busy’ class when R is performingcomputation in the background. So it&#39;s basically possible to useJavaScript to watch if the R session is doing computation or not.\#RStats\#RShinypic.twitter.com/dz2XgOXxVQ— Colin Fay 🤘 (@\_ColinFay)January29,2019It’s pretty subtle and you have to be watching the html source code ofyour app while it is running, so I guess few people other than me enjoydoing that.A POCHere’s a POC of an application that shows a spinner every time R isrunning (well, it checks every 50 milliseconds if R is running, and ifit is, shows the loader).library(shiny)ui &lt;- fluidPage(  tags$script(    &#39;function checkifrunning() {      var is_running = $(&quot;html&quot;).attr(&quot;class&quot;).includes(&quot;shiny-busy&quot;);      if (is_running){        $(&quot;#loading&quot;).show()      } else {        $(&quot;#loading&quot;).hide()      }    };     setInterval(checkifrunning, 50)&#39;  ),   tags$style(    &quot; body { text-align:center; }    #loading {      display: inline-block;      border: 3px solid #f3f3f3;       border-top: 3px solid #3498db;       border-radius: 50%;      width: 50px;      height: 50px;      animation: spin 1s ease-in-out infinite;    }    @keyframes spin {        0% { transform: rotate(0deg); }        100% { transform: rotate(360deg); }    }&quot;  ),    column(12, actionButton(&quot;go1&quot;, &quot;Simulate long process 1&quot;)),  column(12, actionButton(&quot;go2&quot;, &quot;Simulate long process 2&quot;)),  column(12, actionButton(&quot;go3&quot;, &quot;Simulate long process 3&quot;)),  HTML(&quot;&amp;nbsp;&quot;),  column(12, tags$div(id = &quot;loading&quot;,    tags$script(&#39;$(&quot;#loading&quot;).hide()&#39;)))  )server &lt;- function(input, output, session) {  observeEvent(input$go1, {    for (i in 1:15) {      print(i)      Sys.sleep(0.1)    }  })  observeEvent(input$go2, {    for (i in 1:15) {      print(i)      Sys.sleep(0.1)    }  })  observeEvent(input$go3, {    for (i in 1:5) {      print(i)      Sys.sleep(0.1)    }  })}shinyApp(ui, server)Result:Why do that? Well, don’t. Here we just have a loader that pops up everytime R is running, which is kind of brutal (and I’m not 100 % certain wecan rely on this class change). Also, in my example, the JS code is runevery 50 milliseconds… which is even more brutal. But in case it can beuseful (or inspiring) to someone, I just wanted to share :).And of course, with more hacking, this can ne combined with other JS &amp; Rcode to make a smarter spinner.About the code :function checkifrunning() {  var is_running = $(&quot;html&quot;).attr(&quot;class&quot;).includes(&quot;shiny-busy&quot;);  if (is_running){    $(&quot;#loading&quot;).show()  } else {    $(&quot;#loading&quot;).hide()  }}; setInterval(checkifrunning, 50);I’m creating a function called checkifrunning(), that checks if theclass of the html tag contains shiny-busy, and show() and hide()the loading div if ever it is.With setInterval(checkifrunning, 50), I’m setting this function to berun every 50 milliseconds.The loading CSS and div is inspired by the W3tuto, with alittle bit of tweaking.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Watch if R is running from Shiny">
+<meta property="og:url" content="http://localhost:4000/watch-r-shiny/">
+
+
+  <meta property="og:description" content="Today I discovered that the &lt;html&gt; tag of a Shiny App gets theshiny-busy class when computation is done in the R process. Whichmeans that you can potentially watch with JavaScript if the R process isrunning.TIL — Shiny Apps switch to the ‘shiny-busy’ class when R is performingcomputation in the background. So it&#39;s basically possible to useJavaScript to watch if the R session is doing computation or not.\#RStats\#RShinypic.twitter.com/dz2XgOXxVQ— Colin Fay 🤘 (@\_ColinFay)January29,2019It’s pretty subtle and you have to be watching the html source code ofyour app while it is running, so I guess few people other than me enjoydoing that.A POCHere’s a POC of an application that shows a spinner every time R isrunning (well, it checks every 50 milliseconds if R is running, and ifit is, shows the loader).library(shiny)ui &lt;- fluidPage(  tags$script(    &#39;function checkifrunning() {      var is_running = $(&quot;html&quot;).attr(&quot;class&quot;).includes(&quot;shiny-busy&quot;);      if (is_running){        $(&quot;#loading&quot;).show()      } else {        $(&quot;#loading&quot;).hide()      }    };     setInterval(checkifrunning, 50)&#39;  ),   tags$style(    &quot; body { text-align:center; }    #loading {      display: inline-block;      border: 3px solid #f3f3f3;       border-top: 3px solid #3498db;       border-radius: 50%;      width: 50px;      height: 50px;      animation: spin 1s ease-in-out infinite;    }    @keyframes spin {        0% { transform: rotate(0deg); }        100% { transform: rotate(360deg); }    }&quot;  ),    column(12, actionButton(&quot;go1&quot;, &quot;Simulate long process 1&quot;)),  column(12, actionButton(&quot;go2&quot;, &quot;Simulate long process 2&quot;)),  column(12, actionButton(&quot;go3&quot;, &quot;Simulate long process 3&quot;)),  HTML(&quot;&amp;nbsp;&quot;),  column(12, tags$div(id = &quot;loading&quot;,    tags$script(&#39;$(&quot;#loading&quot;).hide()&#39;)))  )server &lt;- function(input, output, session) {  observeEvent(input$go1, {    for (i in 1:15) {      print(i)      Sys.sleep(0.1)    }  })  observeEvent(input$go2, {    for (i in 1:15) {      print(i)      Sys.sleep(0.1)    }  })  observeEvent(input$go3, {    for (i in 1:5) {      print(i)      Sys.sleep(0.1)    }  })}shinyApp(ui, server)Result:Why do that? Well, don’t. Here we just have a loader that pops up everytime R is running, which is kind of brutal (and I’m not 100 % certain wecan rely on this class change). Also, in my example, the JS code is runevery 50 milliseconds… which is even more brutal. But in case it can beuseful (or inspiring) to someone, I just wanted to share :).And of course, with more hacking, this can ne combined with other JS &amp; Rcode to make a smarter spinner.About the code :function checkifrunning() {  var is_running = $(&quot;html&quot;).attr(&quot;class&quot;).includes(&quot;shiny-busy&quot;);  if (is_running){    $(&quot;#loading&quot;).show()  } else {    $(&quot;#loading&quot;).hide()  }}; setInterval(checkifrunning, 50);I’m creating a function called checkifrunning(), that checks if theclass of the html tag contains shiny-busy, and show() and hide()the loading div if ever it is.With setInterval(checkifrunning, 50), I’m setting this function to berun every 50 milliseconds.The loading CSS and div is inspired by the W3tuto, with alittle bit of tweaking.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Watch if R is running from Shiny">
+  <meta name="twitter:description" content="Today I discovered that the &lt;html&gt; tag of a Shiny App gets theshiny-busy class when computation is done in the R process. Whichmeans that you can potentially watch with JavaScript if the R process isrunning.TIL — Shiny Apps switch to the ‘shiny-busy’ class when R is performingcomputation in the background. So it&#39;s basically possible to useJavaScript to watch if the R session is doing computation or not.\#RStats\#RShinypic.twitter.com/dz2XgOXxVQ— Colin Fay 🤘 (@\_ColinFay)January29,2019It’s pretty subtle and you have to be watching the html source code ofyour app while it is running, so I guess few people other than me enjoydoing that.A POCHere’s a POC of an application that shows a spinner every time R isrunning (well, it checks every 50 milliseconds if R is running, and ifit is, shows the loader).library(shiny)ui &lt;- fluidPage(  tags$script(    &#39;function checkifrunning() {      var is_running = $(&quot;html&quot;).attr(&quot;class&quot;).includes(&quot;shiny-busy&quot;);      if (is_running){        $(&quot;#loading&quot;).show()      } else {        $(&quot;#loading&quot;).hide()      }    };     setInterval(checkifrunning, 50)&#39;  ),   tags$style(    &quot; body { text-align:center; }    #loading {      display: inline-block;      border: 3px solid #f3f3f3;       border-top: 3px solid #3498db;       border-radius: 50%;      width: 50px;      height: 50px;      animation: spin 1s ease-in-out infinite;    }    @keyframes spin {        0% { transform: rotate(0deg); }        100% { transform: rotate(360deg); }    }&quot;  ),    column(12, actionButton(&quot;go1&quot;, &quot;Simulate long process 1&quot;)),  column(12, actionButton(&quot;go2&quot;, &quot;Simulate long process 2&quot;)),  column(12, actionButton(&quot;go3&quot;, &quot;Simulate long process 3&quot;)),  HTML(&quot;&amp;nbsp;&quot;),  column(12, tags$div(id = &quot;loading&quot;,    tags$script(&#39;$(&quot;#loading&quot;).hide()&#39;)))  )server &lt;- function(input, output, session) {  observeEvent(input$go1, {    for (i in 1:15) {      print(i)      Sys.sleep(0.1)    }  })  observeEvent(input$go2, {    for (i in 1:15) {      print(i)      Sys.sleep(0.1)    }  })  observeEvent(input$go3, {    for (i in 1:5) {      print(i)      Sys.sleep(0.1)    }  })}shinyApp(ui, server)Result:Why do that? Well, don’t. Here we just have a loader that pops up everytime R is running, which is kind of brutal (and I’m not 100 % certain wecan rely on this class change). Also, in my example, the JS code is runevery 50 milliseconds… which is even more brutal. But in case it can beuseful (or inspiring) to someone, I just wanted to share :).And of course, with more hacking, this can ne combined with other JS &amp; Rcode to make a smarter spinner.About the code :function checkifrunning() {  var is_running = $(&quot;html&quot;).attr(&quot;class&quot;).includes(&quot;shiny-busy&quot;);  if (is_running){    $(&quot;#loading&quot;).show()  } else {    $(&quot;#loading&quot;).hide()  }}; setInterval(checkifrunning, 50);I’m creating a function called checkifrunning(), that checks if theclass of the html tag contains shiny-busy, and show() and hide()the loading div if ever it is.With setInterval(checkifrunning, 50), I’m setting this function to berun every 50 milliseconds.The loading CSS and div is inspired by the W3tuto, with alittle bit of tweaking.">
+  <meta name="twitter:url" content="http://localhost:4000/watch-r-shiny/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2019-01-29T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/watch-r-shiny/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Watch if R is running from Shiny">
+    <meta itemprop="description" content="Today I discovered that the &lt;html&gt; tag of a Shiny App gets theshiny-busy class when computation is done in the R process. Whichmeans that you can potentially watch with JavaScript if the R process isrunning.TIL — Shiny Apps switch to the ‘shiny-busy’ class when R is performingcomputation in the background. So it&#39;s basically possible to useJavaScript to watch if the R session is doing computation or not.\#RStats\#RShinypic.twitter.com/dz2XgOXxVQ— Colin Fay 🤘 (@\_ColinFay)January29,2019It’s pretty subtle and you have to be watching the html source code ofyour app while it is running, so I guess few people other than me enjoydoing that.A POCHere’s a POC of an application that shows a spinner every time R isrunning (well, it checks every 50 milliseconds if R is running, and ifit is, shows the loader).library(shiny)ui &lt;- fluidPage(  tags$script(    &#39;function checkifrunning() {      var is_running = $(&quot;html&quot;).attr(&quot;class&quot;).includes(&quot;shiny-busy&quot;);      if (is_running){        $(&quot;#loading&quot;).show()      } else {        $(&quot;#loading&quot;).hide()      }    };     setInterval(checkifrunning, 50)&#39;  ),   tags$style(    &quot; body { text-align:center; }    #loading {      display: inline-block;      border: 3px solid #f3f3f3;       border-top: 3px solid #3498db;       border-radius: 50%;      width: 50px;      height: 50px;      animation: spin 1s ease-in-out infinite;    }    @keyframes spin {        0% { transform: rotate(0deg); }        100% { transform: rotate(360deg); }    }&quot;  ),    column(12, actionButton(&quot;go1&quot;, &quot;Simulate long process 1&quot;)),  column(12, actionButton(&quot;go2&quot;, &quot;Simulate long process 2&quot;)),  column(12, actionButton(&quot;go3&quot;, &quot;Simulate long process 3&quot;)),  HTML(&quot;&amp;nbsp;&quot;),  column(12, tags$div(id = &quot;loading&quot;,    tags$script(&#39;$(&quot;#loading&quot;).hide()&#39;)))  )server &lt;- function(input, output, session) {  observeEvent(input$go1, {    for (i in 1:15) {      print(i)      Sys.sleep(0.1)    }  })  observeEvent(input$go2, {    for (i in 1:15) {      print(i)      Sys.sleep(0.1)    }  })  observeEvent(input$go3, {    for (i in 1:5) {      print(i)      Sys.sleep(0.1)    }  })}shinyApp(ui, server)Result:Why do that? Well, don’t. Here we just have a loader that pops up everytime R is running, which is kind of brutal (and I’m not 100 % certain wecan rely on this class change). Also, in my example, the JS code is runevery 50 milliseconds… which is even more brutal. But in case it can beuseful (or inspiring) to someone, I just wanted to share :).And of course, with more hacking, this can ne combined with other JS &amp; Rcode to make a smarter spinner.About the code :function checkifrunning() {  var is_running = $(&quot;html&quot;).attr(&quot;class&quot;).includes(&quot;shiny-busy&quot;);  if (is_running){    $(&quot;#loading&quot;).show()  } else {    $(&quot;#loading&quot;).hide()  }}; setInterval(checkifrunning, 50);I’m creating a function called checkifrunning(), that checks if theclass of the html tag contains shiny-busy, and show() and hide()the loading div if ever it is.With setInterval(checkifrunning, 50), I’m setting this function to berun every 50 milliseconds.The loading CSS and div is inspired by the W3tuto, with alittle bit of tweaking.">
+    <meta itemprop="datePublished" content="January 29, 2019">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Watch if R is running from Shiny
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  2 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Today I discovered that the <code class="highlighter-rouge"><span class="nt">&lt;html&gt;</span></code> tag of a Shiny App gets the
+<code class="highlighter-rouge">shiny-busy</code> class when computation is done in the R process. Which
+means that you can potentially watch with JavaScript if the R process is
+running.</p>
+
+<blockquote class="twitter-tweet">
+
+<p lang="en" dir="ltr">
+
+TIL — Shiny Apps switch to the ‘shiny-busy’ class when R is performing
+computation in the background. <br />So it's basically possible to use
+JavaScript to watch if the R session is doing computation or not.
+<a href="https://twitter.com/hashtag/RStats?src=hash&amp;ref_src=twsrc%5Etfw">\#RStats</a>
+<a href="https://twitter.com/hashtag/RShiny?src=hash&amp;ref_src=twsrc%5Etfw">\#RShiny</a>
+<a href="https://t.co/dz2XgOXxVQ">pic.twitter.com/dz2XgOXxVQ</a>
+
+</p>
+
+— Colin Fay 🤘 (@\_ColinFay)
+<a href="https://twitter.com/_ColinFay/status/1090289885108469760?ref_src=twsrc%5Etfw">January
+29,
+2019</a>
+
+</blockquote>
+
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>It’s pretty subtle and you have to be watching the html source code of
+your app while it is running, so I guess few people other than me enjoy
+doing that.</p>
+
+<h3 id="a-poc">A POC</h3>
+
+<p>Here’s a POC of an application that shows a spinner every time R is
+running (well, it checks every 50 milliseconds if R is running, and if
+it is, shows the loader).</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">shiny</span><span class="p">)</span><span class="w">
+
+</span><span class="n">ui</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fluidPage</span><span class="p">(</span><span class="w">
+  </span><span class="n">tags</span><span class="o">$</span><span class="n">script</span><span class="p">(</span><span class="w">
+    </span><span class="s1">'function checkifrunning() {
+      var is_running = $("html").attr("class").includes("shiny-busy");
+      if (is_running){
+        $("#loading").show()
+      } else {
+        $("#loading").hide()
+      }
+    }; 
+    setInterval(checkifrunning, 50)'</span><span class="w">
+  </span><span class="p">),</span><span class="w"> 
+  </span><span class="n">tags</span><span class="o">$</span><span class="n">style</span><span class="p">(</span><span class="w">
+    </span><span class="s2">" body { text-align:center; }
+
+    #loading {
+      display: inline-block;
+      border: 3px solid #f3f3f3; 
+      border-top: 3px solid #3498db; 
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }"</span><span class="w">
+  </span><span class="p">),</span><span class="w">
+  
+  </span><span class="n">column</span><span class="p">(</span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="n">actionButton</span><span class="p">(</span><span class="s2">"go1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Simulate long process 1"</span><span class="p">)),</span><span class="w">
+  </span><span class="n">column</span><span class="p">(</span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="n">actionButton</span><span class="p">(</span><span class="s2">"go2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Simulate long process 2"</span><span class="p">)),</span><span class="w">
+  </span><span class="n">column</span><span class="p">(</span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="n">actionButton</span><span class="p">(</span><span class="s2">"go3"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Simulate long process 3"</span><span class="p">)),</span><span class="w">
+  </span><span class="n">HTML</span><span class="p">(</span><span class="s2">"&amp;nbsp;"</span><span class="p">),</span><span class="w">
+  </span><span class="n">column</span><span class="p">(</span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="n">tags</span><span class="o">$</span><span class="n">div</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"loading"</span><span class="p">,</span><span class="w">
+    </span><span class="n">tags</span><span class="o">$</span><span class="n">script</span><span class="p">(</span><span class="s1">'$("#loading").hide()'</span><span class="p">)))</span><span class="w">
+  
+</span><span class="p">)</span><span class="w">
+
+</span><span class="n">server</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">session</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">observeEvent</span><span class="p">(</span><span class="n">input</span><span class="o">$</span><span class="n">go1</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">15</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w">
+      </span><span class="n">Sys.sleep</span><span class="p">(</span><span class="m">0.1</span><span class="p">)</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">})</span><span class="w">
+  </span><span class="n">observeEvent</span><span class="p">(</span><span class="n">input</span><span class="o">$</span><span class="n">go2</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">15</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w">
+      </span><span class="n">Sys.sleep</span><span class="p">(</span><span class="m">0.1</span><span class="p">)</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">})</span><span class="w">
+  </span><span class="n">observeEvent</span><span class="p">(</span><span class="n">input</span><span class="o">$</span><span class="n">go3</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w">
+      </span><span class="n">Sys.sleep</span><span class="p">(</span><span class="m">0.1</span><span class="p">)</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">})</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">shinyApp</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span><span class="w"> </span><span class="n">server</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Result:</p>
+
+<p><img src="../assets/img/shinyspin.gif" alt="" /></p>
+
+<p>Why do that? Well, don’t. Here we just have a loader that pops up every
+time R is running, which is kind of brutal (and I’m not 100 % certain we
+can rely on this class change). Also, in my example, the JS code is run
+every 50 milliseconds… which is even more brutal. But in case it can be
+useful (or inspiring) to someone, I just wanted to share :).</p>
+
+<p>And of course, with more hacking, this can ne combined with other JS &amp; R
+code to make a smarter spinner.</p>
+
+<h3 id="about-the-code-">About the code :</h3>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">checkifrunning</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">is_running</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">"html"</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">).</span><span class="nx">includes</span><span class="p">(</span><span class="s2">"shiny-busy"</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">is_running</span><span class="p">){</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">"#loading"</span><span class="p">).</span><span class="nx">show</span><span class="p">()</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">"#loading"</span><span class="p">).</span><span class="nx">hide</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">};</span> 
+<span class="nx">setInterval</span><span class="p">(</span><span class="nx">checkifrunning</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>I’m creating a function called <code class="highlighter-rouge">checkifrunning()</code>, that checks if the
+class of the <code class="highlighter-rouge">html</code> tag contains <code class="highlighter-rouge">shiny-busy</code>, and <code class="highlighter-rouge">show()</code> and <code class="highlighter-rouge">hide()</code>
+the <code class="highlighter-rouge">loading</code> div if ever it is.</p>
+
+<p>With <code class="highlighter-rouge">setInterval(checkifrunning, 50)</code>, I’m setting this function to be
+run every 50 milliseconds.</p>
+
+<p>The loading CSS and div is inspired by the <a href="https://www.w3schools.com/howto/howto_css_loader.asp">W3
+tuto</a>, with a
+little bit of tweaking.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2019-01-29T00:00:00+01:00">January 29, 2019</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Watch+if+R+is+running+from+Shiny%20http%3A%2F%2Flocalhost%3A4000%2Fwatch-r-shiny%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fwatch-r-shiny%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fwatch-r-shiny%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fwatch-r-shiny%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/docker-r-reproducibility/" class="pagination--pager" title="An Introduction to Docker for R Users
+">←</a>
+    
+    
+      <a href="/see-you-user-2019" class="pagination--pager" title="See you at useR! Toulouse
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/watch-r-shiny/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/watching-r-shiny"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="appendix-c-the-command-line-editor.html">
+<link rel="next" href="appendix-e-concept-index.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix-d-function-and-variable-index" class="section level1">
+<h1><span class="header-section-number">Chapter 18</span> Appendix D Function and variable index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-1" class="summary-letter"><strong>!</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-2" class="summary-letter"><strong>%</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-3" class="summary-letter"><strong>&amp;</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-4" class="summary-letter"><strong>*</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-5" class="summary-letter"><strong>+</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-6" class="summary-letter"><strong>-</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-7" class="summary-letter"><strong>.</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-8" class="summary-letter"><strong>/</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-9" class="summary-letter"><strong>:</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-10" class="summary-letter"><strong>&lt;</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-11" class="summary-letter"><strong>=</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-12" class="summary-letter"><strong>&gt;</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-13" class="summary-letter"><strong>?</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-14" class="summary-letter"><strong>^</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-15" class="summary-letter"><strong>|</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-16" class="summary-letter"><strong>~</strong></a>  <br /> <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-H" class="summary-letter"><strong>H</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-J" class="summary-letter"><strong>J</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-K" class="summary-letter"><strong>K</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-V" class="summary-letter"><strong>V</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-W" class="summary-letter"><strong>W</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-X" class="summary-letter"><strong>X</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-1">!</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_0021"><code class="calibre2">!</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_0021_003d"><code class="calibre2">!=</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-2">%</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-_0025_002a_0025"><code class="calibre2">%*%</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Multiplication">Multiplication</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-_0025o_0025"><code class="calibre2">%o%</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#The-outer-product-of-two-arrays">The outer product of two arrays</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-3">&amp;</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_0026"><code class="calibre2">&amp;</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-_0026_0026"><code class="calibre2">&amp;&amp;</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Conditional-execution">Conditional execution</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-4">*</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_002a"><code class="calibre2">*</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-5">+</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_002b"><code class="calibre2">+</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-6">-</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_002d"><code class="calibre2">-</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-7">.</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-_002e"><code class="calibre2">.</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Updating-fitted-models">Updating fitted models</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-_002eFirst"><code class="calibre2">.First</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Customizing-the-environment">Customizing the environment</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-_002eLast"><code class="calibre2">.Last</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Customizing-the-environment">Customizing the environment</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-8">/</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_002f"><code class="calibre2">/</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-9">:</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_003a"><code class="calibre2">:</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Generating-regular-sequences">Generating regular sequences</a>
+</p>
+<p>
+<a href="016-R-intro.html#index-_003a_003a"><code class="calibre2">::</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="016-R-intro.html#Namespaces">Namespaces</a>
+</p>
+<p>
+<a href="016-R-intro.html#index-_003a_003a_003a"><code class="calibre2">:::</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="016-R-intro.html#Namespaces">Namespaces</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-10">&lt;</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_003c"><code class="calibre2">&lt;</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-_003c_003c_002d"><code class="calibre2">&lt;&lt;-</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Scope">Scope</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_003c_003d"><code class="calibre2">&lt;=</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-11">=</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_003d_003d"><code class="calibre2">==</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-12">&gt;</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_003e"><code class="calibre2">&gt;</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_003e_003d"><code class="calibre2">&gt;=</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-13">?</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-_003f"><code class="calibre2">?</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Getting-help">Getting help</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-_003f_003f"><code class="calibre2">??</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Getting-help">Getting help</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-14">^</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_005e"><code class="calibre2">^</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-15">|</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-_007c"><code class="calibre2">|</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-_007c_007c"><code class="calibre2">||</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Conditional-execution">Conditional execution</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-16">~</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-_007e"><code class="calibre2">~</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Formulae-for-statistical-models">Formulae for statistical models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-A">A</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-abline"><code class="calibre2">abline</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Low_002dlevel-plotting-commands">Low-level plotting commands</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-ace"><code class="calibre2">ace</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-add1"><code class="calibre2">add1</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Updating-fitted-models">Updating fitted models</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-anova"><code class="calibre2">anova</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-anova-1"><code class="calibre2">anova</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#ANOVA-tables">ANOVA tables</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-aov"><code class="calibre2">aov</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Analysis-of-variance-and-model-comparison">Analysis of variance and model comparison</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-aperm"><code class="calibre2">aperm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Generalized-transpose-of-an-array">Generalized transpose of an array</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-array"><code class="calibre2">array</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#The-array_0028_0029-function">The array() function</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-as_002edata_002eframe"><code class="calibre2">as.data.frame</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Making-data-frames">Making data frames</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-as_002evector"><code class="calibre2">as.vector</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#The-concatenation-function-c_0028_0029-with-arrays">The concatenation function c() with arrays</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-attach"><code class="calibre2">attach</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#attach_0028_0029-and-detach_0028_0029">attach() and detach()</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-attr"><code class="calibre2">attr</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#Getting-and-setting-attributes">Getting and setting attributes</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-attr-1"><code class="calibre2">attr</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#Getting-and-setting-attributes">Getting and setting attributes</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-attributes"><code class="calibre2">attributes</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#Getting-and-setting-attributes">Getting and setting attributes</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-attributes-1"><code class="calibre2">attributes</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#Getting-and-setting-attributes">Getting and setting attributes</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-avas"><code class="calibre2">avas</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-axis"><code class="calibre2">axis</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Low_002dlevel-plotting-commands">Low-level plotting commands</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-B">B</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-boxplot"><code class="calibre2">boxplot</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#One_002d-and-two_002dsample-tests">One- and two-sample tests</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-break"><code class="calibre2">break</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Repetitive-execution">Repetitive execution</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-bruto"><code class="calibre2">bruto</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-C">C</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-c"><code class="calibre2">c</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vectors-and-assignment">Vectors and assignment</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-c-1"><code class="calibre2">c</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Character-vectors">Character vectors</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-c-2"><code class="calibre2">c</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#The-concatenation-function-c_0028_0029-with-arrays">The concatenation function c() with arrays</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-c-3"><code class="calibre2">c</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Concatenating-lists">Concatenating lists</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-C"><code class="calibre2">C</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Contrasts">Contrasts</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-cbind"><code class="calibre2">cbind</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Forming-partitioned-matrices">Forming partitioned matrices</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-coef"><code class="calibre2">coef</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-coefficients"><code class="calibre2">coefficients</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-contour"><code class="calibre2">contour</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Display-graphics">Display graphics</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-contrasts"><code class="calibre2">contrasts</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Contrasts">Contrasts</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-coplot"><code class="calibre2">coplot</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Displaying-multivariate-data">Displaying multivariate data</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-cos"><code class="calibre2">cos</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-crossprod"><code class="calibre2">crossprod</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Index-matrices">Index matrices</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-crossprod-1"><code class="calibre2">crossprod</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Multiplication">Multiplication</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-cut"><code class="calibre2">cut</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Frequency-tables-from-factors">Frequency tables from factors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-D">D</a>
+</p>
+<p>
+<a href="010-R-intro.html#index-data"><code class="calibre2">data</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="010-R-intro.html#Accessing-builtin-datasets">Accessing builtin datasets</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-data_002eframe"><code class="calibre2">data.frame</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Making-data-frames">Making data frames</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-density"><code class="calibre2">density</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-det"><code class="calibre2">det</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Singular-value-decomposition-and-determinants">Singular value decomposition and determinants</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-detach"><code class="calibre2">detach</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#attach_0028_0029-and-detach_0028_0029">attach() and detach()</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-determinant"><code class="calibre2">determinant</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Singular-value-decomposition-and-determinants">Singular value decomposition and determinants</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-dev_002elist"><code class="calibre2">dev.list</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Multiple-graphics-devices">Multiple graphics devices</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-dev_002enext"><code class="calibre2">dev.next</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Multiple-graphics-devices">Multiple graphics devices</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-dev_002eoff"><code class="calibre2">dev.off</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Multiple-graphics-devices">Multiple graphics devices</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-dev_002eprev"><code class="calibre2">dev.prev</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Multiple-graphics-devices">Multiple graphics devices</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-dev_002eset"><code class="calibre2">dev.set</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Multiple-graphics-devices">Multiple graphics devices</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-deviance"><code class="calibre2">deviance</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-diag"><code class="calibre2">diag</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Multiplication">Multiplication</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-dim"><code class="calibre2">dim</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Arrays">Arrays</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-dotchart"><code class="calibre2">dotchart</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Display-graphics">Display graphics</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-drop1"><code class="calibre2">drop1</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Updating-fitted-models">Updating fitted models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-E">E</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-ecdf"><code class="calibre2">ecdf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="010-R-intro.html#index-edit"><code class="calibre2">edit</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="010-R-intro.html#Editing-data">Editing data</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-eigen"><code class="calibre2">eigen</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Eigenvalues-and-eigenvectors">Eigenvalues and eigenvectors</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-else"><code class="calibre2">else</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Conditional-execution">Conditional execution</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-Error"><code class="calibre2">Error</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Analysis-of-variance-and-model-comparison">Analysis of variance and model comparison</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-example"><code class="calibre2">example</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Getting-help">Getting help</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-exp"><code class="calibre2">exp</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-F">F</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-F"><code class="calibre2">F</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<p>
+<a href="007-R-intro.html#index-factor"><code class="calibre2">factor</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#Factors">Factors</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-FALSE"><code class="calibre2">FALSE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-fivenum"><code class="calibre2">fivenum</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-for"><code class="calibre2">for</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Repetitive-execution">Repetitive execution</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-formula"><code class="calibre2">formula</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-function"><code class="calibre2">function</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Writing-your-own-functions">Writing your own functions</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-G">G</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-getAnywhere"><code class="calibre2">getAnywhere</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Object-orientation">Object orientation</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-getS3method"><code class="calibre2">getS3method</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Object-orientation">Object orientation</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-glm"><code class="calibre2">glm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#The-glm_0028_0029-function">The glm() function</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-H">H</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-help"><code class="calibre2">help</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Getting-help">Getting help</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-help-1"><code class="calibre2">help</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Getting-help">Getting help</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-help_002esearch"><code class="calibre2">help.search</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Getting-help">Getting help</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-help_002estart"><code class="calibre2">help.start</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Getting-help">Getting help</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-hist"><code class="calibre2">hist</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-hist-1"><code class="calibre2">hist</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Display-graphics">Display graphics</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-I">I</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-identify"><code class="calibre2">identify</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Interacting-with-graphics">Interacting with graphics</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-if"><code class="calibre2">if</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Conditional-execution">Conditional execution</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-if-1"><code class="calibre2">if</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Conditional-execution">Conditional execution</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-ifelse"><code class="calibre2">ifelse</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Conditional-execution">Conditional execution</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-image"><code class="calibre2">image</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Display-graphics">Display graphics</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-is_002ena"><code class="calibre2">is.na</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Missing-values">Missing values</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-is_002enan"><code class="calibre2">is.nan</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Missing-values">Missing values</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-J">J</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-jpeg"><code class="calibre2">jpeg</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Device-drivers">Device drivers</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-K">K</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-ks_002etest"><code class="calibre2">ks.test</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-L">L</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-legend"><code class="calibre2">legend</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Low_002dlevel-plotting-commands">Low-level plotting commands</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-length"><code class="calibre2">length</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-length-1"><code class="calibre2">length</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#The-intrinsic-attributes-mode-and-length">The intrinsic attributes mode and length</a>
+</p>
+<p>
+<a href="007-R-intro.html#index-levels"><code class="calibre2">levels</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#Factors">Factors</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-lines"><code class="calibre2">lines</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Low_002dlevel-plotting-commands">Low-level plotting commands</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-list"><code class="calibre2">list</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Lists">Lists</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-lm"><code class="calibre2">lm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Linear-models">Linear models</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-lme"><code class="calibre2">lme</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-locator"><code class="calibre2">locator</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Interacting-with-graphics">Interacting with graphics</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-loess"><code class="calibre2">loess</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-loess-1"><code class="calibre2">loess</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-log"><code class="calibre2">log</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-lqs"><code class="calibre2">lqs</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-lsfit"><code class="calibre2">lsfit</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Least-squares-fitting-and-the-QR-decomposition">Least squares fitting and the QR decomposition</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-M">M</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-mars"><code class="calibre2">mars</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-max"><code class="calibre2">max</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-mean"><code class="calibre2">mean</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="013-R-intro.html#index-methods"><code class="calibre2">methods</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="013-R-intro.html#Object-orientation">Object orientation</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-min"><code class="calibre2">min</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-mode"><code class="calibre2">mode</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#The-intrinsic-attributes-mode-and-length">The intrinsic attributes mode and length</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-N">N</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-NA"><code class="calibre2">NA</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Missing-values">Missing values</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-NaN"><code class="calibre2">NaN</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Missing-values">Missing values</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-ncol"><code class="calibre2">ncol</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Matrix-facilities">Matrix facilities</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-next"><code class="calibre2">next</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Repetitive-execution">Repetitive execution</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-nlm"><code class="calibre2">nlm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Nonlinear-least-squares-and-maximum-likelihood-models">Nonlinear least squares and maximum likelihood models</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-nlm-1"><code class="calibre2">nlm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Least-squares">Least squares</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-nlm-2"><code class="calibre2">nlm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Maximum-likelihood">Maximum likelihood</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-nlme"><code class="calibre2">nlme</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-nlminb"><code class="calibre2">nlminb</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Nonlinear-least-squares-and-maximum-likelihood-models">Nonlinear least squares and maximum likelihood models</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-nrow"><code class="calibre2">nrow</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Matrix-facilities">Matrix facilities</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-O">O</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-optim"><code class="calibre2">optim</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Nonlinear-least-squares-and-maximum-likelihood-models">Nonlinear least squares and maximum likelihood models</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-order"><code class="calibre2">order</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="007-R-intro.html#index-ordered"><code class="calibre2">ordered</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="007-R-intro.html#Ordered-factors">Ordered factors</a>
+</p>
+<p>
+<a href="007-R-intro.html#index-ordered-1"><code class="calibre2">ordered</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="007-R-intro.html#Ordered-factors">Ordered factors</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-outer"><code class="calibre2">outer</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#The-outer-product-of-two-arrays">The outer product of two arrays</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-P">P</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-pairs"><code class="calibre2">pairs</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Displaying-multivariate-data">Displaying multivariate data</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-par"><code class="calibre2">par</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#The-par_0028_0029-function">The par() function</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-paste"><code class="calibre2">paste</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Character-vectors">Character vectors</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-pdf"><code class="calibre2">pdf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Device-drivers">Device drivers</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-persp"><code class="calibre2">persp</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Display-graphics">Display graphics</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-plot"><code class="calibre2">plot</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-plot-1"><code class="calibre2">plot</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#The-plot_0028_0029-function">The plot() function</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-pmax"><code class="calibre2">pmax</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-pmin"><code class="calibre2">pmin</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-png"><code class="calibre2">png</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Device-drivers">Device drivers</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-points"><code class="calibre2">points</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Low_002dlevel-plotting-commands">Low-level plotting commands</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-polygon"><code class="calibre2">polygon</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Low_002dlevel-plotting-commands">Low-level plotting commands</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-postscript"><code class="calibre2">postscript</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Device-drivers">Device drivers</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-predict"><code class="calibre2">predict</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-print"><code class="calibre2">print</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-prod"><code class="calibre2">prod</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-Q">Q</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-qqline"><code class="calibre2">qqline</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-qqline-1"><code class="calibre2">qqline</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Display-graphics">Display graphics</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-qqnorm"><code class="calibre2">qqnorm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-qqnorm-1"><code class="calibre2">qqnorm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Display-graphics">Display graphics</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-qqplot"><code class="calibre2">qqplot</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Display-graphics">Display graphics</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-qr"><code class="calibre2">qr</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Least-squares-fitting-and-the-QR-decomposition">Least squares fitting and the QR decomposition</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-quartz"><code class="calibre2">quartz</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Device-drivers">Device drivers</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-R">R</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-range"><code class="calibre2">range</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-rbind"><code class="calibre2">rbind</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Forming-partitioned-matrices">Forming partitioned matrices</a>
+</p>
+<p>
+<a href="010-R-intro.html#index-read_002etable"><code class="calibre2">read.table</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="010-R-intro.html#The-read_002etable_0028_0029-function">The read.table() function</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-rep"><code class="calibre2">rep</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Generating-regular-sequences">Generating regular sequences</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-repeat"><code class="calibre2">repeat</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Repetitive-execution">Repetitive execution</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-resid"><code class="calibre2">resid</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-residuals"><code class="calibre2">residuals</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-rlm"><code class="calibre2">rlm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-rm"><code class="calibre2">rm</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Data-permanency-and-removing-objects">Data permanency and removing objects</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-S">S</a>
+</p>
+<p>
+<a href="010-R-intro.html#index-scan"><code class="calibre2">scan</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="010-R-intro.html#The-scan_0028_0029-function">The scan() function</a>
+</p>
+<p>
+<a href="007-R-intro.html#index-sd"><code class="calibre2">sd</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="007-R-intro.html#The-function-tapply_0028_0029-and-ragged-arrays">The function tapply() and ragged arrays</a>
+</p>
+<p>
+<a href="009-R-intro.html#index-search"><code class="calibre2">search</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="009-R-intro.html#Managing-the-search-path">Managing the search path</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-seq"><code class="calibre2">seq</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Generating-regular-sequences">Generating regular sequences</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-shapiro_002etest"><code class="calibre2">shapiro.test</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-sin"><code class="calibre2">sin</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-sink"><code class="calibre2">sink</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Executing-commands-from-or-diverting-output-to-a-file">Executing commands from or diverting output to a file</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-solve"><code class="calibre2">solve</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Linear-equations-and-inversion">Linear equations and inversion</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-sort"><code class="calibre2">sort</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="004-R-intro.html#index-source"><code class="calibre2">source</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="004-R-intro.html#Executing-commands-from-or-diverting-output-to-a-file">Executing commands from or diverting output to a file</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-split"><code class="calibre2">split</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Repetitive-execution">Repetitive execution</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-sqrt"><code class="calibre2">sqrt</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-stem"><code class="calibre2">stem</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-step"><code class="calibre2">step</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-step-1"><code class="calibre2">step</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Updating-fitted-models">Updating fitted models</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-sum"><code class="calibre2">sum</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-summary"><code class="calibre2">summary</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#Examining-the-distribution-of-a-set-of-data">Examining the distribution of a set of data</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-summary-1"><code class="calibre2">summary</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-svd"><code class="calibre2">svd</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Singular-value-decomposition-and-determinants">Singular value decomposition and determinants</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-T">T</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-T"><code class="calibre2">T</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-t"><code class="calibre2">t</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Generalized-transpose-of-an-array">Generalized transpose of an array</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-t_002etest"><code class="calibre2">t.test</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#One_002d-and-two_002dsample-tests">One- and two-sample tests</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-table"><code class="calibre2">table</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Index-matrices">Index matrices</a>
+</p>
+<p>
+<a href="008-R-intro.html#index-table-1"><code class="calibre2">table</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="008-R-intro.html#Frequency-tables-from-factors">Frequency tables from factors</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-tan"><code class="calibre2">tan</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="007-R-intro.html#index-tapply"><code class="calibre2">tapply</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="007-R-intro.html#The-function-tapply_0028_0029-and-ragged-arrays">The function tapply() and ragged arrays</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-text"><code class="calibre2">text</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Low_002dlevel-plotting-commands">Low-level plotting commands</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-title"><code class="calibre2">title</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Low_002dlevel-plotting-commands">Low-level plotting commands</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-tree"><code class="calibre2">tree</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Some-non_002dstandard-models">Some non-standard models</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-TRUE"><code class="calibre2">TRUE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Logical-vectors">Logical vectors</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-U">U</a>
+</p>
+<p>
+<a href="006-R-intro.html#index-unclass"><code class="calibre2">unclass</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="006-R-intro.html#The-class-of-an-object">The class of an object</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-update"><code class="calibre2">update</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Updating-fitted-models">Updating fitted models</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-V">V</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-var"><code class="calibre2">var</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vector-arithmetic">Vector arithmetic</a>
+</p>
+<p>
+<a href="007-R-intro.html#index-var-1"><code class="calibre2">var</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="007-R-intro.html#The-function-tapply_0028_0029-and-ragged-arrays">The function tapply() and ragged arrays</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-var_002etest"><code class="calibre2">var.test</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#One_002d-and-two_002dsample-tests">One- and two-sample tests</a>
+</p>
+<p>
+<a href="014-R-intro.html#index-vcov"><code class="calibre2">vcov</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="014-R-intro.html#Generic-functions-for-extracting-model-information">Generic functions for extracting model information</a>
+</p>
+<p>
+<a href="005-R-intro.html#index-vector"><code class="calibre2">vector</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="005-R-intro.html#Vectors-and-assignment">Vectors and assignment</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-W">W</a>
+</p>
+<p>
+<a href="012-R-intro.html#index-while"><code class="calibre2">while</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="012-R-intro.html#Repetitive-execution">Repetitive execution</a>
+</p>
+<p>
+<a href="011-R-intro.html#index-wilcox_002etest"><code class="calibre2">wilcox.test</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="011-R-intro.html#One_002d-and-two_002dsample-tests">One- and two-sample tests</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-windows"><code class="calibre2">windows</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Device-drivers">Device drivers</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-X">X</a>
+</p>
+<p>
+<a href="015-R-intro.html#index-X11"><code class="calibre2">X11</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="015-R-intro.html#Device-drivers">Device drivers</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-1" class="summary-letter"><strong>!</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-2" class="summary-letter"><strong>%</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-3" class="summary-letter"><strong>&amp;</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-4" class="summary-letter"><strong>*</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-5" class="summary-letter"><strong>+</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-6" class="summary-letter"><strong>-</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-7" class="summary-letter"><strong>.</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-8" class="summary-letter"><strong>/</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-9" class="summary-letter"><strong>:</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-10" class="summary-letter"><strong>&lt;</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-11" class="summary-letter"><strong>=</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-12" class="summary-letter"><strong>&gt;</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-13" class="summary-letter"><strong>?</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-14" class="summary-letter"><strong>^</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-15" class="summary-letter"><strong>|</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_symbol-16" class="summary-letter"><strong>~</strong></a>  <br /> <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-H" class="summary-letter"><strong>H</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-J" class="summary-letter"><strong>J</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-K" class="summary-letter"><strong>K</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-V" class="summary-letter"><strong>V</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-W" class="summary-letter"><strong>W</strong></a>   <a href="appendix-d-function-and-variable-index.html#Function-and-variable-index_vr_letter-X" class="summary-letter"><strong>X</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>
+<a href="" id="Concept-index"></a> <a href="" id="Concept-index-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="appendix-c-the-command-line-editor.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-e-concept-index.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

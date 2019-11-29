@@ -1,0 +1,798 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Solving #AdventOfCode day 1 and 2 with R - Colin Fay</title>
+<meta name="description" content="Solving the first four puzzles of Advent ofCode with R.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Solving #AdventOfCode day 1 and 2 with R">
+<meta property="og:url" content="http://localhost:4000/advent-code-1-2/">
+
+
+  <meta property="og:description" content="Solving the first four puzzles of Advent ofCode with R.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Solving #AdventOfCode day 1 and 2 with R">
+  <meta name="twitter:description" content="Solving the first four puzzles of Advent ofCode with R.">
+  <meta name="twitter:url" content="http://localhost:4000/advent-code-1-2/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-12-02T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/advent-code-1-2/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Solving #AdventOfCode day 1 and 2 with R">
+    <meta itemprop="description" content="Solving the first four puzzles of Advent ofCode with R.">
+    <meta itemprop="datePublished" content="December 02, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Solving #AdventOfCode day 1 and 2 with R
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  5 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Solving the first four puzzles of <a href="https://adventofcode.com">Advent of
+Code</a> with R.</p>
+
+<!--more-->
+
+<p>[Disclaimer] Obviously, this post contains a big spoiler about Advent
+of Code, as it gives solutions for solving day 1 and 2.</p>
+
+<h2 id="advent-of-code">Advent of Code</h2>
+
+<blockquote>
+  <p>Advent of Code is an Advent calendar of small programming puzzles for
+a variety of skill sets and skill levels that can be solved in any
+programming language you like. <a href="https://adventofcode.com/2018/about">About Advent of
+Code</a></p>
+</blockquote>
+
+<h2 id="day-one-part-one">Day one, part one</h2>
+
+<p>Let’s read the inputs for day one:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">inputs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w">  </span><span class="n">read.csv</span><span class="p">(</span><span class="s2">"input.txt"</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)[,</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The story behind this is, to sum up: you’ve got a frequency of X, and a
+series of moves to apply to this frequency.</p>
+
+<p>So, here’s the challenge: we are starting at 0, then each element of our
+input vector is a “shift”, so the idea is to do <code class="highlighter-rouge">0 + v[1] + v[2] + ... +
+v[n]</code>. We need to get the value of the last element.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">head</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1]  11  14  10  -8 -13  -2   8  14 -11  -4
+</code></pre></div></div>
+
+<h3 id="function-factory">Function factory</h3>
+
+<p>[Disclaimer bis] I’ve been looking for an opportunity to write a blog
+post about this for a while. It seems like I finally found one ;)</p>
+
+<p>Here’s a way to do it, using closures, functional programming, and
+vectorisation. We’re going to create a function factory, which is a
+family of high order functions that takes a vector and returns a
+function <a href="">See there for more info</a>.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">with_start_at</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">start</span><span class="p">){</span><span class="w">
+  </span><span class="n">start</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">start</span><span class="w">
+  </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+    </span><span class="n">start</span><span class="w"> </span><span class="o">&lt;&lt;-</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="w">
+    </span><span class="n">start</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Let’s test against the example from AoC.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tail</span><span class="p">(</span><span class="w"> </span><span class="n">vapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">with_start_at</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">numeric</span><span class="p">(</span><span class="m">1</span><span class="p">)),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> 
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 3
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tail</span><span class="p">(</span><span class="w"> </span><span class="n">vapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">-2</span><span class="p">),</span><span class="w"> </span><span class="n">with_start_at</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">numeric</span><span class="p">(</span><span class="m">1</span><span class="p">)),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 0
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tail</span><span class="p">(</span><span class="w"> </span><span class="n">vapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">-2</span><span class="p">,</span><span class="w"> </span><span class="m">-3</span><span class="p">),</span><span class="w"> </span><span class="n">with_start_at</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">numeric</span><span class="p">(</span><span class="m">1</span><span class="p">)),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] -6
+</code></pre></div></div>
+
+<p>And finally, let’s get the answer to the question:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tail</span><span class="p">(</span><span class="w"> </span><span class="n">vapply</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">with_start_at</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">numeric</span><span class="p">(</span><span class="m">1</span><span class="p">)),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 402
+</code></pre></div></div>
+
+<h3 id="how-does-it-work">How does it work</h3>
+
+<p>Basically, each function creates its own environment. When you create a
+function <code class="highlighter-rouge">Y</code> inside another function <code class="highlighter-rouge">X</code>, the function <code class="highlighter-rouge">Y</code>, when
+returned, carries along the <strong>environment in which it has been
+created</strong>. In other word, when I create a function <code class="highlighter-rouge">Y</code> with
+<code class="highlighter-rouge">with_start_at</code>, the <code class="highlighter-rouge">start</code> object, even if in the parent environment
+at the time of the function creation, is still accessible to the <code class="highlighter-rouge">Y</code>
+function via the <code class="highlighter-rouge">&lt;&lt;-</code> operator.</p>
+
+<p>In a conceptual sense, it’s like defining a <code class="highlighter-rouge">start</code> inside your global
+environment and changing it on each iteration of the <code class="highlighter-rouge">vapply</code>. The big
+difference being that you don’t mess with the global environment:
+everything happening inside the function stays inside the function.</p>
+
+<h3 id="benchmark">Benchmark</h3>
+
+<p>Let’s benchmark a for loop against our functional solution:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bench</span><span class="o">::</span><span class="n">mark</span><span class="p">(</span><span class="w">
+  </span><span class="n">iterations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w">
+  </span><span class="n">check</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> 
+  </span><span class="n">`for`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">start</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span><span class="w">
+  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nf">seq_along</span><span class="p">(</span><span class="n">inputs</span><span class="p">)){</span><span class="w">
+    </span><span class="n">start</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">inputs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="n">start</span><span class="p">},</span><span class="w"> 
+  </span><span class="n">functional</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">tail</span><span class="p">(</span><span class="w"> </span><span class="n">vapply</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">with_start_at</span><span class="p">(</span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">numeric</span><span class="p">(</span><span class="m">1</span><span class="p">)),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 
+## 
+## expression         min       mean     median      max
+## -----------  ---------  ---------  ---------  -------
+## for             1.54ms     2.01ms     1.75ms   5.28ms
+## functional    623.91µs   803.32µs   735.35µs   1.45ms
+</code></pre></div></div>
+
+<h3 id="side-note">Side note</h3>
+
+<p>Once I had completed this, I looked for other ways to do it, and
+stumbled upon a solution with <code class="highlighter-rouge">cumsum</code>, which is basically what my
+solution does, but faster and more idiomatic (so yes, better). The only
+difference being (on a more general sense), that the <code class="highlighter-rouge">cumsum</code> does only
+one task (totally valid for our case), but on the long run is less
+flexibile: the functional solution would allow us to start at any entry
+point, and also to apply any kind of transformation to our
+<code class="highlighter-rouge">start_object</code>.</p>
+
+<h2 id="day-one-part-two">Day one, part two</h2>
+
+<p>Now, the second challenge is: given our list of frequencies and starting
+at 0, which frequency is encountered twice first? Note: our list of
+moves can be repeated as many time as possible until we find our answer.</p>
+
+<p>On this one, I decided to go for the “brute force” solution - the idea
+is to: + start from the vector of moves + apply the <code class="highlighter-rouge">with_start_at</code> +
+test if there is any duplicated + if there are, extract the duplicated,
+get the first element, and <code class="highlighter-rouge">break</code> + if there is none, multiply <code class="highlighter-rouge">i</code> by
+10 and rep the original move <code class="highlighter-rouge">i</code> times + repeat until I have an answer</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="k">while</span><span class="p">(</span><span class="kc">TRUE</span><span class="p">){</span><span class="w">
+  </span><span class="n">alls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sapply</span><span class="p">(</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">),</span><span class="w"> </span><span class="n">with_start_at</span><span class="p">(</span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">
+  </span><span class="n">dup</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">duplicated</span><span class="p">(</span><span class="n">alls</span><span class="p">)</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nf">any</span><span class="p">(</span><span class="n">dup</span><span class="p">)){</span><span class="w">
+    </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">head</span><span class="p">(</span><span class="w"> </span><span class="n">alls</span><span class="p">[</span><span class="n">dup</span><span class="p">],</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+    </span><span class="k">break</span><span class="w">
+  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">10</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">x</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 481
+</code></pre></div></div>
+
+<h2 id="day-two">Day Two</h2>
+
+<h3 id="day-two-part-one">Day Two, part one</h3>
+
+<p>Day two is a string manipulation
+challenge.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">inputs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w">  </span><span class="n">read.csv</span><span class="p">(</span><span class="s2">"input2.txt"</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">stringsAsFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)[,</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1] "qcsnyvpigkxmrdawlfdefotxbh" "qcsnyvligkymrdawljujfotxbh"
+##  [3] "qmsnyvpigkzmrnawzjuefotxbh" "qosnyvpigkzmrnawljuefouxbh"
+##  [5] "qcsnhlpigkzmrtawljuefotxbh" "qcsnyvpigkzmrdapljuyfotxih"
+##  [7] "qcsnbvpiokzmrdawljuerotxbh" "qcfnyvmigkzmrdawljuefotdbh"
+##  [9] "qcsnynpigkzmrdawljuefptxbp" "qcsgyapigkzmrdawljuafotxbh"
+</code></pre></div></div>
+
+<p>Here is the challenge: get the number of words with a letter repeated
+twice, and the number of words with a letter repeated three time, and
+multiply these two words.</p>
+
+<p>Let’s use <code class="highlighter-rouge">{purrr}</code> and <code class="highlighter-rouge">{dplyr}</code> to do
+    that.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## ── Attaching packages ────────────────────────────── tidyverse 1.2.1 ──
+
+## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.8
+## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0
+
+## ── Conflicts ───────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Create a splitter and counter</span><span class="w">
+</span><span class="n">split_and_count</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">compose</span><span class="p">(</span><span class="w">
+  </span><span class="n">table</span><span class="p">,</span><span class="w">
+  </span><span class="n">flatten_chr</span><span class="p">,</span><span class="w"> 
+  </span><span class="n">partial</span><span class="p">(</span><span class="n">strsplit</span><span class="p">,</span><span class="w"> </span><span class="n">split</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Split them all</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="w"> </span><span class="n">split_and_count</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">map_df</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+    </span><span class="n">tibble</span><span class="p">(</span><span class="w">
+      </span><span class="n">two</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">any</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2</span><span class="p">),</span><span class="w">
+      </span><span class="n">three</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">any</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+  </span><span class="p">})</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="c1"># Get the result</span><span class="w">
+  </span><span class="n">summarise</span><span class="p">(</span><span class="w">
+    </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">two</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">three</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 1 x 1
+##     res
+##   &lt;int&gt;
+## 1  6422
+</code></pre></div></div>
+
+<h3 id="day-two-part-two">Day Two, part two</h3>
+
+<p>The second part of the challenge was to detect, from the inputs, the two
+“words” with just one different character, and extract from these two
+the common pattern.</p>
+
+<p>Good news: I’ve been working on <a href=""><code class="highlighter-rouge">{tidystringdist}</code></a>, a tidy framework
+for the <code class="highlighter-rouge">{stringdist}</code> package, which can be used to compute exactly
+that. We’ll use the <a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein
+distance</a>, which (to
+sum up) compute the number of permutations necessary to move from one
+string to another. As we are looking for two words with a permutation of
+one character, the Levenshtein distance should be of one.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidystringdist</span><span class="p">)</span><span class="w">
+</span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tidy_comb_all</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">tidy_stringdist</span><span class="p">(</span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lv"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">lv</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="n">res</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 1 x 3
+##   V1                         V2                            lv
+##   &lt;chr&gt;                      &lt;chr&gt;                      &lt;dbl&gt;
+## 1 qcslyvphgkrmddawljuefotxbh qcslyvphgkrmrdawljuefotxbh     1
+</code></pre></div></div>
+
+<p>Now we’ve got that, we are looking for the common string. Here’s a quick
+and dirty way to do this:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">splt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">compose</span><span class="p">(</span><span class="w">
+  </span><span class="n">flatten_chr</span><span class="p">,</span><span class="w"> 
+  </span><span class="n">partial</span><span class="p">(</span><span class="n">strsplit</span><span class="p">,</span><span class="w"> </span><span class="n">split</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">v</span><span class="m">1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">splt</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">V</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="n">v</span><span class="m">2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">splt</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">V</span><span class="m">2</span><span class="p">)</span><span class="w">
+</span><span class="n">v</span><span class="m">1</span><span class="p">[</span><span class="n">v</span><span class="m">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">v</span><span class="m">2</span><span class="p">]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">paste</span><span class="p">(</span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "qcslyvphgkrmdawljuefotxbh"
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-12-02T00:00:00+01:00">December 02, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Solving+%23AdventOfCode+day+1+and+2+with+R%20http%3A%2F%2Flocalhost%3A4000%2Fadvent-code-1-2%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fadvent-code-1-2%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fadvent-code-1-2%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fadvent-code-1-2%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/r-assignment/" class="pagination--pager" title="Why do we use arrow as an assignment operator?
+">←</a>
+    
+    
+      <a href="/advent-code-3-4/" class="pagination--pager" title="Solving #AdventOfCode day 3 and 4 with R
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/advent-code-1-2/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/advent-code-1-2"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

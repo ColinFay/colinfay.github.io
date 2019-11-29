@@ -1,0 +1,741 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>R and active binding (and pizza) - Colin Fay</title>
+<meta name="description" content="Active binding, also known as “That cool stuff from {R6}”.What on earth is binding?First things first: what is binding? You already know the answer to that question: it’s the simple act of assigning a value to a name/symbol. For example:# Witha &lt;- 5# You bind the value 5 to the name `a`Yes, this is as simple as that. In other words, you assign the symbol a to a memory slot on your computer which contains the value 5. Each time you evaluate the symbol, R goes and gets this value in memory.So, active binding?A cool feature of {R6} is active binding, which is the process of using a symbol which looks like a variable but behave as a function. You can create these with the active method when defining your class.library(R6)ClassyClass &lt;- R6Class(&quot;ClassyClass&quot;,                            active = list(                             classy_word = function(value){                               if (missing(value)) sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)                               else cat(paste(&quot;Your classy word is&quot;, value))                             }                           ))classy_object &lt;- ClassyClass$new()classy_object$classy_word[1] &quot;Dashing&quot;classy_object$classy_word[1] &quot;Classy&quot;classy_object$classy_word &lt;- &quot;Mod&quot;Your classy word is ModGreat. As you can see, you can access classy_word like a common variable, but it behaves like a function, randomly printing a word from a list, or printing the word you assign it. As you can see, the binding is not fixed, i.e. not on a definite value, but active, as it runs a function each time you call this symbol.Well, can we mimick it without {R6}?Creating active binding in RThe naive approach would be to run :classy_word &lt;- function(value){  if (missing(value)) {    sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)    } else {      cat(paste(&quot;Your classy word is&quot;, value))    }}# It works as a regular function classy_word()[1] &quot;Dashing&quot;# But if you try to call it without the parentheses : classy_wordfunction(value){  if (missing(value)) {    sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)    } else {      cat(paste(&quot;Your classy word is&quot;, value))    }}#It describes you the functionBut the good news is: you can make the classy_word symbol, alone, behave as the classy_word from the {R6} class. For this, we just need the makeActiveBinding() function.This function takes three args:  sym: the symbol you want to bind the function to  fun: The function you want to bind the symbol to  env: the environement the symbol will be binded tomakeActiveBinding(sym = &quot;classy_word&quot;,                   fun = function(value){                    if (missing(value)) {                      sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)                    } else {                      cat(paste(&quot;Your classy word is&quot;, value))                    }                  },                   env = .GlobalEnv)classy_word[1] &quot;Modish&quot;classy_word[1] &quot;High-Class&quot;classy_word &lt;- &quot;Modish&quot;Your classy word is ModishOk, not really useful,I know… But you can think of more useful use, like a random sampler:makeActiveBinding(sym = &quot;random_iris&quot;,                   fun = function(value){                      return(dplyr::sample_n(iris, 30))                  },                   env = .GlobalEnv)random_iris %&gt;% head    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species36           5.0         3.2          1.2         0.2     setosa105          6.5         3.0          5.8         2.2  virginica83           5.8         2.7          3.9         1.2 versicolor102          5.8         2.7          5.1         1.9  virginica28           5.2         3.5          1.5         0.2     setosa106          7.6         3.0          6.6         2.1  virginicarandom_iris %&gt;% head    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species61           5.0         2.0          3.5         1.0 versicolor140          6.9         3.1          5.4         2.1  virginica95           5.6         2.7          4.2         1.3 versicolor107          4.9         2.5          4.5         1.7  virginica8            5.0         3.4          1.5         0.2     setosa112          6.4         2.7          5.3         1.9  virginicaAnd of course, it can be used in a larger function call :library(tidyverse)random_iris %&gt;%  ggplot(aes(Sepal.Length, Petal.Length, col = Species)) +  geom_point()  random_iris %&gt;%  ggplot(aes(Sepal.Length, Petal.Length, col = Species)) +  geom_point()  Quick aside on environmentsThe third arg of makeActiveBinding is env, the environment the symbol is binded to. That means you can bind the same symbol to different functions in different environments.a &lt;- new.env()b &lt;- new.env()makeActiveBinding(sym = &quot;example&quot;,                  fun = function() &quot;a&quot;,                    env = a)makeActiveBinding(sym = &quot;example&quot;,                  fun = function() &quot;b&quot;,                    env = b)a$example[1] &quot;a&quot;b$example[1] &quot;b&quot;Yes, this is what is happening in {R6} :)PIZZA TIMEAnd now, just to continue the emoji-pizza R work, here is an active binding to the pizza symbol.makeActiveBinding(sym = &quot;🍕&quot;,                   fun = function(value){                    if (missing(value)) {                      sample(c(&quot;California-style pizza&quot;, &quot;Chicago-style&quot;, &quot;Chocolate&quot;, &quot;Detroit-style&quot;, &quot;Focaccia al rosmarino Iranian&quot;, &quot;Greek&quot;, &quot;Hawaiian&quot;, &quot;Lazio Matzah&quot;, &quot;Meatball&quot;, &quot;Mexican&quot;, &quot;Neapolitan&quot;, &quot;New Haven-style&quot;, &quot;New York-style&quot;, &quot;Pictou County&quot;, &quot;Pizza quattro stagioni&quot;, &quot;al taglio&quot;, &quot;cake&quot;, &quot;capricciosa&quot;, &quot;marinara&quot;, &quot;pugliese Pizzetta Quad City-style&quot;, &quot;Sardenara Seafood&quot;, &quot;Sicilian&quot;, &quot;Sushi&quot;, &quot;St. Louis-style&quot;, &quot;Tomato pie White clam pie&quot;), 1)                    } else {                      cat(paste(&quot;Your special pizza type is&quot;, value))                    }                  },                   env = .GlobalEnv)# Pizza emoji is a special character so you have to surround it with backticks`🍕`[1] &quot;Pizza quattro stagioni&quot;`🍕`[1] &quot;St. Louis-style&quot;`🍕`[1] &quot;New York-style&quot;`🍕` &lt;- &quot;Vegetarian&quot;Your special pizza type is VegetarianAnd… bon appetit !">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="R and active binding (and pizza)">
+<meta property="og:url" content="http://localhost:4000/ractivebinfing/">
+
+
+  <meta property="og:description" content="Active binding, also known as “That cool stuff from {R6}”.What on earth is binding?First things first: what is binding? You already know the answer to that question: it’s the simple act of assigning a value to a name/symbol. For example:# Witha &lt;- 5# You bind the value 5 to the name `a`Yes, this is as simple as that. In other words, you assign the symbol a to a memory slot on your computer which contains the value 5. Each time you evaluate the symbol, R goes and gets this value in memory.So, active binding?A cool feature of {R6} is active binding, which is the process of using a symbol which looks like a variable but behave as a function. You can create these with the active method when defining your class.library(R6)ClassyClass &lt;- R6Class(&quot;ClassyClass&quot;,                            active = list(                             classy_word = function(value){                               if (missing(value)) sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)                               else cat(paste(&quot;Your classy word is&quot;, value))                             }                           ))classy_object &lt;- ClassyClass$new()classy_object$classy_word[1] &quot;Dashing&quot;classy_object$classy_word[1] &quot;Classy&quot;classy_object$classy_word &lt;- &quot;Mod&quot;Your classy word is ModGreat. As you can see, you can access classy_word like a common variable, but it behaves like a function, randomly printing a word from a list, or printing the word you assign it. As you can see, the binding is not fixed, i.e. not on a definite value, but active, as it runs a function each time you call this symbol.Well, can we mimick it without {R6}?Creating active binding in RThe naive approach would be to run :classy_word &lt;- function(value){  if (missing(value)) {    sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)    } else {      cat(paste(&quot;Your classy word is&quot;, value))    }}# It works as a regular function classy_word()[1] &quot;Dashing&quot;# But if you try to call it without the parentheses : classy_wordfunction(value){  if (missing(value)) {    sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)    } else {      cat(paste(&quot;Your classy word is&quot;, value))    }}#It describes you the functionBut the good news is: you can make the classy_word symbol, alone, behave as the classy_word from the {R6} class. For this, we just need the makeActiveBinding() function.This function takes three args:  sym: the symbol you want to bind the function to  fun: The function you want to bind the symbol to  env: the environement the symbol will be binded tomakeActiveBinding(sym = &quot;classy_word&quot;,                   fun = function(value){                    if (missing(value)) {                      sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)                    } else {                      cat(paste(&quot;Your classy word is&quot;, value))                    }                  },                   env = .GlobalEnv)classy_word[1] &quot;Modish&quot;classy_word[1] &quot;High-Class&quot;classy_word &lt;- &quot;Modish&quot;Your classy word is ModishOk, not really useful,I know… But you can think of more useful use, like a random sampler:makeActiveBinding(sym = &quot;random_iris&quot;,                   fun = function(value){                      return(dplyr::sample_n(iris, 30))                  },                   env = .GlobalEnv)random_iris %&gt;% head    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species36           5.0         3.2          1.2         0.2     setosa105          6.5         3.0          5.8         2.2  virginica83           5.8         2.7          3.9         1.2 versicolor102          5.8         2.7          5.1         1.9  virginica28           5.2         3.5          1.5         0.2     setosa106          7.6         3.0          6.6         2.1  virginicarandom_iris %&gt;% head    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species61           5.0         2.0          3.5         1.0 versicolor140          6.9         3.1          5.4         2.1  virginica95           5.6         2.7          4.2         1.3 versicolor107          4.9         2.5          4.5         1.7  virginica8            5.0         3.4          1.5         0.2     setosa112          6.4         2.7          5.3         1.9  virginicaAnd of course, it can be used in a larger function call :library(tidyverse)random_iris %&gt;%  ggplot(aes(Sepal.Length, Petal.Length, col = Species)) +  geom_point()  random_iris %&gt;%  ggplot(aes(Sepal.Length, Petal.Length, col = Species)) +  geom_point()  Quick aside on environmentsThe third arg of makeActiveBinding is env, the environment the symbol is binded to. That means you can bind the same symbol to different functions in different environments.a &lt;- new.env()b &lt;- new.env()makeActiveBinding(sym = &quot;example&quot;,                  fun = function() &quot;a&quot;,                    env = a)makeActiveBinding(sym = &quot;example&quot;,                  fun = function() &quot;b&quot;,                    env = b)a$example[1] &quot;a&quot;b$example[1] &quot;b&quot;Yes, this is what is happening in {R6} :)PIZZA TIMEAnd now, just to continue the emoji-pizza R work, here is an active binding to the pizza symbol.makeActiveBinding(sym = &quot;🍕&quot;,                   fun = function(value){                    if (missing(value)) {                      sample(c(&quot;California-style pizza&quot;, &quot;Chicago-style&quot;, &quot;Chocolate&quot;, &quot;Detroit-style&quot;, &quot;Focaccia al rosmarino Iranian&quot;, &quot;Greek&quot;, &quot;Hawaiian&quot;, &quot;Lazio Matzah&quot;, &quot;Meatball&quot;, &quot;Mexican&quot;, &quot;Neapolitan&quot;, &quot;New Haven-style&quot;, &quot;New York-style&quot;, &quot;Pictou County&quot;, &quot;Pizza quattro stagioni&quot;, &quot;al taglio&quot;, &quot;cake&quot;, &quot;capricciosa&quot;, &quot;marinara&quot;, &quot;pugliese Pizzetta Quad City-style&quot;, &quot;Sardenara Seafood&quot;, &quot;Sicilian&quot;, &quot;Sushi&quot;, &quot;St. Louis-style&quot;, &quot;Tomato pie White clam pie&quot;), 1)                    } else {                      cat(paste(&quot;Your special pizza type is&quot;, value))                    }                  },                   env = .GlobalEnv)# Pizza emoji is a special character so you have to surround it with backticks`🍕`[1] &quot;Pizza quattro stagioni&quot;`🍕`[1] &quot;St. Louis-style&quot;`🍕`[1] &quot;New York-style&quot;`🍕` &lt;- &quot;Vegetarian&quot;Your special pizza type is VegetarianAnd… bon appetit !">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="R and active binding (and pizza)">
+  <meta name="twitter:description" content="Active binding, also known as “That cool stuff from {R6}”.What on earth is binding?First things first: what is binding? You already know the answer to that question: it’s the simple act of assigning a value to a name/symbol. For example:# Witha &lt;- 5# You bind the value 5 to the name `a`Yes, this is as simple as that. In other words, you assign the symbol a to a memory slot on your computer which contains the value 5. Each time you evaluate the symbol, R goes and gets this value in memory.So, active binding?A cool feature of {R6} is active binding, which is the process of using a symbol which looks like a variable but behave as a function. You can create these with the active method when defining your class.library(R6)ClassyClass &lt;- R6Class(&quot;ClassyClass&quot;,                            active = list(                             classy_word = function(value){                               if (missing(value)) sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)                               else cat(paste(&quot;Your classy word is&quot;, value))                             }                           ))classy_object &lt;- ClassyClass$new()classy_object$classy_word[1] &quot;Dashing&quot;classy_object$classy_word[1] &quot;Classy&quot;classy_object$classy_word &lt;- &quot;Mod&quot;Your classy word is ModGreat. As you can see, you can access classy_word like a common variable, but it behaves like a function, randomly printing a word from a list, or printing the word you assign it. As you can see, the binding is not fixed, i.e. not on a definite value, but active, as it runs a function each time you call this symbol.Well, can we mimick it without {R6}?Creating active binding in RThe naive approach would be to run :classy_word &lt;- function(value){  if (missing(value)) {    sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)    } else {      cat(paste(&quot;Your classy word is&quot;, value))    }}# It works as a regular function classy_word()[1] &quot;Dashing&quot;# But if you try to call it without the parentheses : classy_wordfunction(value){  if (missing(value)) {    sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)    } else {      cat(paste(&quot;Your classy word is&quot;, value))    }}#It describes you the functionBut the good news is: you can make the classy_word symbol, alone, behave as the classy_word from the {R6} class. For this, we just need the makeActiveBinding() function.This function takes three args:  sym: the symbol you want to bind the function to  fun: The function you want to bind the symbol to  env: the environement the symbol will be binded tomakeActiveBinding(sym = &quot;classy_word&quot;,                   fun = function(value){                    if (missing(value)) {                      sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)                    } else {                      cat(paste(&quot;Your classy word is&quot;, value))                    }                  },                   env = .GlobalEnv)classy_word[1] &quot;Modish&quot;classy_word[1] &quot;High-Class&quot;classy_word &lt;- &quot;Modish&quot;Your classy word is ModishOk, not really useful,I know… But you can think of more useful use, like a random sampler:makeActiveBinding(sym = &quot;random_iris&quot;,                   fun = function(value){                      return(dplyr::sample_n(iris, 30))                  },                   env = .GlobalEnv)random_iris %&gt;% head    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species36           5.0         3.2          1.2         0.2     setosa105          6.5         3.0          5.8         2.2  virginica83           5.8         2.7          3.9         1.2 versicolor102          5.8         2.7          5.1         1.9  virginica28           5.2         3.5          1.5         0.2     setosa106          7.6         3.0          6.6         2.1  virginicarandom_iris %&gt;% head    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species61           5.0         2.0          3.5         1.0 versicolor140          6.9         3.1          5.4         2.1  virginica95           5.6         2.7          4.2         1.3 versicolor107          4.9         2.5          4.5         1.7  virginica8            5.0         3.4          1.5         0.2     setosa112          6.4         2.7          5.3         1.9  virginicaAnd of course, it can be used in a larger function call :library(tidyverse)random_iris %&gt;%  ggplot(aes(Sepal.Length, Petal.Length, col = Species)) +  geom_point()  random_iris %&gt;%  ggplot(aes(Sepal.Length, Petal.Length, col = Species)) +  geom_point()  Quick aside on environmentsThe third arg of makeActiveBinding is env, the environment the symbol is binded to. That means you can bind the same symbol to different functions in different environments.a &lt;- new.env()b &lt;- new.env()makeActiveBinding(sym = &quot;example&quot;,                  fun = function() &quot;a&quot;,                    env = a)makeActiveBinding(sym = &quot;example&quot;,                  fun = function() &quot;b&quot;,                    env = b)a$example[1] &quot;a&quot;b$example[1] &quot;b&quot;Yes, this is what is happening in {R6} :)PIZZA TIMEAnd now, just to continue the emoji-pizza R work, here is an active binding to the pizza symbol.makeActiveBinding(sym = &quot;🍕&quot;,                   fun = function(value){                    if (missing(value)) {                      sample(c(&quot;California-style pizza&quot;, &quot;Chicago-style&quot;, &quot;Chocolate&quot;, &quot;Detroit-style&quot;, &quot;Focaccia al rosmarino Iranian&quot;, &quot;Greek&quot;, &quot;Hawaiian&quot;, &quot;Lazio Matzah&quot;, &quot;Meatball&quot;, &quot;Mexican&quot;, &quot;Neapolitan&quot;, &quot;New Haven-style&quot;, &quot;New York-style&quot;, &quot;Pictou County&quot;, &quot;Pizza quattro stagioni&quot;, &quot;al taglio&quot;, &quot;cake&quot;, &quot;capricciosa&quot;, &quot;marinara&quot;, &quot;pugliese Pizzetta Quad City-style&quot;, &quot;Sardenara Seafood&quot;, &quot;Sicilian&quot;, &quot;Sushi&quot;, &quot;St. Louis-style&quot;, &quot;Tomato pie White clam pie&quot;), 1)                    } else {                      cat(paste(&quot;Your special pizza type is&quot;, value))                    }                  },                   env = .GlobalEnv)# Pizza emoji is a special character so you have to surround it with backticks`🍕`[1] &quot;Pizza quattro stagioni&quot;`🍕`[1] &quot;St. Louis-style&quot;`🍕`[1] &quot;New York-style&quot;`🍕` &lt;- &quot;Vegetarian&quot;Your special pizza type is VegetarianAnd… bon appetit !">
+  <meta name="twitter:url" content="http://localhost:4000/ractivebinfing/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-08-12T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/ractivebinfing/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="R and active binding (and pizza)">
+    <meta itemprop="description" content="Active binding, also known as “That cool stuff from {R6}”.What on earth is binding?First things first: what is binding? You already know the answer to that question: it’s the simple act of assigning a value to a name/symbol. For example:# Witha &lt;- 5# You bind the value 5 to the name `a`Yes, this is as simple as that. In other words, you assign the symbol a to a memory slot on your computer which contains the value 5. Each time you evaluate the symbol, R goes and gets this value in memory.So, active binding?A cool feature of {R6} is active binding, which is the process of using a symbol which looks like a variable but behave as a function. You can create these with the active method when defining your class.library(R6)ClassyClass &lt;- R6Class(&quot;ClassyClass&quot;,                            active = list(                             classy_word = function(value){                               if (missing(value)) sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)                               else cat(paste(&quot;Your classy word is&quot;, value))                             }                           ))classy_object &lt;- ClassyClass$new()classy_object$classy_word[1] &quot;Dashing&quot;classy_object$classy_word[1] &quot;Classy&quot;classy_object$classy_word &lt;- &quot;Mod&quot;Your classy word is ModGreat. As you can see, you can access classy_word like a common variable, but it behaves like a function, randomly printing a word from a list, or printing the word you assign it. As you can see, the binding is not fixed, i.e. not on a definite value, but active, as it runs a function each time you call this symbol.Well, can we mimick it without {R6}?Creating active binding in RThe naive approach would be to run :classy_word &lt;- function(value){  if (missing(value)) {    sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)    } else {      cat(paste(&quot;Your classy word is&quot;, value))    }}# It works as a regular function classy_word()[1] &quot;Dashing&quot;# But if you try to call it without the parentheses : classy_wordfunction(value){  if (missing(value)) {    sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)    } else {      cat(paste(&quot;Your classy word is&quot;, value))    }}#It describes you the functionBut the good news is: you can make the classy_word symbol, alone, behave as the classy_word from the {R6} class. For this, we just need the makeActiveBinding() function.This function takes three args:  sym: the symbol you want to bind the function to  fun: The function you want to bind the symbol to  env: the environement the symbol will be binded tomakeActiveBinding(sym = &quot;classy_word&quot;,                   fun = function(value){                    if (missing(value)) {                      sample(c(&quot;Classy&quot;,&quot;Modish&quot;, &quot;High-Class&quot;,&quot;Dashing&quot;,&quot;Posh&quot;), 1)                    } else {                      cat(paste(&quot;Your classy word is&quot;, value))                    }                  },                   env = .GlobalEnv)classy_word[1] &quot;Modish&quot;classy_word[1] &quot;High-Class&quot;classy_word &lt;- &quot;Modish&quot;Your classy word is ModishOk, not really useful,I know… But you can think of more useful use, like a random sampler:makeActiveBinding(sym = &quot;random_iris&quot;,                   fun = function(value){                      return(dplyr::sample_n(iris, 30))                  },                   env = .GlobalEnv)random_iris %&gt;% head    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species36           5.0         3.2          1.2         0.2     setosa105          6.5         3.0          5.8         2.2  virginica83           5.8         2.7          3.9         1.2 versicolor102          5.8         2.7          5.1         1.9  virginica28           5.2         3.5          1.5         0.2     setosa106          7.6         3.0          6.6         2.1  virginicarandom_iris %&gt;% head    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species61           5.0         2.0          3.5         1.0 versicolor140          6.9         3.1          5.4         2.1  virginica95           5.6         2.7          4.2         1.3 versicolor107          4.9         2.5          4.5         1.7  virginica8            5.0         3.4          1.5         0.2     setosa112          6.4         2.7          5.3         1.9  virginicaAnd of course, it can be used in a larger function call :library(tidyverse)random_iris %&gt;%  ggplot(aes(Sepal.Length, Petal.Length, col = Species)) +  geom_point()  random_iris %&gt;%  ggplot(aes(Sepal.Length, Petal.Length, col = Species)) +  geom_point()  Quick aside on environmentsThe third arg of makeActiveBinding is env, the environment the symbol is binded to. That means you can bind the same symbol to different functions in different environments.a &lt;- new.env()b &lt;- new.env()makeActiveBinding(sym = &quot;example&quot;,                  fun = function() &quot;a&quot;,                    env = a)makeActiveBinding(sym = &quot;example&quot;,                  fun = function() &quot;b&quot;,                    env = b)a$example[1] &quot;a&quot;b$example[1] &quot;b&quot;Yes, this is what is happening in {R6} :)PIZZA TIMEAnd now, just to continue the emoji-pizza R work, here is an active binding to the pizza symbol.makeActiveBinding(sym = &quot;🍕&quot;,                   fun = function(value){                    if (missing(value)) {                      sample(c(&quot;California-style pizza&quot;, &quot;Chicago-style&quot;, &quot;Chocolate&quot;, &quot;Detroit-style&quot;, &quot;Focaccia al rosmarino Iranian&quot;, &quot;Greek&quot;, &quot;Hawaiian&quot;, &quot;Lazio Matzah&quot;, &quot;Meatball&quot;, &quot;Mexican&quot;, &quot;Neapolitan&quot;, &quot;New Haven-style&quot;, &quot;New York-style&quot;, &quot;Pictou County&quot;, &quot;Pizza quattro stagioni&quot;, &quot;al taglio&quot;, &quot;cake&quot;, &quot;capricciosa&quot;, &quot;marinara&quot;, &quot;pugliese Pizzetta Quad City-style&quot;, &quot;Sardenara Seafood&quot;, &quot;Sicilian&quot;, &quot;Sushi&quot;, &quot;St. Louis-style&quot;, &quot;Tomato pie White clam pie&quot;), 1)                    } else {                      cat(paste(&quot;Your special pizza type is&quot;, value))                    }                  },                   env = .GlobalEnv)# Pizza emoji is a special character so you have to surround it with backticks`🍕`[1] &quot;Pizza quattro stagioni&quot;`🍕`[1] &quot;St. Louis-style&quot;`🍕`[1] &quot;New York-style&quot;`🍕` &lt;- &quot;Vegetarian&quot;Your special pizza type is VegetarianAnd… bon appetit !">
+    <meta itemprop="datePublished" content="August 12, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">R and active binding (and pizza)
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  3 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Active binding, also known as “That cool stuff from {R6}”.</p>
+
+<h2 id="what-on-earth-is-binding">What on earth is binding?</h2>
+
+<p>First things first: what is binding? You already know the answer to that question: it’s the simple act of <strong>assigning a value to a name/symbol</strong>. For example:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># With</span><span class="w">
+</span><span class="n">a</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5</span><span class="w">
+</span><span class="c1"># You bind the value 5 to the name `a`</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Yes, this is as simple as that. In other words, you assign the symbol <code class="highlighter-rouge">a</code> to a memory slot on your computer which contains the value 5. Each time you evaluate the symbol, R goes and gets this value in memory.</p>
+
+<h2 id="so-active-binding">So, active binding?</h2>
+
+<p>A cool feature of {R6} is <code class="highlighter-rouge">active binding</code>, which is the process of using a symbol which looks like a variable but behave as a function. You can create these with the <code class="highlighter-rouge">active</code> method when defining your class.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">R</span><span class="m">6</span><span class="p">)</span><span class="w">
+</span><span class="n">ClassyClass</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">R</span><span class="m">6</span><span class="n">Class</span><span class="p">(</span><span class="s2">"ClassyClass"</span><span class="p">,</span><span class="w"> 
+                           </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+                             </span><span class="n">classy_word</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">value</span><span class="p">){</span><span class="w">
+                               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">missing</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="w"> </span><span class="n">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"Classy"</span><span class="p">,</span><span class="s2">"Modish"</span><span class="p">,</span><span class="w"> </span><span class="s2">"High-Class"</span><span class="p">,</span><span class="s2">"Dashing"</span><span class="p">,</span><span class="s2">"Posh"</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+                               </span><span class="k">else</span><span class="w"> </span><span class="n">cat</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Your classy word is"</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">))</span><span class="w">
+                             </span><span class="p">}</span><span class="w">
+                           </span><span class="p">))</span><span class="w">
+</span><span class="n">classy_object</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ClassyClass</span><span class="o">$</span><span class="n">new</span><span class="p">()</span><span class="w">
+</span><span class="n">classy_object</span><span class="o">$</span><span class="n">classy_word</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"Dashing"</span><span class="w">
+</span><span class="n">classy_object</span><span class="o">$</span><span class="n">classy_word</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"Classy"</span><span class="w">
+
+</span><span class="n">classy_object</span><span class="o">$</span><span class="n">classy_word</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Mod"</span><span class="w">
+</span><span class="n">Your</span><span class="w"> </span><span class="n">classy</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">Mod</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Great. As you can see, you can access <code class="highlighter-rouge">classy_word</code> like a common variable, but it behaves like a function, randomly printing a word from a list, or printing the word you assign it. As you can see, the <strong>binding</strong> is not fixed, i.e. not on a definite value, but <strong>active</strong>, as it runs a function each time you call this symbol.</p>
+
+<p>Well, can we mimick it without {R6}?</p>
+
+<h2 id="creating-active-binding-in-r">Creating active binding in R</h2>
+
+<p>The naive approach would be to run :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">classy_word</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">value</span><span class="p">){</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">missing</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"Classy"</span><span class="p">,</span><span class="s2">"Modish"</span><span class="p">,</span><span class="w"> </span><span class="s2">"High-Class"</span><span class="p">,</span><span class="s2">"Dashing"</span><span class="p">,</span><span class="s2">"Posh"</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">cat</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Your classy word is"</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">))</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># It works as a regular function </span><span class="w">
+
+</span><span class="n">classy_word</span><span class="p">()</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"Dashing"</span><span class="w">
+
+</span><span class="c1"># But if you try to call it without the parentheses : </span><span class="w">
+
+</span><span class="n">classy_word</span><span class="w">
+</span><span class="k">function</span><span class="p">(</span><span class="n">value</span><span class="p">){</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">missing</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"Classy"</span><span class="p">,</span><span class="s2">"Modish"</span><span class="p">,</span><span class="w"> </span><span class="s2">"High-Class"</span><span class="p">,</span><span class="s2">"Dashing"</span><span class="p">,</span><span class="s2">"Posh"</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">cat</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Your classy word is"</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">))</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="c1">#It describes you the function</span><span class="w">
+</span></code></pre></div></div>
+
+<p>But the good news is: you can make the <code class="highlighter-rouge">classy_word</code> symbol, alone, behave as the <code class="highlighter-rouge">classy_word</code> from the {R6} class. For this, we just need the <code class="highlighter-rouge">makeActiveBinding()</code> function.</p>
+
+<p>This function takes three args:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">sym</code>: the symbol you want to bind the function to</li>
+  <li><code class="highlighter-rouge">fun</code>: The function you want to bind the symbol to</li>
+  <li><code class="highlighter-rouge">env</code>: the environement the symbol will be binded to</li>
+</ul>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">makeActiveBinding</span><span class="p">(</span><span class="n">sym</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"classy_word"</span><span class="p">,</span><span class="w"> 
+                  </span><span class="n">fun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">value</span><span class="p">){</span><span class="w">
+                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">missing</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+                      </span><span class="n">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"Classy"</span><span class="p">,</span><span class="s2">"Modish"</span><span class="p">,</span><span class="w"> </span><span class="s2">"High-Class"</span><span class="p">,</span><span class="s2">"Dashing"</span><span class="p">,</span><span class="s2">"Posh"</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+                    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+                      </span><span class="n">cat</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Your classy word is"</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">))</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                  </span><span class="p">},</span><span class="w"> 
+                  </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.GlobalEnv</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">classy_word</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"Modish"</span><span class="w">
+</span><span class="n">classy_word</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"High-Class"</span><span class="w">
+</span><span class="n">classy_word</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Modish"</span><span class="w">
+</span><span class="n">Your</span><span class="w"> </span><span class="n">classy</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">Modish</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Ok, not really useful,I know… But you can think of more useful use, like a random sampler:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">makeActiveBinding</span><span class="p">(</span><span class="n">sym</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"random_iris"</span><span class="p">,</span><span class="w"> 
+                  </span><span class="n">fun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">value</span><span class="p">){</span><span class="w">
+                      </span><span class="nf">return</span><span class="p">(</span><span class="n">dplyr</span><span class="o">::</span><span class="n">sample_n</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="m">30</span><span class="p">))</span><span class="w">
+                  </span><span class="p">},</span><span class="w"> 
+                  </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.GlobalEnv</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">random_iris</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">head</span><span class="w">
+    </span><span class="n">Sepal.Length</span><span class="w"> </span><span class="n">Sepal.Width</span><span class="w"> </span><span class="n">Petal.Length</span><span class="w"> </span><span class="n">Petal.Width</span><span class="w">    </span><span class="n">Species</span><span class="w">
+</span><span class="m">36</span><span class="w">           </span><span class="m">5.0</span><span class="w">         </span><span class="m">3.2</span><span class="w">          </span><span class="m">1.2</span><span class="w">         </span><span class="m">0.2</span><span class="w">     </span><span class="n">setosa</span><span class="w">
+</span><span class="m">105</span><span class="w">          </span><span class="m">6.5</span><span class="w">         </span><span class="m">3.0</span><span class="w">          </span><span class="m">5.8</span><span class="w">         </span><span class="m">2.2</span><span class="w">  </span><span class="n">virginica</span><span class="w">
+</span><span class="m">83</span><span class="w">           </span><span class="m">5.8</span><span class="w">         </span><span class="m">2.7</span><span class="w">          </span><span class="m">3.9</span><span class="w">         </span><span class="m">1.2</span><span class="w"> </span><span class="n">versicolor</span><span class="w">
+</span><span class="m">102</span><span class="w">          </span><span class="m">5.8</span><span class="w">         </span><span class="m">2.7</span><span class="w">          </span><span class="m">5.1</span><span class="w">         </span><span class="m">1.9</span><span class="w">  </span><span class="n">virginica</span><span class="w">
+</span><span class="m">28</span><span class="w">           </span><span class="m">5.2</span><span class="w">         </span><span class="m">3.5</span><span class="w">          </span><span class="m">1.5</span><span class="w">         </span><span class="m">0.2</span><span class="w">     </span><span class="n">setosa</span><span class="w">
+</span><span class="m">106</span><span class="w">          </span><span class="m">7.6</span><span class="w">         </span><span class="m">3.0</span><span class="w">          </span><span class="m">6.6</span><span class="w">         </span><span class="m">2.1</span><span class="w">  </span><span class="n">virginica</span><span class="w">
+
+</span><span class="n">random_iris</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">head</span><span class="w">
+    </span><span class="n">Sepal.Length</span><span class="w"> </span><span class="n">Sepal.Width</span><span class="w"> </span><span class="n">Petal.Length</span><span class="w"> </span><span class="n">Petal.Width</span><span class="w">    </span><span class="n">Species</span><span class="w">
+</span><span class="m">61</span><span class="w">           </span><span class="m">5.0</span><span class="w">         </span><span class="m">2.0</span><span class="w">          </span><span class="m">3.5</span><span class="w">         </span><span class="m">1.0</span><span class="w"> </span><span class="n">versicolor</span><span class="w">
+</span><span class="m">140</span><span class="w">          </span><span class="m">6.9</span><span class="w">         </span><span class="m">3.1</span><span class="w">          </span><span class="m">5.4</span><span class="w">         </span><span class="m">2.1</span><span class="w">  </span><span class="n">virginica</span><span class="w">
+</span><span class="m">95</span><span class="w">           </span><span class="m">5.6</span><span class="w">         </span><span class="m">2.7</span><span class="w">          </span><span class="m">4.2</span><span class="w">         </span><span class="m">1.3</span><span class="w"> </span><span class="n">versicolor</span><span class="w">
+</span><span class="m">107</span><span class="w">          </span><span class="m">4.9</span><span class="w">         </span><span class="m">2.5</span><span class="w">          </span><span class="m">4.5</span><span class="w">         </span><span class="m">1.7</span><span class="w">  </span><span class="n">virginica</span><span class="w">
+</span><span class="m">8</span><span class="w">            </span><span class="m">5.0</span><span class="w">         </span><span class="m">3.4</span><span class="w">          </span><span class="m">1.5</span><span class="w">         </span><span class="m">0.2</span><span class="w">     </span><span class="n">setosa</span><span class="w">
+</span><span class="m">112</span><span class="w">          </span><span class="m">6.4</span><span class="w">         </span><span class="m">2.7</span><span class="w">          </span><span class="m">5.3</span><span class="w">         </span><span class="m">1.9</span><span class="w">  </span><span class="n">virginica</span><span class="w">
+
+</span></code></pre></div></div>
+
+<p>And of course, it can be used in a larger function call :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">random_iris</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">Sepal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">Petal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> 
+ 
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/blog/random_iris1.png" alt="" /></p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">random_iris</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">Sepal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">Petal.Length</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> 
+ 
+</span></code></pre></div></div>
+
+<p><img src="/assets/img/blog/random_iris2.png" alt="" /></p>
+
+<h2 id="quick-aside-on-environments">Quick aside on environments</h2>
+
+<p>The third arg of <code class="highlighter-rouge">makeActiveBinding</code> is <code class="highlighter-rouge">env</code>, the environment the symbol is binded to. That means you can bind the same symbol to different functions in different environments.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">new.env</span><span class="p">()</span><span class="w">
+</span><span class="n">b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">new.env</span><span class="p">()</span><span class="w">
+</span><span class="n">makeActiveBinding</span><span class="p">(</span><span class="n">sym</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"example"</span><span class="p">,</span><span class="w">
+                  </span><span class="n">fun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="s2">"a"</span><span class="p">,</span><span class="w">  
+                  </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w">
+</span><span class="n">makeActiveBinding</span><span class="p">(</span><span class="n">sym</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"example"</span><span class="p">,</span><span class="w">
+                  </span><span class="n">fun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="s2">"b"</span><span class="p">,</span><span class="w">  
+                  </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w">
+
+</span><span class="n">a</span><span class="o">$</span><span class="n">example</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"a"</span><span class="w">
+</span><span class="n">b</span><span class="o">$</span><span class="n">example</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"b"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Yes, this is what is happening in {R6} :)</p>
+
+<h2 id="pizza-time">PIZZA TIME</h2>
+
+<p>And now, just to continue the <a href="http://colinfay.me/playing-r-infix-functions/">emoji-pizza</a> R work, here is an active binding to the pizza symbol.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">makeActiveBinding</span><span class="p">(</span><span class="n">sym</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"🍕"</span><span class="p">,</span><span class="w"> 
+                  </span><span class="n">fun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">value</span><span class="p">){</span><span class="w">
+                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nf">missing</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+                      </span><span class="n">sample</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"California-style pizza"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Chicago-style"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Chocolate"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Detroit-style"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Focaccia al rosmarino Iranian"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Greek"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Hawaiian"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Lazio Matzah"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Meatball"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Mexican"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Neapolitan"</span><span class="p">,</span><span class="w"> </span><span class="s2">"New Haven-style"</span><span class="p">,</span><span class="w"> </span><span class="s2">"New York-style"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Pictou County"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Pizza quattro stagioni"</span><span class="p">,</span><span class="w"> </span><span class="s2">"al taglio"</span><span class="p">,</span><span class="w"> </span><span class="s2">"cake"</span><span class="p">,</span><span class="w"> </span><span class="s2">"capricciosa"</span><span class="p">,</span><span class="w"> </span><span class="s2">"marinara"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pugliese Pizzetta Quad City-style"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sardenara Seafood"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sicilian"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sushi"</span><span class="p">,</span><span class="w"> </span><span class="s2">"St. Louis-style"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Tomato pie White clam pie"</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+                    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+                      </span><span class="n">cat</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Your special pizza type is"</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">))</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                  </span><span class="p">},</span><span class="w"> 
+                  </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.GlobalEnv</span><span class="w">
+</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Pizza emoji is a special character so you have to surround it with backticks</span><span class="w">
+
+</span><span class="n">`🍕`</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"Pizza quattro stagioni"</span><span class="w">
+</span><span class="n">`🍕`</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"St. Louis-style"</span><span class="w">
+</span><span class="n">`🍕`</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"New York-style"</span><span class="w">
+</span><span class="n">`🍕`</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Vegetarian"</span><span class="w">
+</span><span class="n">Your</span><span class="w"> </span><span class="n">special</span><span class="w"> </span><span class="n">pizza</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">Vegetarian</span><span class="w">
+</span></code></pre></div></div>
+
+<p>And… bon appetit !</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#activebinding" class="page__taxonomy-item" rel="tag">activebinding</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#r" class="page__taxonomy-item" rel="tag">r</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-08-12T00:00:00+02:00">August 12, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=R+and+active+binding+%28and+pizza%29%20http%3A%2F%2Flocalhost%3A4000%2Fractivebinfing%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fractivebinfing%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fractivebinfing%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fractivebinfing%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/languagelayer110/" class="pagination--pager" title="languagelayeR 1.1.0 is now on CRAN
+">←</a>
+    
+    
+      <a href="/loremjulia/" class="pagination--pager" title="LoremJulia - A lorem ipsum generator made in Julia
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/ractivebinfing/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/ractivebinding"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

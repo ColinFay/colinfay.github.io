@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Internals</title>
+  <meta name="description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Internals" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  <meta name="github-repo" content="ColinFay/r-internals" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Internals" />
+  
+  <meta name="twitter:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="gui-consoles.html">
+<link rel="next" href="r-coding-standards.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R internals</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Internals</a></li>
+<li class="chapter" data-level="1" data-path="r-internal-structures.html"><a href="r-internal-structures.html"><i class="fa fa-check"></i><b>1</b> R Internal Structures</a></li>
+<li class="chapter" data-level="2" data-path="internal-vs-primitive.html"><a href="internal-vs-primitive.html"><i class="fa fa-check"></i><b>2</b> <code class="calibre18">.Internal</code> vs <code class="calibre18">.Primitive</code></a></li>
+<li class="chapter" data-level="3" data-path="internationalization-in-the-r-sources.html"><a href="internationalization-in-the-r-sources.html"><i class="fa fa-check"></i><b>3</b> Internationalization in the R sources</a></li>
+<li class="chapter" data-level="4" data-path="structure-of-an-installed-package.html"><a href="structure-of-an-installed-package.html"><i class="fa fa-check"></i><b>4</b> Structure of an Installed Package</a></li>
+<li class="chapter" data-level="5" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5</b> Files</a></li>
+<li class="chapter" data-level="6" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>6</b> Graphics</a></li>
+<li class="chapter" data-level="7" data-path="gui-consoles.html"><a href="gui-consoles.html"><i class="fa fa-check"></i><b>7</b> GUI consoles</a></li>
+<li class="chapter" data-level="8" data-path="tools.html"><a href="tools.html"><i class="fa fa-check"></i><b>8</b> Tools</a></li>
+<li class="chapter" data-level="9" data-path="r-coding-standards.html"><a href="r-coding-standards.html"><i class="fa fa-check"></i><b>9</b> R coding standards</a></li>
+<li class="chapter" data-level="10" data-path="testing-r-code.html"><a href="testing-r-code.html"><i class="fa fa-check"></i><b>10</b> Testing R code</a></li>
+<li class="chapter" data-level="11" data-path="use-of-tex-dialects.html"><a href="use-of-tex-dialects.html"><i class="fa fa-check"></i><b>11</b> Use of TeX dialects</a></li>
+<li class="chapter" data-level="12" data-path="current-and-future-directions.html"><a href="current-and-future-directions.html"><i class="fa fa-check"></i><b>12</b> Current and future directions</a></li>
+<li class="chapter" data-level="13" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>13</b> Function and variable index</a></li>
+<li class="chapter" data-level="14" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>14</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Internals</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="tools" class="section level1">
+<h1><span class="header-section-number">Chapter 8</span> Tools</h1>
+<p>
+The behavior of <code class="calibre2">R CMD check</code> can be controlled through a variety of command line arguments and environment variables.
+</p>
+<p>
+There is an internal –install=value command line argument not shown by <code class="calibre2">R CMD check –help</code>, with possible values
+</p>
+<dl>
+<dt>
+<code class="calibre2">check:file</code>
+</dt>
+<dd>
+<p>
+Assume that installation was already performed with stdout/stderr to file, the contents of which need to be checked (without repeating the installation). This is useful for checks applied by repository maintainers: it reduces the check time by the installation time given that the package has already been installed. In this case, one also needs to specify <em>where</em> the package was installed to using command line option –library.
+</p>
+</dd>
+<dt>
+<code class="calibre2">fake</code>
+</dt>
+<dd>
+<p>
+Fake installation, and turn off the run-time tests.
+</p>
+</dd>
+<dt>
+<code class="calibre2">skip</code>
+</dt>
+<dd>
+<p>
+Skip installation, e.g., when testing recommended packages bundled with R.
+</p>
+</dd>
+<dt>
+<code class="calibre2">no</code>
+</dt>
+<dd>
+<p>
+The same as –no-install : turns off installation and the tests which require the package to be installed.
+</p>
+</dd>
+</dl>
+<p>
+The following environment variables can be used to customize the operation of <code class="calibre2">check</code>: a convenient place to set these is the check environment file (default, ~/.R/check.Renviron).
+</p>
+<dl>
+<dt>
+<code class="calibre2"><em>R_CHECK_ALL_NON_ISO_C</em></code> <a href="" id="index-_005fR_005fCHECK_005fALL_005fNON_005fISO_005fC_005f"></a>
+</dt>
+<dd>
+<p>
+If true, do not ignore compiler (typically GCC) warnings about non ISO C code in <em>system</em> headers. Note that this may also show additional ISO C++ warnings. Default: false.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_FORCE_SUGGESTS</em></code> <a href="" id="index-_005fR_005fCHECK_005fFORCE_005fSUGGESTS_005f"></a>
+</dt>
+<dd>
+<p>
+If true, give an error if suggested packages are not available. Default: true (but false for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_RD_CONTENTS</em></code> <a href="" id="index-_005fR_005fCHECK_005fRD_005fCONTENTS_005f"></a>
+</dt>
+<dd>
+<p>
+If true, check Rd files for auto-generated content which needs editing, and missing argument documentation. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_RD_LINE_WIDTHS</em></code> <a href="" id="index-_005fR_005fCHECK_005fRD_005fLINE_005fWIDTHS_005f"></a>
+</dt>
+<dd>
+<p>
+If true, check Rd line widths in usage and examples sections. Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_RD_STYLE</em></code> <a href="" id="index-_005fR_005fCHECK_005fRD_005fSTYLE_005f"></a>
+</dt>
+<dd>
+<p>
+If true, check whether Rd usage entries for S3 methods use the full function name rather than the appropriate <code class="calibre2">\method</code> markup. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_RD_XREFS</em></code> <a href="" id="index-_005fR_005fCHECK_005fRD_005fXREFS_005f"></a>
+</dt>
+<dd>
+<p>
+If true, check the cross-references in .Rd files. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_SUBDIRS_NOCASE</em></code> <a href="" id="index-_005fR_005fCHECK_005fSUBDIRS_005fNOCASE_005f"></a>
+</dt>
+<dd>
+<p>
+If true, check the case of directories such as R and man. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_SUBDIRS_STRICT</em></code> <a href="" id="index-_005fR_005fCHECK_005fSUBDIRS_005fSTRICT_005f"></a>
+</dt>
+<dd>
+<p>
+Initial setting for –check-subdirs. Default: ‘default’ (which checks only tarballs, and checks in the src only if there is no configure file).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_USE_CODETOOLS</em></code> <a href="" id="index-_005fR_005fCHECK_005fUSE_005fCODETOOLS_005f"></a>
+</dt>
+<dd>
+<p>
+If true, make use of the <a href="https://CRAN.R-project.org/package=codetools"><strong>codetools</strong></a> package, which provides a detailed analysis of visibility of objects (but may give false positives). Default: true (if recommended packages are installed).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_USE_INSTALL_LOG</em></code> <a href="" id="index-_005fR_005fCHECK_005fUSE_005fINSTALL_005fLOG_005f"></a>
+</dt>
+<dd>
+<p>
+If true, record the output from installing a package as part of its check to a log file (00install.out by default), even when running interactively. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_VIGNETTES_NLINES</em></code> <a href="" id="index-_005fR_005fCHECK_005fVIGNETTES_005fNLINES_005f"></a>
+</dt>
+<dd>
+<p>
+Maximum number of lines to show from the bottom of the output when reporting errors in running or re-building vignettes. (As from R 3.4.0, <code class="calibre2">0</code> means all lines will be shown.) Default: 10 for running, 25 for re-building.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CODOC_S4_METHODS</em></code> <a href="" id="index-_005fR_005fCHECK_005fCODOC_005fS4_005fMETHODS_005f"></a>
+</dt>
+<dd>
+<p>
+Control whether <code class="calibre2">codoc()</code> testing is also performed on S4 methods. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_DOT_INTERNAL</em></code> <a href="" id="index-_005fR_005fCHECK_005fDOT_005fINTERNAL_005f"></a>
+</dt>
+<dd>
+<p>
+Control whether the package code is scanned for <code class="calibre2">.Internal</code> calls, which should only be used by base (and occasionally by recommended) packages. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_EXECUTABLES</em></code> <a href="" id="index-_005fR_005fCHECK_005fEXECUTABLES_005f"></a>
+</dt>
+<dd>
+<p>
+Control checking for executable (binary) files. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_EXECUTABLES_EXCLUSIONS</em></code> <a href="" id="index-_005fR_005fCHECK_005fEXECUTABLES_005fEXCLUSIONS_005f"></a>
+</dt>
+<dd>
+<p>
+Control whether checking for executable (binary) files ignores files listed in the package’s BinaryFiles file. Default: true (but false for CRAN submission checks). However, most likely this package-level override mechanism will be removed eventually.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_PERMISSIONS</em></code> <a href="" id="index-_005fR_005fCHECK_005fPERMISSIONS_005f"></a>
+</dt>
+<dd>
+<p>
+Control whether permissions of files should be checked. Default: true iff <code class="calibre2">.Platform$OS.type == “unix”</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_FF_CALLS</em></code> <a href="" id="index-_005fR_005fCHECK_005fFF_005fCALLS_005f"></a>
+</dt>
+<dd>
+<p>
+Allows turning off <code class="calibre2">checkFF()</code> testing. If set to ‘registration’, checks the registration information (number of arguments, correct choice of <code class="calibre2">.C/.Fortran/.Call/.External</code>) for such calls provided the package is installed. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_FF_DUP</em></code> <a href="" id="index-_005fR_005fCHECK_005fFF_005fDUP_005f"></a>
+</dt>
+<dd>
+<p>
+Controls <code class="calibre2">checkFF(check_DUP)</code> Default: true (and forced to be true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_LICENSE</em></code> <a href="" id="index-_005fR_005fCHECK_005fLICENSE_005f"></a>
+</dt>
+<dd>
+<p>
+Control whether/how license checks are performed. A possible value is ‘maybe’ (warn in case of problems, but not about standardizable non-standard license specs). Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_RD_EXAMPLES_T_AND_F</em></code> <a href="" id="index-_005fR_005fCHECK_005fRD_005fEXAMPLES_005fT_005fAND_005fF_005f"></a>
+</dt>
+<dd>
+<p>
+Control whether <code class="calibre2">check_T_and_F()</code> also looks for “bad” (global) ‘T’/‘F’ uses in examples. Off by default because this can result in false positives.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_RD_CHECKRD_MINLEVEL</em></code> <a href="" id="index-_005fR_005fCHECK_005fRD_005fCHECKRD_005fMINLEVEL_005f"></a>
+</dt>
+<dd>
+<p>
+Controls the minimum level for reporting warnings from <code class="calibre2">checkRd</code>. Default: -1.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_XREFS_REPOSITORIES</em></code> <a href="" id="index-_005fR_005fCHECK_005fXREFS_005fREPOSITORIES_005f"></a>
+</dt>
+<dd>
+<p>
+If set to a non-empty value, a space-separated list of repositories to use to determine known packages. Default: empty, when the CRAN and Bioconductor repositories known to R is used.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_SRC_MINUS_W_IMPLICIT</em></code> <a href="" id="index-_005fR_005fCHECK_005fSRC_005fMINUS_005fW_005fIMPLICIT_005f"></a>
+</dt>
+<dd>
+<p>
+Control whether installation output is checked for compilation warnings about implicit function declarations (as spotted by GCC with command line option -Wimplicit-function-declaration, which is implied by -Wall). Default: false.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_SRC_MINUS_W_UNUSED</em></code> <a href="" id="index-_005fR_005fCHECK_005fSRC_005fMINUS_005fW_005fUNUSED_005f"></a>
+</dt>
+<dd>
+<p>
+Control whether installation output is checked for compilation warnings about unused code constituents (as spotted by GCC with command line option -Wunused, which is implied by -Wall). Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_WALL_FORTRAN</em></code> <a href="" id="index-_005fR_005fCHECK_005fWALL_005fFORTRAN_005f"></a>
+</dt>
+<dd>
+<p>
+Control whether gfortran 4.0 or later -Wall warnings are used in the analysis of installation output. Default: false, even though the warnings are justifiable.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_ASCII_CODE</em></code> <a href="" id="index-_005fR_005fCHECK_005fASCII_005fCODE_005f"></a>
+</dt>
+<dd>
+<p>
+If true, check R code for non-ascii characters. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_ASCII_DATA</em></code> <a href="" id="index-_005fR_005fCHECK_005fASCII_005fDATA_005f"></a>
+</dt>
+<dd>
+<p>
+If true, check data for non-ascii characters. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_COMPACT_DATA</em></code> <a href="" id="index-_005fR_005fCHECK_005fCOMPACT_005fDATA_005f"></a>
+</dt>
+<dd>
+<p>
+If true, check data for ascii and uncompressed saves, and also check if using <code class="calibre2">bzip2</code> or <code class="calibre2">xz</code> compression would be significantly better. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_SKIP_ARCH</em></code> <a href="" id="index-_005fR_005fCHECK_005fSKIP_005fARCH_005f"></a>
+</dt>
+<dd>
+<p>
+Comma-separated list of architectures that will be omitted from checking in a multi-arch setup. Default: none.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_SKIP_TESTS_ARCH</em></code> <a href="" id="index-_005fR_005fCHECK_005fSKIP_005fTESTS_005fARCH_005f"></a>
+</dt>
+<dd>
+<p>
+Comma-separated list of architectures that will be omitted from running tests in a multi-arch setup. Default: none.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_SKIP_EXAMPLES_ARCH</em></code> <a href="" id="index-_005fR_005fCHECK_005fSKIP_005fEXAMPLES_005fARCH_005f"></a>
+</dt>
+<dd>
+<p>
+Comma-separated list of architectures that will be omitted from running examples in a multi-arch setup. Default: none.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_VC_DIRS</em></code> <a href="" id="index-_005fR_005fCHECK_005fVC_005fDIRS_005f"></a>
+</dt>
+<dd>
+<p>
+Should the unpacked package directory be checked for version-control directories (CVS, .svn …)? Default: true for tarballs.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_PKG_SIZES</em></code> <a href="" id="index-_005fR_005fCHECK_005fPKG_005fSIZES_005f"></a>
+</dt>
+<dd>
+<p>
+Should <code class="calibre2">du</code> be used to find the installed sizes of packages? <code class="calibre2">R CMD check</code> does check for the availability of <code class="calibre2">du</code>. but this option allows the check to be overruled if an unsuitable command is found (including one that does not respect the -k flag to report in units of 1Kb, or reports in a different format – the GNU, macOS and Solaris <code class="calibre2">du</code> commands have been tested). Default: true if <code class="calibre2">du</code> is found.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_DOC_SIZES</em></code> <a href="" id="index-_005fR_005fCHECK_005fDOC_005fSIZES_005f"></a>
+</dt>
+<dd>
+<p>
+Should <code class="calibre2">qpdf</code> be used to check the installed sizes of PDFs? Default: true if <code class="calibre2">qpdf</code> is found.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_DOC_SIZES2</em></code> <a href="" id="index-_005fR_005fCHECK_005fDOC_005fSIZES2_005f"></a>
+</dt>
+<dd>
+<p>
+Should <code class="calibre2">gs</code> be used to check the installed sizes of PDFs? This is slower than (and in addition to) the previous check, but does detect figures with excessive detail (often hidden by over-plotting) or bitmap figures with too high a resolution. Requires that <code class="calibre2">R_GSCMD</code> is set to a valid program, or <code class="calibre2">gs</code> (or on Windows, <code class="calibre2">gswin32.exe</code> or <code class="calibre2">gswin64c.exe</code>) is on the path. Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_ALWAYS_LOG_VIGNETTE_OUTPUT</em></code> <a href="" id="index-_005fR_005fCHECK_005fALWAYS_005fLOG_005fVIGNETTE_005fOUTPUT_005f"></a>
+</dt>
+<dd>
+<p>
+By default the output from running the R code in the vignettes is kept only if there is an error. This also applies to the build_vignettes.log log from the re-building of vignettes. Default: false.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CLEAN_VIGN_TEST</em></code> <a href="" id="index-_005fR_005fCHECK_005fCLEAN_005fVIGN_005fTEST_005f"></a>
+</dt>
+<dd>
+<p>
+Should the vign_test directory be removed if the test is successful? Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_REPLACING_IMPORTS</em></code> <a href="" id="index-_005fR_005fCHECK_005fREPLACING_005fIMPORTS_005f"></a>
+</dt>
+<dd>
+<p>
+Should warnings about replacing imports be reported? These sometimes come from auto-generated NAMESPACE files in other packages, but most often from importing the whole of a namespace rather than using <code class="calibre2">importFrom</code>. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_UNSAFE_CALLS</em></code> <a href="" id="index-_005fR_005fCHECK_005fUNSAFE_005fCALLS_005f"></a>
+</dt>
+<dd>
+<p>
+Check for calls that appear to tamper with (or allow tampering with) already loaded code not from the current package: such calls may well contravene CRAN policies. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_TIMINGS</em></code> <a href="" id="index-_005fR_005fCHECK_005fTIMINGS_005f"></a>
+</dt>
+<dd>
+<p>
+Optionally report timings for installation, examples, tests and running/re-building vignettes as part of the check log. The format is ‘[as/bs]’ for the total CPU time (including child processes) ‘a’ and elapsed time ‘b’, except on Windows, when it is ‘[bs]’. In most cases timings are only given for ‘OK’ checks. Times with an elapsed component over 10 mins are reported in minutes (with abbreviation ‘m’). The value is the smallest numerical value in elapsed seconds that should be reported: non-numerical values indicate that no report is required, a value of ‘0’ that a report is always required. Default: <code class="calibre2">“”</code>. (<code class="calibre2">10</code> for CRAN checks.)
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_INSTALL_DEPENDS</em></code> <a href="" id="index-_005fR_005fCHECK_005fINSTALL_005fDEPENDS_005f"></a>
+</dt>
+<dd>
+<p>
+If set to a true value and a test installation is to be done, this is done with <code class="calibre2">.libPaths()</code> containing just a temporary library directory and <code class="calibre2">.Library</code>. The temporary library is populated by symbolic links<a href="concept-index.html#FOOT22" id="DOCF22"><sup>22</sup></a> to the installed copies of all the Depends/Imports/LinkingTo packages which are not in <code class="calibre2">.Library</code>. Default: false (but true for CRAN submission checks).
+</p>
+<p>
+Note that this is actually implemented in <code class="calibre2">R CMD INSTALL</code>, so it is available to those who first install recording to a log, then call <code class="calibre2">R CMD check</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_DEPENDS_ONLY</em></code> <a href="" id="index-_005fR_005fCHECK_005fDEPENDS_005fONLY_005f"></a><br /> <code class="calibre2"><em>R_CHECK_SUGGESTS_ONLY</em></code> <a href="" id="index-_005fR_005fCHECK_005fSUGGESTS_005fONLY_005f"></a>
+</dt>
+<dd>
+<p>
+If set to a true value, running examples, tests and vignettes is done with <code class="calibre2">.libPaths()</code> containing just a temporary library directory and <code class="calibre2">.Library</code>. The temporary library is populated by symbolic links<a href="concept-index.html#FOOT23" id="DOCF23"><sup>23</sup></a> to the installed copies of all the Depends/Imports and (for the second only) Suggests packages which are not in <code class="calibre2">.Library</code>. (As an exception, packages in a ‘VignetteBuilder’ field are always made available.) Default: false (but <code class="calibre2"><em>R_CHECK_SUGGESTS_ONLY</em></code> is true for CRAN checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_NO_RECOMMENDED</em></code> <a href="" id="index-_005fR_005fCHECK_005fNO_005fRECOMMENDED_005f"></a>
+</dt>
+<dd>
+<p>
+If set to a true value, augment the previous checks to make recommended packages unavailable unless declared. Default: false (but true for CRAN submission checks).
+</p>
+<p>
+This may give false positives on code which uses <code class="calibre2">grDevices::densCols</code> and <code class="calibre2">stats:::asSparse</code> as these invoke <a href="https://CRAN.R-project.org/package=KernSmooth"><strong>KernSmooth</strong></a> and <a href="https://CRAN.R-project.org/package=Matrix"><strong>Matrix</strong></a> respectively.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CODETOOLS_PROFILE</em></code> <a href="" id="index-_005fR_005fCHECK_005fCODETOOLS_005fPROFILE_005f"></a>
+</dt>
+<dd>
+<p>
+A string with comma-separated <code class="calibre2">name=value</code> pairs (with value a logical constant) giving additional arguments for the <a href="https://CRAN.R-project.org/package=codetools"><strong>codetools</strong></a> functions used for analyzing package code. E.g., use <code class="calibre2"><em>R_CHECK_CODETOOLS_PROFILE</em>=“suppressLocalUnused=FALSE”</code> to turn off suppressing warnings about unused local variables. Default: no additional arguments, corresponding to using <code class="calibre2">skipWith = TRUE</code>, <code class="calibre2">suppressPartialMatchArgs = FALSE</code> and <code class="calibre2">suppressLocalUnused = TRUE</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CRAN_INCOMING</em></code> <a href="" id="index-_005fR_005fCHECK_005fCRAN_005fINCOMING_005f"></a>
+</dt>
+<dd>
+<p>
+Check whether package is suitable for publication on CRAN. Default: false, except for CRAN submission checks.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CRAN_INCOMING_REMOTE</em></code> <a href="" id="index-_005fR_005fCHECK_005fCRAN_005fINCOMING_005fREMOTE_005f"></a>
+</dt>
+<dd>
+<p>
+Include checks that require remote access among the above. Default: same as <code class="calibre2"><em>R_CHECK_CRAN_INCOMING</em></code>
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_XREFS_USE_ALIASES_FROM_CRAN</em></code> <a href="" id="index-_005fR_005fCHECK_005fXREFS_005fUSE_005fALIASES_005fFROM_005fCRAN_005f"></a>
+</dt>
+<dd>
+<p>
+When checking anchored Rd xrefs, use Rd aliases from the CRAN package web areas in addition to those in the packages installed locally. Default: false.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_SHLIB_BUILD_OBJECTS_SYMBOL_TABLES</em></code> <a href="" id="index-_005fR_005fSHLIB_005fBUILD_005fOBJECTS_005fSYMBOL_005fTABLES_005f"></a>
+</dt>
+<dd>
+<p>
+Make the checks of compiled code more accurate by recording the symbol tables for objects (.o files) at installation in a file symbols.rds. (Only currently supported on Linux, Solaris, macOS, Windows and FreeBSD.) Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CODE_ASSIGN_TO_GLOBALENV</em></code> <a href="" id="index-_005fR_005fCHECK_005fCODE_005fASSIGN_005fTO_005fGLOBALENV_005f"></a>
+</dt>
+<dd>
+<p>
+Should the package code be checked for assignments to the global environment? Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CODE_ATTACH</em></code> <a href="" id="index-_005fR_005fCHECK_005fCODE_005fATTACH_005f"></a>
+</dt>
+<dd>
+<p>
+Should the package code be checked for calls to <code class="calibre2">attach()</code>? Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CODE_DATA_INTO_GLOBALENV</em></code> <a href="" id="index-_005fR_005fCHECK_005fCODE_005fDATA_005fINTO_005fGLOBALENV_005f"></a>
+</dt>
+<dd>
+<p>
+Should the package code be checked for calls to <code class="calibre2">data()</code> which load into the global environment? Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_DOT_FIRSTLIB</em></code> <a href="" id="index-_005fR_005fCHECK_005fDOT_005fFIRSTLIB_005f"></a>
+</dt>
+<dd>
+<p>
+Should the package code be checked for the presence of the obsolete function <code class="calibre2">.First.lib()</code>? Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_DEPRECATED_DEFUNCT</em></code> <a href="" id="index-_005fR_005fCHECK_005fDEPRECATED_005fDEFUNCT_005f"></a>
+</dt>
+<dd>
+<p>
+Should the package code be checked for the presence of recently deprecated or defunct functions (including completely removed functions). Also for platform-specific graphics devices. Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_SCREEN_DEVICE</em></code> <a href="" id="index-_005fR_005fCHECK_005fSCREEN_005fDEVICE_005f"></a>
+</dt>
+<dd>
+<p>
+If set to ‘warn’, give a warning if examples etc open a screen device. If set to ‘stop’, give an error. Default: empty (but ‘stop’ for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_WINDOWS_DEVICE</em></code> <a href="" id="index-_005fR_005fCHECK_005fWINDOWS_005fDEVICE_005f"></a>
+</dt>
+<dd>
+<p>
+If set to ‘stop’, give an error if a Windows-only device is used in example etc. This is only useful on Windows: the devices do not exist elsewhere. Default: empty (but ‘stop’ for CRAN submission checks on Windows).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_TOPLEVEL_FILES</em></code> <a href="" id="index-_005fR_005fCHECK_005fTOPLEVEL_005fFILES_005f"></a>
+</dt>
+<dd>
+<p>
+Report on top-level files in the package sources that are not described in ‘Writing R Extensions’ nor are commonly understood (like ChangeLog). Variations on standard names (e.g. COPYRIGHT) are also reported. Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_GCT_N</em></code> <a href="" id="index-_005fR_005fCHECK_005fGCT_005fN_005f"></a>
+</dt>
+<dd>
+<p>
+Should the –use-gct use <code class="calibre2">gctorture2(n)</code> rather than <code class="calibre2">gctorture(TRUE)</code>? Use to a positive integer to enable this. Default: <code class="calibre2">0</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_LIMIT_CORES</em></code> <a href="" id="index-_005fR_005fCHECK_005fLIMIT_005fCORES_005f"></a>
+</dt>
+<dd>
+<p>
+If set, check the usage of too many cores in package <strong>parallel</strong>. If set to ‘warn’ gives a warning, to ‘false’ or ‘FALSE’ the check is skipped, and any other non-empty value gives an error when more than 2 children are spawned. Default: unset (but ‘TRUE’ for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CODE_USAGE_VIA_NAMESPACES</em></code> <a href="" id="index-_005fR_005fCHECK_005fCODE_005fUSAGE_005fVIA_005fNAMESPACES_005f"></a>
+</dt>
+<dd>
+<p>
+If set, check code usage (via <a href="https://CRAN.R-project.org/package=codetools"><strong>codetools</strong></a>) directly on the package namespace without loading and attaching the package and its suggests and enhances. Default: true (and true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_CODE_USAGE_WITH_ONLY_BASE_ATTACHED</em></code> <a href="" id="index-_005fR_005fCHECK_005fCODE_005fUSAGE_005fWITH_005fONLY_005fBASE_005fATTACHED_005f"></a>
+</dt>
+<dd>
+<p>
+If set, check code usage (via <a href="https://CRAN.R-project.org/package=codetools"><strong>codetools</strong></a>) with only the base package attached. Default: true.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_EXIT_ON_FIRST_ERROR</em></code> <a href="" id="index-_005fR_005fCHECK_005fEXIT_005fON_005fFIRST_005fERROR_005f"></a>
+</dt>
+<dd>
+<p>
+If set to a true value, the check will exit on the first error. Default: false.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_S3_METHODS_NOT_REGISTERED</em></code> <a href="" id="index-_005fR_005fCHECK_005fS3_005fMETHODS_005fNOT_005fREGISTERED_005f"></a>
+</dt>
+<dd>
+<p>
+If set to a true value, report (apparent) S3 methods exported but not registered. Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_OVERWRITE_REGISTERED_S3_METHODS</em></code> <a href="" id="index-_005fR_005fCHECK_005fOVERWRITE_005fREGISTERED_005fS3_005fMETHODS_005f"></a>
+</dt>
+<dd>
+<p>
+If set to a true value, report already registered S3 methods in base/recommended packages which are overwritten when this package’s namespace is loaded. Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_TESTS_NLINES</em></code> <a href="" id="index-_005fR_005fCHECK_005fTESTS_005fNLINES_005f"></a>
+</dt>
+<dd>
+<p>
+Number of trailing lines of test output to reproduce in the log. If <code class="calibre2">0</code> all lines except the R preamble are reproduced. Default: 13.
+</p>
+</dd>
+<dt>
+<code class="calibre2"><em>R_CHECK_NATIVE_ROUTINE_REGISTRATION</em></code> <a href="" id="index-_005fR_005fCHECK_005fNATIVE_005fROUTINE_005fREGISTRATION_005f"></a>
+</dt>
+<dd>
+<p>
+If set to a true value, report if the entry points to register native routines and to suppress dynamic search are not found in a package’s DLL. (<strong>NB:</strong> this requires system commands <code class="calibre2">nm</code> and on Windows, <code class="calibre2">objdump.exe</code> to be on the <code class="calibre2">PATH</code>. This would be normal when using a package with compiled code (which are the only ones this checks), but Windows’ users should check.) Default: false (but true for CRAN submission checks).
+</p>
+</dd>
+</dl>
+<p>
+CRAN’s submission checks use something like
+</p>
+<div class="example">
+<pre class="example1"><code>_R_CHECK_CRAN_INCOMING_=TRUE
+_R_CHECK_CRAN_INCOMING_REMOTE_=TRUE
+_R_CHECK_VC_DIRS_=TRUE
+_R_CHECK_TIMINGS_=10
+_R_CHECK_INSTALL_DEPENDS_=TRUE
+_R_CHECK_SUGGESTS_ONLY_=TRUE
+_R_CHECK_NO_RECOMMENDED_=TRUE
+_R_CHECK_EXECUTABLES_EXCLUSIONS_=FALSE
+_R_CHECK_DOC_SIZES2_=TRUE
+_R_CHECK_CODE_ASSIGN_TO_GLOBALENV_=TRUE
+_R_CHECK_CODE_ATTACH_=TRUE
+_R_CHECK_CODE_DATA_INTO_GLOBALENV_=TRUE
+_R_CHECK_CODE_USAGE_VIA_NAMESPACES_=TRUE
+_R_CHECK_DOT_FIRSTLIB_=TRUE
+_R_CHECK_DEPRECATED_DEFUNCT_=TRUE
+_R_CHECK_REPLACING_IMPORTS_=TRUE
+_R_CHECK_SCREEN_DEVICE_=stop
+_R_CHECK_TOPLEVEL_FILES_=TRUE
+_R_CHECK_S3_METHODS_NOT_REGISTERED_=TRUE
+_R_CHECK_OVERWRITE_REGISTERED_S3_METHODS_=TRUE</code></pre>
+</div>
+<p>
+These are turned on by <code class="calibre2">R CMD check –as-cran</code>: the incoming checks also use
+</p>
+<div class="example">
+<pre class="example1"><code>_R_CHECK_FORCE_SUGGESTS_=FALSE</code></pre>
+</div>
+<p>
+since some packages do suggest other packages not available on CRAN or other commonly-used repositories.
+</p>
+<p>
+Another variable which enables stricter checks is to set <code class="calibre2">R_CHECK_CONSTANTS</code> to <code class="calibre2">5</code>. This checks that nothing<a href="concept-index.html#FOOT24" id="DOCF24"><sup>24</sup></a> changes the values of ‘constants’<a href="concept-index.html#FOOT25" id="DOCF25"><sup>25</sup></a> in R code. This is best used in conjunction with setting <code class="calibre2">R_JIT_STRATEGY</code> to <code class="calibre2">3</code>, which checks code on first use (by default most code is only checked after byte-compilation on second use). Unfortunately these checks slow down checking of examples, tests and vignettes, typically two-fold but in the worst cases at least a hundred-fold.
+</p>
+<hr />
+<p>
+<a href="" id="R-coding-standards"></a> <a href="" id="R-coding-standards-1"></a>
+</p>
+<div id="calibre_pb_19" class="calibre6">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="gui-consoles.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="r-coding-standards.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

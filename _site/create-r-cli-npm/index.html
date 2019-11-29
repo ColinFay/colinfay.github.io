@@ -1,0 +1,627 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Create a CLI for R with npm - Colin Fay</title>
+<meta name="description" content="How to build a CLI for R, with npm.BackgroundThis blog post was triggered by a discussion on Twitter with MartinSkarzynski,who was looking for a way to build a CLI that launches an RScript.Here’s a way to do this using npm.Please note that this blog post won’t teach you how to build the commandline tool, it will quickly go over the way to create a system-widecommand line interface, using npm.If you want to learn more about building the utility, see thisfantastic series of blogpostsby Mark Sellor.Now, the idea is to have a CLI, i.e. a way to launch your utility with:$ mytoolAnd that, system-wide.What you’ll need  An R script (script.R) with in it, for example:#!/usr/bin/env Rscript --vanillacli::cat_rule(&quot;yeay&quot;)cli::cat_bullet(Sys.time())  npm, which you can get fromthere.Let’s goCreate a new folder, and go inside it.mkdir cli &amp;&amp; cd cliCreate the R Script there.echo &#39;#!/usr/bin/env Rscript --vanilla&#39; &gt; script.Recho &#39;cli::cat_rule(&quot;yeay&quot;)&#39; &gt;&gt; script.Recho &#39;cli::cat_bullet(Sys.time())&#39; &gt;&gt; script.RTry your script to see if it works:Rscript script.RNow launch an npm project:npm init -y(You can also run it without the -y to interactively add informationto the package.json.)Now the important part: add a &quot;bin&quot; value in the package.json, withthe name of the bin you want to create, and the path to the script,relatively to the package file. Here is an example of a package.json(I removed some elements).{  &quot;name&quot;: &quot;cli&quot;,  &quot;version&quot;: &quot;1.0.0&quot;,  &quot;description&quot;: &quot;CLI example with npm&quot;,  &quot;bin&quot; : {    &quot;clir&quot; : &quot;./script.R&quot;  },  &quot;author&quot;: &quot;Colin Fay&quot;,  &quot;license&quot;: &quot;MIT&quot;}Install it globally (need sudo rights):sudo npm linkAnd, voilà! Open your terminal, and you’re done!clirOther way to go  See the {littler}implementation">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Create a CLI for R with npm">
+<meta property="og:url" content="http://localhost:4000/create-r-cli-npm/">
+
+
+  <meta property="og:description" content="How to build a CLI for R, with npm.BackgroundThis blog post was triggered by a discussion on Twitter with MartinSkarzynski,who was looking for a way to build a CLI that launches an RScript.Here’s a way to do this using npm.Please note that this blog post won’t teach you how to build the commandline tool, it will quickly go over the way to create a system-widecommand line interface, using npm.If you want to learn more about building the utility, see thisfantastic series of blogpostsby Mark Sellor.Now, the idea is to have a CLI, i.e. a way to launch your utility with:$ mytoolAnd that, system-wide.What you’ll need  An R script (script.R) with in it, for example:#!/usr/bin/env Rscript --vanillacli::cat_rule(&quot;yeay&quot;)cli::cat_bullet(Sys.time())  npm, which you can get fromthere.Let’s goCreate a new folder, and go inside it.mkdir cli &amp;&amp; cd cliCreate the R Script there.echo &#39;#!/usr/bin/env Rscript --vanilla&#39; &gt; script.Recho &#39;cli::cat_rule(&quot;yeay&quot;)&#39; &gt;&gt; script.Recho &#39;cli::cat_bullet(Sys.time())&#39; &gt;&gt; script.RTry your script to see if it works:Rscript script.RNow launch an npm project:npm init -y(You can also run it without the -y to interactively add informationto the package.json.)Now the important part: add a &quot;bin&quot; value in the package.json, withthe name of the bin you want to create, and the path to the script,relatively to the package file. Here is an example of a package.json(I removed some elements).{  &quot;name&quot;: &quot;cli&quot;,  &quot;version&quot;: &quot;1.0.0&quot;,  &quot;description&quot;: &quot;CLI example with npm&quot;,  &quot;bin&quot; : {    &quot;clir&quot; : &quot;./script.R&quot;  },  &quot;author&quot;: &quot;Colin Fay&quot;,  &quot;license&quot;: &quot;MIT&quot;}Install it globally (need sudo rights):sudo npm linkAnd, voilà! Open your terminal, and you’re done!clirOther way to go  See the {littler}implementation">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Create a CLI for R with npm">
+  <meta name="twitter:description" content="How to build a CLI for R, with npm.BackgroundThis blog post was triggered by a discussion on Twitter with MartinSkarzynski,who was looking for a way to build a CLI that launches an RScript.Here’s a way to do this using npm.Please note that this blog post won’t teach you how to build the commandline tool, it will quickly go over the way to create a system-widecommand line interface, using npm.If you want to learn more about building the utility, see thisfantastic series of blogpostsby Mark Sellor.Now, the idea is to have a CLI, i.e. a way to launch your utility with:$ mytoolAnd that, system-wide.What you’ll need  An R script (script.R) with in it, for example:#!/usr/bin/env Rscript --vanillacli::cat_rule(&quot;yeay&quot;)cli::cat_bullet(Sys.time())  npm, which you can get fromthere.Let’s goCreate a new folder, and go inside it.mkdir cli &amp;&amp; cd cliCreate the R Script there.echo &#39;#!/usr/bin/env Rscript --vanilla&#39; &gt; script.Recho &#39;cli::cat_rule(&quot;yeay&quot;)&#39; &gt;&gt; script.Recho &#39;cli::cat_bullet(Sys.time())&#39; &gt;&gt; script.RTry your script to see if it works:Rscript script.RNow launch an npm project:npm init -y(You can also run it without the -y to interactively add informationto the package.json.)Now the important part: add a &quot;bin&quot; value in the package.json, withthe name of the bin you want to create, and the path to the script,relatively to the package file. Here is an example of a package.json(I removed some elements).{  &quot;name&quot;: &quot;cli&quot;,  &quot;version&quot;: &quot;1.0.0&quot;,  &quot;description&quot;: &quot;CLI example with npm&quot;,  &quot;bin&quot; : {    &quot;clir&quot; : &quot;./script.R&quot;  },  &quot;author&quot;: &quot;Colin Fay&quot;,  &quot;license&quot;: &quot;MIT&quot;}Install it globally (need sudo rights):sudo npm linkAnd, voilà! Open your terminal, and you’re done!clirOther way to go  See the {littler}implementation">
+  <meta name="twitter:url" content="http://localhost:4000/create-r-cli-npm/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2019-05-22T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/create-r-cli-npm/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Create a CLI for R with npm">
+    <meta itemprop="description" content="How to build a CLI for R, with npm.BackgroundThis blog post was triggered by a discussion on Twitter with MartinSkarzynski,who was looking for a way to build a CLI that launches an RScript.Here’s a way to do this using npm.Please note that this blog post won’t teach you how to build the commandline tool, it will quickly go over the way to create a system-widecommand line interface, using npm.If you want to learn more about building the utility, see thisfantastic series of blogpostsby Mark Sellor.Now, the idea is to have a CLI, i.e. a way to launch your utility with:$ mytoolAnd that, system-wide.What you’ll need  An R script (script.R) with in it, for example:#!/usr/bin/env Rscript --vanillacli::cat_rule(&quot;yeay&quot;)cli::cat_bullet(Sys.time())  npm, which you can get fromthere.Let’s goCreate a new folder, and go inside it.mkdir cli &amp;&amp; cd cliCreate the R Script there.echo &#39;#!/usr/bin/env Rscript --vanilla&#39; &gt; script.Recho &#39;cli::cat_rule(&quot;yeay&quot;)&#39; &gt;&gt; script.Recho &#39;cli::cat_bullet(Sys.time())&#39; &gt;&gt; script.RTry your script to see if it works:Rscript script.RNow launch an npm project:npm init -y(You can also run it without the -y to interactively add informationto the package.json.)Now the important part: add a &quot;bin&quot; value in the package.json, withthe name of the bin you want to create, and the path to the script,relatively to the package file. Here is an example of a package.json(I removed some elements).{  &quot;name&quot;: &quot;cli&quot;,  &quot;version&quot;: &quot;1.0.0&quot;,  &quot;description&quot;: &quot;CLI example with npm&quot;,  &quot;bin&quot; : {    &quot;clir&quot; : &quot;./script.R&quot;  },  &quot;author&quot;: &quot;Colin Fay&quot;,  &quot;license&quot;: &quot;MIT&quot;}Install it globally (need sudo rights):sudo npm linkAnd, voilà! Open your terminal, and you’re done!clirOther way to go  See the {littler}implementation">
+    <meta itemprop="datePublished" content="May 22, 2019">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Create a CLI for R with npm
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  1 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>How to build a CLI for R, with npm.</p>
+
+<h2 id="background">Background</h2>
+
+<p>This blog post was triggered by a discussion on Twitter with <a href="https://twitter.com/_ColinFay/status/1131205018068160515">Martin
+Skarzynski</a>,
+who was looking for a way to build a CLI that launches an RScript.
+Here’s a way to do this using <code class="highlighter-rouge">npm</code>.</p>
+
+<p>Please note that this blog post won’t teach you how to build the command
+line tool, it will quickly go over the way to create a system-wide
+command line interface, using npm.</p>
+
+<p>If you want to learn more about building the utility, see this
+<a href="https://blog.sellorm.com/2017/12/18/learn-to-write-command-line-utilities-in-r/">fantastic series of blog
+posts</a>
+by Mark Sellor.</p>
+
+<p>Now, the idea is to have a CLI, i.e. a way to launch your utility with:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mytool
+</code></pre></div></div>
+
+<p>And that, system-wide.</p>
+
+<h2 id="what-youll-need">What you’ll need</h2>
+
+<ul>
+  <li>An R script (script.R) with in it, for example:</li>
+</ul>
+
+<!-- end list -->
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env Rscript --vanilla</span><span class="w">
+</span><span class="n">cli</span><span class="o">::</span><span class="n">cat_rule</span><span class="p">(</span><span class="s2">"yeay"</span><span class="p">)</span><span class="w">
+</span><span class="n">cli</span><span class="o">::</span><span class="n">cat_bullet</span><span class="p">(</span><span class="n">Sys.time</span><span class="p">())</span><span class="w">
+</span></code></pre></div></div>
+
+<ul>
+  <li><code class="highlighter-rouge">npm</code>, which you can get from
+<a href="https://nodejs.org/en/download/">there</a>.</li>
+</ul>
+
+<h2 id="lets-go">Let’s go</h2>
+
+<p>Create a new folder, and go inside it.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir cli &amp;&amp; cd cli
+</code></pre></div></div>
+
+<p>Create the R Script there.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo '#!/usr/bin/env Rscript --vanilla' &gt; script.R
+echo 'cli::cat_rule("yeay")' &gt;&gt; script.R
+echo 'cli::cat_bullet(Sys.time())' &gt;&gt; script.R
+</code></pre></div></div>
+
+<p>Try your script to see if it works:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Rscript script.R
+</code></pre></div></div>
+
+<p>Now launch an npm project:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm init -y
+</code></pre></div></div>
+
+<p>(You can also run it without the <code class="highlighter-rouge">-y</code> to interactively add information
+to the <code class="highlighter-rouge">package.json</code>.)</p>
+
+<p>Now the important part: add a <code class="highlighter-rouge">"bin"</code> value in the <code class="highlighter-rouge">package.json</code>, with
+the name of the bin you want to create, and the path to the script,
+relatively to the package file. Here is an example of a <code class="highlighter-rouge">package.json</code>
+(I removed some elements).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "name": "cli",
+  "version": "1.0.0",
+  "description": "CLI example with npm",
+  "bin" : {
+    "clir" : "./script.R"
+  },
+  "author": "Colin Fay",
+  "license": "MIT"
+}
+</code></pre></div></div>
+
+<p>Install it globally (need sudo rights):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo npm link
+</code></pre></div></div>
+
+<p>And, voilà! Open your terminal, and you’re done!</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clir
+</code></pre></div></div>
+
+<h2 id="other-way-to-go">Other way to go</h2>
+
+<ul>
+  <li>See the <a href="https://github.com/eddelbuettel/littler">{littler}</a>
+implementation</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2019-05-22T00:00:00+02:00">May 22, 2019</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Create+a+CLI+for+R+with+npm%20http%3A%2F%2Flocalhost%3A4000%2Fcreate-r-cli-npm%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fcreate-r-cli-npm%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fcreate-r-cli-npm%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcreate-r-cli-npm%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/attempt-0-3-0/" class="pagination--pager" title="{attempt} 0.3.0 is now on CRAN
+">←</a>
+    
+    
+      <a href="/back-from-toulouse/" class="pagination--pager" title="Back from useR! 2019
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/create-r-cli-npm/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/cli-r-npm"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

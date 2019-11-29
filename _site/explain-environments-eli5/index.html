@@ -1,0 +1,705 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Explain R environments like I’m five - Colin Fay</title>
+<meta name="description" content="“Can you explain me what are environments in R?”The beginning of a series of blogpost about R concepts, explained to mydaughter.  Side note: no, my daughter is not five, and she’s not named Alice. Andshe doesn’t speak english either ¯\(ツ)/¯.“Daddy, I’ve seen you reading this book with a weird chapter named‘Environments in R’. What does it mean?”“Alice darling, just sit down for a minute.Let’s say the world is a big computer, and everyone living in it is apiece of information we call ‘data’. Right now, we are at home, and homeis a small piece from the whole world. In R, these smaller places arecalled environments, and they are used just as our home: they cancontain data, and we can refer to these data with names which arespecific to the environment.For example, when we are at home, there are five pieces of data: you,me, mommy, and the two cats. At home, I can say ‘Darling’, and as we arein this small subset of the whole world where ‘darling’ refers to you,I’m pretty sure I will find you. But if I go in another home, that isto say in another environment with other data, another dad is callinghis daughter ‘Darling’. In this small other environment, different fromours, ‘Darling’ does not refer to the same piece of data. And the samegoes for “Mommy” and “Daddy”: in another home, they refer to otherpersons.If I go out in the wild world and try to use the word ‘Mommy’, thiswon’t specifically refer to your mum, as there are not one single‘Mommy’ in this world, and because this word refers to someonespecific to the home we are using it in. In the wild world, if I want torefer to your mum, I’ll need to specify from which home the ‘Mommy’ I’mlooking for is coming from.”“So why don’t we use the full name every time then? It seems simpler.”“Environments allow us to use the same word to refer to different data,depending on where we are using the word. It also allows to giveinformation about a piece of data: it’s quite normal to think that afather uses ‘Darling’ to refer to someone he loves very very much. Evenif, strictly speaking, nothing prevents the contrary from happening.Also, it wouldn’t be fair to only allow only one ‘Darling’ in the wholeworld. Thanks to environment, there won’t be any problem if every fatherin the world use this word, as it refers, in each home, to a specificlittle girl.”“Ok, thanks dadddy!”“You’re welcome, Darling”The R code behindAbout environments# Creating two houseshome &lt;- new.env()home$Darling &lt;- &quot;Alice&quot;neighbour &lt;- new.env()neighbour$Darling &lt;- &quot;Jannet&quot;# If I want to call Darling from the wild world that is .GlobalEnv, # I&#39;ll need to specify where Darling comes fromhome$Darling## [1] &quot;Alice&quot;neighbour$Darling## [1] &quot;Jannet&quot;# Use Darling as a symbolDarling &lt;- quote(Darling)# Evaluate Darling if I&#39;m homeeval(Darling, home)## [1] &quot;Alice&quot;# Evaluate Darling if I&#39;m not homeeval(Darling, neighbour)## [1] &quot;Jannet&quot;About packages# A package is an environment containing functions# Two package can contain functions that have the same name without any problemfind(&quot;lag&quot;)## [1] &quot;package:stats&quot;find(&quot;filter&quot;)## [1] &quot;package:stats&quot;library(tidyverse)find(&quot;lag&quot;)## [1] &quot;package:dplyr&quot; &quot;package:stats&quot;find(&quot;filter&quot;)## [1] &quot;package:dplyr&quot; &quot;package:stats&quot;About dataframes# They are environmentsone_data_frame &lt;- data.frame(this_col = 1:26)another_data_frame &lt;- data.frame(this_col = letters)this_col &lt;- quote(this_col)eval(this_col, envir = one_data_frame)##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23## [24] 24 25 26eval(this_col, envir = another_data_frame)##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y zYou have another “explain me like I’m five” for R environments? Feelfree to share it in the comments, or to reach me on Twitter :)  Ps: this blogpost is inspired by this really cool#explainmelikeimfive">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Explain R environments like I’m five">
+<meta property="og:url" content="http://localhost:4000/explain-environments-eli5/">
+
+
+  <meta property="og:description" content="“Can you explain me what are environments in R?”The beginning of a series of blogpost about R concepts, explained to mydaughter.  Side note: no, my daughter is not five, and she’s not named Alice. Andshe doesn’t speak english either ¯\(ツ)/¯.“Daddy, I’ve seen you reading this book with a weird chapter named‘Environments in R’. What does it mean?”“Alice darling, just sit down for a minute.Let’s say the world is a big computer, and everyone living in it is apiece of information we call ‘data’. Right now, we are at home, and homeis a small piece from the whole world. In R, these smaller places arecalled environments, and they are used just as our home: they cancontain data, and we can refer to these data with names which arespecific to the environment.For example, when we are at home, there are five pieces of data: you,me, mommy, and the two cats. At home, I can say ‘Darling’, and as we arein this small subset of the whole world where ‘darling’ refers to you,I’m pretty sure I will find you. But if I go in another home, that isto say in another environment with other data, another dad is callinghis daughter ‘Darling’. In this small other environment, different fromours, ‘Darling’ does not refer to the same piece of data. And the samegoes for “Mommy” and “Daddy”: in another home, they refer to otherpersons.If I go out in the wild world and try to use the word ‘Mommy’, thiswon’t specifically refer to your mum, as there are not one single‘Mommy’ in this world, and because this word refers to someonespecific to the home we are using it in. In the wild world, if I want torefer to your mum, I’ll need to specify from which home the ‘Mommy’ I’mlooking for is coming from.”“So why don’t we use the full name every time then? It seems simpler.”“Environments allow us to use the same word to refer to different data,depending on where we are using the word. It also allows to giveinformation about a piece of data: it’s quite normal to think that afather uses ‘Darling’ to refer to someone he loves very very much. Evenif, strictly speaking, nothing prevents the contrary from happening.Also, it wouldn’t be fair to only allow only one ‘Darling’ in the wholeworld. Thanks to environment, there won’t be any problem if every fatherin the world use this word, as it refers, in each home, to a specificlittle girl.”“Ok, thanks dadddy!”“You’re welcome, Darling”The R code behindAbout environments# Creating two houseshome &lt;- new.env()home$Darling &lt;- &quot;Alice&quot;neighbour &lt;- new.env()neighbour$Darling &lt;- &quot;Jannet&quot;# If I want to call Darling from the wild world that is .GlobalEnv, # I&#39;ll need to specify where Darling comes fromhome$Darling## [1] &quot;Alice&quot;neighbour$Darling## [1] &quot;Jannet&quot;# Use Darling as a symbolDarling &lt;- quote(Darling)# Evaluate Darling if I&#39;m homeeval(Darling, home)## [1] &quot;Alice&quot;# Evaluate Darling if I&#39;m not homeeval(Darling, neighbour)## [1] &quot;Jannet&quot;About packages# A package is an environment containing functions# Two package can contain functions that have the same name without any problemfind(&quot;lag&quot;)## [1] &quot;package:stats&quot;find(&quot;filter&quot;)## [1] &quot;package:stats&quot;library(tidyverse)find(&quot;lag&quot;)## [1] &quot;package:dplyr&quot; &quot;package:stats&quot;find(&quot;filter&quot;)## [1] &quot;package:dplyr&quot; &quot;package:stats&quot;About dataframes# They are environmentsone_data_frame &lt;- data.frame(this_col = 1:26)another_data_frame &lt;- data.frame(this_col = letters)this_col &lt;- quote(this_col)eval(this_col, envir = one_data_frame)##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23## [24] 24 25 26eval(this_col, envir = another_data_frame)##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y zYou have another “explain me like I’m five” for R environments? Feelfree to share it in the comments, or to reach me on Twitter :)  Ps: this blogpost is inspired by this really cool#explainmelikeimfive">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Explain R environments like I’m five">
+  <meta name="twitter:description" content="“Can you explain me what are environments in R?”The beginning of a series of blogpost about R concepts, explained to mydaughter.  Side note: no, my daughter is not five, and she’s not named Alice. Andshe doesn’t speak english either ¯\(ツ)/¯.“Daddy, I’ve seen you reading this book with a weird chapter named‘Environments in R’. What does it mean?”“Alice darling, just sit down for a minute.Let’s say the world is a big computer, and everyone living in it is apiece of information we call ‘data’. Right now, we are at home, and homeis a small piece from the whole world. In R, these smaller places arecalled environments, and they are used just as our home: they cancontain data, and we can refer to these data with names which arespecific to the environment.For example, when we are at home, there are five pieces of data: you,me, mommy, and the two cats. At home, I can say ‘Darling’, and as we arein this small subset of the whole world where ‘darling’ refers to you,I’m pretty sure I will find you. But if I go in another home, that isto say in another environment with other data, another dad is callinghis daughter ‘Darling’. In this small other environment, different fromours, ‘Darling’ does not refer to the same piece of data. And the samegoes for “Mommy” and “Daddy”: in another home, they refer to otherpersons.If I go out in the wild world and try to use the word ‘Mommy’, thiswon’t specifically refer to your mum, as there are not one single‘Mommy’ in this world, and because this word refers to someonespecific to the home we are using it in. In the wild world, if I want torefer to your mum, I’ll need to specify from which home the ‘Mommy’ I’mlooking for is coming from.”“So why don’t we use the full name every time then? It seems simpler.”“Environments allow us to use the same word to refer to different data,depending on where we are using the word. It also allows to giveinformation about a piece of data: it’s quite normal to think that afather uses ‘Darling’ to refer to someone he loves very very much. Evenif, strictly speaking, nothing prevents the contrary from happening.Also, it wouldn’t be fair to only allow only one ‘Darling’ in the wholeworld. Thanks to environment, there won’t be any problem if every fatherin the world use this word, as it refers, in each home, to a specificlittle girl.”“Ok, thanks dadddy!”“You’re welcome, Darling”The R code behindAbout environments# Creating two houseshome &lt;- new.env()home$Darling &lt;- &quot;Alice&quot;neighbour &lt;- new.env()neighbour$Darling &lt;- &quot;Jannet&quot;# If I want to call Darling from the wild world that is .GlobalEnv, # I&#39;ll need to specify where Darling comes fromhome$Darling## [1] &quot;Alice&quot;neighbour$Darling## [1] &quot;Jannet&quot;# Use Darling as a symbolDarling &lt;- quote(Darling)# Evaluate Darling if I&#39;m homeeval(Darling, home)## [1] &quot;Alice&quot;# Evaluate Darling if I&#39;m not homeeval(Darling, neighbour)## [1] &quot;Jannet&quot;About packages# A package is an environment containing functions# Two package can contain functions that have the same name without any problemfind(&quot;lag&quot;)## [1] &quot;package:stats&quot;find(&quot;filter&quot;)## [1] &quot;package:stats&quot;library(tidyverse)find(&quot;lag&quot;)## [1] &quot;package:dplyr&quot; &quot;package:stats&quot;find(&quot;filter&quot;)## [1] &quot;package:dplyr&quot; &quot;package:stats&quot;About dataframes# They are environmentsone_data_frame &lt;- data.frame(this_col = 1:26)another_data_frame &lt;- data.frame(this_col = letters)this_col &lt;- quote(this_col)eval(this_col, envir = one_data_frame)##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23## [24] 24 25 26eval(this_col, envir = another_data_frame)##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y zYou have another “explain me like I’m five” for R environments? Feelfree to share it in the comments, or to reach me on Twitter :)  Ps: this blogpost is inspired by this really cool#explainmelikeimfive">
+  <meta name="twitter:url" content="http://localhost:4000/explain-environments-eli5/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-02-15T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/explain-environments-eli5/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Explain R environments like I’m five">
+    <meta itemprop="description" content="“Can you explain me what are environments in R?”The beginning of a series of blogpost about R concepts, explained to mydaughter.  Side note: no, my daughter is not five, and she’s not named Alice. Andshe doesn’t speak english either ¯\(ツ)/¯.“Daddy, I’ve seen you reading this book with a weird chapter named‘Environments in R’. What does it mean?”“Alice darling, just sit down for a minute.Let’s say the world is a big computer, and everyone living in it is apiece of information we call ‘data’. Right now, we are at home, and homeis a small piece from the whole world. In R, these smaller places arecalled environments, and they are used just as our home: they cancontain data, and we can refer to these data with names which arespecific to the environment.For example, when we are at home, there are five pieces of data: you,me, mommy, and the two cats. At home, I can say ‘Darling’, and as we arein this small subset of the whole world where ‘darling’ refers to you,I’m pretty sure I will find you. But if I go in another home, that isto say in another environment with other data, another dad is callinghis daughter ‘Darling’. In this small other environment, different fromours, ‘Darling’ does not refer to the same piece of data. And the samegoes for “Mommy” and “Daddy”: in another home, they refer to otherpersons.If I go out in the wild world and try to use the word ‘Mommy’, thiswon’t specifically refer to your mum, as there are not one single‘Mommy’ in this world, and because this word refers to someonespecific to the home we are using it in. In the wild world, if I want torefer to your mum, I’ll need to specify from which home the ‘Mommy’ I’mlooking for is coming from.”“So why don’t we use the full name every time then? It seems simpler.”“Environments allow us to use the same word to refer to different data,depending on where we are using the word. It also allows to giveinformation about a piece of data: it’s quite normal to think that afather uses ‘Darling’ to refer to someone he loves very very much. Evenif, strictly speaking, nothing prevents the contrary from happening.Also, it wouldn’t be fair to only allow only one ‘Darling’ in the wholeworld. Thanks to environment, there won’t be any problem if every fatherin the world use this word, as it refers, in each home, to a specificlittle girl.”“Ok, thanks dadddy!”“You’re welcome, Darling”The R code behindAbout environments# Creating two houseshome &lt;- new.env()home$Darling &lt;- &quot;Alice&quot;neighbour &lt;- new.env()neighbour$Darling &lt;- &quot;Jannet&quot;# If I want to call Darling from the wild world that is .GlobalEnv, # I&#39;ll need to specify where Darling comes fromhome$Darling## [1] &quot;Alice&quot;neighbour$Darling## [1] &quot;Jannet&quot;# Use Darling as a symbolDarling &lt;- quote(Darling)# Evaluate Darling if I&#39;m homeeval(Darling, home)## [1] &quot;Alice&quot;# Evaluate Darling if I&#39;m not homeeval(Darling, neighbour)## [1] &quot;Jannet&quot;About packages# A package is an environment containing functions# Two package can contain functions that have the same name without any problemfind(&quot;lag&quot;)## [1] &quot;package:stats&quot;find(&quot;filter&quot;)## [1] &quot;package:stats&quot;library(tidyverse)find(&quot;lag&quot;)## [1] &quot;package:dplyr&quot; &quot;package:stats&quot;find(&quot;filter&quot;)## [1] &quot;package:dplyr&quot; &quot;package:stats&quot;About dataframes# They are environmentsone_data_frame &lt;- data.frame(this_col = 1:26)another_data_frame &lt;- data.frame(this_col = letters)this_col &lt;- quote(this_col)eval(this_col, envir = one_data_frame)##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23## [24] 24 25 26eval(this_col, envir = another_data_frame)##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y zYou have another “explain me like I’m five” for R environments? Feelfree to share it in the comments, or to reach me on Twitter :)  Ps: this blogpost is inspired by this really cool#explainmelikeimfive">
+    <meta itemprop="datePublished" content="February 15, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Explain R environments like I’m five
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  3 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>“Can you explain me what are environments in R?”</p>
+
+<p>The beginning of a series of blogpost about R concepts, explained to my
+daughter.</p>
+
+<blockquote>
+  <p>Side note: no, my daughter is not five, and she’s not named Alice. And
+she doesn’t speak english either ¯\<em>(ツ)</em>/¯.</p>
+</blockquote>
+
+<p>“Daddy, I’ve seen you reading this book with a weird chapter named
+‘Environments in R’. What does it mean?”</p>
+
+<p>“Alice darling, just sit down for a minute.</p>
+
+<p>Let’s say the world is a big computer, and everyone living in it is a
+piece of information we call ‘data’. Right now, we are at home, and home
+is a small piece from the whole world. In R, these smaller places are
+called environments, and they are used just as our home: they can
+contain data, and we can refer to these data with names which are
+specific to the environment.</p>
+
+<p>For example, when we are at home, there are five pieces of data: you,
+me, mommy, and the two cats. At home, I can say ‘Darling’, and as we are
+in this small subset of the whole world where ‘darling’ refers to you,
+I’m pretty sure I will find you. But if I go in another home, that is
+to say in another environment with other data, another dad is calling
+his daughter ‘Darling’. In this small other environment, different from
+ours, ‘Darling’ does not refer to the same piece of data. And the same
+goes for “Mommy” and “Daddy”: in another home, they refer to other
+persons.</p>
+
+<p>If I go out in the wild world and try to use the word ‘Mommy’, this
+won’t specifically refer to your mum, as there are not one single
+‘Mommy’ in this world, and because this word refers to someone
+specific to the home we are using it in. In the wild world, if I want to
+refer to your mum, I’ll need to specify from which home the ‘Mommy’ I’m
+looking for is coming from.”</p>
+
+<p>“So why don’t we use the full name every time then? It seems simpler.”</p>
+
+<p>“Environments allow us to use the same word to refer to different data,
+depending on where we are using the word. It also allows to give
+information about a piece of data: it’s quite normal to think that a
+father uses ‘Darling’ to refer to someone he loves very very much. Even
+if, strictly speaking, nothing prevents the contrary from happening.</p>
+
+<p>Also, it wouldn’t be fair to only allow only one ‘Darling’ in the whole
+world. Thanks to environment, there won’t be any problem if every father
+in the world use this word, as it refers, in each home, to a specific
+little girl.”</p>
+
+<p>“Ok, thanks dadddy!”</p>
+
+<p>“You’re welcome, Darling”</p>
+
+<h2 id="the-r-code-behind">The R code behind</h2>
+
+<h3 id="about-environments">About environments</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Creating two houses</span><span class="w">
+</span><span class="n">home</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">new.env</span><span class="p">()</span><span class="w">
+</span><span class="n">home</span><span class="o">$</span><span class="n">Darling</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Alice"</span><span class="w">
+</span><span class="n">neighbour</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">new.env</span><span class="p">()</span><span class="w">
+</span><span class="n">neighbour</span><span class="o">$</span><span class="n">Darling</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Jannet"</span><span class="w">
+
+</span><span class="c1"># If I want to call Darling from the wild world that is .GlobalEnv, </span><span class="w">
+</span><span class="c1"># I'll need to specify where Darling comes from</span><span class="w">
+</span><span class="n">home</span><span class="o">$</span><span class="n">Darling</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "Alice"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">neighbour</span><span class="o">$</span><span class="n">Darling</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "Jannet"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Use Darling as a symbol</span><span class="w">
+</span><span class="n">Darling</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quote</span><span class="p">(</span><span class="n">Darling</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Evaluate Darling if I'm home</span><span class="w">
+</span><span class="n">eval</span><span class="p">(</span><span class="n">Darling</span><span class="p">,</span><span class="w"> </span><span class="n">home</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "Alice"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Evaluate Darling if I'm not home</span><span class="w">
+</span><span class="n">eval</span><span class="p">(</span><span class="n">Darling</span><span class="p">,</span><span class="w"> </span><span class="n">neighbour</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "Jannet"
+</code></pre></div></div>
+
+<h3 id="about-packages">About packages</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># A package is an environment containing functions</span><span class="w">
+</span><span class="c1"># Two package can contain functions that have the same name without any problem</span><span class="w">
+</span><span class="n">find</span><span class="p">(</span><span class="s2">"lag"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "package:stats"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="p">(</span><span class="s2">"filter"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "package:stats"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">find</span><span class="p">(</span><span class="s2">"lag"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "package:dplyr" "package:stats"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="p">(</span><span class="s2">"filter"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "package:dplyr" "package:stats"
+</code></pre></div></div>
+
+<h2 id="about-dataframes">About dataframes</h2>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># They are environments</span><span class="w">
+</span><span class="n">one_data_frame</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">this_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">26</span><span class="p">)</span><span class="w">
+</span><span class="n">another_data_frame</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">this_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">letters</span><span class="p">)</span><span class="w">
+</span><span class="n">this_col</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">quote</span><span class="p">(</span><span class="n">this_col</span><span class="p">)</span><span class="w">
+</span><span class="n">eval</span><span class="p">(</span><span class="n">this_col</span><span class="p">,</span><span class="w"> </span><span class="n">envir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one_data_frame</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+## [24] 24 25 26
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">eval</span><span class="p">(</span><span class="n">this_col</span><span class="p">,</span><span class="w"> </span><span class="n">envir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">another_data_frame</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z
+## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y z
+</code></pre></div></div>
+
+<p>You have another “explain me like I’m five” for R environments? Feel
+free to share it in the comments, or to reach me on Twitter :)</p>
+
+<blockquote>
+  <p>Ps: this blogpost is inspired by this really cool
+<a href="https://dev.to/ben/explain-websockets-like-im-five">#explainmelikeimfive</a></p>
+</blockquote>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#environment" class="page__taxonomy-item" rel="tag">environment</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#explainlikeimfive" class="page__taxonomy-item" rel="tag">explainlikeimfive</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#r" class="page__taxonomy-item" rel="tag">r</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-02-15T00:00:00+01:00">February 15, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Explain+R+environments+like+I%E2%80%99m+five%20http%3A%2F%2Flocalhost%3A4000%2Fexplain-environments-eli5%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fexplain-environments-eli5%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fexplain-environments-eli5%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fexplain-environments-eli5%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/build-api-wrapper-package-r/" class="pagination--pager" title="[How to] Build an API wrapper package in 10 minutes.
+">←</a>
+    
+    
+      <a href="/dockerfiler-cran/" class="pagination--pager" title="dockerfiler is now on CRAN
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/explain-environments-eli5/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/explain-environments-eli5"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

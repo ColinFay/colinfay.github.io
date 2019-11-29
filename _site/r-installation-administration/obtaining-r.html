@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="installing-r-under-unix-alikes.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="obtaining-r" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> Obtaining R</h1>
+<p>
+<a href="" id="index-Obtaining-R"></a>
+</p>
+<p>
+Sources, binaries and documentation for R can be obtained via CRAN, the “Comprehensive R Archive Network” whose current members are listed at <a href="https://CRAN.R-project.org/mirrors.html" class="uri">https://CRAN.R-project.org/mirrors.html</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Getting-and-unpacking-the-sources"></a> <a href="" id="Getting-and-unpacking-the-sources-1"></a>
+</p>
+<h3 id="getting-and-unpacking-the-sources" class="section">
+1.1 Getting and unpacking the sources
+</h3>
+<p>
+<a href="" id="index-Sources-for-R"></a>
+</p>
+<p>
+The simplest way is to download the most recent R-x.y.z.tar.gz file, and unpack it with
+</p>
+<div class="example">
+<pre class="example1"><code>tar -xf R-x.y.z.tar.gz</code></pre>
+</div>
+<p>
+on systems that have a suitable<a href="environment-variable-index.html#FOOT1" id="DOCF1"><sup>1</sup></a> <code class="calibre6">tar</code> installed. On other systems you need to have the <code class="calibre6">gzip</code> program installed, when you can use
+</p>
+<div class="example">
+<pre class="example1"><code>gzip -dc R-x.y.z.tar.gz | tar -xf -</code></pre>
+</div>
+<p>
+The pathname of the directory into which the sources are unpacked should not contain spaces, as most <code class="calibre6">make</code> programs (and specifically GNU <code class="calibre6">make</code>) do not expect spaces.
+</p>
+<p>
+If you want the build to be usable by a group of users, set <code class="calibre6">umask</code> before unpacking so that the files will be readable by the target group (e.g., <code class="calibre6">umask 022</code> to be usable by all users). Keep this setting of <code class="calibre6">umask</code> whilst building and installing.
+</p>
+<p>
+If you use a recent GNU version of <code class="calibre6">tar</code> and do this as a root account (which on Windows includes accounts with administrator privileges) you may see many warnings about changing ownership. In which case you can use
+</p>
+<div class="example">
+<pre class="example1"><code>tar --no-same-owner -xf R-x.y.z.tar.gz</code></pre>
+</div>
+<p>
+and perhaps also include the option –no-same-permissions. <a href="" id="index-TAR_005fOPTIONS"></a> (These options can also be set in the <code class="calibre6">TAR_OPTIONS</code> environment variable: if more than one option is included they should be separated by spaces.)
+</p>
+<hr />
+<p>
+<a href="" id="Getting-patched-and-development-versions"></a> <a href="" id="Getting-patched-and-development-versions-1"></a>
+</p>
+<h3 id="getting-patched-and-development-versions" class="section">
+1.2 Getting patched and development versions
+</h3>
+<p>
+A patched version of the current release, ‘r-patched’, and the current development version, ‘r-devel’, are available as daily tarballs and via access to the R Subversion repository. (For the two weeks prior to the release of a minor (3.x.0) version, ‘r-patched’ tarballs may refer to beta/release candidates of the upcoming release, the patched version of the current release being available via Subversion.)
+</p>
+<p>
+The tarballs are available from <a href="https://stat.ethz.ch/R/daily" class="uri">https://stat.ethz.ch/R/daily</a>. Download R-patched.tar.gz or R-devel.tar.gz (or the .tar.bz2 versions) and unpack as described in the previous section. They are built in exactly the same way as distributions of R releases.
+</p>
+<hr />
+<p>
+<a href="" id="Using-Subversion-and-rsync"></a> <a href="" id="Using-Subversion-and-rsync-1"></a>
+</p>
+<h4 id="using-subversion-and-rsync" class="subsection">
+1.2.1 Using Subversion and rsync
+</h4>
+<p>
+<a href="" id="index-Subversion"></a>
+</p>
+<p>
+Sources are also available via <a href="https://svn.R-project.org/R/" class="uri">https://svn.R-project.org/R/</a>, the R Subversion repository. If you have a Subversion client (see <a href="https://subversion.apache.org/" class="uri">https://subversion.apache.org/</a>), you can check out and update the current ‘r-devel’ from <a href="https://svn.r-project.org/R/trunk/" class="uri">https://svn.r-project.org/R/trunk/</a> and the current ‘r-patched’ from ‘<a href="https://svn.r-project.org/R/branches/R-x-y-branch/" class="uri">https://svn.r-project.org/R/branches/R-x-y-branch/</a>’ (where x and y are the major and minor number of the current released version of R). E.g., use
+</p>
+<div class="example">
+<pre class="example1"><code>svn checkout https://svn.r-project.org/R/trunk/ path</code></pre>
+</div>
+<p>
+to check out ‘r-devel’ into directory path (which will be created if necessary). The alpha, beta and RC versions of an upcoming x.y.0 release are available from ‘<a href="https://svn.r-project.org/R/branches/R-x-y-branch/" class="uri">https://svn.r-project.org/R/branches/R-x-y-branch/</a>’ in the four-week period prior to the release.
+</p>
+<p>
+Note that ‘https:’ is required<a href="environment-variable-index.html#FOOT2" id="DOCF2"><sup>2</sup></a>, and that the SSL certificate for the Subversion server of the R project should be recognized as from a trusted source.
+</p>
+<p>
+Note that retrieving the sources by e.g. <code class="calibre6">wget -r</code> or <code class="calibre6">svn export</code> from that URL will not work (and will give a error early in the <code class="calibre6">make</code> process): the Subversion information is needed to build R.
+</p>
+<p>
+The Subversion repository does not contain the current sources for the recommended packages, which can be obtained by <code class="calibre6">rsync</code> or downloaded from CRAN. To use <code class="calibre6">rsync</code> to install the appropriate sources for the recommended packages, run <code class="calibre6">./tools/rsync-recommended</code> from the top-level directory of the R sources.
+</p>
+<p>
+If downloading manually from CRAN, do ensure that you have the correct versions of the recommended packages: if the number in the file VERSION is ‘x.y.z’ you need to download the contents of ‘<a href="https://CRAN.R-project.org/src/contrib/dir" class="uri">https://CRAN.R-project.org/src/contrib/dir</a>’, where dir is ‘x.y.z/Recommended’ for r-devel or x.y-patched/Recommended for r-patched, respectively, to directory src/library/Recommended in the sources you have unpacked. After downloading manually you need to execute <code class="calibre6">tools/link-recommended</code> from the top level of the sources to make the requisite links in src/library/Recommended. A suitable incantation from the top level of the R sources using <code class="calibre6">wget</code> might be (for the correct value of dir)
+</p>
+<div class="example">
+<pre class="example1"><code>wget -r -l1 --no-parent -A\*.gz -nd -P src/library/Recommended \
+  https://CRAN.R-project.org/src/contrib/dir
+./tools/link-recommended</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Installing-R-under-Unix_002dalikes"></a> <a href="" id="Installing-R-under-Unix_002dalikes-1"></a>
+</p>
+<div id="calibre_pb_5" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="installing-r-under-unix-alikes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

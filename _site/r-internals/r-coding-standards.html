@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Internals</title>
+  <meta name="description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Internals" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  <meta name="github-repo" content="ColinFay/r-internals" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Internals" />
+  
+  <meta name="twitter:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="tools.html">
+<link rel="next" href="testing-r-code.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R internals</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Internals</a></li>
+<li class="chapter" data-level="1" data-path="r-internal-structures.html"><a href="r-internal-structures.html"><i class="fa fa-check"></i><b>1</b> R Internal Structures</a></li>
+<li class="chapter" data-level="2" data-path="internal-vs-primitive.html"><a href="internal-vs-primitive.html"><i class="fa fa-check"></i><b>2</b> <code class="calibre18">.Internal</code> vs <code class="calibre18">.Primitive</code></a></li>
+<li class="chapter" data-level="3" data-path="internationalization-in-the-r-sources.html"><a href="internationalization-in-the-r-sources.html"><i class="fa fa-check"></i><b>3</b> Internationalization in the R sources</a></li>
+<li class="chapter" data-level="4" data-path="structure-of-an-installed-package.html"><a href="structure-of-an-installed-package.html"><i class="fa fa-check"></i><b>4</b> Structure of an Installed Package</a></li>
+<li class="chapter" data-level="5" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5</b> Files</a></li>
+<li class="chapter" data-level="6" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>6</b> Graphics</a></li>
+<li class="chapter" data-level="7" data-path="gui-consoles.html"><a href="gui-consoles.html"><i class="fa fa-check"></i><b>7</b> GUI consoles</a></li>
+<li class="chapter" data-level="8" data-path="tools.html"><a href="tools.html"><i class="fa fa-check"></i><b>8</b> Tools</a></li>
+<li class="chapter" data-level="9" data-path="r-coding-standards.html"><a href="r-coding-standards.html"><i class="fa fa-check"></i><b>9</b> R coding standards</a></li>
+<li class="chapter" data-level="10" data-path="testing-r-code.html"><a href="testing-r-code.html"><i class="fa fa-check"></i><b>10</b> Testing R code</a></li>
+<li class="chapter" data-level="11" data-path="use-of-tex-dialects.html"><a href="use-of-tex-dialects.html"><i class="fa fa-check"></i><b>11</b> Use of TeX dialects</a></li>
+<li class="chapter" data-level="12" data-path="current-and-future-directions.html"><a href="current-and-future-directions.html"><i class="fa fa-check"></i><b>12</b> Current and future directions</a></li>
+<li class="chapter" data-level="13" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>13</b> Function and variable index</a></li>
+<li class="chapter" data-level="14" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>14</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Internals</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="r-coding-standards" class="section level1">
+<h1><span class="header-section-number">Chapter 9</span> R coding standards</h1>
+<p>
+<a href="" id="index-coding-standards"></a>
+</p>
+<p>
+R is meant to run on a wide variety of platforms, including Linux and most variants of Unix as well as Windows and macOS. Therefore, when extending R by either adding to the R base distribution or by providing an add-on package, one should not rely on features specific to only a few supported platforms, if this can be avoided. In particular, although most R developers use GNU tools, they should not employ the GNU extensions to standard tools. Whereas some other software packages explicitly rely on e.g. GNU make or the GNU C++ compiler, R does not. Nevertheless, R is a GNU project, and the spirit of the GNU Coding Standards should be followed if possible.
+</p>
+<p>
+The following tools can “safely be assumed” for R extensions.
+</p>
+<ul>
+<li>
+An ISO C99 C compiler. Note that extensions such as POSIX 1003.1 must be tested for, typically using Autoconf unless you are sure they are supported on all mainstream R platforms (including Windows and macOS).
+</li>
+<li>
+A FORTRAN 77 compiler (but not Fortran 9x, although it is nowadays widely available).
+</li>
+<li>
+<p>
+A simple <code class="calibre2">make</code>, considering the features of <code class="calibre2">make</code> in 4.2 BSD systems as a baseline. <a href="" id="index-make"></a>
+</p>
+<p>
+GNU or other extensions, including pattern rules using ‘%’, the automatic variable ‘$^’, the ‘+=’ syntax to append to the value of a variable, the (“safe”) inclusion of makefiles with no error, conditional execution, and many more, must not be used (see Chapter “Features” in the GNU Make Manual for more information). On the other hand, building R in a separate directory (not containing the sources) should work provided that <code class="calibre2">make</code> supports the <code class="calibre2">VPATH</code> mechanism.
+</p>
+<p>
+Windows-specific makefiles can assume GNU <code class="calibre2">make</code> 3.79 or later, as no other <code class="calibre2">make</code> is viable on that platform.
+</p>
+</li>
+<li>
+<p>
+A Bourne shell and the “traditional” Unix programming tools, including <code class="calibre2">grep</code>, <code class="calibre2">sed</code>, and <code class="calibre2">awk</code>.
+</p>
+<p>
+There are POSIX standards for these tools, but these may not be fully supported. Baseline features could be determined from a book such as The UNIX Programming Environment by Brian W. Kernighan &amp; Rob Pike. Note in particular that ‘|’ in a regexp is an extended regexp, and is not supported by all versions of <code class="calibre2">grep</code> or <code class="calibre2">sed</code>. The Open Group Base Specifications, Issue 7, which are technically identical to IEEE Std 1003.1 (POSIX), 2008, are available at <a href="http://pubs.opengroup.org/onlinepubs/9699919799/mindex.html" class="uri">http://pubs.opengroup.org/onlinepubs/9699919799/mindex.html</a>.
+</p>
+</li>
+</ul>
+<p>
+Under Windows, most users will not have these tools installed, and you should not require their presence for the operation of your package. However, users who install your package from source will have them, as they can be assumed to have followed the instructions in “the Windows toolset” appendix of the “R Installation and Administration” manual to obtain them. Redirection cannot be assumed to be available via <code class="calibre2">system</code> as this does not use a standard shell (let alone a Bourne shell).
+</p>
+<p>
+In addition, the following tools are needed for certain tasks.
+</p>
+<ul>
+<li>
+Perl version 5 is only needed for a few uncommonly-used tools: <code class="calibre2">make install-info</code> needs Perl installed if there is no command <code class="calibre2">install-info</code> on the system, and for the maintainer-only script tools/help2man.pl. <a href="" id="index-Perl"></a>
+</li>
+<li>
+Makeinfo version 4.7 or later is needed to build the Info files for the R manuals written in the GNU Texinfo system. <a href="" id="index-makeinfo"></a>
+</li>
+</ul>
+<p>
+It is also important that code is written in a way that allows others to understand it. This is particularly helpful for fixing problems, and includes using self-descriptive variable names, commenting the code, and also formatting it properly. The R Core Team recommends to use a basic indentation of 4 for R and C (and most likely also Perl) code, and 2 for documentation in Rd format. Emacs (21 or later) users can implement this indentation style by putting the following in one of their startup files, and using customization to set the <code class="calibre2">c-default-style</code> to <code class="calibre2">“bsd”</code> and <code class="calibre2">c-basic-offset</code> to <code class="calibre2">4</code>.) <a href="" id="index-emacs"></a>
+</p>
+<div class="example">
+<pre class="smallexample"><code>;;; ESS
+(add-hook &#39;ess-mode-hook
+          (lambda ()
+            (ess-set-style &#39;C++ &#39;quiet)
+            ;; Because
+            ;;                                 DEF GNU BSD K&amp;R C++
+            ;; ess-indent-level                  2   2   8   5   4
+            ;; ess-continued-statement-offset    2   2   8   5   4
+            ;; ess-brace-offset                  0   0  -8  -5  -4
+            ;; ess-arg-function-offset           2   4   0   0   0
+            ;; ess-expression-offset             4   2   8   5   4
+            ;; ess-else-offset                   0   0   0   0   0
+            ;; ess-close-brace-offset            0   0   0   0   0
+            (add-hook &#39;local-write-file-hooks
+                      (lambda ()
+                        (ess-nuke-trailing-whitespace)))))
+(setq ess-nuke-trailing-whitespace-p &#39;ask)
+;; or even
+;; (setq ess-nuke-trailing-whitespace-p t)</code></pre>
+<pre class="smallexample"><code>;;; Perl
+(add-hook &#39;perl-mode-hook
+          (lambda () (setq perl-indent-level 4)))</code></pre>
+</div>
+<p>
+(The ‘GNU’ styles for Emacs’ C and R modes use a basic indentation of 2, which has been determined not to display the structure clearly enough when using narrow fonts.)
+</p>
+<hr />
+<p>
+<a href="" id="Testing-R-code"></a> <a href="" id="Testing-R-code-1"></a>
+</p>
+<div id="calibre_pb_21" class="calibre6">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="tools.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="testing-r-code.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="installing-r-under-unix-alikes.html">
+<link rel="next" href="installing-r-under-macos.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="installing-r-under-windows" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Installing R under Windows</h1>
+<p>
+<a href="" id="index-Installing-under-Windows"></a>
+</p>
+<p>
+The bin/windows directory of a CRAN site contains binaries for a base distribution and a large number of add-on packages from CRAN to run on 32- or 64-bit Windows (Windows 7 and later are tested; XP is known to fail some tests) on ‘ix86’ and ‘x86_64’ CPUs.
+</p>
+<p>
+Your file system must allow long file names (as is likely except perhaps for some network-mounted systems). If it doesn’t also support conversion to short name equivalents (a.k.a. DOS 8.3 names), then R <em>must</em> be installed in a path that does not contain spaces.
+</p>
+<p>
+Installation is <em>via</em> the installer R-3.4.2-win.exe. Just double-click on the icon and follow the instructions. When installing on a 64-bit version of Windows the options will include 32- or 64-bit versions of R (and the default is to install both). You can uninstall R from the Control Panel.
+</p>
+<p>
+Note that you will be asked to choose a language for installation, and that choice applies to both installation and un-installation but not to running R itself.
+</p>
+<p>
+See the <a href="https://CRAN.R-project.org/bin/windows/base/rw-FAQ.html">R Windows FAQ</a> for more details on the binary installer.
+</p>
+<hr />
+<p>
+<a href="" id="Building-from-source"></a> <a href="" id="Building-from-source-1"></a>
+</p>
+<h3 id="building-from-source" class="section">
+3.1 Building from source
+</h3>
+<p>
+R can be built as either a 32-bit or 64-bit application on Windows: to build the 64-bit application you need a 64-bit edition of Windows: such an OS can also be used to build 32-bit R.
+</p>
+<p>
+The standard installer combines 32-bit and 64-bit builds into a single executable which can then be installed into the same location and share all the files except the .exe and .dll files and some configuration files in the etc directory.
+</p>
+<p>
+Building is only tested in a 8-bit locale: using a multi-byte locale (as used for CJK languages) is unsupported and may not work (the scripts do try to select a ‘C’ locale; Windows may not honour this).
+</p>
+<p>
+<strong>NB:</strong> The build process is currently being changed to require external binary distributions of third-party software. Their location is set using macro <code class="calibre6">EXT_LIBS</code> with default setting $(LOCAL_SOFT); the $(LOCAL_SOFT) macro defaults to $(R_HOME)/extsoft. This directory can be populated using <code class="calibre6">make rsync-extsoft</code>. The location can be overridden by setting <code class="calibre6">EXT_LIBS</code> to a different path in src/gnuwin32/MkRules.local. A suitable collection of files can also be obtained from <a href="https://CRAN.R-project.org/bin/windows/extsoft" class="uri">https://CRAN.R-project.org/bin/windows/extsoft</a> or <a href="https://www.stats.ox.ac.uk/pub/Rtools/libs.html" class="uri">https://www.stats.ox.ac.uk/pub/Rtools/libs.html</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Getting-the-tools"></a> <a href="" id="Getting-the-tools-1"></a>
+</p>
+<h4 id="getting-the-tools" class="subsection">
+3.1.1 Getting the tools
+</h4>
+<p>
+If you want to build R from the sources, you will first need to collect, install and test an extensive set of tools. See <a href="appendix-d-the-windows-toolset.html">The Windows toolset</a> (and perhaps updates in <a href="https://CRAN.R-project.org/bin/windows/Rtools/" class="uri">https://CRAN.R-project.org/bin/windows/Rtools/</a>) for details.
+</p>
+<p>
+The Rtools*.exe executable installer described in <a href="appendix-d-the-windows-toolset.html">The Windows toolset</a> also includes some source files in addition to the R source as noted below. You should run it first, to obtain a working <code class="calibre6">tar</code> and other necessities. Choose a “Full installation”, and install the extra files into your intended R source directory, e.g. C:/R. The directory name <em>should not contain spaces</em>. We will call this directory R_HOME below.
+</p>
+<hr />
+<p>
+<a href="" id="Getting-the-source-files"></a> <a href="" id="Getting-the-source-files-1"></a>
+</p>
+<h4 id="getting-the-source-files" class="subsection">
+3.1.2 Getting the source files
+</h4>
+<p>
+You need to collect the following sets of files:
+</p>
+<ul>
+<li>
+<p>
+Get the R source code tarball R-3.4.2.tar.gz from CRAN. Open a command window (or another shell) at directory R_HOME, and run
+</p>
+<div class="example">
+<pre class="example1"><code>tar -xf R-3.4.2.tar.gz</code></pre>
+</div>
+<p>
+to create the source tree in R_HOME. <strong>Beware</strong>: do use <code class="calibre6">tar</code> to extract the sources rather than tools such as WinZip. If you are using an account with administrative privileges you may get a lot of messages which can be suppressed by
+</p>
+<div class="example">
+<pre class="example1"><code>tar --no-same-owner -xf R-3.4.2.tar.gz</code></pre>
+</div>
+<p>
+<a href="" id="index-TAR_005fOPTIONS-1"></a> or perhaps better, set the environment variable <code class="calibre6">TAR_OPTIONS</code> to the value ‘–no-same-owner –no-same-permissions’.
+</p>
+<p>
+It is also possible to obtain the source code using Subversion; see <a href="obtaining-R.html">Obtaining R</a> for details.
+</p>
+</li>
+<li>
+If you are not using a tarball you need to obtain copies of the recommended packages from CRAN. Put the .tar.gz files in R_HOME/src/library/Recommended and run <code class="calibre6">make link-recommended</code>. If you have an Internet connection, you can do this automatically by running in R_HOME/src/gnuwin32
+<div class="example">
+<pre class="example1"><code>make rsync-recommended</code></pre>
+</div>
+</li>
+<li>
+<p>
+The binary distributions of external software. Download
+</p>
+<div class="example">
+<pre class="example1"><code>https://www.stats.ox.ac.uk/pub/Rtools/goodies/multilib/local323.zip</code></pre>
+</div>
+<p>
+(or a more recent version if appropriate), create an empty directory, say c:/R/extsoft, and unpack it in that directory by e.g.
+</p>
+<div class="example">
+<pre class="example1"><code>unzip local323.zip -d c:/R/extsoft</code></pre>
+</div>
+</li>
+<li>
+<p>
+Make a local copy of the configuration rules by
+</p>
+<div class="example">
+<pre class="example1"><code>cd R_HOME/src/gnuwin32
+cp MkRules.dist MkRules.local</code></pre>
+</div>
+<p>
+and edit MkRules.local, uncommenting <code class="calibre6">EXT_LIBS</code> and setting it to the appropriate path (in our example c:/R/extsoft).
+</p>
+<p>
+Look through the file MkRules.local and make any other changes needed: in particular, this is where a 64-bit build is selected and the locations are set of external software for ICU collation and the cairo-based devices.
+</p>
+</li>
+</ul>
+<p>
+The following additional item is normally installed by Rtools*.exe. If instead you choose to do a completely manual build you will also need
+</p>
+<ul>
+<li>
+The Tcl/Tk support files are contained in Rtools*.exe. Please make sure you install the right version: there is a 32-bit version and a 64-bit version. They should be installed to R_HOME, creating directory Tcl there.
+</li>
+</ul>
+<hr />
+<p>
+<a href="" id="Building-the-core-files"></a> <a href="" id="Building-the-core-files-1"></a>
+</p>
+<h4 id="building-the-core-files" class="subsection">
+3.1.3 Building the core files
+</h4>
+<p>
+<a href="" id="index-TMPDIR-1"></a>
+</p>
+<p>
+Set the environment variable <code class="calibre6">TMPDIR</code> to the absolute path to a writable directory, with a path specified with forward slashes and no spaces. (The default is /tmp, which may not be useful on Windows.)
+</p>
+<p>
+You may need to compile under a case-honouring file system: we found that a <code class="calibre6">samba</code>-mounted file system (which maps all file names to lower case) did not work.
+</p>
+<p>
+Open a command window at R_HOME/src/gnuwin32, then run
+</p>
+<div class="example">
+<pre class="example1"><code>make all recommended vignettes</code></pre>
+</div>
+<p>
+and sit back and wait while the basic compile takes place.
+</p>
+<p>
+Notes:
+</p>
+<ul>
+<li>
+We have had reports that earlier versions of anti-virus software locking up the machine, but not for several years. However, aggressive anti-virus checking such as the on-access scanning of Sophos can slow the build down several-fold.
+</li>
+<li>
+<p>
+You can run a parallel make by e.g.
+</p>
+<div class="example">
+<pre class="example1"><code>make -j4 all
+make -j4 recommended
+make vignettes</code></pre>
+</div>
+<p>
+but this is only likely to be worthwhile on a multi-core machine with ample memory, and is not 100% reliable.
+</p>
+</li>
+<li>
+It is possible (mainly for those working on R itself) to set the (make or environment) variable <code class="calibre6">R_NO_BASE_COMPILE</code> to a non-empty value, which inhibits the byte-compilation of the base and recommended packages.
+</li>
+</ul>
+<hr />
+<p>
+<a href="" id="Building-the-cairo-devices-files"></a> <a href="" id="Building-the-cairo-devices"></a>
+</p>
+<h4 id="building-the-cairo-devices" class="subsection">
+3.1.4 Building the cairo devices
+</h4>
+<p>
+<a href="" id="index-winCairo_002edll"></a>
+</p>
+<p>
+The devices based on cairographics (<code class="calibre6">svg</code>, <code class="calibre6">cairo_pdf</code>, <code class="calibre6">cairo_ps</code> and the <code class="calibre6">type = “cairo”</code> versions of <code class="calibre6">png</code>, <code class="calibre6">jpeg</code>, <code class="calibre6">tiff</code> and <code class="calibre6">bmp</code>) are implemented in a separate DLL winCairo.dll which is loaded when one of these devices is first used. It is not built by default, and needs to be built (after <code class="calibre6">make all</code>) by <code class="calibre6">make cairodevices</code>.
+</p>
+<p>
+To enable the building of these devices you need to install the static cairographics libraries built by Simon Urbanek at <a href="https://www.rforge.net/Cairo/files/cairo-current-win.tar.gz" class="uri">https://www.rforge.net/Cairo/files/cairo-current-win.tar.gz</a>. Set the macro ‘CAIRO_HOME’ in MkRules.local. (Note that this tarball unpacks with a top-level directory src/: ‘CAIRO_HOME’ needs to include that directory in its path.)
+</p>
+<hr />
+<p>
+<a href="" id="Using-ICU-for-collation"></a> <a href="" id="Using-ICU-for-collation-1"></a>
+</p>
+<h4 id="using-icu-for-collation" class="subsection">
+3.1.5 Using ICU for collation
+</h4>
+<p>
+It is recommended to build R to support ICU (International Components for Unicode, <a href="http://site.icu-project.org/" class="uri">http://site.icu-project.org/</a>) for collation, as is commonly done on Unix-alikes.
+</p>
+<p>
+Two settings are needed in MkRules.local,
+</p>
+<div class="example">
+<pre class="example1"><code># set to use ICU
+# USE_ICU = YES
+# path to parent of ICU headers
+ICU_PATH = /path/to/ICU</code></pre>
+</div>
+<p>
+The first should be uncommented and the second set to the top-level directory of a suitably packaged binary build of ICU, for example that at <a href="https://www.stats.ox.ac.uk/pub/Rtools/goodies/ICU_531.zip" class="uri">https://www.stats.ox.ac.uk/pub/Rtools/goodies/ICU_531.zip</a>. Depending on the build, it may be necessary to edit the macro <code class="calibre6">ICU_LIBS</code>.
+</p>
+<p>
+Unlike on a Unix-alike, it is normally necessary to call <code class="calibre6">icuSetCollate</code> to set a locale before ICU is actually used for collation, or set the environment variable <code class="calibre6">R_ICU_LOCALE</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Support-for-libcurl"></a> <a href="" id="Support-for-libcurl-1"></a>
+</p>
+<h4 id="support-for-libcurl" class="subsection">
+3.1.6 Support for libcurl
+</h4>
+<p>
+<code class="calibre6">libcurl</code> version 7.28.0 or later is used to support <code class="calibre6">curlGetHeaders</code> and the <code class="calibre6">“libcurl”</code> methods of <code class="calibre6">download.file</code> and <code class="calibre6">url</code>.
+</p>
+<p>
+A suitable distribution can be found <em>via</em> <a href="https://www.stats.ox.ac.uk/pub/Rtools/libs.html" class="uri">https://www.stats.ox.ac.uk/pub/Rtools/libs.html</a> and its unpacked location should be specified in file MkRules.local.
+</p>
+<p>
+For secure use of e.g. ‘<a href="https://" class="uri">https://</a>’ URLs Windows users may need to specify the path to up-to-date <em>CA root certificates</em>: see <code class="calibre6">?download.file</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Checking-the-build"></a> <a href="" id="Checking-the-build-1"></a>
+</p>
+<h4 id="checking-the-build" class="subsection">
+3.1.7 Checking the build
+</h4>
+<p>
+You can test a build by running
+</p>
+<div class="example">
+<pre class="example1"><code>make check</code></pre>
+</div>
+<p>
+The recommended packages can be checked by
+</p>
+<div class="example">
+<pre class="example1"><code>make check-recommended</code></pre>
+</div>
+<p>
+Other levels of checking are
+</p>
+<div class="example">
+<pre class="example1"><code>make check-devel</code></pre>
+</div>
+<p>
+for a more thorough check of the R functionality, and
+</p>
+<div class="example">
+<pre class="example1"><code>make check-all</code></pre>
+</div>
+<p>
+for both <code class="calibre6">check-devel</code> and <code class="calibre6">check-recommended</code>.
+</p>
+<p>
+If a test fails, there will almost always be a .Rout.fail file in the directory being checked (often tests/Examples or tests): examine the file to help pinpoint the problem.
+</p>
+<p>
+Parallel checking of package sources (part of <code class="calibre6">make check-devel</code> and <code class="calibre6">make check-recommended</code>) is possible: see the environment variable <code class="calibre6">TEST_MC_CORES</code> to the maximum number of processes to be run in parallel.
+</p>
+<hr />
+<p>
+<a href="" id="Building-the-manuals"></a> <a href="" id="Building-the-manuals-1"></a>
+</p>
+<h4 id="building-the-manuals" class="subsection">
+3.1.8 Building the manuals
+</h4>
+<p>
+The PDF manuals require <strong>texinfo</strong> 5.1 or later, and can be made by
+</p>
+<div class="example">
+<pre class="example1"><code>make manuals</code></pre>
+</div>
+<p>
+If you want to make the info versions (not including the Reference Manual), use
+</p>
+<div class="example">
+<pre class="example1"><code>cd ../../doc/manual
+make -f Makefile.win info</code></pre>
+</div>
+<p>
+(all assuming you have <code class="calibre6">pdftex</code>/<code class="calibre6">pdflatex</code> installed and in your path).
+</p>
+<p>
+See the <a href="installing-r-under-unix-alikes.html#Making-the-manuals">Making the manuals</a> section in the Unix-alike section for setting options such as the paper size and the fonts used.
+</p>
+<p>
+By default it is assumed that <strong>texinfo</strong> is not installed, and the manuals will not be built. The comments in file MkRules.dist describe settings to build them. (Copy that file to MkRules.local and edit it.) The <strong>texinfo</strong> 5.x package for use on Windows is available at <a href="https://www.stats.ox.ac.uk/pub/Rtools/" class="uri">https://www.stats.ox.ac.uk/pub/Rtools/</a>: you will also need to install <code class="calibre6">Perl</code><a href="environment-variable-index.html#FOOT16" id="DOCF16"><sup>16</sup></a>
+</p>
+<hr />
+<p>
+<a href="" id="Building-the-Inno-Setup-installer"></a> <a href="" id="Building-the-Inno-Setup-installer-1"></a>
+</p>
+<h4 id="building-the-inno-setup-installer" class="subsection">
+3.1.9 Building the Inno Setup installer
+</h4>
+<p>
+You need to have the files for a complete R build, including bitmap and Tcl/Tk support and the manuals (which requires <strong>texinfo</strong> installed), as well as the recommended packages and Inno Setup (see <a href="appendix-d-the-windows-toolset.html#d.2-the-inno-setup-installer">The Inno Setup installer</a>).
+</p>
+<p>
+Once everything is set up
+</p>
+<div class="example">
+<pre class="example1"><code>make distribution
+make check-all</code></pre>
+</div>
+<p>
+will make all the pieces and the installer and put them in the gnuwin32/cran subdirectory, then check the build. This works by building all the parts in the sequence:
+</p>
+<div class="example">
+<pre class="example1"><code>rbuild (the executables, the FAQ docs etc.)
+rpackages (the base packages)
+htmldocs (the HTML documentation)
+cairodevices (the cairo-based graphics devices)
+recommended (the recommended packages)
+vignettes (the vignettes in base packages:
+       only needed if building from an svn checkout)
+manuals (the PDF manuals)
+rinstaller (the install program)
+crandir (the CRAN distribution directory, only for 64-bit builds)</code></pre>
+</div>
+<p>
+The parts can be made individually if a full build is not needed, but earlier parts must be built before later ones. (The Makefile doesn’t enforce this dependency—some build targets force a lot of computation even if all files are up to date.) The first four targets are the default build if just <code class="calibre6">make</code> (or <code class="calibre6">make all</code>) is run.
+</p>
+<p>
+Parallel make is not supported and likely to fail.
+</p>
+<p>
+If you want to customize the installation by adding extra packages, replace <code class="calibre6">make rinstaller</code> by something like
+</p>
+<div class="example">
+<pre class="example1"><code>make rinstaller EXTRA_PKGS=&#39;pkg1 pkg2 pkg3&#39;</code></pre>
+</div>
+<p>
+An alternative way to customize the installer starting with a binary distribution is to first make an installation of R from the standard installer, then add packages and make other customizations to that installation. Then (after having customized file MkRules, possibly <em>via</em> MkRules.local, and having made R in the source tree) in src/gnuwin32/installer run
+</p>
+<div class="example">
+<pre class="example1"><code>make myR IMAGEDIR=rootdir</code></pre>
+</div>
+<p>
+where rootdir is the path to the root of the customized installation (in double quotes if it contains spaces or backslashes).
+</p>
+<p>
+Both methods create an executable with a standard name such as R-3.4.2-win.exe, so please rename it to indicate that it is customized. If you intend to <em>distribute</em> a customized installer please do check that license requirements are met – note that the installer will state that the contents are distributed under GPL and this has a requirement for <em>you</em> to supply the complete sources (including the R sources even if you started with a binary distribution of R, and also the sources of any extra packages (including their external software) which are included).
+</p>
+<p>
+The defaults for the startup parameters may also be customized. For example
+</p>
+<div class="example">
+<pre class="example1"><code>make myR IMAGEDIR=rootdir MDISDI=1</code></pre>
+</div>
+<p>
+will create an installer that defaults to installing R to run in SDI mode. See src/gnuwin32/installer/Makefile for the names and values that can be set.
+</p>
+<p>
+The standard CRAN distribution of a 32/64-bit installer is made by first building 32-bit R (just
+</p>
+<div class="example">
+<pre class="example1"><code>make 32-bit</code></pre>
+</div>
+<p>
+is needed), and then (in a separate directory) building 64-bit R with the macro <code class="calibre6">HOME32</code> set in file MkRules.local to the top-level directory of the 32-bit build. Then the <code class="calibre6">make rinstaller</code> step copies the files that differ between architectures from the 32-bit build as it builds the installer image.
+</p>
+<hr />
+<p>
+<a href="" id="Building-the-MSI-installer"></a> <a href="" id="Building-the-MSI-installer-1"></a>
+</p>
+<h4 id="building-the-msi-installer" class="subsection">
+3.1.10 Building the MSI installer
+</h4>
+<p>
+It is also possible to build an installer for use with Microsoft Installer. This is intended for use by sysadmins doing automated installs, and is not recommended for casual use.
+</p>
+<p>
+It makes use of the Windows Installer XML (WiX) toolkit <em>version 3.5</em> (or perhaps later, untested) available from <a href="http://wixtoolset.org/" class="uri">http://wixtoolset.org/</a>. Once WiX is installed, set the path to its home directory in MkRules.local.
+</p>
+<p>
+You need to have the files for a complete R build, including bitmap and Tcl/Tk support and the manuals, as well as the recommended packages. There is no option in the installer to customize startup options, so edit etc/Rconsole and etc/Rprofile.site to set these as required. Then
+</p>
+<div class="example">
+<pre class="example1"><code>cd installer
+make msi</code></pre>
+</div>
+<p>
+which will result in a file with a name like R-3.4.2-win32.msi. This can be double-clicked to be installed, but those who need it will know what to do with it (usually by running <code class="calibre6">msiexec /i</code> with additional options). Properties that users might want to set from the <code class="calibre6">msiexec</code> command line include ‘ALLUSERS’, ‘INSTALLDIR’ (something like c:Files-3.4.2) and ‘RMENU’ (the path to the ‘R’ folder on the start menu) and ‘STARTDIR’ (the starting directory for R shortcuts, defaulting to something like c:).
+</p>
+<p>
+The MSI installer can be built both from a 32-bit build of R (R-3.4.2-win32.msi) and from a 64-bit build of R (R-3.4.2-win64.msi, optionally including 32-bit files by setting the macro <code class="calibre6">HOME32</code>, when the name is R-3.4.2-win.msi). Unlike the main installer, a 64-bit MSI installer can only be run on 64-bit Windows.
+</p>
+<p>
+Thanks to David del Campo (Dept of Statistics, University of Oxford) for suggesting WiX and building a prototype installer.
+</p>
+<hr />
+<p>
+<a href="" id="g_t64_002dbit-Windows-builds"></a> <a href="" id="g_t64_002dbit-Windows-builds-1"></a>
+</p>
+<h4 id="bit-windows-builds" class="subsection">
+3.1.11 64-bit Windows builds
+</h4>
+<p>
+To build a 64-bit version of R you need a 64-bit toolchain: the only one discussed here is based on the work of the MinGW-w64 project (<a href="http://sourceforge.net/projects/mingw-w64/" class="uri">http://sourceforge.net/projects/mingw-w64/</a>, but commercial compilers such as those from Intel and PGI could be used (and have been by R redistributors).
+</p>
+<p>
+Support for MinGW-w64 was developed in the R sources over the period 2008–10 and was first released as part of R 2.11.0. The assistance of Yu Gong at a crucial step in porting R to MinGW-w64 is gratefully acknowledged, as well as help from Kai Tietz, the lead developer of the MinGW-w64 project.
+</p>
+<p>
+Windows 64-bit is now completely integrated into the R and package build systems: a 64-bit build is selected in file MkRules.local.
+</p>
+<hr />
+<p>
+<a href="" id="Testing-a-Windows-Installation"></a> <a href="" id="Testing-an-Installation-1"></a>
+</p>
+<h3 id="testing-an-installation" class="section">
+3.2 Testing an Installation
+</h3>
+<p>
+The Windows installer contains a set of test files used when building R.
+</p>
+<p>
+The <code class="calibre6">Rtools</code> are not needed to run these tests. but more comprehensive analysis of errors will be given if <code class="calibre6">diff</code> is in the path (and <code class="calibre6">errorsAreFatal = FALSE</code> is then not needed below).
+</p>
+<p>
+Launch either <code class="calibre6">Rgui</code> or <code class="calibre6">Rterm</code>, preferably with –vanilla. Then run
+</p>
+<div class="example">
+<pre class="example1"><code>Sys.setenv(LC_COLLATE = &quot;C&quot;, LANGUAGE = &quot;en&quot;)
+library(&quot;tools&quot;)
+testInstalledBasic(&quot;both&quot;)
+testInstalledPackages(scope = &quot;base&quot;, errorsAreFatal = FALSE)
+testInstalledPackages(scope = &quot;recommended&quot;, errorsAreFatal = FALSE)</code></pre>
+</div>
+<p>
+runs the basic tests and then all the tests on the standard and recommended packages. These tests can be run from anywhere: they write some of their results in the tests folder of the R home directory (as given by <code class="calibre6">R.home()</code>), and hence may need to be run under the account used to install R.
+</p>
+<p>
+The results of <code class="calibre6">example(md5sums)</code> when testing <strong>tools</strong> will differ from the reference output as some files are installed with Windows’ CRLF line endings.
+</p>
+<hr />
+<p>
+<a href="" id="Installing-R-under-macOS"></a> <a href="" id="Installing-R-under-macOS-1"></a>
+</p>
+<div id="calibre_pb_9" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="installing-r-under-unix-alikes.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="installing-r-under-macos.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

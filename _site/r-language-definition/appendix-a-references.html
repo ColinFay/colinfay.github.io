@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The R language definition</title>
+  <meta name="description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="The R language definition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  <meta name="github-repo" content="ColinFay/r-language-definition" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The R language definition" />
+  
+  <meta name="twitter:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="concept-index.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">The R language definition</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Language Definition</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="objects.html"><a href="objects.html"><i class="fa fa-check"></i><b>2</b> Objects</a></li>
+<li class="chapter" data-level="3" data-path="evaluation-of-expressions.html"><a href="evaluation-of-expressions.html"><i class="fa fa-check"></i><b>3</b> Evaluation of expressions</a></li>
+<li class="chapter" data-level="4" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>4</b> Functions</a></li>
+<li class="chapter" data-level="5" data-path="object-oriented-programming.html"><a href="object-oriented-programming.html"><i class="fa fa-check"></i><b>5</b> Object-oriented programming</a></li>
+<li class="chapter" data-level="6" data-path="computing-on-the-language.html"><a href="computing-on-the-language.html"><i class="fa fa-check"></i><b>6</b> Computing on the language</a></li>
+<li class="chapter" data-level="7" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>7</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="8" data-path="exception-handling.html"><a href="exception-handling.html"><i class="fa fa-check"></i><b>8</b> Exception handling</a></li>
+<li class="chapter" data-level="9" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>9</b> Debugging</a></li>
+<li class="chapter" data-level="10" data-path="parser.html"><a href="parser.html"><i class="fa fa-check"></i><b>10</b> Parser</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and Variable Index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept Index</a></li>
+<li class="chapter" data-level="13" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>13</b> Appendix A References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The R language definition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix-a-references" class="section level1">
+<h1><span class="header-section-number">Chapter 13</span> Appendix A References</h1>
+<p>
+Richard A. Becker, John M. Chambers and Allan R. Wilks (1988), <em>The New S Language.</em> Chapman &amp; Hall, New York. This book is often called the “<em>Blue Book</em>”.
+</p>
+<div class="contents">
+<hr />
+<h4 id="footnotes" class="subsection">
+Footnotes
+</h4>
+<h3 id="section" class="section">
+<a href="objects.html#DOCF1" id="FOOT1" class="calibre21">(1)</a>
+</h3>
+<p>
+actually two, but this draft manual predates the <strong>methods</strong> package.
+</p>
+<h3 id="section-1" class="section">
+<a href="writing-package-vignettes.html#DOCF2" id="FOOT2" class="calibre21">(2)</a>
+</h3>
+<p>
+Evaluation always takes place in an <a href="" id="index-environment-4"></a> environment. See <a href="writing-package-vignettes.html#Scope-of-variables">Scope of variables</a> for more details.
+</p>
+<h3 id="section-2" class="section">
+<a href="writing-package-vignettes.html#DOCF3" id="FOOT3" class="calibre21">(3)</a>
+</h3>
+<p>
+Looping is the repeated evaluation of a statement or block of statements.
+</p>
+<h3 id="section-3" class="section">
+<a href="parser.html#DOCF4" id="FOOT4" class="calibre21">(4)</a>
+</h3>
+<p>
+such as <code class="calibre7">U+A0</code>, non-breaking space, and <code class="calibre7">U+3000</code>, ideographic space.
+</p>
+</div>
+<hr />
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="concept-index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

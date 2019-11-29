@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Internals</title>
+  <meta name="description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Internals" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  <meta name="github-repo" content="ColinFay/r-internals" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Internals" />
+  
+  <meta name="twitter:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="internal-vs-primitive.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R internals</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Internals</a></li>
+<li class="chapter" data-level="1" data-path="r-internal-structures.html"><a href="r-internal-structures.html"><i class="fa fa-check"></i><b>1</b> R Internal Structures</a></li>
+<li class="chapter" data-level="2" data-path="internal-vs-primitive.html"><a href="internal-vs-primitive.html"><i class="fa fa-check"></i><b>2</b> <code class="calibre18">.Internal</code> vs <code class="calibre18">.Primitive</code></a></li>
+<li class="chapter" data-level="3" data-path="internationalization-in-the-r-sources.html"><a href="internationalization-in-the-r-sources.html"><i class="fa fa-check"></i><b>3</b> Internationalization in the R sources</a></li>
+<li class="chapter" data-level="4" data-path="structure-of-an-installed-package.html"><a href="structure-of-an-installed-package.html"><i class="fa fa-check"></i><b>4</b> Structure of an Installed Package</a></li>
+<li class="chapter" data-level="5" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5</b> Files</a></li>
+<li class="chapter" data-level="6" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>6</b> Graphics</a></li>
+<li class="chapter" data-level="7" data-path="gui-consoles.html"><a href="gui-consoles.html"><i class="fa fa-check"></i><b>7</b> GUI consoles</a></li>
+<li class="chapter" data-level="8" data-path="tools.html"><a href="tools.html"><i class="fa fa-check"></i><b>8</b> Tools</a></li>
+<li class="chapter" data-level="9" data-path="r-coding-standards.html"><a href="r-coding-standards.html"><i class="fa fa-check"></i><b>9</b> R coding standards</a></li>
+<li class="chapter" data-level="10" data-path="testing-r-code.html"><a href="testing-r-code.html"><i class="fa fa-check"></i><b>10</b> Testing R code</a></li>
+<li class="chapter" data-level="11" data-path="use-of-tex-dialects.html"><a href="use-of-tex-dialects.html"><i class="fa fa-check"></i><b>11</b> Use of TeX dialects</a></li>
+<li class="chapter" data-level="12" data-path="current-and-future-directions.html"><a href="current-and-future-directions.html"><i class="fa fa-check"></i><b>12</b> Current and future directions</a></li>
+<li class="chapter" data-level="13" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>13</b> Function and variable index</a></li>
+<li class="chapter" data-level="14" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>14</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Internals</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="r-internal-structures" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> R Internal Structures</h1>
+<p>
+This chapter is the beginnings of documentation about R internal structures. It is written for the core team and others studying the code in the src/main directory.
+</p>
+<p>
+It is a work-in-progress and should be checked against the current version of the source code. Versions for R 2.x.y contain historical comments about when features were introduced: this version is for the 3.x.y series.
+</p>
+<hr />
+<p>
+<a href="" id="SEXPs"></a> <a href="" id="SEXPs-1"></a>
+</p>
+<h3 id="sexps" class="section">
+1.1 SEXPs
+</h3>
+<p>
+<a href="" id="index-SEXP"></a> <a href="" id="index-SEXPRREC"></a>
+</p>
+<p>
+What R users think of as <em>variables</em> or <em>objects</em> are symbols which are bound to a value. The value can be thought of as either a <code class="calibre2">SEXP</code> (a pointer), or the structure it points to, a <code class="calibre2">SEXPREC</code> (and there are alternative forms used for vectors, namely <code class="calibre2">VECSXP</code> pointing to <code class="calibre2">VECTOR_SEXPREC</code> structures). So the basic building blocks of R objects are often called <em>nodes</em>, meaning <code class="calibre2">SEXPREC</code>s or <code class="calibre2">VECTOR_SEXPREC</code>s.
+</p>
+<p>
+Note that the internal structure of the <code class="calibre2">SEXPREC</code> is not made available to R Extensions: rather <code class="calibre2">SEXP</code> is an opaque pointer, and the internals can only be accessed by the functions provided.
+</p>
+<p>
+<a href="" id="index-node"></a>
+</p>
+<p>
+Both types of node structure have as their first three fields a 32-bit <code class="calibre2">sxpinfo</code> header and then three pointers (to the attributes and the previous and next node in a doubly-linked list), and then some further fields. On a 32-bit platform a node<a href="concept-index.html#FOOT1" id="DOCF1"><sup>1</sup></a> occupies 28 bytes: on a 64-bit platform typically 56 bytes (depending on alignment constraints).
+</p>
+<p>
+The first five bits of the <code class="calibre2">sxpinfo</code> header specify one of up to 32 <code class="calibre2">SEXPTYPE</code>s.
+</p>
+<hr />
+<p>
+<a href="" id="SEXPTYPEs"></a> <a href="" id="SEXPTYPEs-1"></a>
+</p>
+<h4 id="sexptypes" class="subsection">
+1.1.1 SEXPTYPEs
+</h4>
+<p>
+<a href="" id="index-SEXPTYPE"></a>
+</p>
+<p>
+Currently <code class="calibre2">SEXPTYPE</code>s 0:10 and 13:25 are in use. Values 11 and 12 were used for internal factors and ordered factors and have since been withdrawn. Note that the <code class="calibre2">SEXPTYPE</code> numbers are stored in <code class="calibre2">save</code>d objects and that the ordering of the types is used, so the gap cannot easily be reused.
+</p>
+<p>
+<a href="" id="index-SEXPTYPE-table"></a>
+</p>
+<blockquote>
+<table>
+<thead>
+<tr class="header">
+<th align="left">
+no
+</th>
+<th align="left">
+SEXPTYPE
+</th>
+<th align="left">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">0</code>
+</td>
+<td align="left">
+<code class="calibre2">NILSXP</code>
+</td>
+<td align="left">
+<code class="calibre2">NULL</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">1</code>
+</td>
+<td align="left">
+<code class="calibre2">SYMSXP</code>
+</td>
+<td align="left">
+symbols
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">2</code>
+</td>
+<td align="left">
+<code class="calibre2">LISTSXP</code>
+</td>
+<td align="left">
+pairlists
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">3</code>
+</td>
+<td align="left">
+<code class="calibre2">CLOSXP</code>
+</td>
+<td align="left">
+closures
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">4</code>
+</td>
+<td align="left">
+<code class="calibre2">ENVSXP</code>
+</td>
+<td align="left">
+environments
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">5</code>
+</td>
+<td align="left">
+<code class="calibre2">PROMSXP</code>
+</td>
+<td align="left">
+promises
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">6</code>
+</td>
+<td align="left">
+<code class="calibre2">LANGSXP</code>
+</td>
+<td align="left">
+language objects
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">7</code>
+</td>
+<td align="left">
+<code class="calibre2">SPECIALSXP</code>
+</td>
+<td align="left">
+special functions
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">8</code>
+</td>
+<td align="left">
+<code class="calibre2">BUILTINSXP</code>
+</td>
+<td align="left">
+builtin functions
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">9</code>
+</td>
+<td align="left">
+<code class="calibre2">CHARSXP</code>
+</td>
+<td align="left">
+internal character strings
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">10</code>
+</td>
+<td align="left">
+<code class="calibre2">LGLSXP</code>
+</td>
+<td align="left">
+logical vectors
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">13</code>
+</td>
+<td align="left">
+<code class="calibre2">INTSXP</code>
+</td>
+<td align="left">
+integer vectors
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">14</code>
+</td>
+<td align="left">
+<code class="calibre2">REALSXP</code>
+</td>
+<td align="left">
+numeric vectors
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">15</code>
+</td>
+<td align="left">
+<code class="calibre2">CPLXSXP</code>
+</td>
+<td align="left">
+complex vectors
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">16</code>
+</td>
+<td align="left">
+<code class="calibre2">STRSXP</code>
+</td>
+<td align="left">
+character vectors
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">17</code>
+</td>
+<td align="left">
+<code class="calibre2">DOTSXP</code>
+</td>
+<td align="left">
+dot-dot-dot object
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">18</code>
+</td>
+<td align="left">
+<code class="calibre2">ANYSXP</code>
+</td>
+<td align="left">
+make “any” args work
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">19</code>
+</td>
+<td align="left">
+<code class="calibre2">VECSXP</code>
+</td>
+<td align="left">
+list (generic vector)
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">20</code>
+</td>
+<td align="left">
+<code class="calibre2">EXPRSXP</code>
+</td>
+<td align="left">
+expression vector
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">21</code>
+</td>
+<td align="left">
+<code class="calibre2">BCODESXP</code>
+</td>
+<td align="left">
+byte code
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">22</code>
+</td>
+<td align="left">
+<code class="calibre2">EXTPTRSXP</code>
+</td>
+<td align="left">
+external pointer
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">23</code>
+</td>
+<td align="left">
+<code class="calibre2">WEAKREFSXP</code>
+</td>
+<td align="left">
+weak reference
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">24</code>
+</td>
+<td align="left">
+<code class="calibre2">RAWSXP</code>
+</td>
+<td align="left">
+raw vector
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">25</code>
+</td>
+<td align="left">
+<code class="calibre2">S4SXP</code>
+</td>
+<td align="left">
+S4 classes not of simple type
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+<a href="" id="index-atomic-vector-type"></a>
+</p>
+<p>
+Many of these will be familiar from R level: the atomic vector types are <code class="calibre2">LGLSXP</code>, <code class="calibre2">INTSXP</code>, <code class="calibre2">REALSXP</code>, <code class="calibre2">CPLXSP</code>, <code class="calibre2">STRSXP</code> and <code class="calibre2">RAWSXP</code>. Lists are <code class="calibre2">VECSXP</code> and names (also known as symbols) are <code class="calibre2">SYMSXP</code>. Pairlists (<code class="calibre2">LISTSXP</code>, the name going back to the origins of R as a Scheme-like language) are rarely seen at R level, but are for example used for argument lists. Character vectors are effectively lists all of whose elements are <code class="calibre2">CHARSXP</code>, a type that is rarely visible at R level.
+</p>
+<p>
+<a href="" id="index-language-object"></a> <a href="" id="index-argument-list"></a>
+</p>
+<p>
+Language objects (<code class="calibre2">LANGSXP</code>) are calls (including formulae and so on). Internally they are pairlists with first element a reference<a href="concept-index.html#FOOT2" id="DOCF2"><sup>2</sup></a> to the function to be called with remaining elements the actual arguments for the call (and with the tags if present giving the specified argument names). Although this is not enforced, many places in the code assume that the pairlist is of length one or more, often without checking.
+</p>
+<p>
+<a href="" id="index-expression"></a>
+</p>
+<p>
+Expressions are of type <code class="calibre2">EXPRSXP</code>: they are a vector of (usually language) objects most often seen as the result of <code class="calibre2">parse()</code>.
+</p>
+<p>
+<a href="" id="index-function"></a>
+</p>
+<p>
+The functions are of types <code class="calibre2">CLOSXP</code>, <code class="calibre2">SPECIALSXP</code> and <code class="calibre2">BUILTINSXP</code>: where <code class="calibre2">SEXPTYPE</code>s are stored in an integer these are sometimes lumped into a pseudo-type <code class="calibre2">FUNSXP</code> with code 99. Functions defined via <code class="calibre2">function</code> are of type <code class="calibre2">CLOSXP</code> and have formals, body and environment.
+</p>
+<p>
+<a href="" id="index-S4-type"></a>
+</p>
+<p>
+The <code class="calibre2">SEXPTYPE</code> <code class="calibre2">S4SXP</code> is for S4 objects which do not consist solely of a simple type such as an atomic vector or function.
+</p>
+<hr />
+<p>
+<a href="" id="Rest-of-header"></a> <a href="" id="Rest-of-header-1"></a>
+</p>
+<h4 id="rest-of-header" class="subsection">
+1.1.2 Rest of header
+</h4>
+<p>
+The <code class="calibre2">sxpinfo</code> header is defined as a 32-bit C structure by
+</p>
+<div class="example">
+<pre class="example1"><code>struct sxpinfo_struct {
+    SEXPTYPE type      :  5;  /* discussed above */
+    unsigned int obj   :  1;  /* is this an object with a class attribute? */
+    unsigned int named :  2;  /* used to control copying */
+    unsigned int gp    : 16;  /* general purpose, see below */
+    unsigned int mark  :  1;  /* mark object as ‘in use’ in GC */
+    unsigned int debug :  1;
+    unsigned int trace :  1;
+    unsigned int spare :  1;  /* debug once */
+    unsigned int gcgen :  1;  /* generation for GC */
+    unsigned int gccls :  3;  /* class of node for GC */
+};  /*              Tot: 32 */</code></pre>
+</div>
+<p>
+<a href="" id="index-debug-bit"></a>
+</p>
+<p>
+The <code class="calibre2">debug</code> bit is used for closures and environments. For closures it is set by <code class="calibre2">debug()</code> and unset by <code class="calibre2">undebug()</code>, and indicates that evaluations of the function should be run under the browser. For environments it indicates whether the browsing is in single-step mode.
+</p>
+<p>
+<a href="" id="index-trace-bit"></a>
+</p>
+<p>
+The <code class="calibre2">trace</code> bit is used for functions for <code class="calibre2">trace()</code> and for other objects when tracing duplications (see <code class="calibre2">tracemem</code>).
+</p>
+<p>
+<a href="" id="index-spare-bit"></a>
+</p>
+<p>
+The <code class="calibre2">spare</code> bit is used for closures to mark them for one time debugging.
+</p>
+<p>
+<a href="" id="index-named-bit"></a> <a href="" id="index-NAMED"></a> <a href="" id="index-SET_005fNAMED"></a> <a href="" id="index-copying-semantics"></a>
+</p>
+<p>
+The <code class="calibre2">named</code> field is set and accessed by the <code class="calibre2">SET_NAMED</code> and <code class="calibre2">NAMED</code> macros, and take values <code class="calibre2">0</code>, <code class="calibre2">1</code> and <code class="calibre2">2</code>. R has a ‘call by value’ illusion, so an assignment like
+</p>
+<div class="example">
+<pre class="example1"><code>b &lt;- a</code></pre>
+</div>
+<p>
+appears to make a copy of <code class="calibre2">a</code> and refer to it as <code class="calibre2">b</code>. However, if neither <code class="calibre2">a</code> nor <code class="calibre2">b</code> are subsequently altered there is no need to copy. What really happens is that a new symbol <code class="calibre2">b</code> is bound to the same value as <code class="calibre2">a</code> and the <code class="calibre2">named</code> field on the value object is set (in this case to <code class="calibre2">2</code>). When an object is about to be altered, the <code class="calibre2">named</code> field is consulted. A value of <code class="calibre2">2</code> means that the object must be duplicated before being changed. (Note that this does not say that it is necessary to duplicate, only that it should be duplicated whether necessary or not.) A value of <code class="calibre2">0</code> means that it is known that no other <code class="calibre2">SEXP</code> shares data with this object, and so it may safely be altered. A value of <code class="calibre2">1</code> is used for situations like
+</p>
+<div class="example">
+<pre class="example1"><code>dim(a) &lt;- c(7, 2)</code></pre>
+</div>
+<p>
+where in principle two copies of <code class="calibre2">a</code> exist for the duration of the computation as (in principle)
+</p>
+<div class="example">
+<pre class="example1"><code>a &lt;- `dim&lt;-`(a, c(7, 2))</code></pre>
+</div>
+<p>
+but for no longer, and so some primitive functions can be optimized to avoid a copy in this case.
+</p>
+<p>
+The <code class="calibre2">gp</code> bits are by definition ‘general purpose’. We label these from 0 to 15. Bits 0–5 and bits 14–15 have been used as described below (mainly from detective work on the sources).
+</p>
+<p>
+<a href="" id="index-gp-bits"></a> <a href="" id="index-LEVELS"></a> <a href="" id="index-SETLEVELS"></a>
+</p>
+<p>
+The bits can be accessed and set by the <code class="calibre2">LEVELS</code> and <code class="calibre2">SETLEVELS</code> macros, which names appear to date back to the internal factor and ordered types and are now used in only a few places in the code. The <code class="calibre2">gp</code> field is serialized/unserialized for the <code class="calibre2">SEXPTYPE</code>s other than <code class="calibre2">NILSXP</code>, <code class="calibre2">SYMSXP</code> and <code class="calibre2">ENVSXP</code>.
+</p>
+<p>
+Bits 14 and 15 of <code class="calibre2">gp</code> are used for ‘fancy bindings’. Bit 14 is used to lock a binding or an environment, and bit 15 is used to indicate an active binding. (For the definition of an ‘active binding’ see the header comments in file src/main/envir.c.) Bit 15 is used for an environment to indicate if it participates in the global cache.
+</p>
+<p>
+<a href="" id="index-ARGSUSED"></a> <a href="" id="index-SET_005fARGUSED"></a>
+</p>
+<p>
+The macros <code class="calibre2">ARGUSED</code> and <code class="calibre2">SET_ARGUSED</code> are used when matching actual and formal function arguments, and take the values 0, 1 and 2.
+</p>
+<p>
+<a href="" id="index-MISSING"></a> <a href="" id="index-SET_005fMISSING"></a>
+</p>
+<p>
+The macros <code class="calibre2">MISSING</code> and <code class="calibre2">SET_MISSING</code> are used for pairlists of arguments. Four bits are reserved, but only two are used (and exactly what for is not explained). It seems that bit 0 is used by <code class="calibre2">matchArgs</code> to mark missingness on the returned argument list, and bit 1 is used to mark the use of a default value for an argument copied to the evaluation frame of a closure.
+</p>
+<p>
+<a href="" id="index-DDVAL"></a> <a href="" id="index-SET_005fDDVAL"></a> <a href="" id="index-_002e_002e_002e-argument"></a>
+</p>
+<p>
+Bit 0 is used by macros <code class="calibre2">DDVAL</code> and <code class="calibre2">SET_DDVAL</code>. This indicates that a <code class="calibre2">SYMSXP</code> is one of the symbols <code class="calibre2">..n</code> which are implicitly created when <code class="calibre2">…</code> is processed, and so indicates that it may need to be looked up in a <code class="calibre2">DOTSXP</code>.
+</p>
+<p>
+<a href="" id="index-PRSEEN"></a> <a href="" id="index-promise"></a>
+</p>
+<p>
+Bit 0 is used for <code class="calibre2">PRSEEN</code>, a flag to indicate if a promise has already been seen during the evaluation of the promise (and so to avoid recursive loops).
+</p>
+<p>
+Bit 0 is used for <code class="calibre2">HASHASH</code>, on the <code class="calibre2">PRINTNAME</code> of the <code class="calibre2">TAG</code> of the frame of an environment. (This bit is not serialized for <code class="calibre2">CHARSXP</code> objects.)
+</p>
+<p>
+Bits 0 and 1 are used for weak references (to indicate ‘ready to finalize’, ‘finalize on exit’).
+</p>
+<p>
+Bit 0 is used by the condition handling system (on a <code class="calibre2">VECSXP</code>) to indicate a calling handler.
+</p>
+<p>
+Bit 4 is turned on to mark S4 objects.
+</p>
+<p>
+Bits 1, 2, 3, 5 and 6 are used for a <code class="calibre2">CHARSXP</code> to denote its encoding. Bit 1 indicates that the <code class="calibre2">CHARSXP</code> should be treated as a set of bytes, not necessarily representing a character in any known encoding. Bits 2, 3 and 6 are used to indicate that it is known to be in Latin-1, UTF-8 or ASCII respectively.
+</p>
+<p>
+Bit 5 for a <code class="calibre2">CHARSXP</code> indicates that it is hashed by its address, that is <code class="calibre2">NA_STRING</code> or is in the <code class="calibre2">CHARSXP</code> cache (this is not serialized). Only exceptionally is a <code class="calibre2">CHARSXP</code> not hashed, and this should never happen in end-user code.
+</p>
+<hr />
+<p>
+<a href="" id="The-_0027data_0027"></a> <a href="" id="The-_0060data_0027"></a>
+</p>
+<h4 id="the-data" class="subsection">
+1.1.3 The ‘data’
+</h4>
+<p>
+A <code class="calibre2">SEXPREC</code> is a C structure containing the 32-bit header as described above, three pointers (to the attributes, previous and next node) and the node data, a union
+</p>
+<div class="example">
+<pre class="example1"><code>union {
+    struct primsxp_struct primsxp;
+    struct symsxp_struct symsxp;
+    struct listsxp_struct listsxp;
+    struct envsxp_struct envsxp;
+    struct closxp_struct closxp;
+    struct promsxp_struct promsxp;
+} u;</code></pre>
+</div>
+<p>
+All of these alternatives apart from the first (an <code class="calibre2">int</code>) are three pointers, so the union occupies three words.
+</p>
+<p>
+<a href="" id="index-vector-type"></a>
+</p>
+<p>
+The vector types are <code class="calibre2">RAWSXP</code>, <code class="calibre2">CHARSXP</code>, <code class="calibre2">LGLSXP</code>, <code class="calibre2">INTSXP</code>, <code class="calibre2">REALSXP</code>, <code class="calibre2">CPLXSXP</code>, <code class="calibre2">STRSXP</code>, <code class="calibre2">VECSXP</code>, <code class="calibre2">EXPRSXP</code> and <code class="calibre2">WEAKREFSXP</code>. Remember that such types are a <code class="calibre2">VECTOR_SEXPREC</code>, which again consists of the header and the same three pointers, but followed by two integers giving the length and ‘true length’<a href="concept-index.html#FOOT3" id="DOCF3"><sup>3</sup></a> of the vector, and then followed by the data (aligned as required: on most 32-bit systems with a 24-byte <code class="calibre2">VECTOR_SEXPREC</code> node the data can follow immediately after the node). The data are a block of memory of the appropriate length to store ‘true length’ elements (rounded up to a multiple of 8 bytes, with the 8-byte blocks being the ‘Vcells’ referred in the documentation for <code class="calibre2">gc()</code>).
+</p>
+<p>
+The ‘data’ for the various types are given in the table below. A lot of this is interpretation, i.e. the types are not checked.
+</p>
+<dl>
+<dt>
+<code class="calibre2">NILSXP</code>
+</dt>
+<dd>
+<p>
+There is only one object of type <code class="calibre2">NILSXP</code>, <code class="calibre2">R_NilValue</code>, with no data.
+</p>
+</dd>
+<dt>
+<code class="calibre2">SYMSXP</code>
+</dt>
+<dd>
+<p>
+Pointers to three nodes, the name, value and internal, accessed by <code class="calibre2">PRINTNAME</code> (a <code class="calibre2">CHARSXP</code>), <code class="calibre2">SYMVALUE</code> and <code class="calibre2">INTERNAL</code>. (If the symbol’s value is a <code class="calibre2">.Internal</code> function, the last is a pointer to the appropriate <code class="calibre2">SEXPREC</code>.) Many symbols have <code class="calibre2">SYMVALUE</code> <code class="calibre2">R_UnboundValue</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">LISTSXP</code>
+</dt>
+<dd>
+<p>
+Pointers to the CAR, CDR (usually a <code class="calibre2">LISTSXP</code> or <code class="calibre2">NULL</code>) and TAG (a <code class="calibre2">SYMSXP</code> or <code class="calibre2">NULL</code>).
+</p>
+</dd>
+<dt>
+<code class="calibre2">CLOSXP</code>
+</dt>
+<dd>
+<p>
+Pointers to the formals (a pairlist), the body and the environment.
+</p>
+</dd>
+<dt>
+<code class="calibre2">ENVSXP</code>
+</dt>
+<dd>
+<p>
+Pointers to the frame, enclosing environment and hash table (<code class="calibre2">NULL</code> or a <code class="calibre2">VECSXP</code>). A frame is a tagged pairlist with tag the symbol and CAR the bound value.
+</p>
+</dd>
+<dt>
+<code class="calibre2">PROMSXP</code>
+</dt>
+<dd>
+<p>
+Pointers to the value, expression and environment (in which to evaluate the expression). Once an promise has been evaluated, the environment is set to <code class="calibre2">NULL</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">LANGSXP</code>
+</dt>
+<dd>
+<p>
+A special type of <code class="calibre2">LISTSXP</code> used for function calls. (The CAR references the function (perhaps via a symbol or language object), and the CDR the argument list with tags for named arguments.) R-level documentation references to ‘expressions’ / ‘language objects’ are mainly <code class="calibre2">LANGSXP</code>s, but can be symbols (<code class="calibre2">SYMSXP</code>s) or expression vectors (<code class="calibre2">EXPRSXP</code>s).
+</p>
+</dd>
+<dt>
+<code class="calibre2">SPECIALSXP</code><br /> <code class="calibre2">BUILTINSXP</code>
+</dt>
+<dd>
+<p>
+An integer giving the offset into the table of primitives/<code class="calibre2">.Internal</code>s.
+</p>
+</dd>
+<dt>
+<code class="calibre2">CHARSXP</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">length</code>, <code class="calibre2">truelength</code> followed by a block of bytes (allowing for the <code class="calibre2">nul</code> terminator).
+</p>
+</dd>
+<dt>
+<code class="calibre2">LGLSXP</code><br /> <code class="calibre2">INTSXP</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">length</code>, <code class="calibre2">truelength</code> followed by a block of C <code class="calibre2">int</code>s (which are 32 bits on all R platforms).
+</p>
+</dd>
+<dt>
+<code class="calibre2">REALSXP</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">length</code>, <code class="calibre2">truelength</code> followed by a block of C <code class="calibre2">double</code>s.
+</p>
+</dd>
+<dt>
+<code class="calibre2">CPLXSXP</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">length</code>, <code class="calibre2">truelength</code> followed by a block of C99 <code class="calibre2">double complex</code>s.
+</p>
+</dd>
+<dt>
+<code class="calibre2">STRSXP</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">length</code>, <code class="calibre2">truelength</code> followed by a block of pointers (<code class="calibre2">SEXP</code>s pointing to <code class="calibre2">CHARSXP</code>s).
+</p>
+</dd>
+<dt>
+<code class="calibre2">DOTSXP</code>
+</dt>
+<dd>
+<p>
+A special type of <code class="calibre2">LISTSXP</code> for the value bound to a <code class="calibre2">…</code> symbol: a pairlist of promises.
+</p>
+</dd>
+<dt>
+<code class="calibre2">ANYSXP</code>
+</dt>
+<dd>
+<p>
+This is used as a place holder for any type: there are no actual objects of this type.
+</p>
+</dd>
+<dt>
+<code class="calibre2">VECSXP</code><br /> <code class="calibre2">EXPRSXP</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">length</code>, <code class="calibre2">truelength</code> followed by a block of pointers. These are internally identical (and identical to <code class="calibre2">STRSXP</code>) but differ in the interpretations placed on the elements.
+</p>
+</dd>
+<dt>
+<code class="calibre2">BCODESXP</code>
+</dt>
+<dd>
+<p>
+For the ‘byte-code’ objects generated by the compiler.
+</p>
+</dd>
+<dt>
+<code class="calibre2">EXTPTRSXP</code>
+</dt>
+<dd>
+<p>
+Has three pointers, to the pointer, the protection value (an R object which if alive protects this object) and a tag (a <code class="calibre2">SYMSXP</code>?).
+</p>
+</dd>
+<dt>
+<code class="calibre2">WEAKREFSXP</code>
+</dt>
+<dd>
+<p>
+A <code class="calibre2">WEAKREFSXP</code> is a special <code class="calibre2">VECSXP</code> of length 4, with elements ‘key’, ‘value’, ‘finalizer’ and ‘next’. The ‘key’ is <code class="calibre2">NULL</code>, an environment or an external pointer, and the ‘finalizer’ is a function or <code class="calibre2">NULL</code>.
+</p>
+</dd>
+<dt>
+<code class="calibre2">RAWSXP</code>
+</dt>
+<dd>
+<p>
+<code class="calibre2">length</code>, <code class="calibre2">truelength</code> followed by a block of bytes.
+</p>
+</dd>
+<dt>
+<code class="calibre2">S4SXP</code>
+</dt>
+<dd>
+<p>
+two unused pointers and a tag.
+</p>
+</dd>
+</dl>
+<hr />
+<p>
+<a href="" id="Allocation-classes"></a> <a href="" id="Allocation-classes-1"></a>
+</p>
+<h4 id="allocation-classes" class="subsection">
+1.1.4 Allocation classes
+</h4>
+<p>
+<a href="" id="index-allocation-classes"></a>
+</p>
+<p>
+As we have seen, the field <code class="calibre2">gccls</code> in the header is three bits to label up to 8 classes of nodes. Non-vector nodes are of class 0, and ‘small’ vector nodes are of classes 1 to 5, with a class for custom allocator vector nodes 6 and ‘large’ vector nodes being of class 7. The ‘small’ vector nodes are able to store vector data of up to 8, 16, 32, 64 and 128 bytes: larger vectors are <code class="calibre2">malloc</code>-ed individually whereas the ‘small’ nodes are allocated from pages of about 2000 bytes. Vector nodes allocated using custom allocators (via <code class="calibre2">allocVector3</code>) are not counted in the gc memory usage statistics since their memory semantics is not under R’s control and may be non-standard (e.g., memory could be partially shared across nodes).
+</p>
+<hr />
+<p>
+<a href="" id="Environments-and-variable-lookup"></a> <a href="" id="Environments-and-variable-lookup-1"></a>
+</p>
+<h3 id="environments-and-variable-lookup" class="section">
+1.2 Environments and variable lookup
+</h3>
+<p>
+<a href="" id="index-environment"></a> <a href="" id="index-variable-lookup"></a>
+</p>
+<p>
+What users think of as ‘variables’ are symbols which are bound to objects in ‘environments’. The word ‘environment’ is used ambiguously in R to mean <em>either</em> the frame of an <code class="calibre2">ENVSXP</code> (a pairlist of symbol-value pairs) <em>or</em> an <code class="calibre2">ENVSXP</code>, a frame plus an enclosure.
+</p>
+<p>
+<a href="" id="index-user-databases"></a>
+</p>
+<p>
+There are additional places that ‘variables’ can be looked up, called ‘user databases’ in comments in the code. These seem undocumented in the R sources, but apparently refer to the <strong>RObjectTable</strong> package at <a href="http://www.omegahat.net/RObjectTables/" class="uri">http://www.omegahat.net/RObjectTables/</a>.
+</p>
+<p>
+<a href="" id="index-base-environment"></a> <a href="" id="index-environment_002c-base"></a>
+</p>
+<p>
+The base environment is special. There is an <code class="calibre2">ENVSXP</code> environment with enclosure the empty environment <code class="calibre2">R_EmptyEnv</code>, but the frame of that environment is not used. Rather its bindings are part of the global symbol table, being those symbols in the global symbol table whose values are not <code class="calibre2">R_UnboundValue</code>. When R is started the internal functions are installed (by C code) in the symbol table, with primitive functions having values and <code class="calibre2">.Internal</code> functions having what would be their values in the field accessed by the <code class="calibre2">INTERNAL</code> macro. Then <code class="calibre2">.Platform</code> and <code class="calibre2">.Machine</code> are computed and the base package is loaded into the base environment followed by the system profile.
+</p>
+<p>
+The frames of environments (and the symbol table) are normally hashed for faster access (including insertion and deletion).
+</p>
+<p>
+By default R maintains a (hashed) global cache of ‘variables’ (that is symbols and their bindings) which have been found, and this refers only to environments which have been marked to participate, which consists of the global environment (aka the user workspace), the base environment plus environments<a href="concept-index.html#FOOT4" id="DOCF4"><sup>4</sup></a> which have been <code class="calibre2">attach</code>ed. When an environment is either <code class="calibre2">attach</code>ed or <code class="calibre2">detach</code>ed, the names of its symbols are flushed from the cache. The cache is used whenever searching for variables from the global environment (possibly as part of a recursive search).
+</p>
+<hr />
+<p>
+<a href="" id="Search-paths"></a> <a href="" id="Search-paths-1"></a>
+</p>
+<h4 id="search-paths" class="subsection">
+1.2.1 Search paths
+</h4>
+<p>
+<a href="" id="index-search-path"></a>
+</p>
+<p>
+S has the notion of a ‘search path’: the lookup for a ‘variable’ leads (possibly through a series of frames) to the ‘session frame’ the ‘working directory’ and then along the search path. The search path is a series of databases (as returned by <code class="calibre2">search()</code>) which contain the system functions (but not necessarily at the end of the path, as by default the equivalent of packages are added at the end).
+</p>
+<p>
+R has a variant on the S model. There is a search path (also returned by <code class="calibre2">search()</code>) which consists of the global environment (aka user workspace) followed by environments which have been attached and finally the base environment. Note that unlike S it is not possible to attach environments before the workspace nor after the base environment.
+</p>
+<p>
+However, the notion of variable lookup is more general in R, hence the plural in the title of this subsection. Since environments have enclosures, from any environment there is a search path found by looking in the frame, then the frame of its enclosure and so on. Since loops are not allowed, this process will eventually terminate: it can terminate at either the base environment or the empty environment. (It can be conceptually simpler to think of the search always terminating at the empty environment, but with an optimization to stop at the base environment.) So the ‘search path’ describes the chain of environments which is traversed once the search reaches the global environment.
+</p>
+<hr />
+<p>
+<a href="" id="Namespaces"></a> <a href="" id="Namespaces-1"></a>
+</p>
+<h4 id="namespaces" class="subsection">
+1.2.2 Namespaces
+</h4>
+<p>
+<a href="" id="index-namespace"></a>
+</p>
+<p>
+Namespaces are environments associated with packages (and once again the base package is special and will be considered separately). A package <code class="calibre2">pkg</code> defines two environments <code class="calibre2">namespace:pkg</code> and <code class="calibre2">package:pkg</code>: it is <code class="calibre2">package:pkg</code> that can be <code class="calibre2">attach</code>ed and form part of the search path.
+</p>
+<p>
+The objects defined by the R code in the package are symbols with bindings in the <code class="calibre2">namespace:pkg</code> environment. The <code class="calibre2">package:pkg</code> environment is populated by selected symbols from the <code class="calibre2">namespace:pkg</code> environment (the exports). The enclosure of this environment is an environment populated with the explicit imports from other namespaces, and the enclosure of <em>that</em> environment is the base namespace. (So the illusion of the imports being in the namespace environment is created via the environment tree.) The enclosure of the base namespace is the global environment, so the search from a package namespace goes via the (explicit and implicit) imports to the standard ‘search path’.
+</p>
+<p>
+<a href="" id="index-base-namespace"></a> <a href="" id="index-namespace_002c-base"></a> <a href="" id="index-R_005fBaseNamespace"></a>
+</p>
+<p>
+The base namespace environment <code class="calibre2">R_BaseNamespace</code> is another <code class="calibre2">ENVSXP</code> that is special-cased. It is effectively the same thing as the base environment <code class="calibre2">R_BaseEnv</code> <em>except</em> that its enclosure is the global environment rather than the empty environment: the internal code diverts lookups in its frame to the global symbol table.
+</p>
+<hr />
+<p>
+<a href="" id="Hash-table"></a> <a href="" id="Hash-table-1"></a>
+</p>
+<h4 id="hash-table" class="subsection">
+1.2.3 Hash table
+</h4>
+<p>
+Environments in R usually have a hash table, and nowadays that is the default in <code class="calibre2">new.env()</code>. It is stored as a <code class="calibre2">VECSXP</code> where <code class="calibre2">length</code> is used for the allocated size of the table and <code class="calibre2">truelength</code> is the number of primary slots in use—the pointer to the <code class="calibre2">VECSXP</code> is part of the header of a <code class="calibre2">SEXP</code> of type <code class="calibre2">ENVSXP</code>, and this points to <code class="calibre2">R_NilValue</code> if the environment is not hashed.
+</p>
+<p>
+For the pros and cons of hashing, see a basic text on Computer Science.
+</p>
+<p>
+The code to implement hashed environments is in src/main/envir.c. Unless set otherwise (e.g. by the <code class="calibre2">size</code> argument of <code class="calibre2">new.env()</code>) the initial table size is <code class="calibre2">29</code>. The table will be resized by a factor of 1.2 once the load factor (the proportion of primary slots in use) reaches 85%.
+</p>
+<p>
+The hash chains are stored as pairlist elements of the <code class="calibre2">VECSXP</code>: items are inserted at the front of the pairlist. Hashing is principally designed for fast searching of environments, which are from time to time added to but rarely deleted from, so items are not actually deleted but have their value set to <code class="calibre2">R_UnboundValue</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Attributes"></a> <a href="" id="Attributes-1"></a>
+</p>
+<h3 id="attributes" class="section">
+1.3 Attributes
+</h3>
+<p>
+<a href="" id="index-attributes"></a> <a href="" id="index-ATTRIB"></a> <a href="" id="index-SET_005fATTRIB"></a> <a href="" id="index-DUPLICATE_005fATTRIB"></a>
+</p>
+<p>
+As we have seen, every <code class="calibre2">SEXPREC</code> has a pointer to the attributes of the node (default <code class="calibre2">R_NilValue</code>). The attributes can be accessed/set by the macros/functions <code class="calibre2">ATTRIB</code> and <code class="calibre2">SET_ATTRIB</code>, but such direct access is normally only used to check if the attributes are <code class="calibre2">NULL</code> or to reset them. Otherwise access goes through the functions <code class="calibre2">getAttrib</code> and <code class="calibre2">setAttrib</code> which impose restrictions on the attributes. One thing to watch is that if you copy attributes from one object to another you may (un)set the <code class="calibre2">“class”</code> attribute and so need to copy the object and S4 bits as well. There is a macro/function <code class="calibre2">DUPLICATE_ATTRIB</code> to automate this.
+</p>
+<p>
+Note that the ‘attributes’ of a <code class="calibre2">CHARSXP</code> are used as part of the management of the <code class="calibre2">CHARSXP</code> cache: of course <code class="calibre2">CHARSXP</code>’s are not user-visible but C-level code might look at their attributes.
+</p>
+<p>
+The code assumes that the attributes of a node are either <code class="calibre2">R_NilValue</code> or a pairlist of non-zero length (and this is checked by <code class="calibre2">SET_ATTRIB</code>). The attributes are named (via tags on the pairlist). The replacement function <code class="calibre2">attributes&lt;-</code> ensures that <code class="calibre2">“dim”</code> precedes <code class="calibre2">“dimnames”</code> in the pairlist. Attribute <code class="calibre2">“dim”</code> is one of several that is treated specially: the values are checked, and any <code class="calibre2">“names”</code> and <code class="calibre2">“dimnames”</code> attributes are removed. Similarly, you cannot set <code class="calibre2">“dimnames”</code> without having set <code class="calibre2">“dim”</code>, and the value assigned must be a list of the correct length and with elements of the correct lengths (and all zero-length elements are replaced by <code class="calibre2">NULL</code>).
+</p>
+<p>
+The other attributes which are given special treatment are <code class="calibre2">“names”</code>, <code class="calibre2">“class”</code>, <code class="calibre2">“tsp”</code>, <code class="calibre2">“comment”</code> and <code class="calibre2">“row.names”</code>. For pairlist-like objects the names are not stored as an attribute but (as symbols) as the tags: however the R interface makes them look like conventional attributes, and for one-dimensional arrays they are stored as the first element of the <code class="calibre2">“dimnames”</code> attribute. The C code ensures that the <code class="calibre2">“tsp”</code> attribute is an <code class="calibre2">REALSXP</code>, the frequency is positive and the implied length agrees with the number of rows of the object being assigned to. Classes and comments are restricted to character vectors, and assigning a zero-length comment or class removes the attribute. Setting or removing a <code class="calibre2">“class”</code> attribute sets the object bit appropriately. Integer row names are converted to and from the internal compact representation.
+</p>
+<p>
+<a href="" id="index-copying-semantics-1"></a>
+</p>
+<p>
+Care needs to be taken when adding attributes to objects of the types with non-standard copying semantics. There is only one object of type <code class="calibre2">NILSXP</code>, <code class="calibre2">R_NilValue</code>, and that should never have attributes (and this is enforced in <code class="calibre2">installAttrib</code>). For environments, external pointers and weak references, the attributes should be relevant to all uses of the object: it is for example reasonable to have a name for an environment, and also a <code class="calibre2">“path”</code> attribute for those environments populated from R code in a package.
+</p>
+<p>
+<a href="" id="index-attributes_002c-preserving"></a> <a href="" id="index-preserving-attributes"></a>
+</p>
+<p>
+When should attributes be preserved under operations on an object? Becker, Chambers &amp; Wilks (1988, pp. 144–6) give some guidance. Scalar functions (those which operate element-by-element on a vector and whose output is similar to the input) should preserve attributes (except perhaps class, and if they do preserve class they need to preserve the <code class="calibre2">OBJECT</code> and S4 bits). Binary operations normally call <a href="" id="index-copyMostAttributes"></a> <code class="calibre2">copyMostAttributes</code> to copy most attributes from the longer argument (and if they are of the same length from both, preferring the values on the first). Here ‘most’ means all except the <code class="calibre2">names</code>, <code class="calibre2">dim</code> and <code class="calibre2">dimnames</code> which are set appropriately by the code for the operator.
+</p>
+<p>
+Subsetting (other than by an empty index) generally drops all attributes except <code class="calibre2">names</code>, <code class="calibre2">dim</code> and <code class="calibre2">dimnames</code> which are reset as appropriate. On the other hand, subassignment generally preserves such attributes even if the length is changed. Coercion drops all attributes. For example:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; x &lt;- structure(1:8, names=letters[1:8], comm=&quot;a comment&quot;)
+&gt; x[]
+a b c d e f g h
+1 2 3 4 5 6 7 8
+attr(,&quot;comm&quot;)
+[1] &quot;a comment&quot;
+&gt; x[1:3]
+a b c
+1 2 3
+&gt; x[3] &lt;- 3
+&gt; x
+a b c d e f g h
+1 2 3 4 5 6 7 8
+attr(,&quot;comm&quot;)
+[1] &quot;a comment&quot;
+&gt; x[9] &lt;- 9
+&gt; x
+a b c d e f g h
+1 2 3 4 5 6 7 8 9
+attr(,&quot;comm&quot;)
+[1] &quot;a comment&quot;</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Contexts"></a> <a href="" id="Contexts-1"></a>
+</p>
+<h3 id="contexts" class="section">
+1.4 Contexts
+</h3>
+<p>
+<a href="" id="index-context"></a>
+</p>
+<p>
+<em>Contexts</em> are the internal mechanism used to keep track of where a computation has got to (and from where), so that control-flow constructs can work and reasonable information can be produced on error conditions (such as <em>via</em> traceback), and otherwise (the <code class="calibre2">sys.xxx</code> functions).
+</p>
+<p>
+Execution contexts are a stack of C <code class="calibre2">structs</code>:
+</p>
+<div class="example">
+<pre class="example1"><code>typedef struct RCNTXT {
+    struct RCNTXT *nextcontext; /* The next context up the chain */
+    int callflag;               /* The context ‘type’ */
+    JMP_BUF cjmpbuf;            /* C stack and register information */
+    int cstacktop;              /* Top of the pointer protection stack */
+    int evaldepth;              /* Evaluation depth at inception */
+    SEXP promargs;              /* Promises supplied to closure */
+    SEXP callfun;               /* The closure called */
+    SEXP sysparent;             /* Environment the closure was called from */
+    SEXP call;                  /* The call that effected this context */
+    SEXP cloenv;                /* The environment */
+    SEXP conexit;               /* Interpreted on.exit code */
+    void (*cend)(void *);       /* C on.exit thunk */
+    void *cenddata;             /* Data for C on.exit thunk */
+    char *vmax;                 /* Top of the R_alloc stack */
+    int intsusp;                /* Interrupts are suspended */
+    SEXP handlerstack;          /* Condition handler stack */
+    SEXP restartstack;          /* Stack of available restarts */
+    struct RPRSTACK *prstack;   /* Stack of pending promises */
+} RCNTXT, *context;</code></pre>
+</div>
+<p>
+plus additional fields for the byte-code compiler. The ‘types’ are from
+</p>
+<div class="example">
+<pre class="example1"><code>enum {
+    CTXT_TOPLEVEL = 0,  /* toplevel context */
+    CTXT_NEXT     = 1,  /* target for next */
+    CTXT_BREAK    = 2,  /* target for break */
+    CTXT_LOOP     = 3,  /* break or next target */
+    CTXT_FUNCTION = 4,  /* function closure */
+    CTXT_CCODE    = 8,  /* other functions that need error cleanup */
+    CTXT_RETURN   = 12, /* return() from a closure */
+    CTXT_BROWSER  = 16, /* return target on exit from browser */
+    CTXT_GENERIC  = 20, /* rather, running an S3 method */
+    CTXT_RESTART  = 32, /* a call to restart was made from a closure */
+    CTXT_BUILTIN  = 64  /* builtin internal function */
+};</code></pre>
+</div>
+<p>
+where the <code class="calibre2">CTXT_FUNCTION</code> bit is on wherever function closures are involved.
+</p>
+<p>
+Contexts are created by a call to <code class="calibre2">begincontext</code> and ended by a call to <code class="calibre2">endcontext</code>: code can search up the stack for a particular type of context via <code class="calibre2">findcontext</code> (and jump there) or jump to a specific context via <code class="calibre2">R_JumpToContext</code>. <code class="calibre2">R_ToplevelContext</code> is the ‘idle’ state (normally the command prompt), and <code class="calibre2">R_GlobalContext</code> is the top of the stack.
+</p>
+<p>
+Note that whilst calls to closures and builtins set a context, those to special internal functions never do.
+</p>
+<p>
+<a href="" id="index-UseMethod"></a> <a href="" id="index-method-dispatch"></a>
+</p>
+<p>
+Dispatching from a S3 generic (via <code class="calibre2">UseMethod</code> or its internal equivalent) or calling <code class="calibre2">NextMethod</code> sets the context type to <code class="calibre2">CTXT_GENERIC</code>. This is used to set the <code class="calibre2">sysparent</code> of the method call to that of the <code class="calibre2">generic</code>, so the method appears to have been called in place of the generic rather than from the generic.
+</p>
+<p>
+The R <code class="calibre2">sys.frame</code> and <code class="calibre2">sys.call</code> functions work by counting calls to closures (type <code class="calibre2">CTXT_FUNCTION</code>) from either end of the context stack.
+</p>
+<p>
+Note that the <code class="calibre2">sysparent</code> element of the structure is not the same thing as <code class="calibre2">sys.parent()</code>. Element <code class="calibre2">sysparent</code> is primarily used in managing changes of the function being evaluated, i.e. by <code class="calibre2">Recall</code> and method dispatch.
+</p>
+<p>
+<code class="calibre2">CTXT_CCODE</code> contexts are currently used in <code class="calibre2">cat()</code>, <code class="calibre2">load()</code>, <code class="calibre2">scan()</code> and <code class="calibre2">write.table()</code> (to close the connection on error), by <code class="calibre2">PROTECT</code>, serialization (to recover from errors, e.g. free buffers) and within the error handling code (to raise the C stack limit and reset some variables).
+</p>
+<hr />
+<p>
+<a href="" id="Argument-evaluation"></a> <a href="" id="Argument-evaluation-1"></a>
+</p>
+<h3 id="argument-evaluation" class="section">
+1.5 Argument evaluation
+</h3>
+<p>
+<a href="" id="index-argument-evaluation"></a>
+</p>
+<p>
+As we have seen, functions in R come in three types, closures (<code class="calibre2">SEXPTYPE</code> <code class="calibre2">CLOSXP</code>), specials (<code class="calibre2">SPECIALSXP</code>) and builtins (<code class="calibre2">BUILTINSXP</code>). In this section we consider when (and if) the actual arguments of function calls are evaluated. The rules are different for the internal (special/builtin) and R-level functions (closures).
+</p>
+<p>
+For a call to a closure, the actual and formal arguments are matched and a matched call (another <code class="calibre2">LANGSXP</code>) is constructed. This process first replaces the actual argument list by a list of promises to the values supplied. It then constructs a new environment which contains the names of the formal parameters matched to actual or default values: all the matched values are promises, the defaults as promises to be evaluated in the environment just created. That environment is then used for the evaluation of the body of the function, and promises will be forced (and hence actual or default arguments evaluated) when they are encountered. <a href="" id="index-NAMED-1"></a> (Evaluating a promise sets <code class="calibre2">NAMED = 2</code> on its value, so if the argument was a symbol its binding is regarded as having multiple references during the evaluation of the closure call.)
+</p>
+<p>
+If the closure is an S3 generic (that is, contains a call to <code class="calibre2">UseMethod</code>) the evaluation process is the same until the <code class="calibre2">UseMethod</code> call is encountered. At that point the argument on which to do dispatch (normally the first) will be evaluated if it has not been already. If a method has been found which is a closure, a new evaluation environment is created for it containing the matched arguments of the method plus any new variables defined so far during the evaluation of the body of the generic. (Note that this means changes to the values of the formal arguments in the body of the generic are discarded when calling the method, but <em>actual</em> argument promises which have been forced retain the values found when they were forced. On the other hand, missing arguments have values which are promises to use the default supplied by the method and not by the generic.) If the method found is a primitive it is called with the matched argument list of promises (possibly already forced) used for the generic.
+</p>
+<p>
+<a href="" id="index-builtin-function"></a> <a href="" id="index-special-function"></a> <a href="" id="index-primitive-function"></a> <a href="" id="index-_002eInternal-function"></a>
+</p>
+<p>
+The essential difference<a href="concept-index.html#FOOT5" id="DOCF5"><sup>5</sup></a> between special and builtin functions is that the arguments of specials are not evaluated before the C code is called, and those of builtins are. Note that being a special/builtin is separate from being primitive or <code class="calibre2">.Internal</code>: <code class="calibre2">quote</code> is a special primitive, <code class="calibre2">+</code> is a builtin primitive, <code class="calibre2">cbind</code> is a special <code class="calibre2">.Internal</code> and <code class="calibre2">grep</code> is a builtin <code class="calibre2">.Internal</code>.
+</p>
+<p>
+<a href="" id="index-generic_002c-internal"></a> <a href="" id="index-DispatchOrEval"></a>
+</p>
+<p>
+Many of the internal functions are internal generics, which for specials means that they do not evaluate their arguments on call, but the C code starts with a call to <code class="calibre2">DispatchOrEval</code>. The latter evaluates the first argument, and looks for a method based on its class. (If S4 dispatch is on, S4 methods are looked for first, even for S3 classes.) If it finds a method, it dispatches to that method with a call based on promises to evaluate the remaining arguments. If no method is found, the remaining arguments are evaluated before return to the internal generic.
+</p>
+<p>
+<a href="" id="index-generic_002c-generic"></a> <a href="" id="index-DispatchGeneric"></a>
+</p>
+<p>
+The other way that internal functions can be generic is to be group generic. Most such functions are builtins (so immediately evaluate all their arguments), and all contain a call to the C function <code class="calibre2">DispatchGeneric</code>. There are some peculiarities over the number of arguments for the <code class="calibre2">“Math”</code> group generic, with some members allowing only one argument, some having two (with a default for the second) and <code class="calibre2">trunc</code> allows one or more but the default method only accepts one.
+</p>
+<hr />
+<p>
+<a href="" id="Missingness"></a> <a href="" id="Missingness-1"></a>
+</p>
+<h4 id="missingness" class="subsection">
+1.5.1 Missingness
+</h4>
+<p>
+<a href="" id="index-missingness"></a>
+</p>
+<p>
+Actual arguments to (non-internal) R functions can be fewer than are required to match the formal arguments of the function. Having unmatched formal arguments will not matter if the argument is never used (by lazy evaluation), but when the argument is evaluated, either its default value is evaluated (within the evaluation environment of the function) or an error is thrown with a message along the lines of
+</p>
+<div class="example">
+<pre class="example1"><code>argument &quot;foobar&quot; is missing, with no default</code></pre>
+</div>
+<p>
+<a href="" id="index-MISSING-1"></a> <a href="" id="index-R_005fMissingArg"></a>
+</p>
+<p>
+Internally missingness is handled by two mechanisms. The object <code class="calibre2">R_MissingArg</code> is used to indicate that a formal argument has no (default) value. When matching the actual arguments to the formal arguments, a new argument list is constructed from the formals all of whose values are <code class="calibre2">R_MissingArg</code> with the first <code class="calibre2">MISSING</code> bit set. Then whenever a formal argument is matched to an actual argument, the corresponding member of the new argument list has its value set to that of the matched actual argument, and if that is not <code class="calibre2">R_MissingArg</code> the missing bit is unset.
+</p>
+<p>
+This new argument list is used to form the evaluation frame for the function, and if named arguments are subsequently given a new value (before they are evaluated) the missing bit is cleared.
+</p>
+<p>
+Missingness of arguments can be interrogated via the <code class="calibre2">missing()</code> function. An argument is clearly missing if its missing bit is set or if the value is <code class="calibre2">R_MissingArg</code>. However, missingness can be passed on from function to function, for using a formal argument as an actual argument in a function call does not count as evaluation. So <code class="calibre2">missing()</code> has to examine the value (a promise) of a non-yet-evaluated formal argument to see if it might be missing, which might involve investigating a promise and so on ….
+</p>
+<p>
+Special primitives also need to handle missing arguments, and in some case (e.g. <code class="calibre2">log</code>) that is why they are special and not builtin. This is usually done by testing if an argument’s value is <code class="calibre2">R_MissingArg</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Dot_002ddot_002ddot-arguments"></a> <a href="" id="Dot_002ddot_002ddot-arguments-1"></a>
+</p>
+<h4 id="dot-dot-dot-arguments" class="subsection">
+1.5.2 Dot-dot-dot arguments
+</h4>
+<p>
+<a href="" id="index-_002e_002e_002e-argument-1"></a>
+</p>
+<p>
+Dot-dot-dot arguments are convenient when writing functions, but complicate the internal code for argument evaluation.
+</p>
+<p>
+The formals of a function with a <code class="calibre2">…</code> argument represent that as a single argument like any other argument, with tag the symbol <code class="calibre2">R_DotsSymbol</code>. When the actual arguments are matched to the formals, the value of the <code class="calibre2">…</code> argument is of <code class="calibre2">SEXPTYPE</code> <code class="calibre2">DOTSXP</code>, a pairlist of promises (as used for matched arguments) but distinguished by the <code class="calibre2">SEXPTYPE</code>.
+</p>
+<p>
+Recall that the evaluation frame for a function initially contains the <code class="calibre2">name=value</code> pairs from the matched call, and hence this will be true for <code class="calibre2">…</code> as well. The value of <code class="calibre2">…</code> is a (special) pairlist whose elements are referred to by the special symbols <code class="calibre2">..1</code>, <code class="calibre2">..2</code>, … which have the <code class="calibre2">DDVAL</code> bit set: when one of these is encountered it is looked up (via <code class="calibre2">ddfindVar</code>) in the value of the <code class="calibre2">…</code> symbol in the evaluation frame.
+</p>
+<p>
+Values of arguments matched to a <code class="calibre2">…</code> argument can be missing.
+</p>
+<p>
+Special primitives may need to handle <code class="calibre2">…</code> arguments: see for example the internal code of <code class="calibre2">switch</code> in file src/main/builtin.c.
+</p>
+<hr />
+<p>
+<a href="" id="Autoprinting"></a> <a href="" id="Autoprinting-1"></a>
+</p>
+<h3 id="autoprinting" class="section">
+1.6 Autoprinting
+</h3>
+<p>
+<a href="" id="index-autoprinting"></a> <a href="" id="index-R_005fVisible"></a>
+</p>
+<p>
+Whether the returned value of a top-level R expression is printed is controlled by the global boolean variable <code class="calibre2">R_Visible</code>. This is set (to true or false) on entry to all primitive and internal functions based on the <code class="calibre2">eval</code> column of the table in file src/main/names.c: the appropriate setting can be extracted by the macro <code class="calibre2">PRIMPRINT</code>. <a href="" id="index-PRIMPRINT"></a>
+</p>
+<p>
+<a href="" id="index-invisible"></a>
+</p>
+<p>
+The R primitive function <code class="calibre2">invisible</code> makes use of this mechanism: it just sets <code class="calibre2">R_Visible = FALSE</code> before entry and returns its argument.
+</p>
+<p>
+For most functions the intention will be that the setting of <code class="calibre2">R_Visible</code> when they are entered is the setting used when they return, but there need to be exceptions. The R functions <code class="calibre2">identify</code>, <code class="calibre2">options</code>, <code class="calibre2">system</code> and <code class="calibre2">writeBin</code> determine whether the result should be visible from the arguments or user action. Other functions themselves dispatch functions which may change the visibility flag: examples<a href="concept-index.html#FOOT6" id="DOCF6"><sup>6</sup></a> are <code class="calibre2">.Internal</code>, <code class="calibre2">do.call</code>, <code class="calibre2">eval</code>, <code class="calibre2">withVisible</code>, <code class="calibre2">if</code>, <code class="calibre2">NextMethod</code>, <code class="calibre2">Recall</code>, <code class="calibre2">recordGraphics</code>, <code class="calibre2">standardGeneric</code>, <code class="calibre2">switch</code> and <code class="calibre2">UseMethod</code>.
+</p>
+<p>
+‘Special’ primitive and internal functions evaluate their arguments internally <em>after</em> <code class="calibre2">R_Visible</code> has been set, and evaluation of the arguments (e.g. an assignment as in PR#9263) can change the value of the flag.
+</p>
+<p>
+The <code class="calibre2">R_Visible</code> flag can also get altered during the evaluation of a function, with comments in the code about <code class="calibre2">warning</code>, <code class="calibre2">writeChar</code> and graphics functions calling <code class="calibre2">GText</code> (PR#7397). (Since the C-level function <code class="calibre2">eval</code> sets <code class="calibre2">R_Visible</code>, this could apply to any function calling it. Since it is called when evaluating promises, even object lookup can change <code class="calibre2">R_Visible</code>.) Internal and primitive functions force the documented setting of <code class="calibre2">R_Visible</code> on return, unless the C code is allowed to change it (the exceptions above are indicated by <code class="calibre2">PRIMPRINT</code> having value 2).
+</p>
+<p>
+The actual autoprinting is done by <code class="calibre2">PrintValueEnv</code> in file print.c. If the object to be printed has the S4 bit set and S4 methods dispatch is on, <code class="calibre2">show</code> is called to print the object. Otherwise, if the object bit is set (so the object has a <code class="calibre2">“class”</code> attribute), <code class="calibre2">print</code> is called to dispatch methods: for objects without a class the internal code of <code class="calibre2">print.default</code> is called.
+</p>
+<hr />
+<p>
+<a href="" id="The-write-barrier"></a> <a href="" id="The-write-barrier-and-the-garbage-collector"></a>
+</p>
+<h3 id="the-write-barrier-and-the-garbage-collector" class="section">
+1.7 The write barrier and the garbage collector
+</h3>
+<p>
+<a href="" id="index-write-barrier"></a> <a href="" id="index-garbage-collector"></a>
+</p>
+<p>
+R has long had a generational garbage collector, and bit <code class="calibre2">gcgen</code> in the <code class="calibre2">sxpinfo</code> header is used in the implementation of this. This is used in conjunction with the <code class="calibre2">mark</code> bit to identify two previous generations.
+</p>
+<p>
+There are three levels of collections. Level 0 collects only the youngest generation, level 1 collects the two youngest generations and level 2 collects all generations. After 20 level-0 collections the next collection is at level 1, and after 5 level-1 collections at level 2. Further, if a level-n collection fails to provide 20% free space (for each of nodes and the vector heap), the next collection will be at level n+1. (The R-level function <code class="calibre2">gc()</code> performs a level-2 collection.)
+</p>
+<p>
+A generational collector needs to efficiently ‘age’ the objects, especially list-like objects (including <code class="calibre2">STRSXP</code>s). This is done by ensuring that the elements of a list are regarded as at least as old as the list <em>when they are assigned</em>. This is handled by the functions <code class="calibre2">SET_VECTOR_ELT</code> and <code class="calibre2">SET_STRING_ELT</code>, which is why they are functions and not macros. Ensuring the integrity of such operations is termed the <em>write barrier</em> and is done by making the <code class="calibre2">SEXP</code> opaque and only providing access via functions (which cannot be used as lvalues in assignments in C).
+</p>
+<p>
+All code in R extensions is by default behind the write barrier. The only way to obtain direct access to the internals of the <code class="calibre2">SEXPREC</code>s is to define ‘USE_RINTERNALS’ before including header file Rinternals.h, which is normally defined in Defn.h. To enable a check on the way that the access is used, R can be compiled with flag –enable-strict-barrier which ensures that header Defn.h does not define ‘USE_RINTERNALS’ and hence that <code class="calibre2">SEXP</code> is opaque in most of R itself. (There are some necessary exceptions: foremost in file memory.c where the accessor functions are defined and also in file size.c which needs access to the sizes of the internal structures.)
+</p>
+<p>
+For background papers see <a href="http://homepage.stat.uiowa.edu/~luke/R/barrier.html" class="uri">http://homepage.stat.uiowa.edu/~luke/R/barrier.html</a> and <a href="http://homepage.stat.uiowa.edu/~luke/R/gengcnotes.html" class="uri">http://homepage.stat.uiowa.edu/~luke/R/gengcnotes.html</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Serialization-Formats"></a> <a href="" id="Serialization-Formats-1"></a>
+</p>
+<h3 id="serialization-formats" class="section">
+1.8 Serialization Formats
+</h3>
+<p>
+<a href="" id="index-serialization"></a>
+</p>
+<p>
+Serialized versions of R objects are used by <code class="calibre2">load</code>/<code class="calibre2">save</code> and also at a slightly lower level by <code class="calibre2">saveRDS</code>/<code class="calibre2">readRDS</code> (and their earlier ‘internal’ dot-name versions) and <code class="calibre2">serialize</code>/<code class="calibre2">unserialize</code>. These differ in what they serialize to (a file, a connection, a raw vector) and whether they are intended to serialize a single object or a collection of objects (typically the workspace). <code class="calibre2">save</code> writes a header at the beginning of the file (a single LF-terminated line) which the lower-level versions do not.
+</p>
+<p>
+<code class="calibre2">save</code> and <code class="calibre2">saveRDS</code> allow various forms of compression, and <code class="calibre2">gzip</code> compression is the default (except for ASCII saves). Compression is applied to the whole file stream, including the headers, so serialized files can be uncompressed or re-compressed by external programs. Both <code class="calibre2">load</code> and <code class="calibre2">readRDS</code> can read <code class="calibre2">gzip</code>, <code class="calibre2">bzip2</code> and <code class="calibre2">xz</code> forms of compression when reading from a file, and <code class="calibre2">gzip</code> compression when reading from a connection.
+</p>
+<p>
+R has used the same serialization format since R 1.4.0 in December 2001. Earlier formats are still supported via <code class="calibre2">load</code> and <code class="calibre2">save</code> but such formats are not described here. The current serialization format is called ‘version 2’, and has been expanded in back-compatible ways since its inception, for example to support additional <code class="calibre2">SEXPTYPE</code>s.
+</p>
+<p>
+<code class="calibre2">save</code> works by writing a single-line header (typically <code class="calibre2">RDX2\n</code> for a binary save: the only other current value is <code class="calibre2">RDA2\n</code> for <code class="calibre2">save(files=TRUE)</code>), then creating a tagged pairlist of the objects to be saved and serializing that single object. <code class="calibre2">load</code> reads the header line, unserializes a single object (a pairlist or a vector list) and assigns the elements of the object in the specified environment. The header line serves two purposes in R: it identifies the serialization format so <code class="calibre2">load</code> can switch to the appropriate reader code, and the linefeed allows the detection of files which have been subjected to a non-binary transfer which re-mapped line endings. It can also be thought of as a ‘magic number’ in the sense used by the <code class="calibre2">file</code> program (although R save files are not yet by default known to that program).
+</p>
+<p>
+Serialization in R needs to take into account that objects may contain references to environments, which then have enclosing environments and so on. (Environments recognized as package or name space environments are saved by name.) There are ‘reference objects’ which are not duplicated on copy and should remain shared on unserialization. These are weak references, external pointers and environments other than those associated with packages, namespaces and the global environment. These are handled via a hash table, and references after the first are written out as a reference marker indexed by the table entry.
+</p>
+<p>
+Version-2 serialization first writes a header indicating the format (normally ‘X\n’ for an XDR format binary save, but ‘A\n’, ASCII, and ‘B\n’, native word-order binary, can also occur) and then three integers giving the version of the format and two R versions (packed by the <code class="calibre2">R_Version</code> macro from Rversion.h). (Unserialization interprets the two versions as the version of R which wrote the file followed by the minimal version of R needed to read the format.) Serialization then writes out the object recursively using function <code class="calibre2">WriteItem</code> in file src/main/serialize.c.
+</p>
+<p>
+Some objects are written as if they were <code class="calibre2">SEXPTYPE</code>s: such pseudo-<code class="calibre2">SEXPTYPE</code>s cover <code class="calibre2">R_NilValue</code>, <code class="calibre2">R_EmptyEnv</code>, <code class="calibre2">R_BaseEnv</code>, <code class="calibre2">R_GlobalEnv</code>, <code class="calibre2">R_UnboundValue</code>, <code class="calibre2">R_MissingArg</code> and <code class="calibre2">R_BaseNamespace</code>.
+</p>
+<p>
+For all <code class="calibre2">SEXPTYPE</code>s except <code class="calibre2">NILSXP</code>, <code class="calibre2">SYMSXP</code> and <code class="calibre2">ENVSXP</code> serialization starts with an integer with the <code class="calibre2">SEXPTYPE</code> in bits 0:7<a href="concept-index.html#FOOT7" id="DOCF7"><sup>7</sup></a> followed by the object bit, two bits indicating if there are any attributes and if there is a tag (for the pairlist types), an unused bit and then the <code class="calibre2">gp</code> field<a href="concept-index.html#FOOT8" id="DOCF8"><sup>8</sup></a> in bits 12:27. Pairlist-like objects write their attributes (if any), tag (if any), CAR and then CDR (using tail recursion): other objects write their attributes after themselves. Atomic vector objects write their length followed by the data: generic vector-list objects write their length followed by a call to <code class="calibre2">WriteItem</code> for each element. The code for <code class="calibre2">CHARSXP</code>s special-cases <code class="calibre2">NA_STRING</code> and writes it as length <code class="calibre2">-1</code> with no data. Lengths no more than <code class="calibre2">2^31 - 1</code> are written in that way and larger lengths (which only occur on 64-bit systems) as <code class="calibre2">-1</code> followed by the upper and lower 32-bits as integers (regarded as unsigned).
+</p>
+<p>
+Environments are treated in several ways: as we have seen, some are written as specific pseudo-<code class="calibre2">SEXPTYPE</code>s. Package and namespace environments are written with pseudo-<code class="calibre2">SEXPTYPE</code>s followed by the name. ‘Normal’ environments are written out as <code class="calibre2">ENVSXP</code>s with an integer indicating if the environment is locked followed by the enclosure, frame, ‘tag’ (the hash table) and attributes.
+</p>
+<p>
+In the ‘XDR’ format integers and doubles are written in bigendian order: however the format is not fully XDR (as defined in RFC 1832) as byte quantities (such as the contents of <code class="calibre2">CHARSXP</code> and <code class="calibre2">RAWSXP</code> types) are written as-is and not padded to a multiple of four bytes.
+</p>
+<p>
+The ‘ASCII’ format writes 7-bit characters. Integers are formatted with <code class="calibre2">%d</code> (except that <code class="calibre2">NA_integer_</code> is written as <code class="calibre2">NA</code>), doubles formatted with <code class="calibre2">%.16g</code> (plus <code class="calibre2">NA</code>, <code class="calibre2">Inf</code> and <code class="calibre2">-Inf</code>) and bytes with <code class="calibre2">%02x</code>. Strings are written using standard escapes (e.g. <code class="calibre2">\t</code> and <code class="calibre2">\013</code>) for non-printing and non-ASCII bytes.
+</p>
+<hr />
+<p>
+<a href="" id="Encodings-for-CHARSXPs"></a> <a href="" id="Encodings-for-CHARSXPs-1"></a>
+</p>
+<h3 id="encodings-for-charsxps" class="section">
+1.9 Encodings for CHARSXPs
+</h3>
+<p>
+Character data in R are stored in the sexptype <code class="calibre2">CHARSXP</code>.
+</p>
+<p>
+There is support for encodings other than that of the current locale, in particular UTF-8 and the multi-byte encodings used on Windows for CJK languages. A limited means to indicate the encoding of a <code class="calibre2">CHARSXP</code> is <em>via</em> two of the ‘general purpose’ bits which are used to declare the encoding to be either Latin-1 or UTF-8. (Note that it is possible for a character vector to contain elements in different encodings.) Both printing and plotting notice the declaration and convert the string to the current locale (possibly using <code class="calibre2">&lt;xx&gt;</code> to display in hexadecimal bytes that are not valid in the current locale). Many (but not all) of the character manipulation functions will either preserve the declaration or re-encode the character string.
+</p>
+<p>
+Strings that refer to the OS such as file names need to be passed through a wide-character interface on some OSes (e.g. Windows).
+</p>
+<p>
+When are character strings declared to be of known encoding? One way is to do so directly via <code class="calibre2">Encoding</code>. The parser declares the encoding if this is known, either via the <code class="calibre2">encoding</code> argument to <code class="calibre2">parse</code> or from the locale within which parsing is being done at the R command line. (Other ways are recorded on the help page for <code class="calibre2">Encoding</code>.)
+</p>
+<p>
+It is not necessary to declare the encoding of ASCII strings as they will work in any locale. ASCII strings should never have a marked encoding, as any encoding will be ignored when entering such strings into the <code class="calibre2">CHARSXP</code> cache.
+</p>
+<p>
+The rationale behind considering only UTF-8 and Latin-1 was that most systems are capable of producing UTF-8 strings and this is the nearest we have to a universal format. For those that do not (for example those lacking a powerful enough <code class="calibre2">iconv</code>), it is likely that they work in Latin-1, the old R assumption. Then the parser can return a UTF-8-encoded string if it encounters a ‘\uxxx’ escape for a Unicode point that cannot be represented in the current charset. (This needs MBCS support, and was only enabled<a href="concept-index.html#FOOT9" id="DOCF9"><sup>9</sup></a> on Windows.) This is enabled for all platforms, and a ‘\uxxx’ or ‘\Uxxxxxxxx’ escape ensures that the parsed string will be marked as UTF-8.
+</p>
+<p>
+Most of the character manipulation functions now preserve UTF-8 encodings: there are some notes as to which at the top of file src/main/character.c and in file src/library/base/man/Encoding.Rd.
+</p>
+<p>
+Graphics devices are offered the possibility of handing UTF-8-encoded strings without re-encoding to the native character set, by setting <code class="calibre2">hasTextUTF8</code> to be ‘TRUE’ and supplying functions <code class="calibre2">textUTF8</code> and <code class="calibre2">strWidthUTF8</code> that expect UTF-8-encoded inputs. Normally the symbol font is encoded in Adobe Symbol encoding, but that can be re-encoded to UTF-8 by setting <code class="calibre2">wantSymbolUTF8</code> to ‘TRUE’. The Windows’ port of cairographics has a rather peculiar assumption: it wants the symbol font to be encoded in UTF-8 as if it were encoded in Latin-1 rather than Adobe Symbol: this is selected by <code class="calibre2">wantSymbolUTF8 = NA_LOGICAL</code>.
+</p>
+<p>
+Windows has no UTF-8 locales, but rather expects to work with UCS-2<a href="concept-index.html#FOOT10" id="DOCF10"><sup>10</sup></a> strings. R (being written in standard C) would not work internally with UCS-2 without extensive changes. The Rgui console<a href="concept-index.html#FOOT11" id="DOCF11"><sup>11</sup></a> uses UCS-2 internally, but communicates with the R engine in the native encoding. To allow UTF-8 strings to be printed in UTF-8 in Rgui.exe, an escape convention is used (see header file rgui_UTF8.h) by <code class="calibre2">cat</code>, <code class="calibre2">print</code> and autoprinting.
+</p>
+<p>
+‘Unicode’ (UCS-2LE) files are common in the Windows world, and <code class="calibre2">readLines</code> and <code class="calibre2">scan</code> will read them into UTF-8 strings on Windows if the encoding is declared explicitly on an unopened connection passed to those functions.
+</p>
+<hr />
+<p>
+<a href="" id="The-CHARSXP-cache"></a> <a href="" id="The-CHARSXP-cache-1"></a>
+</p>
+<h3 id="the-charsxp-cache" class="section">
+1.10 The CHARSXP cache
+</h3>
+<p>
+<a href="" id="index-mkChar"></a>
+</p>
+<p>
+There is a global cache for <code class="calibre2">CHARSXP</code>s created by <code class="calibre2">mkChar</code> — the cache ensures that most <code class="calibre2">CHARSXP</code>s with the same contents share storage (‘contents’ including any declared encoding). Not all <code class="calibre2">CHARSXP</code>s are part of the cache – notably ‘NA_STRING’ is not. <code class="calibre2">CHARSXP</code>s reloaded from the <code class="calibre2">save</code> formats of R prior to 0.99.0 are not cached (since the code used is frozen and very few examples still exist).
+</p>
+<p>
+<a href="" id="index-mkCharLenCE"></a>
+</p>
+<p>
+The cache records the encoding of the string as well as the bytes: all requests to create a <code class="calibre2">CHARSXP</code> should be <em>via</em> a call to <code class="calibre2">mkCharLenCE</code>. Any encoding given in <code class="calibre2">mkCharLenCE</code> call will be ignored if the string’s bytes are all ASCII characters.
+</p>
+<hr />
+<p>
+<a href="" id="Warnings-and-errors"></a> <a href="" id="Warnings-and-errors-1"></a>
+</p>
+<h3 id="warnings-and-errors" class="section">
+1.11 Warnings and errors
+</h3>
+<p>
+<a href="" id="index-warning"></a> <a href="" id="index-warningcall"></a> <a href="" id="index-error"></a> <a href="" id="index-errorcall"></a>
+</p>
+<p>
+Each of <code class="calibre2">warning</code> and <code class="calibre2">stop</code> have two C-level equivalents, <code class="calibre2">warning</code>, <code class="calibre2">warningcall</code>, <code class="calibre2">error</code> and <code class="calibre2">errorcall</code>. The relationship between the pairs is similar: <code class="calibre2">warning</code> tries to fathom out a suitable call, and then calls <code class="calibre2">warningcall</code> with that call as the first argument if it succeeds, and with <code class="calibre2">call = R_NilValue</code> if it does not. When <code class="calibre2">warningcall</code> is called, it includes the deparsed call in its printout unless <code class="calibre2">call = R_NilValue</code>.
+</p>
+<p>
+<code class="calibre2">warning</code> and <code class="calibre2">error</code> look at the context stack. If the topmost context is not of type <code class="calibre2">CTXT_BUILTIN</code>, it is used to provide the call, otherwise the next context provides the call. This means that when these functions are called from a primitive or <code class="calibre2">.Internal</code>, the imputed call will not be to primitive/<code class="calibre2">.Internal</code> but to the function calling the primitive/<code class="calibre2">.Internal</code> . This is exactly what one wants for a <code class="calibre2">.Internal</code>, as this will give the call to the closure wrapper. (Further, for a <code class="calibre2">.Internal</code>, the call is the argument to <code class="calibre2">.Internal</code>, and so may not correspond to any R function.) However, it is unlikely to be what is needed for a primitive.
+</p>
+<p>
+The upshot is that that <code class="calibre2">warningcall</code> and <code class="calibre2">errorcall</code> should normally be used for code called from a primitive, and <code class="calibre2">warning</code> and <code class="calibre2">error</code> should be used for code called from a <code class="calibre2">.Internal</code> (and necessarily from <code class="calibre2">.Call</code>, <code class="calibre2">.C</code> and so on, where the call is not passed down). However, there are two complications. One is that code might be called from either a primitive or a <code class="calibre2">.Internal</code>, in which case probably <code class="calibre2">warningcall</code> is more appropriate. The other involves replacement functions, where the call was once of the form
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; length(x) &lt;- y ~ x
+Error in &quot;length&lt;-&quot;(`*tmp*`, value = y ~ x) : invalid value</code></pre>
+</div>
+<p>
+which is unpalatable to the end user. For replacement functions there will be a suitable context at the top of the stack, so <code class="calibre2">warning</code> should be used. (The results for <code class="calibre2">.Internal</code> replacement functions such as <code class="calibre2">substr&lt;-</code> are not ideal.)
+</p>
+<hr />
+<p>
+<a href="" id="S4-objects"></a> <a href="" id="S4-objects-1"></a>
+</p>
+<h3 id="s4-objects" class="section">
+1.12 S4 objects
+</h3>
+<p>
+[This section is currently a preliminary draft and should not be taken as definitive. The description assumes that <code class="calibre2">R_NO_METHODS_TABLES</code> has not been set.]
+</p>
+<hr />
+<p>
+<a href="" id="Representation-of-S4-objects"></a> <a href="" id="Representation-of-S4-objects-1"></a>
+</p>
+<h4 id="representation-of-s4-objects" class="subsection">
+1.12.1 Representation of S4 objects
+</h4>
+<p>
+S4 objects can be of any <code class="calibre2">SEXPTYPE</code>. They are either an object of a simple type (such as an atomic vector or function) with S4 class information or of type <code class="calibre2">S4SXP</code>. In all cases, the ‘S4 bit’ (bit 4 of the ‘general purpose’ field) is set, and can be tested by the macro/function <code class="calibre2">IS_S4_OBJECT</code>.
+</p>
+<p>
+S4 objects are created via <code class="calibre2">new()</code><a href="concept-index.html#FOOT12" id="DOCF12"><sup>12</sup></a> and thence via the C function <code class="calibre2">R_do_new_object</code>. This duplicates the prototype of the class, adds a class attribute and sets the S4 bit. All S4 class attributes should be character vectors of length one with an attribute giving (as a character string) the name of the package (or <code class="calibre2">.GlobalEnv</code>) containing the class definition. Since S4 objects have a class attribute, the <code class="calibre2">OBJECT</code> bit is set.
+</p>
+<p>
+It is currently unclear what should happen if the class attribute is removed from an S4 object, or if this should be allowed.
+</p>
+<hr />
+<p>
+<a href="" id="S4-classes"></a> <a href="" id="S4-classes-1"></a>
+</p>
+<h4 id="s4-classes" class="subsection">
+1.12.2 S4 classes
+</h4>
+<p>
+S4 classes are stored as R objects in the environment in which they are created, with names <code class="calibre2">.__C__classname</code>: as such they are not listed by default by <code class="calibre2">ls</code>.
+</p>
+<p>
+The objects are S4 objects of class <code class="calibre2">“classRepresentation”</code> which is defined in the <strong>methods</strong> package.
+</p>
+<p>
+Since these are just objects, they are subject to the normal scoping rules and can be imported and exported from namespaces like other objects. The directives <code class="calibre2">importClassesFrom</code> and <code class="calibre2">exportClasses</code> are merely convenient ways to refer to class objects without needing to know their internal ‘metaname’ (although <code class="calibre2">exportClasses</code> does a little sanity checking via <code class="calibre2">isClass</code>).
+</p>
+<hr />
+<p>
+<a href="" id="S4-methods"></a> <a href="" id="S4-methods-1"></a>
+</p>
+<h4 id="s4-methods" class="subsection">
+1.12.3 S4 methods
+</h4>
+<p>
+Details of the methods are stored in environments (typically hidden in the respective namespace) with a non-syntactic name of the form <code class="calibre2">.__T__generic:package</code> containing objects of class <code class="calibre2">MethodDefinition</code> for all methods defined in the current environment for the named generic derived from a specific package (which might be <code class="calibre2">.GlobalEnv</code>). This is sometimes referred to as a ‘methods table’.
+</p>
+<p>
+For example,
+</p>
+<div class="example">
+<pre class="example1"><code> length(nM &lt;- asNamespace(&quot;Matrix&quot;) )                    #  for Matrix 1.2-6
+ length(meth &lt;- grep(&quot;^[.]__T__&quot;, names(nM), value=TRUE))#  generics with methods
+ length(meth.Ops &lt;- nM&#36;`.__T__Ops:base‘) #  methods for the ’Ops&#39; (group)generic
+ head(sort(names(meth.Ops))) ## &quot;abIndex#abIndex&quot; ... &quot;ANY#ddiMatrix&quot; &quot;ANY#ldiMatrix&quot; &quot;ANY#Matrix&quot;</code></pre>
+</div>
+<p>
+During an R session there is an environment associated with each non-primitive generic containing objects <code class="calibre2">.AllMTable</code>, <code class="calibre2">.Generic</code>, <code class="calibre2">.Methods</code>, <code class="calibre2">.MTable</code>, <code class="calibre2">.SigArgs</code> and <code class="calibre2">.SigLength</code>. <code class="calibre2">.MTable</code> and <code class="calibre2">AllMTable</code> are merged methods tables containing all the methods defined directly and via inheritance respectively. <code class="calibre2">.Methods</code> is a merged methods list.
+</p>
+<p>
+Exporting methods from a namespace is more complicated than exporting a class. Note first that you do not export a method, but rather the directive <code class="calibre2">exportMethods</code> will export all the methods defined in the namespace for a specified generic: the code also adds to the list of generics any that are exported directly. For generics which are listed via <code class="calibre2">exportMethods</code> or exported themselves, the corresponding environment is exported and so will appear (as hidden object) in the package environment.
+</p>
+<p>
+Methods for primitives which are internally S4 generic (see below) are always exported, whether mentioned in the NAMESPACE file or not.
+</p>
+<p>
+Methods can be imported either via the directive <code class="calibre2">importMethodsFrom</code> or via importing a namespace by <code class="calibre2">import</code>. Also, if a generic is imported via <code class="calibre2">importFrom</code>, its methods are also imported. In all cases the generic will be imported if it is in the namespace, so <code class="calibre2">importMethodsFrom</code> is most appropriate for methods defined on generics in other packages. Since methods for a generic could be imported from several different packages, the methods tables are merged.
+</p>
+<p>
+When a package is attached <code class="calibre2">methods:::cacheMetaData</code> is called to update the internal tables: only the visible methods will be cached.
+</p>
+<hr />
+<p>
+<a href="" id="Mechanics-of-S4-dispatch"></a> <a href="" id="Mechanics-of-S4-dispatch-1"></a>
+</p>
+<h4 id="mechanics-of-s4-dispatch" class="subsection">
+1.12.4 Mechanics of S4 dispatch
+</h4>
+<p>
+This subsection does not discuss how S4 methods are chosen: see <a href="https://developer.r-project.org/howMethodsWork.pdf" class="uri">https://developer.r-project.org/howMethodsWork.pdf</a>.
+</p>
+<p>
+For all but primitive functions, setting a method on an existing function that is not itself S4 generic creates a new object in the current environment which is a call to <code class="calibre2">standardGeneric</code> with the old definition as the default method. Such S4 generics can also be created <em>via</em> a call to <code class="calibre2">setGeneric</code><a href="concept-index.html#FOOT13" id="DOCF13"><sup>13</sup></a> and are standard closures in the R language, with environment the environment within which they are created. With the advent of namespaces this is somewhat problematic: if <code class="calibre2">myfn</code> was previously in a package with a name space there will be two functions called <code class="calibre2">myfn</code> on the search paths, and which will be called depends on which search path is in use. This is starkest for functions in the base namespace, where the original will be found ahead of the newly created function from any other package.
+</p>
+<p>
+Primitive functions are treated quite differently, for efficiency reasons: this results in different semantics. <code class="calibre2">setGeneric</code> is disallowed for primitive functions. The <strong>methods</strong> namespace contains a list <code class="calibre2">.BasicFunsList</code> named by primitive functions: the entries are either <code class="calibre2">FALSE</code> or a standard S4 generic showing the effective definition. When <code class="calibre2">setMethod</code> (or <code class="calibre2">setReplaceMethod</code>) is called, it either fails (if the list entry is <code class="calibre2">FALSE</code>) or a method is set on the effective generic given in the list.
+</p>
+<p>
+Actual dispatch of S4 methods for almost all primitives piggy-backs on the S3 dispatch mechanism, so S4 methods can only be dispatched for primitives which are internally S3 generic. When a primitive that is internally S3 generic is called with a first argument which is an S4 object and S4 dispatch is on (that is, the <strong>methods</strong> namespace is loaded), <code class="calibre2">DispatchOrEval</code> calls <code class="calibre2">R_possible_dispatch</code> (defined in file src/main/objects.c). (Members of the S3 group generics, which includes all the generic operators, are treated slightly differently: the first two arguments are checked and <code class="calibre2">DispatchGroup</code> is called.) <code class="calibre2">R_possible_dispatch</code> first checks an internal table to see if any S4 methods are set for that generic (and S4 dispatch is currently enabled for that generic), and if so proceeds to S4 dispatch using methods stored in another internal table. All primitives are in the base namespace, and this mechanism means that S4 methods can be set for (some) primitives and will always be used, in contrast to setting methods on non-primitives.
+</p>
+<p>
+The exception is <code class="calibre2">%*%</code>, which is S4 generic but not S3 generic as its C code contains a direct call to <code class="calibre2">R_possible_dispatch</code>.
+</p>
+<p>
+The primitive <code class="calibre2">as.double</code> is special, as <code class="calibre2">as.numeric</code> and <code class="calibre2">as.real</code> are copies of it. The <strong>methods</strong> package code partly refers to generics by name and partly by function, and maps <code class="calibre2">as.double</code> and <code class="calibre2">as.real</code> to <code class="calibre2">as.numeric</code> (since that is the name used by packages exporting methods for it).
+</p>
+<p>
+Some elements of the language are implemented as primitives, for example <code class="calibre2">}</code>. This includes the subset and subassignment ‘functions’ and they are S4 generic, again piggybacking on S3 dispatch.
+</p>
+<p>
+<code class="calibre2">.BasicFunsList</code> is generated when <strong>methods</strong> is installed, by computing all primitives, initially disallowing methods on all and then setting generics for members of <code class="calibre2">.GenericArgsEnv</code>, the S4 group generics and a short exceptions list in file BasicFunsList.R: this currently contains the subsetting and subassignment operators and an override for <code class="calibre2">c</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Memory-allocators"></a> <a href="" id="Memory-allocators-1"></a>
+</p>
+<h3 id="memory-allocators" class="section">
+1.13 Memory allocators
+</h3>
+<p>
+R’s memory allocation is almost all done via routines in file src/main/memory.c. It is important to keep track of where memory is allocated, as the Windows port (by default) makes use of a memory allocator that differs from <code class="calibre2">malloc</code> etc as provided by MinGW. Specifically, there are entry points <code class="calibre2">Rm_malloc</code>, <code class="calibre2">Rm_free</code>, <code class="calibre2">Rm_calloc</code> and <code class="calibre2">Rm_free</code> provided by file src/gnuwin32/malloc.c. This was done for two reasons. The primary motivation was performance: the allocator provided by MSVCRT <em>via</em> MinGW was far too slow at handling the many small allocations that the allocation system for <code class="calibre2">SEXPREC</code>s uses. As a side benefit, we can set a limit on the amount of allocated memory: this is useful as whereas Windows does provide virtual memory it is relatively far slower than many other R platforms and so limiting R’s use of swapping is highly advantageous. The high-performance allocator is only called from src/main/memory.c, src/main/regex.c, src/extra/pcre and src/extra/xdr: note that this means that it is not used in packages.
+</p>
+<p>
+The rest of R should where possible make use of the allocators made available by file src/main/memory.c, which are also the methods recommended in ‘Writing R Extensions’ <a href="" id="index-R_005falloc"></a> <a href="" id="index-Calloc"></a> <a href="" id="index-Realloc"></a> <a href="" id="index-Free"></a> for use in R packages, namely the use of <code class="calibre2">R_alloc</code>, <code class="calibre2">Calloc</code>, <code class="calibre2">Realloc</code> and <code class="calibre2">Free</code>. Memory allocated by <code class="calibre2">R_alloc</code> is freed by the garbage collector once the ‘watermark’ has been reset by calling <a href="" id="index-vmaxset"></a> <code class="calibre2">vmaxset</code>. This is done automatically by the wrapper code calling primitives and <code class="calibre2">.Internal</code> functions (and also by the wrapper code to <code class="calibre2">.Call</code> and <code class="calibre2">.External</code>), but <a href="" id="index-vmaxget"></a> <code class="calibre2">vmaxget</code> and <code class="calibre2">vmaxset</code> can be used to reset the watermark from within internal code if the memory is only required for a short time.
+</p>
+<p>
+<a href="" id="index-alloca"></a>
+</p>
+<p>
+All of the methods of memory allocation mentioned so far are relatively expensive. All R platforms support <code class="calibre2">alloca</code>, and in almost all cases<a href="concept-index.html#FOOT14" id="DOCF14"><sup>14</sup></a> this is managed by the compiler, allocates memory on the C stack and is very efficient.
+</p>
+<p>
+There are two disadvantages in using <code class="calibre2">alloca</code>. First, it is fragile and care is needed to avoid writing (or even reading) outside the bounds of the allocation block returned. Second, it increases the danger of overflowing the C stack. It is suggested that it is only used for smallish allocations (up to tens of thousands of bytes), and that
+</p>
+<p>
+<a href="" id="index-R_005fCheckStack"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>    R_CheckStack();</code></pre>
+</div>
+<p>
+is called immediately after the allocation (as R’s stack checking mechanism will warn far enough from the stack limit to allow for modest use of alloca). (<code class="calibre2">do_makeunique</code> in file src/main/unique.c provides an example of both points.)
+</p>
+<p>
+There is an alternative check, <a href="" id="index-R_005fCheckStack2"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>    R_CheckStack2(size_t extra);</code></pre>
+</div>
+<p>
+to be called immediately <em>before</em> trying an allocation of <code class="calibre2">extra</code> bytes.
+</p>
+<p>
+An alternative strategy has been used for various functions which require intermediate blocks of storage of varying but usually small size, and this has been consolidated into the routines in the header file src/main/RBufferUtils.h. This uses a structure which contains a buffer, the current size and the default size. A call to <a href="" id="index-R_005fAllocStringBuffer"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>    R_AllocStringBuffer(size_t blen, R_StringBuffer *buf);</code></pre>
+</div>
+<p>
+sets <code class="calibre2">buf-&gt;data</code> to a memory area of at least <code class="calibre2">blen+1</code> bytes. At least the default size is used, which means that for small allocations the same buffer can be reused. A call to <a href="" id="index-R_005fFreeStringBufferL"></a> <a href="" id="index-R_005fFreeStringBuffer"></a> <code class="calibre2">R_FreeStringBufferL</code> releases memory if more than the default has been allocated whereas a call to <code class="calibre2">R_FreeStringBuffer</code> frees any memory allocated.
+</p>
+<p>
+The <code class="calibre2">R_StringBuffer</code> structure needs to be initialized, for example by
+</p>
+<div class="example">
+<pre class="example1"><code>static R_StringBuffer ex_buff = {NULL, 0, MAXELTSIZE};</code></pre>
+</div>
+<p>
+which uses a default size of <code class="calibre2">MAXELTSIZE = 8192</code> bytes. Most current uses have a static <code class="calibre2">R_StringBuffer</code> structure, which allows the (default-sized) buffer to be shared between calls to e.g. <code class="calibre2">grep</code> and even between functions: this will need to be changed if R ever allows concurrent evaluation threads. So the idiom is
+</p>
+<div class="example">
+<pre class="example1"><code>static R_StringBuffer ex_buff = {NULL, 0, MAXELTSIZE};
+...
+    char *buf;
+    for(i = 0; i &lt; n; i++) {
+        compute len
+        buf = R_AllocStringBuffer(len, &amp;ex_buff);
+        use buf
+    }
+    /*  free allocation if larger than the default, but leave
+        default allocated for future use */
+   R_FreeStringBufferL(&amp;ex_buff);</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Internals-of-R_005falloc"></a> <a href="" id="Internals-of-R_005falloc-1"></a>
+</p>
+<h4 id="internals-of-r_alloc" class="subsection">
+1.13.1 Internals of R_alloc
+</h4>
+<p>
+The memory used by <code class="calibre2">R_alloc</code> is allocated as R vectors, of type <code class="calibre2">RAWSXP</code>. Thus the allocation is in units of 8 bytes, and is rounded up. A request for zero bytes currently returns <code class="calibre2">NULL</code> (but this should not be relied on). For historical reasons, in all other cases 1 byte is added before rounding up so the allocation is always 1–8 bytes more than was asked for: again this should not be relied on.
+</p>
+<p>
+The vectors allocated are protected via the setting of <code class="calibre2">R_VStack</code>, as the garbage collector marks everything that can be reached from that location. When a vector is <code class="calibre2">R_alloc</code>ated, its <code class="calibre2">ATTRIB</code> pointer is set to the current <code class="calibre2">R_VStack</code>, and <code class="calibre2">R_VStack</code> is set to the latest allocation. Thus <code class="calibre2">R_VStack</code> is a single-linked chain of the vectors currently allocated via <code class="calibre2">R_alloc</code>. Function <code class="calibre2">vmaxset</code> resets the location <code class="calibre2">R_VStack</code>, and should be to a value that has previously be obtained <em>via</em> <code class="calibre2">vmaxget</code>: allocations after the value was obtained will no longer be protected and hence available for garbage collection.
+</p>
+<hr />
+<p>
+<a href="" id="Internal-use-of-global-and-base-environments"></a> <a href="" id="Internal-use-of-global-and-base-environments-1"></a>
+</p>
+<h3 id="internal-use-of-global-and-base-environments" class="section">
+1.14 Internal use of global and base environments
+</h3>
+<p>
+This section notes known use by the system of these environments: the intention is to minimize or eliminate such uses.
+</p>
+<hr />
+<p>
+<a href="" id="Base-environment"></a> <a href="" id="Base-environment-1"></a>
+</p>
+<h4 id="base-environment" class="subsection">
+1.14.1 Base environment
+</h4>
+<p>
+<a href="" id="index-base-environment-1"></a> <a href="" id="index-environment_002c-base-1"></a> <a href="" id="index-_002eDevice"></a> <a href="" id="index-_002eDevices"></a>
+</p>
+<p>
+The graphics devices system maintains two variables <code class="calibre2">.Device</code> and <code class="calibre2">.Devices</code> in the base environment: both are always set. The variable <code class="calibre2">.Devices</code> gives a list of character vectors of the names of open devices, and <code class="calibre2">.Device</code> is the element corresponding to the currently active device. The null device will always be open.
+</p>
+<p>
+<a href="" id="index-_002eOptions"></a>
+</p>
+<p>
+There appears to be a variable <code class="calibre2">.Options</code>, a pairlist giving the current options settings. But in fact this is just a symbol with a value assigned, and so shows up as a base variable.
+</p>
+<p>
+<a href="" id="index-_002eLast_002evalue"></a>
+</p>
+<p>
+Similarly, the evaluator creates a symbol <code class="calibre2">.Last.value</code> which appears as a variable in the base environment.
+</p>
+<p>
+<a href="" id="index-_002eTraceback"></a> <a href="" id="index-last_002ewarning"></a>
+</p>
+<p>
+Errors can give rise to objects <code class="calibre2">.Traceback</code> and <code class="calibre2">last.warning</code> in the base environment.
+</p>
+<hr />
+<p>
+<a href="" id="Global-environment"></a> <a href="" id="Global-environment-1"></a>
+</p>
+<h4 id="global-environment" class="subsection">
+1.14.2 Global environment
+</h4>
+<p>
+<a href="" id="index-global-environment"></a> <a href="" id="index-environment_002c-global"></a> <a href="" id="index-_002eRandom_002eseed"></a>
+</p>
+<p>
+The seed for the random number generator is stored in object <code class="calibre2">.Random.seed</code> in the global environment.
+</p>
+<p>
+<a href="" id="index-dump_002eframes"></a>
+</p>
+<p>
+Some error handlers may give rise to objects in the global environment: for example <code class="calibre2">dump.frames</code> by default produces <code class="calibre2">last.dump</code>.
+</p>
+<p>
+<a href="" id="index-_002eSavedPlots"></a>
+</p>
+<p>
+The <code class="calibre2">windows()</code> device makes use of a variable <code class="calibre2">.SavedPlots</code> to store display lists of saved plots for later display. This is regarded as a variable created by the user.
+</p>
+<hr />
+<p>
+<a href="" id="Modules"></a> <a href="" id="Modules-1"></a>
+</p>
+<h3 id="modules" class="section">
+1.15 Modules
+</h3>
+<p>
+<a href="" id="index-modules"></a>
+</p>
+<p>
+R makes use of a number of shared objects/DLLs stored in the modules directory. These are parts of the code which have been chosen to be loaded ‘on demand’ rather than linked as dynamic libraries or incorporated into the main executable/dynamic library.
+</p>
+<p>
+For the remaining modules the motivation has been the amount of (often optional) code they will bring in <em>via</em> libraries to which they are linked.
+</p>
+<dl>
+<dt>
+<code class="calibre2">internet</code>
+</dt>
+<dd>
+<p>
+The internal HTTP and FTP clients and socket support, which link to system-specific support libraries. This may load <code class="calibre2">libcurl</code> and on Windows will load wininet.dll and ws2_32.dll.
+</p>
+</dd>
+<dt>
+<code class="calibre2">lapack</code>
+</dt>
+<dd>
+<p>
+The code which makes use of the LAPACK library, and is linked to libRlapack or an external LAPACK library.
+</p>
+</dd>
+<dt>
+<code class="calibre2">X11</code>
+</dt>
+<dd>
+<p>
+(Unix-alikes only.) The <code class="calibre2">X11()</code>, <code class="calibre2">jpeg()</code>, <code class="calibre2">png()</code> and <code class="calibre2">tiff()</code> devices. These are optional, and links to some or all of the <code class="calibre2">X11</code>, <code class="calibre2">pango</code>, <code class="calibre2">cairo</code>, <code class="calibre2">jpeg</code>, <code class="calibre2">libpng</code> and <code class="calibre2">libtiff</code> libraries.
+</p>
+</dd>
+</dl>
+<hr />
+<p>
+<a href="" id="Visibility"></a> <a href="" id="Visibility-1"></a>
+</p>
+<h3 id="visibility" class="section">
+1.16 Visibility
+</h3>
+<p>
+<a href="" id="index-visibility"></a>
+</p>
+<hr />
+<p>
+<a href="" id="Hiding-C-entry-points"></a> <a href="" id="Hiding-C-entry-points-1"></a>
+</p>
+<h4 id="hiding-c-entry-points" class="subsection">
+1.16.1 Hiding C entry points
+</h4>
+<p>
+We make use of the visibility mechanisms discussed in section ‘Controlling Visibility’ in ‘Writing R Extensions’, C entry points not needed outside the main R executable/dynamic library (and in particular in no package nor module) should be prefixed by <code class="calibre2">attribute_hidden</code>. <a href="" id="index-attribute_005fhidden"></a> Minimizing the visibility of symbols in the R dynamic library will speed up linking to it (which packages will do) and reduce the possibility of linking to the wrong entry points of the same name. In addition, on some platforms reducing the number of entry points allows more efficient versions of PIC to be used: somewhat over half the entry points are hidden. A convenient way to hide variables (as distinct from functions) is to declare them <code class="calibre2">extern0</code> in header file Defn.h.
+</p>
+<p>
+The visibility mechanism used is only available with some compilers and platforms, and in particular not on Windows, where an alternative mechanism is used. Entry points will not be made available in R.dll if they are listed in the file src/gnuwin32/Rdll.hide. <a href="" id="index-Rdll_002ehide"></a> Entries in that file start with a space and must be strictly in alphabetic order in the C locale (use <code class="calibre2">sort</code> on the file to ensure this if you change it). It is possible to hide Fortran as well as C entry points via this file: the former are lower-cased and have an underline as suffix, and the suffixed name should be included in the file. Some entry points exist only on Windows or need to be visible only on Windows, and some notes on these are provided in file src/gnuwin32/Maintainters.notes.
+</p>
+<p>
+Because of the advantages of reducing the number of visible entry points, they should be declared <code class="calibre2">attribute_hidden</code> where possible. Note that this only has an effect on a shared-R-library build, and so care is needed not to hide entry points that are legitimately used by packages. So it is best if the decision on visibility is made when a new entry point is created, including the decision if it should be included in header file Rinternals.h. A list of the visible entry points on shared-R-library build on a reasonably standard Unix-alike can be made by something like
+</p>
+<div class="example">
+<pre class="example1"><code>nm -g libR.so | grep ‘ [BCDT] ’ | cut -b20-</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Variables-in-Windows-DLLs"></a> <a href="" id="Variables-in-Windows-DLLs-1"></a>
+</p>
+<h4 id="variables-in-windows-dlls" class="subsection">
+1.16.2 Variables in Windows DLLs
+</h4>
+<p>
+Windows is unique in that it conventionally treats importing variables differently from functions: variables that are imported from a DLL need to be specified by a prefix (often ‘<em>imp</em>’) when being linked to (‘imported’) but not when being linked from (‘exported’). The details depend on the compiler system, and have changed for MinGW during the lifetime of that port. They are in the main hidden behind some macros defined in header file R_ext/libextern.h.
+</p>
+<p>
+A (non-function) variable in the main R sources that needs to be referred to outside R.dll (in a package, module or another DLL such as Rgraphapp.dll) should be declared with prefix <code class="calibre2">LibExtern</code>. The main use is in Rinternals.h, but it needs to be considered for any public header and also Defn.h.
+</p>
+<p>
+It would nowadays be possible to make use of the ‘auto-import’ feature of the MinGW port of <code class="calibre2">ld</code> to fix up imports from DLLs (and if R is built for the Cygwin platform this is what happens). However, this was not possible when the MinGW build of R was first constructed in ca 1998, allows less control of visibility and would not work for other Windows compiler suites.
+</p>
+<p>
+It is only possible to check if this has been handled correctly by compiling the R sources on Windows.
+</p>
+<hr />
+<p>
+<a href="" id="Lazy-loading"></a> <a href="" id="Lazy-loading-1"></a>
+</p>
+<h3 id="lazy-loading" class="section">
+1.17 Lazy loading
+</h3>
+<p>
+Lazy loading is always used for code in packages but is optional (selected by the package maintainer) for datasets in packages. When a package/namespace which uses it is loaded, the package/namespace environment is populated with promises for all the named objects: when these promises are evaluated they load the actual code from a database.
+</p>
+<p>
+There are separate databases for code and data, stored in the R and data subdirectories. The database consists of two files, name.rdb and name.rdx. The .rdb file is a concatenation of serialized objects, and the .rdx file contains an index. The objects are stored in (usually) a <code class="calibre2">gzip</code>-compressed format with a 4-byte header giving the uncompressed serialized length (in XDR, that is big-endian, byte order) and read by a call to the primitive <code class="calibre2">lazyLoadDBfetch</code>. (Note that this makes lazy-loading unsuitable for really large objects: the unserialized length of an R object can exceed 4GB.)
+</p>
+<p>
+The index or ‘map’ file name.rdx is a compressed serialized R object to be read by <code class="calibre2">readRDS</code>. It is a list with three elements <code class="calibre2">variables</code>, <code class="calibre2">references</code> and <code class="calibre2">compressed</code>. The first two are named lists of integer vectors of length 2 giving the offset and length of the serialized object in the name.rdb file. Element <code class="calibre2">variables</code> has an entry for each named object: <code class="calibre2">references</code> serializes a temporary environment used when named environments are added to the database. <code class="calibre2">compressed</code> is a logical indicating if the serialized objects were compressed: compression is always used nowadays. We later added the values <code class="calibre2">compressed = 2</code> and <code class="calibre2">3</code> for <code class="calibre2">bzip2</code> and <code class="calibre2">xz</code> compression (with the possibility of future expansion to other methods): these formats add a fifth byte to the header for the type of compression, and store serialized objects uncompressed if compression expands them.
+</p>
+<p>
+The loader for a lazy-load database of code or data is function <code class="calibre2">lazyLoad</code> in the <strong>base</strong> package, but note that there is a separate copy to load <strong>base</strong> itself in file R_HOME/base/R/base.
+</p>
+<p>
+Lazy-load databases are created by the code in src/library/tools/R/makeLazyLoad.R: the main tool is the unexported function <code class="calibre2">makeLazyLoadDB</code> and the insertion of database entries is done by calls to <code class="calibre2">.Call(“R_lazyLoadDBinsertValue”, …)</code>.
+</p>
+<p>
+Lazy-load databases of less than 10MB are cached in memory at first use: this was found necessary when using file systems with high latency (removable devices and network-mounted file systems on Windows).
+</p>
+<p>
+Lazy-load databases are loaded into the exports for a package, but not into the namespace environment itself. Thus they are visible when the package is <em>attached</em>, and also <em>via</em> the <code class="calibre2">::</code> operator. This was a deliberate design decision, as packages mostly make datasets available for use by the end user (or other packages), and they should not be found preferentially from functions in the package, surprising users who expected the normal search path to be used. (There is an alternative mechanism, sysdata.rda, for ‘system datasets’ that are intended primarily to be used within the package.)
+</p>
+<p>
+The same database mechanism is used to store parsed Rd files. One or all of the parsed objects is fetched by a call to <code class="calibre2">tools:::fetchRdDB</code>.
+</p>
+<hr />
+<p>
+<a href="" id="g_t_002eInternal-vs-_002ePrimitive"></a> <a href="" id="g_t_002eInternal-vs-_002ePrimitive-1"></a>
+</p>
+<div id="calibre_pb_5" class="calibre6">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="internal-vs-primitive.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

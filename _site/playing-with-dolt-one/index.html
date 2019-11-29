@@ -1,0 +1,929 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Playing with dolt - Part One - Colin Fay</title>
+<meta name="description" content="A few weeks back, I subscribed to become a beta tester for dolt, the“Git for data”. This post is the first of a series of postsexploring this tool.What is dolt?From the official website:  Dolt is Git for data. Git versions files. Dolt versions tables. Doltlooks a lot like Git all the way down to the help documentation. Wedidn’t want a better version control interface. We just wanted aversion-controlled database. Dolt can version any set of tables from asmall Excel spreadsheet to a terabyte-scale database.  Dolt is also a relational database. Dolt stores data in tables withschemas. You interact with the database using SQL.  Dolt uses a custom database engine to provide fast operations andefficient storage for large tables. Dolt treats rows as unordered andunderstands columns, so diffs and merges are table cell-based insteadof line-based, providing a more ergonomic data-versioning experience.As advertised, dolt works pretty much like git, and if you’realready familiar with git, using this new tool will be prettystraightforward.To understand how it conceptually works, let’s start with git: youinitiate a git repository in a folder on your computer, and you tellgit to track one or more file(s), and the change inside these files,which are flagged through commits, and potentially synchronized with adistant repository. Well, dolt works pretty much the same way: youinitiate a repo in a folder, register one or more table(s) to keep trackof, make change to the table, and commit these changes. And of course,you can use branches, reset, and all that :)Here’s a little demo of using this data-centered version-control tool.Install doltYou can find the install process on the GitHubrepo. What I did was downloadthe binary and copy it to mypath.wget https://github.com/liquidata-inc/dolt/releases/download/v0.9.7/dolt-darwin-386.tar.gztar -zxvf dolt-darwin-386.tar.gzmv dolt-darwin-386/bin/dolt /usr/local/bin/doltrm -rf dolt*  How to verify from R that the bin is there:Sys.which(&quot;dolt&quot;)##                  dolt ## &quot;/usr/local/bin/dolt&quot;Now, back to the terminal. Here is a list of all available commands:dolt## Valid commands for dolt are##                 init - Create an empty Dolt data repository.##               status - Show the working tree status.##                  add - Add table changes to the list of staged table changes.##                reset - Remove table changes from the list of staged table changes.##               commit - Record changes to the repository.##                  sql - Run a SQL query against tables in repository.##           sql-server - Starts a MySQL-compatible server.##                  log - Show commit logs.##                 diff - Diff a table.##                merge - Merge a branch.##               branch - Create, list, edit, delete branches.##             checkout - Checkout a branch or overwrite a table from HEAD.##               remote - Manage set of tracked repositories.##                 push - Push to a dolt remote.##                 pull - Fetch from a dolt remote data repository and merge.##                fetch - Update the database from a remote data repository.##                clone - Clone from a remote data repository.##                creds - Commands for managing credentials.##                login - Login to a dolt remote host.##              version - Displays the current Dolt cli version.##               config - Dolt configuration.##                   ls - List tables in the working set.##               schema - Display the schema for table(s)##                table - Commands for creating, reading, updating, and deleting tables.##            conflicts - Commands for viewing and resolving merge conflicts.As said before, dolt works pretty much like git, so almosteverything share the same vocabulary. The new things are mostly schemaand table, which are related to databases.Playing with doltHere’s a short script using R &amp; dolt to version control data# Put iris there &amp; check it&#39;s thereRscript -e &quot;write.csv(tibble::rowid_to_column(iris), &#39;testiris.csv&#39;, row.names = FALSE)&quot;Side note: I’m using tibble::rowid_to_column(iris) because doltneeds a primary key to keep track of the modifications in a file. Aprimary key is a column that can be used ot uniquely identify a line.Something which does not natively exists in R. It does exist if you usewrite.csv() without the row.names = FALSE, yet the newly createdcolumn contains a first columb named &quot;&quot;, which is rather uneasy tomanipulate.  More on SQL primarykeySide note 2: if you’re using csv with dolt, you’ll need the PK to bethe first column:  In order for csv import to work without additional command lineparameters, the csv file you are importing should have the fileextension “.csv”, and should have column names as the first line ofthe file. (dolt README)# Overview of the datasethead -5 testiris.csv## &quot;rowid&quot;,&quot;Sepal.Length&quot;,&quot;Sepal.Width&quot;,&quot;Petal.Length&quot;,&quot;Petal.Width&quot;,&quot;Species&quot;## 1,5.1,3.5,1.4,0.2,&quot;setosa&quot;## 2,4.9,3,1.4,0.2,&quot;setosa&quot;## 3,4.7,3.2,1.3,0.2,&quot;setosa&quot;## 4,4.6,3.1,1.5,0.2,&quot;setosa&quot;# Overview of the datasetwc -l testiris.csv##      151 testiris.csvNow the dolt part:dolt init## Successfully initialized dolt data repository.Now let’s track our iris.csv    file:dolt table import --create-table -pk rowid plop testiris.csv## Rows Processed: 150, Additions: 150, Modifications: 0, Had No Effect: 0## Import completed successfully.Let’s detail what we’ve done here:  using dolt  manipulating a table (the csv)  I’m importing the file testiris.csv as the table plop, passing--create-table to create a new table in the dolt repo (the tablecould be overwritten if you pass the -f option)  -pk rowid informs that the rowid column is the primary key.Then, some things that will remind you of git:dolt status## On branch master## Untracked files:##   (use &quot;dolt add &lt;table&gt;&quot; to include in what will be committed)##  new table:      plopdolt add plopdolt commit -m &quot;👶&quot;Push to distant repodolt comes with dolthub, which is, as youwould have guessed, a distant repo where you can version control yourdata.dolt remote add origin colinfay/testirisdolt push -u origin masterRunning SQL commandsIf you only run dolt sql, a prompt opens. You can also use dolt sql--query &lt;SQL query to run&gt; to do this noninteractivelydolt sql --query &#39;SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5&#39;## +-------+--------------+------------+## | rowid | Sepal.Length | Species    |## +-------+--------------+------------+## | 1     | 5.1          | setosa     |## | 10    | 4.9          | setosa     |## | 100   | 5.7          | versicolor |## | 101   | 6.3          | virginica  |## | 102   | 5.8          | virginica  |## +-------+--------------+------------+Let’s update ourdata:dolt sql --query &#39;UPDATE plop SET Species=&quot;setosssa&quot; where Species=&quot;setosa&quot;&#39;## Rows updated: 50dolt sql --query &#39;SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5&#39;## +-------+--------------+------------+## | rowid | Sepal.Length | Species    |## +-------+--------------+------------+## | 1     | 5.1          | setosssa   |## | 10    | 4.9          | setosssa   |## | 100   | 5.7          | versicolor |## | 101   | 6.3          | virginica  |## | 102   | 5.8          | virginica  |## +-------+--------------+------------+Show the diffdolt diff## diff --dolt a/plop b/plop## --- a/plop @ e69hf9q91ll6cjj4d879q93upvemh62r## +++ b/plop @ bffa0c0e9c70j72o73aa3a1ji6snsl2q## +-----+-------+--------------+-------------+--------------+-------------+----------+## |     | rowid | Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species  |## +-----+-------+--------------+-------------+--------------+-------------+----------+## |  &lt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosa   |## |  &gt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosssa |## |  &lt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosa   |## |  &gt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosssa |## |  &lt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosa   |## |  &gt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosssa |## |  &lt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosa   |## |  &gt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosssa |## |  &lt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosa   |## |  &gt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosssa |## |  &lt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosa   |## |  &gt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosssa |## |  &lt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosa   |## |  &gt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosssa |## |  &lt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosa   |## |  &gt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosssa |## |  &lt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosa   |## |  &gt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosssa |## |  &lt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosa   |## |  &gt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosssa |## |  &lt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosa   |## |  &gt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosssa |## |  &lt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosa   |## |  &gt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosssa |## |  &lt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosa   |## |  &gt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosssa |## |  &lt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosa   |## |  &gt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosssa |## |  &lt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosa   |## |  &gt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosssa |## |  &lt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosa   |## |  &gt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosssa |## |  &lt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosa   |## |  &gt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosssa |## |  &lt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosa   |## |  &gt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosssa |## |  &lt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosa   |## |  &gt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosssa |## |  &lt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosa   |## |  &gt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosssa |## |  &lt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosa   |## |  &gt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosssa |## |  &lt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosa   |## |  &gt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosssa |## |  &lt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosa   |## |  &gt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosssa |## |  &lt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosa   |## |  &gt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosssa |## |  &lt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosa   |## |  &gt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosssa |## |  &lt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosa   |## |  &gt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosssa |## |  &lt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosa   |## |  &gt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosssa |## |  &lt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosa   |## |  &gt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosssa |## |  &lt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosa   |## |  &gt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosssa |## |  &lt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosa   |## |  &gt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosssa |## |  &lt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosa   |## |  &gt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosssa |## |  &lt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosa   |## |  &gt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosssa |## |  &lt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosa   |## |  &gt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosssa |## |  &lt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosa   |## |  &gt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosssa |## |  &lt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosa   |## |  &gt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosssa |## |  &lt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosa   |## |  &gt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosssa |## |  &lt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosa   |## |  &gt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosssa |## |  &lt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosa   |## |  &gt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosssa |## |  &lt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosa   |## |  &gt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosssa |## |  &lt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosa   |## |  &gt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosssa |## |  &lt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosa   |## |  &gt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosssa |## |  &lt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosa   |## |  &gt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosssa |## |  &lt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosa   |## |  &gt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosssa |## |  &lt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosa   |## |  &gt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosssa |## |  &lt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosa   |## |  &gt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosssa |## |  &lt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosa   |## |  &gt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosssa |## |  &lt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosa   |## |  &gt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosssa |## |  &lt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosa   |## |  &gt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosssa |## |  &lt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosa   |## |  &gt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosssa |## |  &lt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosa   |## |  &gt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosssa |## +-----+-------+--------------+-------------+--------------+-------------+----------+dolt add plopdolt commit -m &quot;changed to setosssa&quot;dolt status## On branch master## nothing to commit, working tree cleandolt push dolt log## commit ofi9rlouqa069h57brq8e8l02jej96ie## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:18 +0200 2019## ##  changed to setosssa## ## commit ap176almtitmflqg4uge1tkillsi5his## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:17 +0200 2019## ##  👶## ## commit engm1cgcvjk3eoeo8qssd3qbb21ifi6i## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:17 +0200 2019## ##  Data repository created.nd now, see the result on my DoltHubaccount!">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Playing with dolt - Part One">
+<meta property="og:url" content="http://localhost:4000/playing-with-dolt-one/">
+
+
+  <meta property="og:description" content="A few weeks back, I subscribed to become a beta tester for dolt, the“Git for data”. This post is the first of a series of postsexploring this tool.What is dolt?From the official website:  Dolt is Git for data. Git versions files. Dolt versions tables. Doltlooks a lot like Git all the way down to the help documentation. Wedidn’t want a better version control interface. We just wanted aversion-controlled database. Dolt can version any set of tables from asmall Excel spreadsheet to a terabyte-scale database.  Dolt is also a relational database. Dolt stores data in tables withschemas. You interact with the database using SQL.  Dolt uses a custom database engine to provide fast operations andefficient storage for large tables. Dolt treats rows as unordered andunderstands columns, so diffs and merges are table cell-based insteadof line-based, providing a more ergonomic data-versioning experience.As advertised, dolt works pretty much like git, and if you’realready familiar with git, using this new tool will be prettystraightforward.To understand how it conceptually works, let’s start with git: youinitiate a git repository in a folder on your computer, and you tellgit to track one or more file(s), and the change inside these files,which are flagged through commits, and potentially synchronized with adistant repository. Well, dolt works pretty much the same way: youinitiate a repo in a folder, register one or more table(s) to keep trackof, make change to the table, and commit these changes. And of course,you can use branches, reset, and all that :)Here’s a little demo of using this data-centered version-control tool.Install doltYou can find the install process on the GitHubrepo. What I did was downloadthe binary and copy it to mypath.wget https://github.com/liquidata-inc/dolt/releases/download/v0.9.7/dolt-darwin-386.tar.gztar -zxvf dolt-darwin-386.tar.gzmv dolt-darwin-386/bin/dolt /usr/local/bin/doltrm -rf dolt*  How to verify from R that the bin is there:Sys.which(&quot;dolt&quot;)##                  dolt ## &quot;/usr/local/bin/dolt&quot;Now, back to the terminal. Here is a list of all available commands:dolt## Valid commands for dolt are##                 init - Create an empty Dolt data repository.##               status - Show the working tree status.##                  add - Add table changes to the list of staged table changes.##                reset - Remove table changes from the list of staged table changes.##               commit - Record changes to the repository.##                  sql - Run a SQL query against tables in repository.##           sql-server - Starts a MySQL-compatible server.##                  log - Show commit logs.##                 diff - Diff a table.##                merge - Merge a branch.##               branch - Create, list, edit, delete branches.##             checkout - Checkout a branch or overwrite a table from HEAD.##               remote - Manage set of tracked repositories.##                 push - Push to a dolt remote.##                 pull - Fetch from a dolt remote data repository and merge.##                fetch - Update the database from a remote data repository.##                clone - Clone from a remote data repository.##                creds - Commands for managing credentials.##                login - Login to a dolt remote host.##              version - Displays the current Dolt cli version.##               config - Dolt configuration.##                   ls - List tables in the working set.##               schema - Display the schema for table(s)##                table - Commands for creating, reading, updating, and deleting tables.##            conflicts - Commands for viewing and resolving merge conflicts.As said before, dolt works pretty much like git, so almosteverything share the same vocabulary. The new things are mostly schemaand table, which are related to databases.Playing with doltHere’s a short script using R &amp; dolt to version control data# Put iris there &amp; check it&#39;s thereRscript -e &quot;write.csv(tibble::rowid_to_column(iris), &#39;testiris.csv&#39;, row.names = FALSE)&quot;Side note: I’m using tibble::rowid_to_column(iris) because doltneeds a primary key to keep track of the modifications in a file. Aprimary key is a column that can be used ot uniquely identify a line.Something which does not natively exists in R. It does exist if you usewrite.csv() without the row.names = FALSE, yet the newly createdcolumn contains a first columb named &quot;&quot;, which is rather uneasy tomanipulate.  More on SQL primarykeySide note 2: if you’re using csv with dolt, you’ll need the PK to bethe first column:  In order for csv import to work without additional command lineparameters, the csv file you are importing should have the fileextension “.csv”, and should have column names as the first line ofthe file. (dolt README)# Overview of the datasethead -5 testiris.csv## &quot;rowid&quot;,&quot;Sepal.Length&quot;,&quot;Sepal.Width&quot;,&quot;Petal.Length&quot;,&quot;Petal.Width&quot;,&quot;Species&quot;## 1,5.1,3.5,1.4,0.2,&quot;setosa&quot;## 2,4.9,3,1.4,0.2,&quot;setosa&quot;## 3,4.7,3.2,1.3,0.2,&quot;setosa&quot;## 4,4.6,3.1,1.5,0.2,&quot;setosa&quot;# Overview of the datasetwc -l testiris.csv##      151 testiris.csvNow the dolt part:dolt init## Successfully initialized dolt data repository.Now let’s track our iris.csv    file:dolt table import --create-table -pk rowid plop testiris.csv## Rows Processed: 150, Additions: 150, Modifications: 0, Had No Effect: 0## Import completed successfully.Let’s detail what we’ve done here:  using dolt  manipulating a table (the csv)  I’m importing the file testiris.csv as the table plop, passing--create-table to create a new table in the dolt repo (the tablecould be overwritten if you pass the -f option)  -pk rowid informs that the rowid column is the primary key.Then, some things that will remind you of git:dolt status## On branch master## Untracked files:##   (use &quot;dolt add &lt;table&gt;&quot; to include in what will be committed)##  new table:      plopdolt add plopdolt commit -m &quot;👶&quot;Push to distant repodolt comes with dolthub, which is, as youwould have guessed, a distant repo where you can version control yourdata.dolt remote add origin colinfay/testirisdolt push -u origin masterRunning SQL commandsIf you only run dolt sql, a prompt opens. You can also use dolt sql--query &lt;SQL query to run&gt; to do this noninteractivelydolt sql --query &#39;SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5&#39;## +-------+--------------+------------+## | rowid | Sepal.Length | Species    |## +-------+--------------+------------+## | 1     | 5.1          | setosa     |## | 10    | 4.9          | setosa     |## | 100   | 5.7          | versicolor |## | 101   | 6.3          | virginica  |## | 102   | 5.8          | virginica  |## +-------+--------------+------------+Let’s update ourdata:dolt sql --query &#39;UPDATE plop SET Species=&quot;setosssa&quot; where Species=&quot;setosa&quot;&#39;## Rows updated: 50dolt sql --query &#39;SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5&#39;## +-------+--------------+------------+## | rowid | Sepal.Length | Species    |## +-------+--------------+------------+## | 1     | 5.1          | setosssa   |## | 10    | 4.9          | setosssa   |## | 100   | 5.7          | versicolor |## | 101   | 6.3          | virginica  |## | 102   | 5.8          | virginica  |## +-------+--------------+------------+Show the diffdolt diff## diff --dolt a/plop b/plop## --- a/plop @ e69hf9q91ll6cjj4d879q93upvemh62r## +++ b/plop @ bffa0c0e9c70j72o73aa3a1ji6snsl2q## +-----+-------+--------------+-------------+--------------+-------------+----------+## |     | rowid | Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species  |## +-----+-------+--------------+-------------+--------------+-------------+----------+## |  &lt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosa   |## |  &gt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosssa |## |  &lt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosa   |## |  &gt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosssa |## |  &lt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosa   |## |  &gt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosssa |## |  &lt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosa   |## |  &gt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosssa |## |  &lt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosa   |## |  &gt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosssa |## |  &lt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosa   |## |  &gt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosssa |## |  &lt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosa   |## |  &gt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosssa |## |  &lt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosa   |## |  &gt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosssa |## |  &lt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosa   |## |  &gt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosssa |## |  &lt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosa   |## |  &gt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosssa |## |  &lt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosa   |## |  &gt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosssa |## |  &lt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosa   |## |  &gt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosssa |## |  &lt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosa   |## |  &gt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosssa |## |  &lt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosa   |## |  &gt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosssa |## |  &lt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosa   |## |  &gt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosssa |## |  &lt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosa   |## |  &gt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosssa |## |  &lt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosa   |## |  &gt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosssa |## |  &lt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosa   |## |  &gt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosssa |## |  &lt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosa   |## |  &gt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosssa |## |  &lt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosa   |## |  &gt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosssa |## |  &lt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosa   |## |  &gt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosssa |## |  &lt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosa   |## |  &gt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosssa |## |  &lt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosa   |## |  &gt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosssa |## |  &lt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosa   |## |  &gt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosssa |## |  &lt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosa   |## |  &gt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosssa |## |  &lt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosa   |## |  &gt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosssa |## |  &lt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosa   |## |  &gt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosssa |## |  &lt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosa   |## |  &gt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosssa |## |  &lt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosa   |## |  &gt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosssa |## |  &lt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosa   |## |  &gt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosssa |## |  &lt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosa   |## |  &gt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosssa |## |  &lt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosa   |## |  &gt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosssa |## |  &lt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosa   |## |  &gt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosssa |## |  &lt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosa   |## |  &gt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosssa |## |  &lt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosa   |## |  &gt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosssa |## |  &lt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosa   |## |  &gt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosssa |## |  &lt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosa   |## |  &gt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosssa |## |  &lt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosa   |## |  &gt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosssa |## |  &lt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosa   |## |  &gt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosssa |## |  &lt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosa   |## |  &gt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosssa |## |  &lt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosa   |## |  &gt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosssa |## |  &lt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosa   |## |  &gt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosssa |## |  &lt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosa   |## |  &gt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosssa |## |  &lt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosa   |## |  &gt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosssa |## |  &lt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosa   |## |  &gt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosssa |## |  &lt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosa   |## |  &gt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosssa |## |  &lt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosa   |## |  &gt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosssa |## |  &lt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosa   |## |  &gt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosssa |## |  &lt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosa   |## |  &gt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosssa |## |  &lt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosa   |## |  &gt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosssa |## +-----+-------+--------------+-------------+--------------+-------------+----------+dolt add plopdolt commit -m &quot;changed to setosssa&quot;dolt status## On branch master## nothing to commit, working tree cleandolt push dolt log## commit ofi9rlouqa069h57brq8e8l02jej96ie## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:18 +0200 2019## ##  changed to setosssa## ## commit ap176almtitmflqg4uge1tkillsi5his## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:17 +0200 2019## ##  👶## ## commit engm1cgcvjk3eoeo8qssd3qbb21ifi6i## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:17 +0200 2019## ##  Data repository created.nd now, see the result on my DoltHubaccount!">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Playing with dolt - Part One">
+  <meta name="twitter:description" content="A few weeks back, I subscribed to become a beta tester for dolt, the“Git for data”. This post is the first of a series of postsexploring this tool.What is dolt?From the official website:  Dolt is Git for data. Git versions files. Dolt versions tables. Doltlooks a lot like Git all the way down to the help documentation. Wedidn’t want a better version control interface. We just wanted aversion-controlled database. Dolt can version any set of tables from asmall Excel spreadsheet to a terabyte-scale database.  Dolt is also a relational database. Dolt stores data in tables withschemas. You interact with the database using SQL.  Dolt uses a custom database engine to provide fast operations andefficient storage for large tables. Dolt treats rows as unordered andunderstands columns, so diffs and merges are table cell-based insteadof line-based, providing a more ergonomic data-versioning experience.As advertised, dolt works pretty much like git, and if you’realready familiar with git, using this new tool will be prettystraightforward.To understand how it conceptually works, let’s start with git: youinitiate a git repository in a folder on your computer, and you tellgit to track one or more file(s), and the change inside these files,which are flagged through commits, and potentially synchronized with adistant repository. Well, dolt works pretty much the same way: youinitiate a repo in a folder, register one or more table(s) to keep trackof, make change to the table, and commit these changes. And of course,you can use branches, reset, and all that :)Here’s a little demo of using this data-centered version-control tool.Install doltYou can find the install process on the GitHubrepo. What I did was downloadthe binary and copy it to mypath.wget https://github.com/liquidata-inc/dolt/releases/download/v0.9.7/dolt-darwin-386.tar.gztar -zxvf dolt-darwin-386.tar.gzmv dolt-darwin-386/bin/dolt /usr/local/bin/doltrm -rf dolt*  How to verify from R that the bin is there:Sys.which(&quot;dolt&quot;)##                  dolt ## &quot;/usr/local/bin/dolt&quot;Now, back to the terminal. Here is a list of all available commands:dolt## Valid commands for dolt are##                 init - Create an empty Dolt data repository.##               status - Show the working tree status.##                  add - Add table changes to the list of staged table changes.##                reset - Remove table changes from the list of staged table changes.##               commit - Record changes to the repository.##                  sql - Run a SQL query against tables in repository.##           sql-server - Starts a MySQL-compatible server.##                  log - Show commit logs.##                 diff - Diff a table.##                merge - Merge a branch.##               branch - Create, list, edit, delete branches.##             checkout - Checkout a branch or overwrite a table from HEAD.##               remote - Manage set of tracked repositories.##                 push - Push to a dolt remote.##                 pull - Fetch from a dolt remote data repository and merge.##                fetch - Update the database from a remote data repository.##                clone - Clone from a remote data repository.##                creds - Commands for managing credentials.##                login - Login to a dolt remote host.##              version - Displays the current Dolt cli version.##               config - Dolt configuration.##                   ls - List tables in the working set.##               schema - Display the schema for table(s)##                table - Commands for creating, reading, updating, and deleting tables.##            conflicts - Commands for viewing and resolving merge conflicts.As said before, dolt works pretty much like git, so almosteverything share the same vocabulary. The new things are mostly schemaand table, which are related to databases.Playing with doltHere’s a short script using R &amp; dolt to version control data# Put iris there &amp; check it&#39;s thereRscript -e &quot;write.csv(tibble::rowid_to_column(iris), &#39;testiris.csv&#39;, row.names = FALSE)&quot;Side note: I’m using tibble::rowid_to_column(iris) because doltneeds a primary key to keep track of the modifications in a file. Aprimary key is a column that can be used ot uniquely identify a line.Something which does not natively exists in R. It does exist if you usewrite.csv() without the row.names = FALSE, yet the newly createdcolumn contains a first columb named &quot;&quot;, which is rather uneasy tomanipulate.  More on SQL primarykeySide note 2: if you’re using csv with dolt, you’ll need the PK to bethe first column:  In order for csv import to work without additional command lineparameters, the csv file you are importing should have the fileextension “.csv”, and should have column names as the first line ofthe file. (dolt README)# Overview of the datasethead -5 testiris.csv## &quot;rowid&quot;,&quot;Sepal.Length&quot;,&quot;Sepal.Width&quot;,&quot;Petal.Length&quot;,&quot;Petal.Width&quot;,&quot;Species&quot;## 1,5.1,3.5,1.4,0.2,&quot;setosa&quot;## 2,4.9,3,1.4,0.2,&quot;setosa&quot;## 3,4.7,3.2,1.3,0.2,&quot;setosa&quot;## 4,4.6,3.1,1.5,0.2,&quot;setosa&quot;# Overview of the datasetwc -l testiris.csv##      151 testiris.csvNow the dolt part:dolt init## Successfully initialized dolt data repository.Now let’s track our iris.csv    file:dolt table import --create-table -pk rowid plop testiris.csv## Rows Processed: 150, Additions: 150, Modifications: 0, Had No Effect: 0## Import completed successfully.Let’s detail what we’ve done here:  using dolt  manipulating a table (the csv)  I’m importing the file testiris.csv as the table plop, passing--create-table to create a new table in the dolt repo (the tablecould be overwritten if you pass the -f option)  -pk rowid informs that the rowid column is the primary key.Then, some things that will remind you of git:dolt status## On branch master## Untracked files:##   (use &quot;dolt add &lt;table&gt;&quot; to include in what will be committed)##  new table:      plopdolt add plopdolt commit -m &quot;👶&quot;Push to distant repodolt comes with dolthub, which is, as youwould have guessed, a distant repo where you can version control yourdata.dolt remote add origin colinfay/testirisdolt push -u origin masterRunning SQL commandsIf you only run dolt sql, a prompt opens. You can also use dolt sql--query &lt;SQL query to run&gt; to do this noninteractivelydolt sql --query &#39;SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5&#39;## +-------+--------------+------------+## | rowid | Sepal.Length | Species    |## +-------+--------------+------------+## | 1     | 5.1          | setosa     |## | 10    | 4.9          | setosa     |## | 100   | 5.7          | versicolor |## | 101   | 6.3          | virginica  |## | 102   | 5.8          | virginica  |## +-------+--------------+------------+Let’s update ourdata:dolt sql --query &#39;UPDATE plop SET Species=&quot;setosssa&quot; where Species=&quot;setosa&quot;&#39;## Rows updated: 50dolt sql --query &#39;SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5&#39;## +-------+--------------+------------+## | rowid | Sepal.Length | Species    |## +-------+--------------+------------+## | 1     | 5.1          | setosssa   |## | 10    | 4.9          | setosssa   |## | 100   | 5.7          | versicolor |## | 101   | 6.3          | virginica  |## | 102   | 5.8          | virginica  |## +-------+--------------+------------+Show the diffdolt diff## diff --dolt a/plop b/plop## --- a/plop @ e69hf9q91ll6cjj4d879q93upvemh62r## +++ b/plop @ bffa0c0e9c70j72o73aa3a1ji6snsl2q## +-----+-------+--------------+-------------+--------------+-------------+----------+## |     | rowid | Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species  |## +-----+-------+--------------+-------------+--------------+-------------+----------+## |  &lt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosa   |## |  &gt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosssa |## |  &lt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosa   |## |  &gt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosssa |## |  &lt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosa   |## |  &gt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosssa |## |  &lt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosa   |## |  &gt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosssa |## |  &lt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosa   |## |  &gt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosssa |## |  &lt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosa   |## |  &gt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosssa |## |  &lt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosa   |## |  &gt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosssa |## |  &lt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosa   |## |  &gt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosssa |## |  &lt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosa   |## |  &gt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosssa |## |  &lt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosa   |## |  &gt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosssa |## |  &lt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosa   |## |  &gt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosssa |## |  &lt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosa   |## |  &gt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosssa |## |  &lt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosa   |## |  &gt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosssa |## |  &lt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosa   |## |  &gt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosssa |## |  &lt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosa   |## |  &gt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosssa |## |  &lt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosa   |## |  &gt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosssa |## |  &lt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosa   |## |  &gt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosssa |## |  &lt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosa   |## |  &gt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosssa |## |  &lt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosa   |## |  &gt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosssa |## |  &lt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosa   |## |  &gt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosssa |## |  &lt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosa   |## |  &gt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosssa |## |  &lt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosa   |## |  &gt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosssa |## |  &lt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosa   |## |  &gt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosssa |## |  &lt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosa   |## |  &gt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosssa |## |  &lt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosa   |## |  &gt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosssa |## |  &lt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosa   |## |  &gt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosssa |## |  &lt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosa   |## |  &gt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosssa |## |  &lt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosa   |## |  &gt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosssa |## |  &lt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosa   |## |  &gt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosssa |## |  &lt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosa   |## |  &gt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosssa |## |  &lt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosa   |## |  &gt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosssa |## |  &lt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosa   |## |  &gt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosssa |## |  &lt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosa   |## |  &gt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosssa |## |  &lt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosa   |## |  &gt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosssa |## |  &lt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosa   |## |  &gt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosssa |## |  &lt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosa   |## |  &gt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosssa |## |  &lt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosa   |## |  &gt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosssa |## |  &lt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosa   |## |  &gt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosssa |## |  &lt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosa   |## |  &gt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosssa |## |  &lt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosa   |## |  &gt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosssa |## |  &lt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosa   |## |  &gt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosssa |## |  &lt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosa   |## |  &gt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosssa |## |  &lt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosa   |## |  &gt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosssa |## |  &lt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosa   |## |  &gt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosssa |## |  &lt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosa   |## |  &gt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosssa |## |  &lt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosa   |## |  &gt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosssa |## |  &lt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosa   |## |  &gt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosssa |## |  &lt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosa   |## |  &gt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosssa |## |  &lt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosa   |## |  &gt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosssa |## |  &lt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosa   |## |  &gt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosssa |## +-----+-------+--------------+-------------+--------------+-------------+----------+dolt add plopdolt commit -m &quot;changed to setosssa&quot;dolt status## On branch master## nothing to commit, working tree cleandolt push dolt log## commit ofi9rlouqa069h57brq8e8l02jej96ie## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:18 +0200 2019## ##  changed to setosssa## ## commit ap176almtitmflqg4uge1tkillsi5his## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:17 +0200 2019## ##  👶## ## commit engm1cgcvjk3eoeo8qssd3qbb21ifi6i## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:17 +0200 2019## ##  Data repository created.nd now, see the result on my DoltHubaccount!">
+  <meta name="twitter:url" content="http://localhost:4000/playing-with-dolt-one/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2019-08-17T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/playing-with-dolt-one/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Playing with dolt - Part One">
+    <meta itemprop="description" content="A few weeks back, I subscribed to become a beta tester for dolt, the“Git for data”. This post is the first of a series of postsexploring this tool.What is dolt?From the official website:  Dolt is Git for data. Git versions files. Dolt versions tables. Doltlooks a lot like Git all the way down to the help documentation. Wedidn’t want a better version control interface. We just wanted aversion-controlled database. Dolt can version any set of tables from asmall Excel spreadsheet to a terabyte-scale database.  Dolt is also a relational database. Dolt stores data in tables withschemas. You interact with the database using SQL.  Dolt uses a custom database engine to provide fast operations andefficient storage for large tables. Dolt treats rows as unordered andunderstands columns, so diffs and merges are table cell-based insteadof line-based, providing a more ergonomic data-versioning experience.As advertised, dolt works pretty much like git, and if you’realready familiar with git, using this new tool will be prettystraightforward.To understand how it conceptually works, let’s start with git: youinitiate a git repository in a folder on your computer, and you tellgit to track one or more file(s), and the change inside these files,which are flagged through commits, and potentially synchronized with adistant repository. Well, dolt works pretty much the same way: youinitiate a repo in a folder, register one or more table(s) to keep trackof, make change to the table, and commit these changes. And of course,you can use branches, reset, and all that :)Here’s a little demo of using this data-centered version-control tool.Install doltYou can find the install process on the GitHubrepo. What I did was downloadthe binary and copy it to mypath.wget https://github.com/liquidata-inc/dolt/releases/download/v0.9.7/dolt-darwin-386.tar.gztar -zxvf dolt-darwin-386.tar.gzmv dolt-darwin-386/bin/dolt /usr/local/bin/doltrm -rf dolt*  How to verify from R that the bin is there:Sys.which(&quot;dolt&quot;)##                  dolt ## &quot;/usr/local/bin/dolt&quot;Now, back to the terminal. Here is a list of all available commands:dolt## Valid commands for dolt are##                 init - Create an empty Dolt data repository.##               status - Show the working tree status.##                  add - Add table changes to the list of staged table changes.##                reset - Remove table changes from the list of staged table changes.##               commit - Record changes to the repository.##                  sql - Run a SQL query against tables in repository.##           sql-server - Starts a MySQL-compatible server.##                  log - Show commit logs.##                 diff - Diff a table.##                merge - Merge a branch.##               branch - Create, list, edit, delete branches.##             checkout - Checkout a branch or overwrite a table from HEAD.##               remote - Manage set of tracked repositories.##                 push - Push to a dolt remote.##                 pull - Fetch from a dolt remote data repository and merge.##                fetch - Update the database from a remote data repository.##                clone - Clone from a remote data repository.##                creds - Commands for managing credentials.##                login - Login to a dolt remote host.##              version - Displays the current Dolt cli version.##               config - Dolt configuration.##                   ls - List tables in the working set.##               schema - Display the schema for table(s)##                table - Commands for creating, reading, updating, and deleting tables.##            conflicts - Commands for viewing and resolving merge conflicts.As said before, dolt works pretty much like git, so almosteverything share the same vocabulary. The new things are mostly schemaand table, which are related to databases.Playing with doltHere’s a short script using R &amp; dolt to version control data# Put iris there &amp; check it&#39;s thereRscript -e &quot;write.csv(tibble::rowid_to_column(iris), &#39;testiris.csv&#39;, row.names = FALSE)&quot;Side note: I’m using tibble::rowid_to_column(iris) because doltneeds a primary key to keep track of the modifications in a file. Aprimary key is a column that can be used ot uniquely identify a line.Something which does not natively exists in R. It does exist if you usewrite.csv() without the row.names = FALSE, yet the newly createdcolumn contains a first columb named &quot;&quot;, which is rather uneasy tomanipulate.  More on SQL primarykeySide note 2: if you’re using csv with dolt, you’ll need the PK to bethe first column:  In order for csv import to work without additional command lineparameters, the csv file you are importing should have the fileextension “.csv”, and should have column names as the first line ofthe file. (dolt README)# Overview of the datasethead -5 testiris.csv## &quot;rowid&quot;,&quot;Sepal.Length&quot;,&quot;Sepal.Width&quot;,&quot;Petal.Length&quot;,&quot;Petal.Width&quot;,&quot;Species&quot;## 1,5.1,3.5,1.4,0.2,&quot;setosa&quot;## 2,4.9,3,1.4,0.2,&quot;setosa&quot;## 3,4.7,3.2,1.3,0.2,&quot;setosa&quot;## 4,4.6,3.1,1.5,0.2,&quot;setosa&quot;# Overview of the datasetwc -l testiris.csv##      151 testiris.csvNow the dolt part:dolt init## Successfully initialized dolt data repository.Now let’s track our iris.csv    file:dolt table import --create-table -pk rowid plop testiris.csv## Rows Processed: 150, Additions: 150, Modifications: 0, Had No Effect: 0## Import completed successfully.Let’s detail what we’ve done here:  using dolt  manipulating a table (the csv)  I’m importing the file testiris.csv as the table plop, passing--create-table to create a new table in the dolt repo (the tablecould be overwritten if you pass the -f option)  -pk rowid informs that the rowid column is the primary key.Then, some things that will remind you of git:dolt status## On branch master## Untracked files:##   (use &quot;dolt add &lt;table&gt;&quot; to include in what will be committed)##  new table:      plopdolt add plopdolt commit -m &quot;👶&quot;Push to distant repodolt comes with dolthub, which is, as youwould have guessed, a distant repo where you can version control yourdata.dolt remote add origin colinfay/testirisdolt push -u origin masterRunning SQL commandsIf you only run dolt sql, a prompt opens. You can also use dolt sql--query &lt;SQL query to run&gt; to do this noninteractivelydolt sql --query &#39;SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5&#39;## +-------+--------------+------------+## | rowid | Sepal.Length | Species    |## +-------+--------------+------------+## | 1     | 5.1          | setosa     |## | 10    | 4.9          | setosa     |## | 100   | 5.7          | versicolor |## | 101   | 6.3          | virginica  |## | 102   | 5.8          | virginica  |## +-------+--------------+------------+Let’s update ourdata:dolt sql --query &#39;UPDATE plop SET Species=&quot;setosssa&quot; where Species=&quot;setosa&quot;&#39;## Rows updated: 50dolt sql --query &#39;SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5&#39;## +-------+--------------+------------+## | rowid | Sepal.Length | Species    |## +-------+--------------+------------+## | 1     | 5.1          | setosssa   |## | 10    | 4.9          | setosssa   |## | 100   | 5.7          | versicolor |## | 101   | 6.3          | virginica  |## | 102   | 5.8          | virginica  |## +-------+--------------+------------+Show the diffdolt diff## diff --dolt a/plop b/plop## --- a/plop @ e69hf9q91ll6cjj4d879q93upvemh62r## +++ b/plop @ bffa0c0e9c70j72o73aa3a1ji6snsl2q## +-----+-------+--------------+-------------+--------------+-------------+----------+## |     | rowid | Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species  |## +-----+-------+--------------+-------------+--------------+-------------+----------+## |  &lt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosa   |## |  &gt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosssa |## |  &lt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosa   |## |  &gt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosssa |## |  &lt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosa   |## |  &gt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosssa |## |  &lt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosa   |## |  &gt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosssa |## |  &lt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosa   |## |  &gt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosssa |## |  &lt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosa   |## |  &gt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosssa |## |  &lt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosa   |## |  &gt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosssa |## |  &lt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosa   |## |  &gt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosssa |## |  &lt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosa   |## |  &gt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosssa |## |  &lt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosa   |## |  &gt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosssa |## |  &lt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosa   |## |  &gt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosssa |## |  &lt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosa   |## |  &gt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosssa |## |  &lt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosa   |## |  &gt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosssa |## |  &lt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosa   |## |  &gt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosssa |## |  &lt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosa   |## |  &gt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosssa |## |  &lt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosa   |## |  &gt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosssa |## |  &lt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosa   |## |  &gt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosssa |## |  &lt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosa   |## |  &gt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosssa |## |  &lt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosa   |## |  &gt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosssa |## |  &lt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosa   |## |  &gt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosssa |## |  &lt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosa   |## |  &gt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosssa |## |  &lt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosa   |## |  &gt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosssa |## |  &lt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosa   |## |  &gt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosssa |## |  &lt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosa   |## |  &gt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosssa |## |  &lt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosa   |## |  &gt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosssa |## |  &lt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosa   |## |  &gt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosssa |## |  &lt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosa   |## |  &gt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosssa |## |  &lt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosa   |## |  &gt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosssa |## |  &lt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosa   |## |  &gt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosssa |## |  &lt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosa   |## |  &gt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosssa |## |  &lt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosa   |## |  &gt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosssa |## |  &lt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosa   |## |  &gt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosssa |## |  &lt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosa   |## |  &gt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosssa |## |  &lt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosa   |## |  &gt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosssa |## |  &lt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosa   |## |  &gt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosssa |## |  &lt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosa   |## |  &gt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosssa |## |  &lt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosa   |## |  &gt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosssa |## |  &lt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosa   |## |  &gt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosssa |## |  &lt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosa   |## |  &gt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosssa |## |  &lt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosa   |## |  &gt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosssa |## |  &lt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosa   |## |  &gt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosssa |## |  &lt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosa   |## |  &gt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosssa |## |  &lt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosa   |## |  &gt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosssa |## |  &lt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosa   |## |  &gt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosssa |## |  &lt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosa   |## |  &gt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosssa |## |  &lt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosa   |## |  &gt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosssa |## |  &lt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosa   |## |  &gt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosssa |## |  &lt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosa   |## |  &gt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosssa |## |  &lt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosa   |## |  &gt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosssa |## |  &lt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosa   |## |  &gt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosssa |## +-----+-------+--------------+-------------+--------------+-------------+----------+dolt add plopdolt commit -m &quot;changed to setosssa&quot;dolt status## On branch master## nothing to commit, working tree cleandolt push dolt log## commit ofi9rlouqa069h57brq8e8l02jej96ie## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:18 +0200 2019## ##  changed to setosssa## ## commit ap176almtitmflqg4uge1tkillsi5his## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:17 +0200 2019## ##  👶## ## commit engm1cgcvjk3eoeo8qssd3qbb21ifi6i## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;## Date:   Mon Aug 19 23:30:17 +0200 2019## ##  Data repository created.nd now, see the result on my DoltHubaccount!">
+    <meta itemprop="datePublished" content="August 17, 2019">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Playing with dolt - Part One
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  14 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>A few weeks back, I subscribed to become a beta tester for <code class="highlighter-rouge">dolt</code>, the
+<em>“Git for data”</em>. This post is the first of a series of posts
+exploring this tool.</p>
+
+<h2 id="what-is-dolt">What is <code class="highlighter-rouge">dolt</code>?</h2>
+
+<p>From <a href="https://www.dolthub.com/">the official website</a>:</p>
+
+<blockquote>
+  <p>Dolt is Git for data. Git versions files. Dolt versions tables. Dolt
+looks a lot like Git all the way down to the help documentation. We
+didn’t want a better version control interface. We just wanted a
+version-controlled database. Dolt can version any set of tables from a
+small Excel spreadsheet to a terabyte-scale database.</p>
+</blockquote>
+
+<blockquote>
+  <p>Dolt is also a relational database. Dolt stores data in tables with
+schemas. You interact with the database using SQL.</p>
+</blockquote>
+
+<blockquote>
+  <p>Dolt uses a custom database engine to provide fast operations and
+efficient storage for large tables. Dolt treats rows as unordered and
+understands columns, so diffs and merges are table cell-based instead
+of line-based, providing a more ergonomic data-versioning experience.</p>
+</blockquote>
+
+<p>As advertised, <code class="highlighter-rouge">dolt</code> works pretty much like <code class="highlighter-rouge">git</code>, and if you’re
+already familiar with <code class="highlighter-rouge">git</code>, using this new tool will be pretty
+straightforward.</p>
+
+<p>To understand how it conceptually works, let’s start with <code class="highlighter-rouge">git</code>: you
+initiate a <code class="highlighter-rouge">git</code> repository in a folder on your computer, and you tell
+<code class="highlighter-rouge">git</code> to track one or more file(s), and the change inside these files,
+which are flagged through commits, and potentially synchronized with a
+distant repository. Well, <code class="highlighter-rouge">dolt</code> works pretty much the same way: you
+initiate a repo in a folder, register one or more table(s) to keep track
+of, make change to the table, and commit these changes. And of course,
+you can use branches, reset, and all that :)</p>
+
+<p>Here’s a little demo of using this data-centered version-control tool.</p>
+
+<h2 id="install-dolt">Install dolt</h2>
+
+<p>You can find the install process on the <a href="https://github.com/liquidata-inc/dolt">GitHub
+repo</a>. What I did was download
+the binary and copy it to my
+path.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://github.com/liquidata-inc/dolt/releases/download/v0.9.7/dolt-darwin-386.tar.gz
+<span class="nb">tar</span> <span class="nt">-zxvf</span> dolt-darwin-386.tar.gz
+<span class="nb">mv </span>dolt-darwin-386/bin/dolt /usr/local/bin/dolt
+<span class="nb">rm</span> <span class="nt">-rf</span> dolt<span class="k">*</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>How to verify from R that the bin is there:</p>
+</blockquote>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Sys.which</span><span class="p">(</span><span class="s2">"dolt"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##                  dolt 
+## "/usr/local/bin/dolt"
+</code></pre></div></div>
+
+<p>Now, back to the terminal. Here is a list of all available commands:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Valid commands for dolt are
+##                 init - Create an empty Dolt data repository.
+##               status - Show the working tree status.
+##                  add - Add table changes to the list of staged table changes.
+##                reset - Remove table changes from the list of staged table changes.
+##               commit - Record changes to the repository.
+##                  sql - Run a SQL query against tables in repository.
+##           sql-server - Starts a MySQL-compatible server.
+##                  log - Show commit logs.
+##                 diff - Diff a table.
+##                merge - Merge a branch.
+##               branch - Create, list, edit, delete branches.
+##             checkout - Checkout a branch or overwrite a table from HEAD.
+##               remote - Manage set of tracked repositories.
+##                 push - Push to a dolt remote.
+##                 pull - Fetch from a dolt remote data repository and merge.
+##                fetch - Update the database from a remote data repository.
+##                clone - Clone from a remote data repository.
+##                creds - Commands for managing credentials.
+##                login - Login to a dolt remote host.
+##              version - Displays the current Dolt cli version.
+##               config - Dolt configuration.
+##                   ls - List tables in the working set.
+##               schema - Display the schema for table(s)
+##                table - Commands for creating, reading, updating, and deleting tables.
+##            conflicts - Commands for viewing and resolving merge conflicts.
+</code></pre></div></div>
+
+<p>As said before, <code class="highlighter-rouge">dolt</code> works pretty much like <code class="highlighter-rouge">git</code>, so almost
+everything share the same vocabulary. The new things are mostly <code class="highlighter-rouge">schema</code>
+and <code class="highlighter-rouge">table</code>, which are related to databases.</p>
+
+<h2 id="playing-with-dolt">Playing with dolt</h2>
+
+<p>Here’s a short script using R &amp; dolt to version control data</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Put iris there &amp; check it's there</span>
+Rscript <span class="nt">-e</span> <span class="s2">"write.csv(tibble::rowid_to_column(iris), 'testiris.csv', row.names = FALSE)"</span>
+</code></pre></div></div>
+
+<p><em>Side note</em>: I’m using <code class="highlighter-rouge">tibble::rowid_to_column(iris)</code> because <code class="highlighter-rouge">dolt</code>
+needs a <strong>primary key</strong> to keep track of the modifications in a file. A
+primary key is a column that can be used ot uniquely identify a line.
+Something which does not natively exists in R. It does exist if you use
+<code class="highlighter-rouge">write.csv()</code> without the <code class="highlighter-rouge">row.names = FALSE</code>, yet the newly created
+column contains a first columb named <code class="highlighter-rouge">""</code>, which is rather uneasy to
+manipulate.</p>
+
+<blockquote>
+  <p>More on <a href="https://www.w3schools.com/sql/sql_primarykey.asp">SQL primary
+key</a></p>
+</blockquote>
+
+<p><em>Side note 2</em>: if you’re using csv with <code class="highlighter-rouge">dolt</code>, you’ll need the PK to be
+the first column:</p>
+
+<blockquote>
+  <p>In order for csv import to work without additional command line
+parameters, the csv file you are importing should have the file
+extension “.csv”, and should have column names as the first line of
+the file. (<code class="highlighter-rouge">dolt</code> README)</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Overview of the dataset</span>
+<span class="nb">head</span> <span class="nt">-5</span> testiris.csv
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## "rowid","Sepal.Length","Sepal.Width","Petal.Length","Petal.Width","Species"
+## 1,5.1,3.5,1.4,0.2,"setosa"
+## 2,4.9,3,1.4,0.2,"setosa"
+## 3,4.7,3.2,1.3,0.2,"setosa"
+## 4,4.6,3.1,1.5,0.2,"setosa"
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Overview of the dataset</span>
+<span class="nb">wc</span> <span class="nt">-l</span> testiris.csv
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##      151 testiris.csv
+</code></pre></div></div>
+
+<p>Now the <code class="highlighter-rouge">dolt</code> part:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt init
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Successfully initialized dolt data repository.
+</code></pre></div></div>
+
+<p>Now let’s track our iris.csv
+    file:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt table import <span class="nt">--create-table</span> <span class="nt">-pk</span> rowid plop testiris.csv
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Rows Processed: 150, Additions: 150, Modifications: 0, Had No Effect: 0
+## Import completed successfully.
+</code></pre></div></div>
+
+<p>Let’s detail what we’ve done here:</p>
+
+<ul>
+  <li>using <code class="highlighter-rouge">dolt</code></li>
+  <li>manipulating a <code class="highlighter-rouge">table</code> (the csv)</li>
+  <li>I’m importing the file <code class="highlighter-rouge">testiris.csv</code> as the table <code class="highlighter-rouge">plop</code>, passing
+<code class="highlighter-rouge">--create-table</code> to create a new table in the <code class="highlighter-rouge">dolt</code> repo (the table
+could be overwritten if you pass the <code class="highlighter-rouge">-f</code> option)</li>
+  <li><code class="highlighter-rouge">-pk rowid</code> informs that the rowid column is the primary key.</li>
+</ul>
+
+<p>Then, some things that will remind you of git:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt status
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## On branch master
+## Untracked files:
+##   (use "dolt add &lt;table&gt;" to include in what will be committed)
+##  new table:      plop
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt add plop
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt commit <span class="nt">-m</span> <span class="s2">"👶"</span>
+</code></pre></div></div>
+
+<h2 id="push-to-distant-repo">Push to distant repo</h2>
+
+<p><code class="highlighter-rouge">dolt</code> comes with <a href="https://beta.dolthub.com">dolthub</a>, which is, as you
+would have guessed, a distant repo where you can version control your
+data.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt remote add origin colinfay/testiris
+dolt push <span class="nt">-u</span> origin master
+</code></pre></div></div>
+
+<h2 id="running-sql-commands">Running SQL commands</h2>
+
+<p>If you only run <code class="highlighter-rouge">dolt sql</code>, a prompt opens. You can also use <code class="highlighter-rouge">dolt sql
+--query &lt;SQL query to run&gt;</code> to do this non
+interactively</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt sql <span class="nt">--query</span> <span class="s1">'SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5'</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## +-------+--------------+------------+
+## | rowid | Sepal.Length | Species    |
+## +-------+--------------+------------+
+## | 1     | 5.1          | setosa     |
+## | 10    | 4.9          | setosa     |
+## | 100   | 5.7          | versicolor |
+## | 101   | 6.3          | virginica  |
+## | 102   | 5.8          | virginica  |
+## +-------+--------------+------------+
+</code></pre></div></div>
+
+<p>Let’s update our
+data:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt sql <span class="nt">--query</span> <span class="s1">'UPDATE plop SET Species="setosssa" where Species="setosa"'</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Rows updated: 50
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt sql <span class="nt">--query</span> <span class="s1">'SELECT rowid, `Sepal.Length`, Species FROM plop LIMIT 5'</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## +-------+--------------+------------+
+## | rowid | Sepal.Length | Species    |
+## +-------+--------------+------------+
+## | 1     | 5.1          | setosssa   |
+## | 10    | 4.9          | setosssa   |
+## | 100   | 5.7          | versicolor |
+## | 101   | 6.3          | virginica  |
+## | 102   | 5.8          | virginica  |
+## +-------+--------------+------------+
+</code></pre></div></div>
+
+<p>Show the diff</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt diff
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## diff --dolt a/plop b/plop
+## --- a/plop @ e69hf9q91ll6cjj4d879q93upvemh62r
+## +++ b/plop @ bffa0c0e9c70j72o73aa3a1ji6snsl2q
+## +-----+-------+--------------+-------------+--------------+-------------+----------+
+## |     | rowid | Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species  |
+## +-----+-------+--------------+-------------+--------------+-------------+----------+
+## |  &lt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosa   |
+## |  &gt;  | 1     | 5.1          | 3.5         | 1.4          | 0.2         | setosssa |
+## |  &lt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosa   |
+## |  &gt;  | 10    | 4.9          | 3.1         | 1.5          | 0.1         | setosssa |
+## |  &lt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosa   |
+## |  &gt;  | 11    | 5.4          | 3.7         | 1.5          | 0.2         | setosssa |
+## |  &lt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosa   |
+## |  &gt;  | 12    | 4.8          | 3.4         | 1.6          | 0.2         | setosssa |
+## |  &lt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosa   |
+## |  &gt;  | 13    | 4.8          | 3           | 1.4          | 0.1         | setosssa |
+## |  &lt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosa   |
+## |  &gt;  | 14    | 4.3          | 3           | 1.1          | 0.1         | setosssa |
+## |  &lt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosa   |
+## |  &gt;  | 15    | 5.8          | 4           | 1.2          | 0.2         | setosssa |
+## |  &lt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosa   |
+## |  &gt;  | 16    | 5.7          | 4.4         | 1.5          | 0.4         | setosssa |
+## |  &lt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosa   |
+## |  &gt;  | 17    | 5.4          | 3.9         | 1.3          | 0.4         | setosssa |
+## |  &lt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosa   |
+## |  &gt;  | 18    | 5.1          | 3.5         | 1.4          | 0.3         | setosssa |
+## |  &lt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosa   |
+## |  &gt;  | 19    | 5.7          | 3.8         | 1.7          | 0.3         | setosssa |
+## |  &lt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosa   |
+## |  &gt;  | 2     | 4.9          | 3           | 1.4          | 0.2         | setosssa |
+## |  &lt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosa   |
+## |  &gt;  | 20    | 5.1          | 3.8         | 1.5          | 0.3         | setosssa |
+## |  &lt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosa   |
+## |  &gt;  | 21    | 5.4          | 3.4         | 1.7          | 0.2         | setosssa |
+## |  &lt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosa   |
+## |  &gt;  | 22    | 5.1          | 3.7         | 1.5          | 0.4         | setosssa |
+## |  &lt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosa   |
+## |  &gt;  | 23    | 4.6          | 3.6         | 1            | 0.2         | setosssa |
+## |  &lt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosa   |
+## |  &gt;  | 24    | 5.1          | 3.3         | 1.7          | 0.5         | setosssa |
+## |  &lt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosa   |
+## |  &gt;  | 25    | 4.8          | 3.4         | 1.9          | 0.2         | setosssa |
+## |  &lt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosa   |
+## |  &gt;  | 26    | 5            | 3           | 1.6          | 0.2         | setosssa |
+## |  &lt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosa   |
+## |  &gt;  | 27    | 5            | 3.4         | 1.6          | 0.4         | setosssa |
+## |  &lt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosa   |
+## |  &gt;  | 28    | 5.2          | 3.5         | 1.5          | 0.2         | setosssa |
+## |  &lt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosa   |
+## |  &gt;  | 29    | 5.2          | 3.4         | 1.4          | 0.2         | setosssa |
+## |  &lt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosa   |
+## |  &gt;  | 3     | 4.7          | 3.2         | 1.3          | 0.2         | setosssa |
+## |  &lt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosa   |
+## |  &gt;  | 30    | 4.7          | 3.2         | 1.6          | 0.2         | setosssa |
+## |  &lt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosa   |
+## |  &gt;  | 31    | 4.8          | 3.1         | 1.6          | 0.2         | setosssa |
+## |  &lt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosa   |
+## |  &gt;  | 32    | 5.4          | 3.4         | 1.5          | 0.4         | setosssa |
+## |  &lt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosa   |
+## |  &gt;  | 33    | 5.2          | 4.1         | 1.5          | 0.1         | setosssa |
+## |  &lt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosa   |
+## |  &gt;  | 34    | 5.5          | 4.2         | 1.4          | 0.2         | setosssa |
+## |  &lt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosa   |
+## |  &gt;  | 35    | 4.9          | 3.1         | 1.5          | 0.2         | setosssa |
+## |  &lt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosa   |
+## |  &gt;  | 36    | 5            | 3.2         | 1.2          | 0.2         | setosssa |
+## |  &lt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosa   |
+## |  &gt;  | 37    | 5.5          | 3.5         | 1.3          | 0.2         | setosssa |
+## |  &lt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosa   |
+## |  &gt;  | 38    | 4.9          | 3.6         | 1.4          | 0.1         | setosssa |
+## |  &lt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosa   |
+## |  &gt;  | 39    | 4.4          | 3           | 1.3          | 0.2         | setosssa |
+## |  &lt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosa   |
+## |  &gt;  | 4     | 4.6          | 3.1         | 1.5          | 0.2         | setosssa |
+## |  &lt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosa   |
+## |  &gt;  | 40    | 5.1          | 3.4         | 1.5          | 0.2         | setosssa |
+## |  &lt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosa   |
+## |  &gt;  | 41    | 5            | 3.5         | 1.3          | 0.3         | setosssa |
+## |  &lt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosa   |
+## |  &gt;  | 42    | 4.5          | 2.3         | 1.3          | 0.3         | setosssa |
+## |  &lt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosa   |
+## |  &gt;  | 43    | 4.4          | 3.2         | 1.3          | 0.2         | setosssa |
+## |  &lt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosa   |
+## |  &gt;  | 44    | 5            | 3.5         | 1.6          | 0.6         | setosssa |
+## |  &lt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosa   |
+## |  &gt;  | 45    | 5.1          | 3.8         | 1.9          | 0.4         | setosssa |
+## |  &lt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosa   |
+## |  &gt;  | 46    | 4.8          | 3           | 1.4          | 0.3         | setosssa |
+## |  &lt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosa   |
+## |  &gt;  | 47    | 5.1          | 3.8         | 1.6          | 0.2         | setosssa |
+## |  &lt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosa   |
+## |  &gt;  | 48    | 4.6          | 3.2         | 1.4          | 0.2         | setosssa |
+## |  &lt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosa   |
+## |  &gt;  | 49    | 5.3          | 3.7         | 1.5          | 0.2         | setosssa |
+## |  &lt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosa   |
+## |  &gt;  | 5     | 5            | 3.6         | 1.4          | 0.2         | setosssa |
+## |  &lt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosa   |
+## |  &gt;  | 50    | 5            | 3.3         | 1.4          | 0.2         | setosssa |
+## |  &lt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosa   |
+## |  &gt;  | 6     | 5.4          | 3.9         | 1.7          | 0.4         | setosssa |
+## |  &lt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosa   |
+## |  &gt;  | 7     | 4.6          | 3.4         | 1.4          | 0.3         | setosssa |
+## |  &lt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosa   |
+## |  &gt;  | 8     | 5            | 3.4         | 1.5          | 0.2         | setosssa |
+## |  &lt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosa   |
+## |  &gt;  | 9     | 4.4          | 2.9         | 1.4          | 0.2         | setosssa |
+## +-----+-------+--------------+-------------+--------------+-------------+----------+
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt add plop
+dolt commit <span class="nt">-m</span> <span class="s2">"changed to setosssa"</span>
+dolt status
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## On branch master
+## nothing to commit, working tree clean
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt push 
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dolt log
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## commit ofi9rlouqa069h57brq8e8l02jej96ie
+## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;
+## Date:   Mon Aug 19 23:30:18 +0200 2019
+## 
+##  changed to setosssa
+## 
+## commit ap176almtitmflqg4uge1tkillsi5his
+## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;
+## Date:   Mon Aug 19 23:30:17 +0200 2019
+## 
+##  👶
+## 
+## commit engm1cgcvjk3eoeo8qssd3qbb21ifi6i
+## Author: colinfay &lt;colin.fay.thinkr@gmail.com&gt;
+## Date:   Mon Aug 19 23:30:17 +0200 2019
+## 
+##  Data repository created.
+</code></pre></div></div>
+
+<p>nd now, see the result on my <a href="https://beta.dolthub.com/repositories/colinfay/testiris">DoltHub
+account!</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2019-08-17T00:00:00+02:00">August 17, 2019</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Playing+with+dolt+-+Part+One%20http%3A%2F%2Flocalhost%3A4000%2Fplaying-with-dolt-one%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fplaying-with-dolt-one%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fplaying-with-dolt-one%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fplaying-with-dolt-one%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/back-from-toulouse/" class="pagination--pager" title="Back from useR! 2019
+">←</a>
+    
+    
+      <a href="/one-week-shiny-google-search/" class="pagination--pager" title="One week as a Shiny dev, seen through Google search
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/create-r-cli-npm/" rel="permalink">Create a CLI for R with npm
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-05-22</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">How to build a CLI for R, with npm.
+
+Background
+
+This blog post was triggered by a discussion on Twitter with Martin
+Skarzynski,
+who was looking for a way to...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/playing-with-dolt-one/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/playing-dolt"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

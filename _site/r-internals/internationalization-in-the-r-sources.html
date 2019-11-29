@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Internals</title>
+  <meta name="description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Internals" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  <meta name="github-repo" content="ColinFay/r-internals" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Internals" />
+  
+  <meta name="twitter:description" content="R Internals: a guide to the internal structures of R and coding standards for the core team working on R itself." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="internal-vs-primitive.html">
+<link rel="next" href="structure-of-an-installed-package.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R internals</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Internals</a></li>
+<li class="chapter" data-level="1" data-path="r-internal-structures.html"><a href="r-internal-structures.html"><i class="fa fa-check"></i><b>1</b> R Internal Structures</a></li>
+<li class="chapter" data-level="2" data-path="internal-vs-primitive.html"><a href="internal-vs-primitive.html"><i class="fa fa-check"></i><b>2</b> <code class="calibre18">.Internal</code> vs <code class="calibre18">.Primitive</code></a></li>
+<li class="chapter" data-level="3" data-path="internationalization-in-the-r-sources.html"><a href="internationalization-in-the-r-sources.html"><i class="fa fa-check"></i><b>3</b> Internationalization in the R sources</a></li>
+<li class="chapter" data-level="4" data-path="structure-of-an-installed-package.html"><a href="structure-of-an-installed-package.html"><i class="fa fa-check"></i><b>4</b> Structure of an Installed Package</a></li>
+<li class="chapter" data-level="5" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5</b> Files</a></li>
+<li class="chapter" data-level="6" data-path="graphics.html"><a href="graphics.html"><i class="fa fa-check"></i><b>6</b> Graphics</a></li>
+<li class="chapter" data-level="7" data-path="gui-consoles.html"><a href="gui-consoles.html"><i class="fa fa-check"></i><b>7</b> GUI consoles</a></li>
+<li class="chapter" data-level="8" data-path="tools.html"><a href="tools.html"><i class="fa fa-check"></i><b>8</b> Tools</a></li>
+<li class="chapter" data-level="9" data-path="r-coding-standards.html"><a href="r-coding-standards.html"><i class="fa fa-check"></i><b>9</b> R coding standards</a></li>
+<li class="chapter" data-level="10" data-path="testing-r-code.html"><a href="testing-r-code.html"><i class="fa fa-check"></i><b>10</b> Testing R code</a></li>
+<li class="chapter" data-level="11" data-path="use-of-tex-dialects.html"><a href="use-of-tex-dialects.html"><i class="fa fa-check"></i><b>11</b> Use of TeX dialects</a></li>
+<li class="chapter" data-level="12" data-path="current-and-future-directions.html"><a href="current-and-future-directions.html"><i class="fa fa-check"></i><b>12</b> Current and future directions</a></li>
+<li class="chapter" data-level="13" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>13</b> Function and variable index</a></li>
+<li class="chapter" data-level="14" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>14</b> Concept index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Internals</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="internationalization-in-the-r-sources" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Internationalization in the R sources</h1>
+<p>
+The process of marking messages (errors, warnings etc) for translation in an R package is described in ‘Writing R Extensions’, and the standard packages included with R have (with an exception in <strong>grDevices</strong> for the menus of the <code class="calibre2">windows()</code> device) been internationalized in the same way as other packages.
+</p>
+<hr />
+<p>
+<a href="" id="R-code"></a> <a href="" id="R-code-1"></a>
+</p>
+<h3 id="r-code" class="section">
+3.1 R code
+</h3>
+<p>
+Internationalization for R code is done in exactly the same way as for extension packages. As all standard packages which have R code also have a namespace, it is never necessary to specify <code class="calibre2">domain</code>, but for efficiency calls to <code class="calibre2">message</code>, <code class="calibre2">warning</code> and <code class="calibre2">stop</code> should include <code class="calibre2">domain = NA</code> when the message is constructed <em>via</em> <code class="calibre2">gettextf</code>, <code class="calibre2">gettext</code> or <code class="calibre2">ngettext</code>.
+</p>
+<p>
+For each package, the extracted messages and translation sources are stored under package directory po in the source package, and compiled translations under inst/po for installation to package directory po in the installed package. This also applies to C code in packages.
+</p>
+<hr />
+<p>
+<a href="" id="Main-C-code"></a> <a href="" id="Main-C-code-1"></a>
+</p>
+<h3 id="main-c-code" class="section">
+3.2 Main C code
+</h3>
+<p>
+The main C code (e.g. that in files src/<em>/</em>.c and in the modules) is where R is closest to the sort of application for which ‘gettext’ was written. Messages in the main C code are in domain <code class="calibre2">R</code> and stored in the top-level directory po with compiled translations under share/locale.
+</p>
+<p>
+The list of files covered by the R domain is specified in file po/POTFILES.in.
+</p>
+<p>
+The normal way to mark messages for translation is via <code class="calibre2"><em>(“msg”)</code> just as for packages. However, sometimes one needs to mark passages for translation without wanting them translated at the time, for example when declaring string constants. This is the purpose of the <code class="calibre2">N</em></code> macro, for example
+</p>
+<div class="example">
+<pre class="example1"><code>{ ERROR_ARGTYPE,           N_(&quot;invalid argument type&quot;)},</code></pre>
+</div>
+<p>
+from file src/main/errors.c.
+</p>
+<p>
+The <code class="calibre2">P_</code> macro
+</p>
+<div class="example">
+<pre class="example1"><code>#ifdef ENABLE_NLS
+#define P_(StringS, StringP, N) ngettext (StringS, StringP, N)
+#else
+#define P_(StringS, StringP, N) (N &gt; 1 ? StringP: StringS)
+#endif</code></pre>
+</div>
+<p>
+may be used as a wrapper for <code class="calibre2">ngettext</code>: however in some cases the preferred approach has been to conditionalize (on <code class="calibre2">ENABLE_NLS</code>) code using <code class="calibre2">ngettext</code>.
+</p>
+<p>
+The macro <code class="calibre2"><em>(“msg”)</code> can safely be used in directory src/appl; the header for standalone ‘nmath’ skips possible translation. (This does not apply to <code class="calibre2">N</em></code> or <code class="calibre2">P_</code>).
+</p>
+<hr />
+<p>
+<a href="" id="Windows_002dGUI_002dspecific-code"></a> <a href="" id="Windows_002dGUI_002dspecific-code-1"></a>
+</p>
+<h3 id="windows-gui-specific-code" class="section">
+3.3 Windows-GUI-specific code
+</h3>
+<p>
+Messages for the Windows GUI are in a separate domain ‘RGui’. This was done for two reasons:
+</p>
+<ul>
+<li>
+The translators for the Windows version of R might be separate from those for the rest of R (familiarity with the GUI helps), and
+</li>
+<li>
+Messages for Windows are most naturally handled in the native charset for the language, and in the case of CJK languages the charset is Windows-specific. (It transpires that as the <code class="calibre2">iconv</code> we ported works well under Windows, this is less important than anticipated.)
+</li>
+</ul>
+<p>
+Messages for the ‘RGui’ domain are marked by <code class="calibre2">G_(“msg”)</code>, a macro that is defined in header file src/gnuwin32/win-nls.h. The list of files that are considered is hardcoded in the <code class="calibre2">RGui.pot-update</code> target of file po/Makefile.in.in: note that this includes devWindows.c as the menus on the <code class="calibre2">windows</code> device are considered to be part of the GUI. (There is also <code class="calibre2">GN_(“msg”)</code>, the analogue of <code class="calibre2">N_(“msg”)</code>.)
+</p>
+<p>
+The template and message catalogs for the ‘RGui’ domain are in the top-level po directory.
+</p>
+<hr />
+<p>
+<a href="" id="macOS-GUI"></a> <a href="" id="macOS-GUI-1"></a>
+</p>
+<h3 id="macos-gui" class="section">
+3.4 macOS GUI
+</h3>
+<p>
+This is handled separately: see <a href="https://developer.r-project.org/Translations30.html" class="uri">https://developer.r-project.org/Translations30.html</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Updating"></a> <a href="" id="Updating-1"></a>
+</p>
+<h3 id="updating" class="section">
+3.5 Updating
+</h3>
+<p>
+See file po/README for how to update the message templates and catalogs.
+</p>
+<hr />
+<p>
+<a href="" id="Package-Structure"></a> <a href="" id="Structure-of-an-Installed-Package"></a>
+</p>
+<div id="calibre_pb_9" class="calibre6">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="internal-vs-primitive.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="structure-of-an-installed-package.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

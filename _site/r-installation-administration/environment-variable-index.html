@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="concept-index.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="environment-variable-index" class="section level1">
+<h1><span class="header-section-number">Chapter 16</span> Environment variable index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="environment-variable-index.html#Environment-variable-index_en_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-J" class="summary-letter"><strong>J</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-T" class="summary-letter"><strong>T</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-B">B</a>
+</p>
+<p>
+<a href="running-r.html#index-BINPREF"><code class="calibre6">BINPREF</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="running-r.html#Windows-packages">Windows packages</a>
+</p>
+<p>
+<a href="running-r.html#index-BINPREF64"><code class="calibre6">BINPREF64</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="running-r.html#Windows-packages">Windows packages</a>
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#index-BLAS_005fLIBS"><code class="calibre6">BLAS_LIBS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#BLAS">BLAS</a>
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-C">C</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-CC"><code class="calibre6">CC</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Using-FORTRAN">Using FORTRAN</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-CONFIG_005fSITE"><code class="calibre6">CONFIG_SITE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Configuration-variables">Configuration variables</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-CPP"><code class="calibre6">CPP</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Using-FORTRAN">Using FORTRAN</a>
+</p>
+<p>
+<a href="appendix-c-platform-notes.html#index-CYGWIN"><code class="calibre6">CYGWIN</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-c-platform-notes.html#The-command-line-tools">The command line tools</a>
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-D">D</a>
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#index-DESTDIR"><code class="calibre6">DESTDIR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#Installation">Installation</a>
+</p>
+<p>
+<a href="choosing-between-32-and-64-bit-builds.html#index-DESTDIR-1"><code class="calibre6">DESTDIR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="choosing-between-32-and-64-bit-builds.html#Unix_002dalike-standalone">Unix-alike standalone</a>
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-F">F</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-F2C"><code class="calibre6">F2C</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Using-FORTRAN">Using FORTRAN</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-F2CLIBS"><code class="calibre6">F2CLIBS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Using-FORTRAN">Using FORTRAN</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-FPICFLAGS"><code class="calibre6">FPICFLAGS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Using-FORTRAN">Using FORTRAN</a>
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-J">J</a>
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#index-JAVA_005fHOME"><code class="calibre6">JAVA_HOME</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#Java-support">Java support</a>
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-L">L</a>
+</p>
+<p>
+<a href="add-on-packages.html#index-LANG"><code class="calibre6">LANG</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="add-on-packages.html#Localization-of-messages">Localization of messages</a>
+</p>
+<p>
+<a href="add-on-packages.html#index-LANGUAGE"><code class="calibre6">LANGUAGE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="add-on-packages.html#Localization-of-messages">Localization of messages</a>
+</p>
+<p>
+<a href="add-on-packages.html#index-LANGUAGE-1"><code class="calibre6">LANGUAGE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="add-on-packages.html#Localization-of-messages">Localization of messages</a>
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#index-LAPACK_005fLIBS"><code class="calibre6">LAPACK_LIBS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#LAPACK">LAPACK</a>
+</p>
+<p>
+<a href="add-on-packages.html#index-LC_005fALL"><code class="calibre6">LC_ALL</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="add-on-packages.html#Localization-of-messages">Localization of messages</a>
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#index-LC_005fCOLLATE"><code class="calibre6">LC_COLLATE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#Testing-a-Unix_002dalike-Installation">Testing a Unix-alike Installation</a>
+</p>
+<p>
+<a href="add-on-packages.html#index-LC_005fMESSAGES"><code class="calibre6">LC_MESSAGES</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="add-on-packages.html#Localization-of-messages">Localization of messages</a>
+</p>
+<p>
+<a href="choosing-between-32-and-64-bit-builds.html#index-LD_005fLIBRARY_005fPATH"><code class="calibre6">LD_LIBRARY_PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="choosing-between-32-and-64-bit-builds.html#Unix_002dalike-standalone">Unix-alike standalone</a>
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#index-LD_005fLIBRARY_005fPATH-1"><code class="calibre6">LD_LIBRARY_PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#ACML">ACML</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-LD_005fLIBRARY_005fPATH-2"><code class="calibre6">LD_LIBRARY_PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Using-FORTRAN">Using FORTRAN</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-LD_005fLIBRARY_005fPATH-3"><code class="calibre6">LD_LIBRARY_PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Compile-and-load-flags">Compile and load flags</a>
+</p>
+<p>
+<a href="appendix-b-configuration-on-a-unix-alike.html#index-LD_005fLIBRARY_005fPATH-4"><code class="calibre6">LD_LIBRARY_PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-b-configuration-on-a-unix-alike.html#Using-gcc">Using gcc</a>
+</p>
+<p>
+<a href="running-r.html#index-LOCAL_005fSOFT"><code class="calibre6">LOCAL_SOFT</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="running-r.html#Windows-packages">Windows packages</a>
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-O">O</a>
+</p>
+<p>
+<a href="appendix-b-configuration-on-a-unix-alike.html#index-OBJECT_005fMODE"><code class="calibre6">OBJECT_MODE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-b-configuration-on-a-unix-alike.html#AIX">AIX</a>
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-P">P</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-PAPERSIZE"><code class="calibre6">PAPERSIZE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Setting-paper-size">Setting paper size</a>
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#index-PATH"><code class="calibre6">PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#Essential-programs-and-libraries">Essential programs and libraries</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-PATH-1"><code class="calibre6">PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Using-FORTRAN">Using FORTRAN</a>
+</p>
+<p>
+<a href="appendix-b-configuration-on-a-unix-alike.html#index-PATH-2"><code class="calibre6">PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-b-configuration-on-a-unix-alike.html#AIX">AIX</a>
+</p>
+<p>
+<a href="appendix-c-platform-notes.html#index-PATH-3"><code class="calibre6">PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-b-configuration-on-a-unix-alike.html#The-Windows-toolset">The Windows toolset</a>
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-R">R</a>
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#index-R_005fARCH"><code class="calibre6">R_ARCH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#Sub_002darchitectures">Sub-architectures</a>
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#index-R_005fARCH-1"><code class="calibre6">R_ARCH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#Sub_002darchitectures">Sub-architectures</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-R_005fBROWSER"><code class="calibre6">R_BROWSER</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Setting-the-browsers">Setting the browsers</a>
+</p>
+<p>
+<a href="running-r.html#index-R_005fDEFAULT_005fPACKAGES"><code class="calibre6">R_DEFAULT_PACKAGES</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="running-r.html#Default-packages">Default packages</a>
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#index-R_005fDISABLE_005fHTTPD"><code class="calibre6">R_DISABLE_HTTPD</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#Help-options">Help options</a>
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#index-R_005fGSCMD"><code class="calibre6">R_GSCMD</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#Useful-libraries-and-programs">Useful libraries and programs</a>
+</p>
+<p>
+<a href="running-r.html#index-R_005fINSTALL_005fTAR"><code class="calibre6">R_INSTALL_TAR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="running-r.html#Windows-packages">Windows packages</a>
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#index-R_005fJAVA_005fLD_005fLIBRARY_005fPATH"><code class="calibre6">R_JAVA_LD_LIBRARY_PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#Java-support">Java support</a>
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#index-R_005fJAVA_005fLD_005fLIBRARY_005fPATH-1"><code class="calibre6">R_JAVA_LD_LIBRARY_PATH</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#Java-support">Java support</a>
+</p>
+<p>
+<a href="running-r.html#index-R_005fLIBS"><code class="calibre6">R_LIBS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="relational-databases.html#Add_002don-packages">Add-on packages</a>
+</p>
+<p>
+<a href="running-r.html#index-R_005fLIBS_005fSITE"><code class="calibre6">R_LIBS_SITE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="running-r.html#Managing-libraries">Managing libraries</a>
+</p>
+<p>
+<a href="running-r.html#index-R_005fLIBS_005fUSER"><code class="calibre6">R_LIBS_USER</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="running-r.html#Managing-libraries">Managing libraries</a>
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#index-R_005fPAPERSIZE"><code class="calibre6">R_PAPERSIZE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#Making-the-manuals">Making the manuals</a>
+</p>
+<p>
+<a href="relational-databases.html#index-R_005fPAPERSIZE-1"><code class="calibre6">R_PAPERSIZE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-macos.html#Running-R">Running R</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-R_005fPAPERSIZE-2"><code class="calibre6">R_PAPERSIZE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Setting-paper-size">Setting paper size</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-R_005fPAPERSIZE-3"><code class="calibre6">R_PAPERSIZE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Making-manuals">Making manuals</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-R_005fPDFVIEWER"><code class="calibre6">R_PDFVIEWER</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Setting-the-browsers">Setting the browsers</a>
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#index-R_005fRD4PDF"><code class="calibre6">R_RD4PDF</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#Making-the-manuals">Making the manuals</a>
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#index-R_005fRD4PDF-1"><code class="calibre6">R_RD4PDF</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#Making-manuals">Making manuals</a>
+</p>
+<p>
+<a href="appendix-c-platform-notes.html#index-R_005fRD4PDF-2"><code class="calibre6">R_RD4PDF</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-c-platform-notes.html#LaTeX">LaTeX</a>
+</p>
+<p>
+<a href="appendix-b-configuration-on-a-unix-alike.html#index-R_005fSHELL"><code class="calibre6">R_SHELL</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="appendix-b-configuration-on-a-unix-alike.html#AIX">AIX</a>
+</p>
+<p>
+<a href="relational-databases.html#index-R_005fUSER"><code class="calibre6">R_USER</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-macos.html#Running-R">Running R</a>
+</p>
+<hr />
+<p>
+<a href="" id="Environment-variable-index_en_letter-T">T</a>
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#index-TAR"><code class="calibre6">TAR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-standalone-rmath-library.html#Essential-programs-and-libraries">Essential programs and libraries</a>
+</p>
+<p>
+<a href="obtaining-r.html#index-TAR_005fOPTIONS"><code class="calibre6">TAR_OPTIONS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="obtaining-r.html#Getting-and-unpacking-the-sources">Getting and unpacking the sources</a>
+</p>
+<p>
+<a href="installing-r-under-windows.html#index-TAR_005fOPTIONS-1"><code class="calibre6">TAR_OPTIONS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-windows.html#Getting-the-source-files">Getting the source files</a>
+</p>
+<p>
+<a href="relational-databases.html#index-TEMP"><code class="calibre6">TEMP</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-macos.html#Running-R">Running R</a>
+</p>
+<p>
+<a href="relational-databases.html#index-TMP"><code class="calibre6">TMP</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-macos.html#Running-R">Running R</a>
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#index-TMPDIR"><code class="calibre6">TMPDIR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-unix-alikes.html#Simple-compilation">Simple compilation</a>
+</p>
+<p>
+<a href="installing-r-under-windows.html#index-TMPDIR-1"><code class="calibre6">TMPDIR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-windows.html#Building-the-core-files">Building the core files</a>
+</p>
+<p>
+<a href="relational-databases.html#index-TMPDIR-2"><code class="calibre6">TMPDIR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-macos.html#Running-R">Running R</a>
+</p>
+<p>
+<a href="relational-databases.html#index-TMPDIR-3"><code class="calibre6">TMPDIR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="installing-r-under-macos.html#Running-R">Running R</a>
+</p>
+<p>
+<a href="running-r.html#index-TMPDIR-4"><code class="calibre6">TMPDIR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="running-r.html#Installing-packages">Installing packages</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="environment-variable-index.html#Environment-variable-index_en_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-J" class="summary-letter"><strong>J</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="environment-variable-index.html#Environment-variable-index_en_letter-T" class="summary-letter"><strong>T</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<div class="contents">
+<hr />
+<h4 id="footnotes" class="subsection">
+Footnotes
+</h4>
+<h3 id="section" class="section">
+<a href="obtaining-r.html#DOCF1" id="FOOT1" class="calibre21">(1)</a>
+</h3>
+<p>
+e.g. GNU <code class="calibre6">tar</code> version 1.15 or later, or that from the ‘libarchive’ (as used on macOS versions 10.6 and later) or ‘Heirloom Toolchest’ distributions.
+</p>
+<h3 id="section-1" class="section">
+<a href="obtaining-r.html#DOCF2" id="FOOT2" class="calibre21">(2)</a>
+</h3>
+<p>
+for some Subversion clients ‘http:’ may appear to work, but requires continual redirection.
+</p>
+<h3 id="section-2" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF3" id="FOOT3" class="calibre21">(3)</a>
+</h3>
+<p>
+Most aspects will work with paths containing spaces, but external software used by R, e.g. <code class="calibre6">texi2dvi</code> version <code class="calibre6">4.8</code>, may not.
+</p>
+<h3 id="section-3" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF4" id="FOOT4" class="calibre21">(4)</a>
+</h3>
+<p>
+which use lib rather than lib64 for their primary 64-bit library directories.
+</p>
+<h3 id="section-4" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF5" id="FOOT5" class="calibre21">(5)</a>
+</h3>
+<p>
+Instructions on how to install the latest version are at <a href="https://www.ctan.org/tex-archive/fonts/inconsolata/" class="uri">https://www.ctan.org/tex-archive/fonts/inconsolata/</a>.
+</p>
+<h3 id="section-5" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF6" id="FOOT6" class="calibre21">(6)</a>
+</h3>
+<p>
+on a Unix-alike, ‘inconsolata’ is omitted if not found by <code class="calibre6">configure</code>.
+</p>
+<h3 id="section-6" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF7" id="FOOT7" class="calibre21">(7)</a>
+</h3>
+<p>
+This will be needed if more than one sub-architecture is to be installed.
+</p>
+<h3 id="section-7" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF8" id="FOOT8" class="calibre21">(8)</a>
+</h3>
+<p>
+with possible values ‘i386’, ‘x64’, ‘32’ and ‘64’.
+</p>
+<h3 id="section-8" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF9" id="FOOT9" class="calibre21">(9)</a>
+</h3>
+<p>
+mainly on RedHat and Fedora, whose layout is described here.
+</p>
+<h3 id="section-9" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF10" id="FOOT10" class="calibre21">(10)</a>
+</h3>
+<p>
+How to prepare such a directory is described in file src/extra/tzone/Notes in the R sources.
+</p>
+<h3 id="section-10" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF11" id="FOOT11" class="calibre21">(11)</a>
+</h3>
+<p>
+for example, -fopenmp, -xopenmp or -qopenmp. This includes for <code class="calibre6">clang</code> 3.7.x and the Intel C compiler.
+</p>
+<h3 id="section-11" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF12" id="FOOT12" class="calibre21">(12)</a>
+</h3>
+<p>
+Currently this is a valid option for <code class="calibre6">g++</code> 5 and later and 2016 versions of the Intel and Solaris compilers. For earlier versions of <code class="calibre6">g++</code> one could try -std=c++1y.
+</p>
+<h3 id="section-12" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF13" id="FOOT13" class="calibre21">(13)</a>
+</h3>
+<p>
+This is true for earlier versions of <code class="calibre6">g++</code> such as 4.2.1, and also for commonly-used versions of the Solaris compiler <code class="calibre6">CC</code>.
+</p>
+<h3 id="section-13" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF14" id="FOOT14" class="calibre21">(14)</a>
+</h3>
+<p>
+Currently only GCC 6 and later, but this has been mooted for others.
+</p>
+<h3 id="section-14" class="section">
+<a href="installing-r-under-unix-alikes.html#DOCF15" id="FOOT15" class="calibre21">(15)</a>
+</h3>
+<p>
+For when features were supported, see <a href="https://gcc.gnu.org/projects/cxx-status.html#cxx11" class="uri">https://gcc.gnu.org/projects/cxx-status.html#cxx11</a>.
+</p>
+<h3 id="section-15" class="section">
+<a href="installing-r-under-windows.html#DOCF16" id="FOOT16" class="calibre21">(16)</a>
+</h3>
+<p>
+Suitable distributions include Strawberry Perl, <a href="http://strawberryperl.com/" class="uri">http://strawberryperl.com/</a> and ActivePerl, <a href="https://www.activestate.com/activeperl" class="uri">https://www.activestate.com/activeperl</a>.
+</p>
+<h3 id="section-16" class="section">
+<a href="installing-r-under-macos.html#DOCF17" id="FOOT17" class="calibre21">(17)</a>
+</h3>
+<p>
+The installer as puts links to <code class="calibre6">R</code> and <code class="calibre6">Rscript</code> in /usr/local/bin. If these are missing, you can run directly the copies in /Library/Frameworks/R.framework/Resources/.
+</p>
+<h3 id="section-17" class="section">
+<a href="installing-r-under-macos.html#DOCF18" id="FOOT18" class="calibre21">(18)</a>
+</h3>
+<p>
+The framework for R 3.3.x was named <code class="calibre6">org.r-project.R.mavericks.fw.pkg</code>: use <code class="calibre6">pkgutil –pkgs | grep org.r-project</code> to check for earlier versions of R.
+</p>
+<h3 id="section-18" class="section">
+<a href="installing-r-under-macos.html#DOCF19" id="FOOT19" class="calibre21">(19)</a>
+</h3>
+<p>
+More precisely, of the package of the same name: this means that installing a package for 3.3.x does 3.4.x does not remove an installation of the other series.
+</p>
+<h3 id="section-19" class="section">
+<a href="running-r.html#DOCF20" id="FOOT20" class="calibre21">(20)</a>
+</h3>
+<p>
+unless they were excluded in the build.
+</p>
+<h3 id="section-20" class="section">
+<a href="running-r.html#DOCF21" id="FOOT21" class="calibre21">(21)</a>
+</h3>
+<p>
+its binding is locked once the startup files have been read, so users cannot easily change it.
+</p>
+<h3 id="section-21" class="section">
+<a href="running-r.html#DOCF22" id="FOOT22" class="calibre21">(22)</a>
+</h3>
+<p>
+If a proxy needs to be set, see <code class="calibre6">?download.file</code>.
+</p>
+<h3 id="section-22" class="section">
+<a href="running-r.html#DOCF23" id="FOOT23" class="calibre21">(23)</a>
+</h3>
+<p>
+for a small number of CRAN packages where this is known to be safe and is needed by the autobuilder this is the default. Look at the source of tools:::.install_packages for the list. It can also be specified in the package’s DESCRIPTION file.
+</p>
+<h3 id="section-23" class="section">
+<a href="running-r.html#DOCF24" id="FOOT24" class="calibre21">(24)</a>
+</h3>
+<p>
+or by adding it in a file such as etc/i386/Makevars.site, which does not exist by default.
+</p>
+<h3 id="section-24" class="section">
+<a href="running-r.html#DOCF25" id="FOOT25" class="calibre21">(25)</a>
+</h3>
+<p>
+Note that capitalization and version may differ from the Open Source project.
+</p>
+<h3 id="section-25" class="section">
+<a href="running-r.html#DOCF26" id="FOOT26" class="calibre21">(26)</a>
+</h3>
+<p>
+using a path containing spaces is likely to cause problems
+</p>
+<h3 id="section-26" class="section">
+<a href="running-r.html#DOCF27" id="FOOT27" class="calibre21">(27)</a>
+</h3>
+<p>
+They need to have been created using -headerpad_max_install_names, which is the default for an R package.
+</p>
+<h3 id="section-27" class="section">
+<a href="add-on-packages.html#DOCF28" id="FOOT28" class="calibre21">(28)</a>
+</h3>
+<p>
+‘X/Open Portability Guide’, which has had several versions.
+</p>
+<h3 id="section-28" class="section">
+<a href="add-on-packages.html#DOCF29" id="FOOT29" class="calibre21">(29)</a>
+</h3>
+<p>
+On some systems setting <code class="calibre6">LC_ALL</code> or <code class="calibre6">LC_MESSAGES</code> to ‘C’ disables <code class="calibre6">LANGUAGE</code>.
+</p>
+<h3 id="section-29" class="section">
+<a href="add-on-packages.html#DOCF30" id="FOOT30" class="calibre21">(30)</a>
+</h3>
+<p>
+If you try changing from French to Russian except in a UTF-8 locale, you will most likely find messages change to English.
+</p>
+<h3 id="section-30" class="section">
+<a href="add-on-packages.html#DOCF31" id="FOOT31" class="calibre21">(31)</a>
+</h3>
+<p>
+the language written in England: some people living in the USA appropriate this name for their language.
+</p>
+<h3 id="section-31" class="section">
+<a href="add-on-packages.html#DOCF32" id="FOOT32" class="calibre21">(32)</a>
+</h3>
+<p>
+with Americanisms.
+</p>
+<h3 id="section-32" class="section">
+<a href="internationalization-and-localization.html#DOCF33" id="FOOT33" class="calibre21">(33)</a>
+</h3>
+<p>
+also known as IEEE 754
+</p>
+<h3 id="section-33" class="section">
+<a href="internationalization-and-localization.html#DOCF34" id="FOOT34" class="calibre21">(34)</a>
+</h3>
+<p>
+at least when storing quantities: the on-FPU precision is allowed to vary
+</p>
+<h3 id="section-34" class="section">
+<a href="choosing-between-32-and-64-bit-builds.html#DOCF35" id="FOOT35" class="calibre21">(35)</a>
+</h3>
+<p>
+e.g. Bessel, beta and gamma functions
+</p>
+<h3 id="section-35" class="section">
+<a href="choosing-between-32-and-64-bit-builds.html#DOCF36" id="FOOT36" class="calibre21">(36)</a>
+</h3>
+<p>
+including copying MkRules.dist to MkRule.local and selecting the architecture.
+</p>
+<h3 id="section-36" class="section">
+<a href="the-standalone-rmath-library.html#DOCF37" id="FOOT37" class="calibre21">(37)</a>
+</h3>
+<p>
+also known as IEEE 754
+</p>
+<h3 id="section-37" class="section">
+<a href="the-standalone-rmath-library.html#DOCF38" id="FOOT38" class="calibre21">(38)</a>
+</h3>
+<p>
+Note that C11 compilers need not be C99-compliant: R requires support for <code class="calibre6">double complex</code> and variable-length arrays which are optional in C11 but is mandatory in C99.
+</p>
+<h3 id="section-38" class="section">
+<a href="the-standalone-rmath-library.html#DOCF39" id="FOOT39" class="calibre21">(39)</a>
+</h3>
+<p>
+Examples are -std=gnu99, -std=c99 and -c99.
+</p>
+<h3 id="section-39" class="section">
+<a href="the-standalone-rmath-library.html#DOCF40" id="FOOT40" class="calibre21">(40)</a>
+</h3>
+<p>
+-std=c99 excludes POSIX functionality, but config.h will turn on all GNU extensions to include the POSIX functionality for R itself: this does not apply to badly-written packages. The default mode for GCC 5.1 and later is -std=gnu11, which currently includes the optional features R needs.
+</p>
+<h3 id="section-40" class="section">
+<a href="the-standalone-rmath-library.html#DOCF41" id="FOOT41" class="calibre21">(41)</a>
+</h3>
+<p>
+However, it is possible to break the default behaviour of <code class="calibre6">glibc</code> by re-specifying the <code class="calibre6">gconv</code> modules to be loaded.
+</p>
+<h3 id="section-41" class="section">
+<a href="the-standalone-rmath-library.html#DOCF42" id="FOOT42" class="calibre21">(42)</a>
+</h3>
+<p>
+specifically, the C99 functionality of headers wchar.h and wctype.h, types <code class="calibre6">wctans_t</code> and <code class="calibre6">mbstate_t</code> and functions <code class="calibre6">mbrtowc</code>, <code class="calibre6">mbstowcs</code>, <code class="calibre6">wcrtomb</code>, <code class="calibre6">wcscoll</code>, <code class="calibre6">wcstombs</code>, <code class="calibre6">wctrans</code>, <code class="calibre6">wctype</code>, and <code class="calibre6">iswctype</code>.
+</p>
+<h3 id="section-42" class="section">
+<a href="the-standalone-rmath-library.html#DOCF43" id="FOOT43" class="calibre21">(43)</a>
+</h3>
+<p>
+including <code class="calibre6">opendir</code>, <code class="calibre6">readdir</code>, <code class="calibre6">closedir</code>, <code class="calibre6">popen</code>, <code class="calibre6">stat</code>, <code class="calibre6">glob</code>, <code class="calibre6">access</code>, <code class="calibre6">getcwd</code> and <code class="calibre6">chdir</code> system calls, <code class="calibre6">select</code> on a Unix-alike, and either <code class="calibre6">putenv</code> or <code class="calibre6">setenv</code>.
+</p>
+<h3 id="section-43" class="section">
+<a href="the-standalone-rmath-library.html#DOCF44" id="FOOT44" class="calibre21">(44)</a>
+</h3>
+<p>
+such as <code class="calibre6">realpath</code>, <code class="calibre6">symlink</code>.
+</p>
+<h3 id="section-44" class="section">
+<a href="the-standalone-rmath-library.html#DOCF45" id="FOOT45" class="calibre21">(45)</a>
+</h3>
+<p>
+most often distributed as part of <code class="calibre6">xz</code>: possible names in Linux distributions include <code class="calibre6">xz-devel</code>/<code class="calibre6">xz-libs</code> and <code class="calibre6">liblzma-dev</code>.
+</p>
+<h3 id="section-45" class="section">
+<a href="the-standalone-rmath-library.html#DOCF46" id="FOOT46" class="calibre21">(46)</a>
+</h3>
+<p>
+sometimes known as PCRE1, and not PCRE2 which started at version 10.0.
+</p>
+<h3 id="section-46" class="section">
+<a href="the-standalone-rmath-library.html#DOCF47" id="FOOT47" class="calibre21">(47)</a>
+</h3>
+<p>
+but not a major version greater than 7 should there ever be one: the major version has been 7 since 2000.
+</p>
+<h3 id="section-47" class="section">
+<a href="the-standalone-rmath-library.html#DOCF48" id="FOOT48" class="calibre21">(48)</a>
+</h3>
+<p>
+for example to specify static linking with a build which has both shared and static libraries.
+</p>
+<h3 id="section-48" class="section">
+<a href="the-standalone-rmath-library.html#DOCF49" id="FOOT49" class="calibre21">(49)</a>
+</h3>
+<p>
+Such as GNU <code class="calibre6">tar</code> 1.15 or later, <code class="calibre6">bsdtar</code> (from <a href="https://github.com/libarchive/libarchive/" class="uri">https://github.com/libarchive/libarchive/</a>, as used by FreeBSD and OS X 10.6 and later) or <code class="calibre6">tar</code> from the Heirloom Toolchest (<a href="http://heirloom.sourceforge.net/tools.html" class="uri">http://heirloom.sourceforge.net/tools.html</a>).
+</p>
+<h3 id="section-49" class="section">
+<a href="the-standalone-rmath-library.html#DOCF50" id="FOOT50" class="calibre21">(50)</a>
+</h3>
+<p>
+<code class="calibre6">texi2dvi</code> is normally a shell script. Some versions (including that from <strong>texinfo</strong> 5.2 and 6.0) need to be run under <code class="calibre6">bash</code> rather than a Bourne shell, especially on Solaris. Some of the issues which have been observed with broken versions of <code class="calibre6">texi2dvi</code> can be circumvented by setting the environment variable <code class="calibre6">R_TEXI2DVICMD</code> to the value <code class="calibre6">emulation</code>.
+</p>
+<h3 id="section-50" class="section">
+<a href="the-standalone-rmath-library.html#DOCF51" id="FOOT51" class="calibre21">(51)</a>
+</h3>
+<p>
+If necessary the path to <code class="calibre6">pkg-config</code> can be specified by setting <code class="calibre6">PKGCONF</code> in config.site, on the <code class="calibre6">configure</code> command line or in the environment.
+</p>
+<h3 id="section-51" class="section">
+<a href="the-standalone-rmath-library.html#DOCF52" id="FOOT52" class="calibre21">(52)</a>
+</h3>
+<p>
+also known as <code class="calibre6">ttf-mscorefonts-installer</code> in the Debian/Ubuntu world: see also <a href="https://en.wikipedia.org/wiki/Core_fonts_for_the_Web" class="uri">https://en.wikipedia.org/wiki/Core_fonts_for_the_Web</a>.
+</p>
+<h3 id="section-52" class="section">
+<a href="the-standalone-rmath-library.html#DOCF53" id="FOOT53" class="calibre21">(53)</a>
+</h3>
+<p>
+<code class="calibre6">ttf-liberation</code> in Debian/Ubuntu.
+</p>
+<h3 id="section-53" class="section">
+<a href="the-standalone-rmath-library.html#DOCF54" id="FOOT54" class="calibre21">(54)</a>
+</h3>
+<p>
+This is true even for the ‘Aqua’ version of Tk on macOS, but distributions of that include a copy of the X11 files needed.
+</p>
+<h3 id="section-54" class="section">
+<a href="the-standalone-rmath-library.html#DOCF55" id="FOOT55" class="calibre21">(55)</a>
+</h3>
+<p>
+Using the Oracle Developer Studio <code class="calibre6">cc</code> and <code class="calibre6">f95</code> compilers
+</p>
+<h3 id="section-55" class="section">
+<a href="the-standalone-rmath-library.html#DOCF56" id="FOOT56" class="calibre21">(56)</a>
+</h3>
+<p>
+and ‘i686’ for earlier versions.
+</p>
+<h3 id="section-56" class="section">
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#DOCF57" id="FOOT57" class="calibre21">(57)</a>
+</h3>
+<p>
+We have measured 15–20% on ‘i686’ Linux and around 10% on ‘x86_64’ Linux.
+</p>
+<h3 id="section-57" class="section">
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#DOCF58" id="FOOT58" class="calibre21">(58)</a>
+</h3>
+<p>
+We believe that versions 3.4.0 to 3.10.1 are compatible.
+</p>
+<h3 id="section-58" class="section">
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#DOCF59" id="FOOT59" class="calibre21">(59)</a>
+</h3>
+<p>
+On HP-UX <code class="calibre6">fort77</code> is the POSIX compliant FORTRAN compiler, and comes after <code class="calibre6">g77</code>.
+</p>
+<h3 id="section-59" class="section">
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#DOCF60" id="FOOT60" class="calibre21">(60)</a>
+</h3>
+<p>
+as well as its equivalence to the <code class="calibre6">Rcomplex</code> structure defined in R_ext/Complex.h.
+</p>
+<h3 id="section-60" class="section">
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#DOCF61" id="FOOT61" class="calibre21">(61)</a>
+</h3>
+<p>
+at the time of revsion of this para in 2017, <strong>autoconf-2.69</strong> from 2012 and <strong>automake-1.15</strong> from 2015.
+</p>
+<h3 id="section-61" class="section">
+<a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html#DOCF62" id="FOOT62" class="calibre21">(62)</a>
+</h3>
+<p>
+The links there have proved difficult to access, in which case either point an FTP client at <a href="ftp://www.eecs.harvard.edu/pub/nr/" class="uri">ftp://www.eecs.harvard.edu/pub/nr/</a> or grab the copy made available at <a href="http://developer.r-project.org/noweb-2.11b.tgz" class="uri">http://developer.r-project.org/noweb-2.11b.tgz</a>.
+</p>
+<h3 id="section-62" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF63" id="FOOT63" class="calibre21">(63)</a>
+</h3>
+<p>
+for example, <code class="calibre6">X11 font at size 14 could not be loaded</code>.
+</p>
+<h3 id="section-63" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF64" id="FOOT64" class="calibre21">(64)</a>
+</h3>
+<p>
+For example, <code class="calibre6">glibc</code>: other C libraries such as <code class="calibre6">musl</code> have been used but are not routinely tested.
+</p>
+<h3 id="section-64" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF65" id="FOOT65" class="calibre21">(65)</a>
+</h3>
+<p>
+or <code class="calibre6">-mtune=corei7</code> for Intel Core i3/15/17 with <code class="calibre6">gcc</code> ≥ 4.6.0.
+</p>
+<h3 id="section-65" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF66" id="FOOT66" class="calibre21">(66)</a>
+</h3>
+<p>
+This also needs the OpenMP runtime which has sometimes been distributed separately.
+</p>
+<h3 id="section-66" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF67" id="FOOT67" class="calibre21">(67)</a>
+</h3>
+<p>
+It will be necessary to install later versions of software such as <code class="calibre6">libcurl</code>.
+</p>
+<h3 id="section-67" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF68" id="FOOT68" class="calibre21">(68)</a>
+</h3>
+<p>
+Apple provides a partial emulation of GNU readline 4.2 based on the NetBSD <code class="calibre6">editline</code> library. That is not recommended but for the time being R’s installation scripts will make use of it if GNU readline is not found.
+</p>
+<h3 id="section-68" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF69" id="FOOT69" class="calibre21">(69)</a>
+</h3>
+<p>
+These days that is defined by Apple’s implementation of <code class="calibre6">clang</code>, so it is strongly recommended to use that.
+</p>
+<h3 id="section-69" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF70" id="FOOT70" class="calibre21">(70)</a>
+</h3>
+<p>
+Some of these are unsigned packages: to install them you may need to right-click and select <code class="calibre6">Open with -&gt; Installer</code>.
+</p>
+<h3 id="section-70" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF71" id="FOOT71" class="calibre21">(71)</a>
+</h3>
+<p>
+It was reported that for some non-Apple toolchains <code class="calibre6">CPPFLAGS</code> needed to contain <code class="calibre6">-D__ACCELERATE__</code>: not needed for <code class="calibre6">clang</code> 4.0.0, though.
+</p>
+<h3 id="section-71" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF72" id="FOOT72" class="calibre21">(72)</a>
+</h3>
+<p>
+E.g. <em>via</em> <code class="calibre6">tlmgr install cm-super helvetic inconsolata texinfo</code> .
+</p>
+<h3 id="section-72" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF73" id="FOOT73" class="calibre21">(73)</a>
+</h3>
+<p>
+This is not the case if the non-default <code class="calibre6">configure</code> option –without-internal-tzcode was used – but R then does not pass its checks.
+</p>
+<h3 id="section-73" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF74" id="FOOT74" class="calibre21">(74)</a>
+</h3>
+<p>
+For more details see <a href="http://www.macstrategy.com/article.php?3" class="uri">http://www.macstrategy.com/article.php?3</a>.
+</p>
+<h3 id="section-74" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF75" id="FOOT75" class="calibre21">(75)</a>
+</h3>
+<p>
+In the unlikely event that the version reported does not start with <code class="calibre6">1.8.0</code> you need to update your Java.
+</p>
+<h3 id="section-75" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF76" id="FOOT76" class="calibre21">(76)</a>
+</h3>
+<p>
+Oracle Solaris Studio prior to 2016, and previously Sun Studio.
+</p>
+<h3 id="section-76" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF77" id="FOOT77" class="calibre21">(77)</a>
+</h3>
+<p>
+using the -V flag.
+</p>
+<h3 id="section-77" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF78" id="FOOT78" class="calibre21">(78)</a>
+</h3>
+<p>
+When last checked it failed in tests/reg-BLAS.R, and on some builds, including for ‘amd64’, it failed in <code class="calibre6">example(eigen)</code>.
+</p>
+<h3 id="section-78" class="section">
+<a href="appendix-b-configuration-on-a-unix-alike.html#DOCF79" id="FOOT79" class="calibre21">(79)</a>
+</h3>
+<p>
+In particular, header cmath in C++11 mode includes math.h and iso/math_c99.h and <code class="calibre6">gcc</code> had ‘fixed’ an earlier version of the latter.
+</p>
+<h3 id="section-79" class="section">
+<a href="appendix-c-platform-notes.html#DOCF80" id="FOOT80" class="calibre21">(80)</a>
+</h3>
+<p>
+For example, the Cygwin version of <code class="calibre6">make 3.81</code> fails to work correctly.
+</p>
+<h3 id="section-80" class="section">
+<a href="appendix-c-platform-notes.html#DOCF81" id="FOOT81" class="calibre21">(81)</a>
+</h3>
+<p>
+such as <code class="calibre6">sort</code>, <code class="calibre6">find</code> and perhaps <code class="calibre6">make</code>.
+</p>
+</div>
+<hr />
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="concept-index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

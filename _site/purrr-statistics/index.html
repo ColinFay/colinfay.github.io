@@ -1,0 +1,1081 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>A Crazy Little Thing Called {purrr} - Part 6 : doing statistics - Colin Fay</title>
+<meta name="description" content="This is gonna be the last time I make this Queen reference in 2017.I’ve been sharing some “stats with {purrr}” recipes on my Twitteraccount lately. Twitter being what it is(a source of infinite temporary content), here’s the post gathering somestatistics tricks you can do with {purrr}.Looking for normalityIf your data are in a data.frame, you can simply map a shapiro.test onall the columns, keeping the one with a p.value &gt; to 0.05 (remember,the shapiro tests for non-normality) :library(purrr)map(airquality, shapiro.test) %&gt;% keep(~ .x$p.value &gt; 0.05)## $Wind## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.98575, p-value = 0.1178Of course, you can do the same on a non-tabular list:# rdunif is from purrrl &lt;- list(a = rnorm(10), b = rdunif(1000, 10))map(l, shapiro.test) %&gt;% keep(~ .x$p.value &gt; 0.05)## $a## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.91275, p-value = 0.3004Also, map_if allows you to map only on numeric variables in yourdata.frame:map_if(iris, is.numeric, shapiro.test)## $Sepal.Length## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.97609, p-value = 0.01018## ## ## $Sepal.Width## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.98492, p-value = 0.1012## ## ## $Petal.Length## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.87627, p-value = 7.412e-10## ## ## $Petal.Width## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.90183, p-value = 1.68e-08## ## ## $Species##   [1] setosa     setosa     setosa     setosa     setosa     setosa    ##   [7] setosa     setosa     setosa     setosa     setosa     setosa    ##  [13] setosa     setosa     setosa     setosa     setosa     setosa    ##  [19] setosa     setosa     setosa     setosa     setosa     setosa    ##  [25] setosa     setosa     setosa     setosa     setosa     setosa    ##  [31] setosa     setosa     setosa     setosa     setosa     setosa    ##  [37] setosa     setosa     setosa     setosa     setosa     setosa    ##  [43] setosa     setosa     setosa     setosa     setosa     setosa    ##  [49] setosa     setosa     versicolor versicolor versicolor versicolor##  [55] versicolor versicolor versicolor versicolor versicolor versicolor##  [61] versicolor versicolor versicolor versicolor versicolor versicolor##  [67] versicolor versicolor versicolor versicolor versicolor versicolor##  [73] versicolor versicolor versicolor versicolor versicolor versicolor##  [79] versicolor versicolor versicolor versicolor versicolor versicolor##  [85] versicolor versicolor versicolor versicolor versicolor versicolor##  [91] versicolor versicolor versicolor versicolor versicolor versicolor##  [97] versicolor versicolor versicolor versicolor virginica  virginica ## [103] virginica  virginica  virginica  virginica  virginica  virginica ## [109] virginica  virginica  virginica  virginica  virginica  virginica ## [115] virginica  virginica  virginica  virginica  virginica  virginica ## [121] virginica  virginica  virginica  virginica  virginica  virginica ## [127] virginica  virginica  virginica  virginica  virginica  virginica ## [133] virginica  virginica  virginica  virginica  virginica  virginica ## [139] virginica  virginica  virginica  virginica  virginica  virginica ## [145] virginica  virginica  virginica  virginica  virginica  virginica ## Levels: setosa versicolor virginicaBulk cor.testAs said on Twitter, this might bep.hacking, buthere’s how you can do a cor.test for all columns in a data.frame, witha little help from tidystringdist and broom :library(tidystringdist) # Works since v0.1.2 comb &lt;- tidy_comb_all(names(airquality))knitr::kable(comb)            V1      V2                  Ozone      Solar.R              Ozone      Wind              Ozone      Temp              Ozone      Month              Ozone      Day              Solar.R      Wind              Solar.R      Temp              Solar.R      Month              Solar.R      Day              Wind      Temp              Wind      Month              Wind      Day              Temp      Month              Temp      Day              Month      Day      bulk_cor &lt;- pmap(comb, ~ cor.test(airquality[[.x]], airquality[[.y]])) %&gt;%   map_df(broom::tidy) %&gt;%   cbind(comb, .)knitr::kable(bulk_cor, digits = 3)            V1      V2      estimate      statistic      p.value      parameter      conf.low      conf.high      method      alternative                  Ozone      Solar.R      0.348      3.880      0.000      109      0.173      0.502      Pearson’s product-moment correlation      two.sided              Ozone      Wind      -0.602      -8.040      0.000      114      -0.706      -0.471      Pearson’s product-moment correlation      two.sided              Ozone      Temp      0.698      10.418      0.000      114      0.591      0.781      Pearson’s product-moment correlation      two.sided              Ozone      Month      0.165      1.781      0.078      114      -0.018      0.337      Pearson’s product-moment correlation      two.sided              Ozone      Day      -0.013      -0.141      0.888      114      -0.195      0.169      Pearson’s product-moment correlation      two.sided              Solar.R      Wind      -0.057      -0.683      0.496      144      -0.217      0.107      Pearson’s product-moment correlation      two.sided              Solar.R      Temp      0.276      3.444      0.001      144      0.119      0.419      Pearson’s product-moment correlation      two.sided              Solar.R      Month      -0.075      -0.906      0.366      144      -0.235      0.088      Pearson’s product-moment correlation      two.sided              Solar.R      Day      -0.150      -1.824      0.070      144      -0.305      0.012      Pearson’s product-moment correlation      two.sided              Wind      Temp      -0.458      -6.331      0.000      151      -0.575      -0.323      Pearson’s product-moment correlation      two.sided              Wind      Month      -0.178      -2.227      0.027      151      -0.328      -0.020      Pearson’s product-moment correlation      two.sided              Wind      Day      0.027      0.334      0.739      151      -0.132      0.185      Pearson’s product-moment correlation      two.sided              Temp      Month      0.421      5.703      0.000      151      0.281      0.543      Pearson’s product-moment correlation      two.sided              Temp      Day      -0.131      -1.619      0.108      151      -0.283      0.029      Pearson’s product-moment correlation      two.sided              Month      Day      -0.008      -0.098      0.922      151      -0.166      0.151      Pearson’s product-moment correlation      two.sided      Some Machine LearninglmLet’s build a linear model of all possible iris combinations:res &lt;- pmap(comb, ~ lm(airquality[[.x]] ~ airquality[[.y]]))get_rsquared &lt;- compose(as_mapper(~ .x$r.squared), summary)map_dbl(res, get_rsquared)##  [1] 1.213419e-01 3.618582e-01 4.877072e-01 2.706660e-02 1.749177e-04##  [6] 3.225293e-03 7.608786e-02 5.670205e-03 2.258257e-02 2.097529e-01## [11] 3.178824e-02 7.388015e-04 1.771966e-01 1.705458e-02 6.338966e-05Any chance there’s a r.squared above 0.5 ?map(res, get_rsquared) %&gt;% some(~ .x &gt; 0.5)## [1] FALSErpartWe’ll build 20 rpart to find the better model. Yes, this will bebetter to do it with a random forest, but we’re here for the example :)Training and validationLet’s do the train / validation.library(dplyr)library(readr)titanic &lt;- read_csv(&quot;http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.csv&quot;)train &lt;- rerun(20, sample_frac(titanic, size = 0.8))validation &lt;- map(train, ~ anti_join(titanic, .x))Check if the sizes of all validation datasets are the same:map_int(validation, nrow) %&gt;% every(~ .x == 262)## [1] TRUECreate a model builderWe’ll create a simple model to predict survival based on sex.library(rpart)rpart_pimped &lt;- partial(rpart, formula = survived ~ sex, method = &quot;class&quot;)res &lt;- map(train, ~ rpart_pimped(data = .x))Make predictionprediction &lt;- map2(validation, res, ~ predict(.y, .x, type = &quot;class&quot;))w_prediction &lt;- map2(validation, prediction, ~ mutate(.x, prediction = .y))Confusion matrixNow let’s map a conf matrix on all these results:library(caret)conf_mats &lt;- map(w_prediction, ~ confusionMatrix(.x$prediction, .x$survived))Is the “Sensivity” for all models above 0.8?map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% every(~ .x &gt; 0.8)## [1] TRUEIs the “Specificity” for all models above 0.8?map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% every(~ .x &gt; 0.8)## [1] FALSEkeep_indexLet’s modify keep a little bit so we can extract the models we need:# Here&#39;s the keep source codekeep## function(.x, .p, ...) {##   sel &lt;- probe(.x, .p, ...)##   .x[!is.na(sel) &amp; sel]## }## &lt;environment: namespace:purrr&gt;# Let&#39;s tweak it a little bitkeep_index &lt;- function(.x, .p, ...) {  sel &lt;- purrr:::probe(.x, .p, ...)  which(sel)}So, which are the models with a sensitivity superior to0.85?map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% keep_index(~ .x &gt; 0.85)##  [1]  1  3  4  6 11 13 14 15 16 18 19And the models with a specificity superior to0.7?map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% keep_index(~ .x &gt; 0.7)## [1]  2  7 13 14 17Which models are inboth?sens &lt;- map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% keep_index(~ .x &gt; 0.85)spec &lt;- map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% keep_index(~ .x &gt; 0.7)keep(sens, map_lgl(sens, ~ .x %in% spec))## [1] 13 14So, I guess we’ll go for model(s) number 13, 14!">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="A Crazy Little Thing Called {purrr} - Part 6 : doing statistics">
+<meta property="og:url" content="http://localhost:4000/purrr-statistics/">
+
+
+  <meta property="og:description" content="This is gonna be the last time I make this Queen reference in 2017.I’ve been sharing some “stats with {purrr}” recipes on my Twitteraccount lately. Twitter being what it is(a source of infinite temporary content), here’s the post gathering somestatistics tricks you can do with {purrr}.Looking for normalityIf your data are in a data.frame, you can simply map a shapiro.test onall the columns, keeping the one with a p.value &gt; to 0.05 (remember,the shapiro tests for non-normality) :library(purrr)map(airquality, shapiro.test) %&gt;% keep(~ .x$p.value &gt; 0.05)## $Wind## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.98575, p-value = 0.1178Of course, you can do the same on a non-tabular list:# rdunif is from purrrl &lt;- list(a = rnorm(10), b = rdunif(1000, 10))map(l, shapiro.test) %&gt;% keep(~ .x$p.value &gt; 0.05)## $a## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.91275, p-value = 0.3004Also, map_if allows you to map only on numeric variables in yourdata.frame:map_if(iris, is.numeric, shapiro.test)## $Sepal.Length## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.97609, p-value = 0.01018## ## ## $Sepal.Width## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.98492, p-value = 0.1012## ## ## $Petal.Length## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.87627, p-value = 7.412e-10## ## ## $Petal.Width## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.90183, p-value = 1.68e-08## ## ## $Species##   [1] setosa     setosa     setosa     setosa     setosa     setosa    ##   [7] setosa     setosa     setosa     setosa     setosa     setosa    ##  [13] setosa     setosa     setosa     setosa     setosa     setosa    ##  [19] setosa     setosa     setosa     setosa     setosa     setosa    ##  [25] setosa     setosa     setosa     setosa     setosa     setosa    ##  [31] setosa     setosa     setosa     setosa     setosa     setosa    ##  [37] setosa     setosa     setosa     setosa     setosa     setosa    ##  [43] setosa     setosa     setosa     setosa     setosa     setosa    ##  [49] setosa     setosa     versicolor versicolor versicolor versicolor##  [55] versicolor versicolor versicolor versicolor versicolor versicolor##  [61] versicolor versicolor versicolor versicolor versicolor versicolor##  [67] versicolor versicolor versicolor versicolor versicolor versicolor##  [73] versicolor versicolor versicolor versicolor versicolor versicolor##  [79] versicolor versicolor versicolor versicolor versicolor versicolor##  [85] versicolor versicolor versicolor versicolor versicolor versicolor##  [91] versicolor versicolor versicolor versicolor versicolor versicolor##  [97] versicolor versicolor versicolor versicolor virginica  virginica ## [103] virginica  virginica  virginica  virginica  virginica  virginica ## [109] virginica  virginica  virginica  virginica  virginica  virginica ## [115] virginica  virginica  virginica  virginica  virginica  virginica ## [121] virginica  virginica  virginica  virginica  virginica  virginica ## [127] virginica  virginica  virginica  virginica  virginica  virginica ## [133] virginica  virginica  virginica  virginica  virginica  virginica ## [139] virginica  virginica  virginica  virginica  virginica  virginica ## [145] virginica  virginica  virginica  virginica  virginica  virginica ## Levels: setosa versicolor virginicaBulk cor.testAs said on Twitter, this might bep.hacking, buthere’s how you can do a cor.test for all columns in a data.frame, witha little help from tidystringdist and broom :library(tidystringdist) # Works since v0.1.2 comb &lt;- tidy_comb_all(names(airquality))knitr::kable(comb)            V1      V2                  Ozone      Solar.R              Ozone      Wind              Ozone      Temp              Ozone      Month              Ozone      Day              Solar.R      Wind              Solar.R      Temp              Solar.R      Month              Solar.R      Day              Wind      Temp              Wind      Month              Wind      Day              Temp      Month              Temp      Day              Month      Day      bulk_cor &lt;- pmap(comb, ~ cor.test(airquality[[.x]], airquality[[.y]])) %&gt;%   map_df(broom::tidy) %&gt;%   cbind(comb, .)knitr::kable(bulk_cor, digits = 3)            V1      V2      estimate      statistic      p.value      parameter      conf.low      conf.high      method      alternative                  Ozone      Solar.R      0.348      3.880      0.000      109      0.173      0.502      Pearson’s product-moment correlation      two.sided              Ozone      Wind      -0.602      -8.040      0.000      114      -0.706      -0.471      Pearson’s product-moment correlation      two.sided              Ozone      Temp      0.698      10.418      0.000      114      0.591      0.781      Pearson’s product-moment correlation      two.sided              Ozone      Month      0.165      1.781      0.078      114      -0.018      0.337      Pearson’s product-moment correlation      two.sided              Ozone      Day      -0.013      -0.141      0.888      114      -0.195      0.169      Pearson’s product-moment correlation      two.sided              Solar.R      Wind      -0.057      -0.683      0.496      144      -0.217      0.107      Pearson’s product-moment correlation      two.sided              Solar.R      Temp      0.276      3.444      0.001      144      0.119      0.419      Pearson’s product-moment correlation      two.sided              Solar.R      Month      -0.075      -0.906      0.366      144      -0.235      0.088      Pearson’s product-moment correlation      two.sided              Solar.R      Day      -0.150      -1.824      0.070      144      -0.305      0.012      Pearson’s product-moment correlation      two.sided              Wind      Temp      -0.458      -6.331      0.000      151      -0.575      -0.323      Pearson’s product-moment correlation      two.sided              Wind      Month      -0.178      -2.227      0.027      151      -0.328      -0.020      Pearson’s product-moment correlation      two.sided              Wind      Day      0.027      0.334      0.739      151      -0.132      0.185      Pearson’s product-moment correlation      two.sided              Temp      Month      0.421      5.703      0.000      151      0.281      0.543      Pearson’s product-moment correlation      two.sided              Temp      Day      -0.131      -1.619      0.108      151      -0.283      0.029      Pearson’s product-moment correlation      two.sided              Month      Day      -0.008      -0.098      0.922      151      -0.166      0.151      Pearson’s product-moment correlation      two.sided      Some Machine LearninglmLet’s build a linear model of all possible iris combinations:res &lt;- pmap(comb, ~ lm(airquality[[.x]] ~ airquality[[.y]]))get_rsquared &lt;- compose(as_mapper(~ .x$r.squared), summary)map_dbl(res, get_rsquared)##  [1] 1.213419e-01 3.618582e-01 4.877072e-01 2.706660e-02 1.749177e-04##  [6] 3.225293e-03 7.608786e-02 5.670205e-03 2.258257e-02 2.097529e-01## [11] 3.178824e-02 7.388015e-04 1.771966e-01 1.705458e-02 6.338966e-05Any chance there’s a r.squared above 0.5 ?map(res, get_rsquared) %&gt;% some(~ .x &gt; 0.5)## [1] FALSErpartWe’ll build 20 rpart to find the better model. Yes, this will bebetter to do it with a random forest, but we’re here for the example :)Training and validationLet’s do the train / validation.library(dplyr)library(readr)titanic &lt;- read_csv(&quot;http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.csv&quot;)train &lt;- rerun(20, sample_frac(titanic, size = 0.8))validation &lt;- map(train, ~ anti_join(titanic, .x))Check if the sizes of all validation datasets are the same:map_int(validation, nrow) %&gt;% every(~ .x == 262)## [1] TRUECreate a model builderWe’ll create a simple model to predict survival based on sex.library(rpart)rpart_pimped &lt;- partial(rpart, formula = survived ~ sex, method = &quot;class&quot;)res &lt;- map(train, ~ rpart_pimped(data = .x))Make predictionprediction &lt;- map2(validation, res, ~ predict(.y, .x, type = &quot;class&quot;))w_prediction &lt;- map2(validation, prediction, ~ mutate(.x, prediction = .y))Confusion matrixNow let’s map a conf matrix on all these results:library(caret)conf_mats &lt;- map(w_prediction, ~ confusionMatrix(.x$prediction, .x$survived))Is the “Sensivity” for all models above 0.8?map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% every(~ .x &gt; 0.8)## [1] TRUEIs the “Specificity” for all models above 0.8?map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% every(~ .x &gt; 0.8)## [1] FALSEkeep_indexLet’s modify keep a little bit so we can extract the models we need:# Here&#39;s the keep source codekeep## function(.x, .p, ...) {##   sel &lt;- probe(.x, .p, ...)##   .x[!is.na(sel) &amp; sel]## }## &lt;environment: namespace:purrr&gt;# Let&#39;s tweak it a little bitkeep_index &lt;- function(.x, .p, ...) {  sel &lt;- purrr:::probe(.x, .p, ...)  which(sel)}So, which are the models with a sensitivity superior to0.85?map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% keep_index(~ .x &gt; 0.85)##  [1]  1  3  4  6 11 13 14 15 16 18 19And the models with a specificity superior to0.7?map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% keep_index(~ .x &gt; 0.7)## [1]  2  7 13 14 17Which models are inboth?sens &lt;- map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% keep_index(~ .x &gt; 0.85)spec &lt;- map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% keep_index(~ .x &gt; 0.7)keep(sens, map_lgl(sens, ~ .x %in% spec))## [1] 13 14So, I guess we’ll go for model(s) number 13, 14!">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="A Crazy Little Thing Called {purrr} - Part 6 : doing statistics">
+  <meta name="twitter:description" content="This is gonna be the last time I make this Queen reference in 2017.I’ve been sharing some “stats with {purrr}” recipes on my Twitteraccount lately. Twitter being what it is(a source of infinite temporary content), here’s the post gathering somestatistics tricks you can do with {purrr}.Looking for normalityIf your data are in a data.frame, you can simply map a shapiro.test onall the columns, keeping the one with a p.value &gt; to 0.05 (remember,the shapiro tests for non-normality) :library(purrr)map(airquality, shapiro.test) %&gt;% keep(~ .x$p.value &gt; 0.05)## $Wind## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.98575, p-value = 0.1178Of course, you can do the same on a non-tabular list:# rdunif is from purrrl &lt;- list(a = rnorm(10), b = rdunif(1000, 10))map(l, shapiro.test) %&gt;% keep(~ .x$p.value &gt; 0.05)## $a## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.91275, p-value = 0.3004Also, map_if allows you to map only on numeric variables in yourdata.frame:map_if(iris, is.numeric, shapiro.test)## $Sepal.Length## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.97609, p-value = 0.01018## ## ## $Sepal.Width## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.98492, p-value = 0.1012## ## ## $Petal.Length## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.87627, p-value = 7.412e-10## ## ## $Petal.Width## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.90183, p-value = 1.68e-08## ## ## $Species##   [1] setosa     setosa     setosa     setosa     setosa     setosa    ##   [7] setosa     setosa     setosa     setosa     setosa     setosa    ##  [13] setosa     setosa     setosa     setosa     setosa     setosa    ##  [19] setosa     setosa     setosa     setosa     setosa     setosa    ##  [25] setosa     setosa     setosa     setosa     setosa     setosa    ##  [31] setosa     setosa     setosa     setosa     setosa     setosa    ##  [37] setosa     setosa     setosa     setosa     setosa     setosa    ##  [43] setosa     setosa     setosa     setosa     setosa     setosa    ##  [49] setosa     setosa     versicolor versicolor versicolor versicolor##  [55] versicolor versicolor versicolor versicolor versicolor versicolor##  [61] versicolor versicolor versicolor versicolor versicolor versicolor##  [67] versicolor versicolor versicolor versicolor versicolor versicolor##  [73] versicolor versicolor versicolor versicolor versicolor versicolor##  [79] versicolor versicolor versicolor versicolor versicolor versicolor##  [85] versicolor versicolor versicolor versicolor versicolor versicolor##  [91] versicolor versicolor versicolor versicolor versicolor versicolor##  [97] versicolor versicolor versicolor versicolor virginica  virginica ## [103] virginica  virginica  virginica  virginica  virginica  virginica ## [109] virginica  virginica  virginica  virginica  virginica  virginica ## [115] virginica  virginica  virginica  virginica  virginica  virginica ## [121] virginica  virginica  virginica  virginica  virginica  virginica ## [127] virginica  virginica  virginica  virginica  virginica  virginica ## [133] virginica  virginica  virginica  virginica  virginica  virginica ## [139] virginica  virginica  virginica  virginica  virginica  virginica ## [145] virginica  virginica  virginica  virginica  virginica  virginica ## Levels: setosa versicolor virginicaBulk cor.testAs said on Twitter, this might bep.hacking, buthere’s how you can do a cor.test for all columns in a data.frame, witha little help from tidystringdist and broom :library(tidystringdist) # Works since v0.1.2 comb &lt;- tidy_comb_all(names(airquality))knitr::kable(comb)            V1      V2                  Ozone      Solar.R              Ozone      Wind              Ozone      Temp              Ozone      Month              Ozone      Day              Solar.R      Wind              Solar.R      Temp              Solar.R      Month              Solar.R      Day              Wind      Temp              Wind      Month              Wind      Day              Temp      Month              Temp      Day              Month      Day      bulk_cor &lt;- pmap(comb, ~ cor.test(airquality[[.x]], airquality[[.y]])) %&gt;%   map_df(broom::tidy) %&gt;%   cbind(comb, .)knitr::kable(bulk_cor, digits = 3)            V1      V2      estimate      statistic      p.value      parameter      conf.low      conf.high      method      alternative                  Ozone      Solar.R      0.348      3.880      0.000      109      0.173      0.502      Pearson’s product-moment correlation      two.sided              Ozone      Wind      -0.602      -8.040      0.000      114      -0.706      -0.471      Pearson’s product-moment correlation      two.sided              Ozone      Temp      0.698      10.418      0.000      114      0.591      0.781      Pearson’s product-moment correlation      two.sided              Ozone      Month      0.165      1.781      0.078      114      -0.018      0.337      Pearson’s product-moment correlation      two.sided              Ozone      Day      -0.013      -0.141      0.888      114      -0.195      0.169      Pearson’s product-moment correlation      two.sided              Solar.R      Wind      -0.057      -0.683      0.496      144      -0.217      0.107      Pearson’s product-moment correlation      two.sided              Solar.R      Temp      0.276      3.444      0.001      144      0.119      0.419      Pearson’s product-moment correlation      two.sided              Solar.R      Month      -0.075      -0.906      0.366      144      -0.235      0.088      Pearson’s product-moment correlation      two.sided              Solar.R      Day      -0.150      -1.824      0.070      144      -0.305      0.012      Pearson’s product-moment correlation      two.sided              Wind      Temp      -0.458      -6.331      0.000      151      -0.575      -0.323      Pearson’s product-moment correlation      two.sided              Wind      Month      -0.178      -2.227      0.027      151      -0.328      -0.020      Pearson’s product-moment correlation      two.sided              Wind      Day      0.027      0.334      0.739      151      -0.132      0.185      Pearson’s product-moment correlation      two.sided              Temp      Month      0.421      5.703      0.000      151      0.281      0.543      Pearson’s product-moment correlation      two.sided              Temp      Day      -0.131      -1.619      0.108      151      -0.283      0.029      Pearson’s product-moment correlation      two.sided              Month      Day      -0.008      -0.098      0.922      151      -0.166      0.151      Pearson’s product-moment correlation      two.sided      Some Machine LearninglmLet’s build a linear model of all possible iris combinations:res &lt;- pmap(comb, ~ lm(airquality[[.x]] ~ airquality[[.y]]))get_rsquared &lt;- compose(as_mapper(~ .x$r.squared), summary)map_dbl(res, get_rsquared)##  [1] 1.213419e-01 3.618582e-01 4.877072e-01 2.706660e-02 1.749177e-04##  [6] 3.225293e-03 7.608786e-02 5.670205e-03 2.258257e-02 2.097529e-01## [11] 3.178824e-02 7.388015e-04 1.771966e-01 1.705458e-02 6.338966e-05Any chance there’s a r.squared above 0.5 ?map(res, get_rsquared) %&gt;% some(~ .x &gt; 0.5)## [1] FALSErpartWe’ll build 20 rpart to find the better model. Yes, this will bebetter to do it with a random forest, but we’re here for the example :)Training and validationLet’s do the train / validation.library(dplyr)library(readr)titanic &lt;- read_csv(&quot;http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.csv&quot;)train &lt;- rerun(20, sample_frac(titanic, size = 0.8))validation &lt;- map(train, ~ anti_join(titanic, .x))Check if the sizes of all validation datasets are the same:map_int(validation, nrow) %&gt;% every(~ .x == 262)## [1] TRUECreate a model builderWe’ll create a simple model to predict survival based on sex.library(rpart)rpart_pimped &lt;- partial(rpart, formula = survived ~ sex, method = &quot;class&quot;)res &lt;- map(train, ~ rpart_pimped(data = .x))Make predictionprediction &lt;- map2(validation, res, ~ predict(.y, .x, type = &quot;class&quot;))w_prediction &lt;- map2(validation, prediction, ~ mutate(.x, prediction = .y))Confusion matrixNow let’s map a conf matrix on all these results:library(caret)conf_mats &lt;- map(w_prediction, ~ confusionMatrix(.x$prediction, .x$survived))Is the “Sensivity” for all models above 0.8?map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% every(~ .x &gt; 0.8)## [1] TRUEIs the “Specificity” for all models above 0.8?map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% every(~ .x &gt; 0.8)## [1] FALSEkeep_indexLet’s modify keep a little bit so we can extract the models we need:# Here&#39;s the keep source codekeep## function(.x, .p, ...) {##   sel &lt;- probe(.x, .p, ...)##   .x[!is.na(sel) &amp; sel]## }## &lt;environment: namespace:purrr&gt;# Let&#39;s tweak it a little bitkeep_index &lt;- function(.x, .p, ...) {  sel &lt;- purrr:::probe(.x, .p, ...)  which(sel)}So, which are the models with a sensitivity superior to0.85?map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% keep_index(~ .x &gt; 0.85)##  [1]  1  3  4  6 11 13 14 15 16 18 19And the models with a specificity superior to0.7?map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% keep_index(~ .x &gt; 0.7)## [1]  2  7 13 14 17Which models are inboth?sens &lt;- map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% keep_index(~ .x &gt; 0.85)spec &lt;- map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% keep_index(~ .x &gt; 0.7)keep(sens, map_lgl(sens, ~ .x %in% spec))## [1] 13 14So, I guess we’ll go for model(s) number 13, 14!">
+  <meta name="twitter:url" content="http://localhost:4000/purrr-statistics/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-12-28T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/purrr-statistics/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="A Crazy Little Thing Called {purrr} - Part 6 : doing statistics">
+    <meta itemprop="description" content="This is gonna be the last time I make this Queen reference in 2017.I’ve been sharing some “stats with {purrr}” recipes on my Twitteraccount lately. Twitter being what it is(a source of infinite temporary content), here’s the post gathering somestatistics tricks you can do with {purrr}.Looking for normalityIf your data are in a data.frame, you can simply map a shapiro.test onall the columns, keeping the one with a p.value &gt; to 0.05 (remember,the shapiro tests for non-normality) :library(purrr)map(airquality, shapiro.test) %&gt;% keep(~ .x$p.value &gt; 0.05)## $Wind## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.98575, p-value = 0.1178Of course, you can do the same on a non-tabular list:# rdunif is from purrrl &lt;- list(a = rnorm(10), b = rdunif(1000, 10))map(l, shapiro.test) %&gt;% keep(~ .x$p.value &gt; 0.05)## $a## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.91275, p-value = 0.3004Also, map_if allows you to map only on numeric variables in yourdata.frame:map_if(iris, is.numeric, shapiro.test)## $Sepal.Length## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.97609, p-value = 0.01018## ## ## $Sepal.Width## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.98492, p-value = 0.1012## ## ## $Petal.Length## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.87627, p-value = 7.412e-10## ## ## $Petal.Width## ##  Shapiro-Wilk normality test## ## data:  .x[[i]]## W = 0.90183, p-value = 1.68e-08## ## ## $Species##   [1] setosa     setosa     setosa     setosa     setosa     setosa    ##   [7] setosa     setosa     setosa     setosa     setosa     setosa    ##  [13] setosa     setosa     setosa     setosa     setosa     setosa    ##  [19] setosa     setosa     setosa     setosa     setosa     setosa    ##  [25] setosa     setosa     setosa     setosa     setosa     setosa    ##  [31] setosa     setosa     setosa     setosa     setosa     setosa    ##  [37] setosa     setosa     setosa     setosa     setosa     setosa    ##  [43] setosa     setosa     setosa     setosa     setosa     setosa    ##  [49] setosa     setosa     versicolor versicolor versicolor versicolor##  [55] versicolor versicolor versicolor versicolor versicolor versicolor##  [61] versicolor versicolor versicolor versicolor versicolor versicolor##  [67] versicolor versicolor versicolor versicolor versicolor versicolor##  [73] versicolor versicolor versicolor versicolor versicolor versicolor##  [79] versicolor versicolor versicolor versicolor versicolor versicolor##  [85] versicolor versicolor versicolor versicolor versicolor versicolor##  [91] versicolor versicolor versicolor versicolor versicolor versicolor##  [97] versicolor versicolor versicolor versicolor virginica  virginica ## [103] virginica  virginica  virginica  virginica  virginica  virginica ## [109] virginica  virginica  virginica  virginica  virginica  virginica ## [115] virginica  virginica  virginica  virginica  virginica  virginica ## [121] virginica  virginica  virginica  virginica  virginica  virginica ## [127] virginica  virginica  virginica  virginica  virginica  virginica ## [133] virginica  virginica  virginica  virginica  virginica  virginica ## [139] virginica  virginica  virginica  virginica  virginica  virginica ## [145] virginica  virginica  virginica  virginica  virginica  virginica ## Levels: setosa versicolor virginicaBulk cor.testAs said on Twitter, this might bep.hacking, buthere’s how you can do a cor.test for all columns in a data.frame, witha little help from tidystringdist and broom :library(tidystringdist) # Works since v0.1.2 comb &lt;- tidy_comb_all(names(airquality))knitr::kable(comb)            V1      V2                  Ozone      Solar.R              Ozone      Wind              Ozone      Temp              Ozone      Month              Ozone      Day              Solar.R      Wind              Solar.R      Temp              Solar.R      Month              Solar.R      Day              Wind      Temp              Wind      Month              Wind      Day              Temp      Month              Temp      Day              Month      Day      bulk_cor &lt;- pmap(comb, ~ cor.test(airquality[[.x]], airquality[[.y]])) %&gt;%   map_df(broom::tidy) %&gt;%   cbind(comb, .)knitr::kable(bulk_cor, digits = 3)            V1      V2      estimate      statistic      p.value      parameter      conf.low      conf.high      method      alternative                  Ozone      Solar.R      0.348      3.880      0.000      109      0.173      0.502      Pearson’s product-moment correlation      two.sided              Ozone      Wind      -0.602      -8.040      0.000      114      -0.706      -0.471      Pearson’s product-moment correlation      two.sided              Ozone      Temp      0.698      10.418      0.000      114      0.591      0.781      Pearson’s product-moment correlation      two.sided              Ozone      Month      0.165      1.781      0.078      114      -0.018      0.337      Pearson’s product-moment correlation      two.sided              Ozone      Day      -0.013      -0.141      0.888      114      -0.195      0.169      Pearson’s product-moment correlation      two.sided              Solar.R      Wind      -0.057      -0.683      0.496      144      -0.217      0.107      Pearson’s product-moment correlation      two.sided              Solar.R      Temp      0.276      3.444      0.001      144      0.119      0.419      Pearson’s product-moment correlation      two.sided              Solar.R      Month      -0.075      -0.906      0.366      144      -0.235      0.088      Pearson’s product-moment correlation      two.sided              Solar.R      Day      -0.150      -1.824      0.070      144      -0.305      0.012      Pearson’s product-moment correlation      two.sided              Wind      Temp      -0.458      -6.331      0.000      151      -0.575      -0.323      Pearson’s product-moment correlation      two.sided              Wind      Month      -0.178      -2.227      0.027      151      -0.328      -0.020      Pearson’s product-moment correlation      two.sided              Wind      Day      0.027      0.334      0.739      151      -0.132      0.185      Pearson’s product-moment correlation      two.sided              Temp      Month      0.421      5.703      0.000      151      0.281      0.543      Pearson’s product-moment correlation      two.sided              Temp      Day      -0.131      -1.619      0.108      151      -0.283      0.029      Pearson’s product-moment correlation      two.sided              Month      Day      -0.008      -0.098      0.922      151      -0.166      0.151      Pearson’s product-moment correlation      two.sided      Some Machine LearninglmLet’s build a linear model of all possible iris combinations:res &lt;- pmap(comb, ~ lm(airquality[[.x]] ~ airquality[[.y]]))get_rsquared &lt;- compose(as_mapper(~ .x$r.squared), summary)map_dbl(res, get_rsquared)##  [1] 1.213419e-01 3.618582e-01 4.877072e-01 2.706660e-02 1.749177e-04##  [6] 3.225293e-03 7.608786e-02 5.670205e-03 2.258257e-02 2.097529e-01## [11] 3.178824e-02 7.388015e-04 1.771966e-01 1.705458e-02 6.338966e-05Any chance there’s a r.squared above 0.5 ?map(res, get_rsquared) %&gt;% some(~ .x &gt; 0.5)## [1] FALSErpartWe’ll build 20 rpart to find the better model. Yes, this will bebetter to do it with a random forest, but we’re here for the example :)Training and validationLet’s do the train / validation.library(dplyr)library(readr)titanic &lt;- read_csv(&quot;http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.csv&quot;)train &lt;- rerun(20, sample_frac(titanic, size = 0.8))validation &lt;- map(train, ~ anti_join(titanic, .x))Check if the sizes of all validation datasets are the same:map_int(validation, nrow) %&gt;% every(~ .x == 262)## [1] TRUECreate a model builderWe’ll create a simple model to predict survival based on sex.library(rpart)rpart_pimped &lt;- partial(rpart, formula = survived ~ sex, method = &quot;class&quot;)res &lt;- map(train, ~ rpart_pimped(data = .x))Make predictionprediction &lt;- map2(validation, res, ~ predict(.y, .x, type = &quot;class&quot;))w_prediction &lt;- map2(validation, prediction, ~ mutate(.x, prediction = .y))Confusion matrixNow let’s map a conf matrix on all these results:library(caret)conf_mats &lt;- map(w_prediction, ~ confusionMatrix(.x$prediction, .x$survived))Is the “Sensivity” for all models above 0.8?map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% every(~ .x &gt; 0.8)## [1] TRUEIs the “Specificity” for all models above 0.8?map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% every(~ .x &gt; 0.8)## [1] FALSEkeep_indexLet’s modify keep a little bit so we can extract the models we need:# Here&#39;s the keep source codekeep## function(.x, .p, ...) {##   sel &lt;- probe(.x, .p, ...)##   .x[!is.na(sel) &amp; sel]## }## &lt;environment: namespace:purrr&gt;# Let&#39;s tweak it a little bitkeep_index &lt;- function(.x, .p, ...) {  sel &lt;- purrr:::probe(.x, .p, ...)  which(sel)}So, which are the models with a sensitivity superior to0.85?map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% keep_index(~ .x &gt; 0.85)##  [1]  1  3  4  6 11 13 14 15 16 18 19And the models with a specificity superior to0.7?map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% keep_index(~ .x &gt; 0.7)## [1]  2  7 13 14 17Which models are inboth?sens &lt;- map_dbl(conf_mats, ~ .x$byClass[&quot;Sensitivity&quot;]) %&gt;% keep_index(~ .x &gt; 0.85)spec &lt;- map_dbl(conf_mats, ~ .x$byClass[&quot;Specificity&quot;]) %&gt;% keep_index(~ .x &gt; 0.7)keep(sens, map_lgl(sens, ~ .x %in% spec))## [1] 13 14So, I guess we’ll go for model(s) number 13, 14!">
+    <meta itemprop="datePublished" content="December 28, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">A Crazy Little Thing Called {purrr} - Part 6 : doing statistics
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  5 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>This is gonna be the last time I make this Queen reference in 2017.</p>
+
+<p>I’ve been sharing some “stats with {purrr}” recipes on my <a href="https://twitter.com/_ColinFay">Twitter
+account</a> lately. Twitter being what it is
+(a source of infinite temporary content), here’s the post gathering some
+statistics tricks you can do with {purrr}.</p>
+
+<h2 id="looking-for-normality">Looking for normality</h2>
+
+<p>If your data are in a data.frame, you can simply map a shapiro.test on
+all the columns, keeping the one with a <code class="highlighter-rouge">p.value</code> &gt; to 0.05 (remember,
+the shapiro tests for non-normality) :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">purrr</span><span class="p">)</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="n">airquality</span><span class="p">,</span><span class="w"> </span><span class="n">shapiro.test</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">keep</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">p.value</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.05</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## $Wind
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .x[[i]]
+## W = 0.98575, p-value = 0.1178
+</code></pre></div></div>
+
+<p>Of course, you can do the same on a non-tabular list:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># rdunif is from purrr</span><span class="w">
+</span><span class="n">l</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rnorm</span><span class="p">(</span><span class="m">10</span><span class="p">),</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rdunif</span><span class="p">(</span><span class="m">1000</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">))</span><span class="w">
+</span><span class="n">map</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">shapiro.test</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">keep</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">p.value</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.05</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## $a
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .x[[i]]
+## W = 0.91275, p-value = 0.3004
+</code></pre></div></div>
+
+<p>Also, <code class="highlighter-rouge">map_if</code> allows you to map only on numeric variables in your
+data.frame:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_if</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">is.numeric</span><span class="p">,</span><span class="w"> </span><span class="n">shapiro.test</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## $Sepal.Length
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .x[[i]]
+## W = 0.97609, p-value = 0.01018
+## 
+## 
+## $Sepal.Width
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .x[[i]]
+## W = 0.98492, p-value = 0.1012
+## 
+## 
+## $Petal.Length
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .x[[i]]
+## W = 0.87627, p-value = 7.412e-10
+## 
+## 
+## $Petal.Width
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .x[[i]]
+## W = 0.90183, p-value = 1.68e-08
+## 
+## 
+## $Species
+##   [1] setosa     setosa     setosa     setosa     setosa     setosa    
+##   [7] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [13] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [19] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [25] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [31] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [37] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [43] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [49] setosa     setosa     versicolor versicolor versicolor versicolor
+##  [55] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [61] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [67] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [73] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [79] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [85] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [91] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [97] versicolor versicolor versicolor versicolor virginica  virginica 
+## [103] virginica  virginica  virginica  virginica  virginica  virginica 
+## [109] virginica  virginica  virginica  virginica  virginica  virginica 
+## [115] virginica  virginica  virginica  virginica  virginica  virginica 
+## [121] virginica  virginica  virginica  virginica  virginica  virginica 
+## [127] virginica  virginica  virginica  virginica  virginica  virginica 
+## [133] virginica  virginica  virginica  virginica  virginica  virginica 
+## [139] virginica  virginica  virginica  virginica  virginica  virginica 
+## [145] virginica  virginica  virginica  virginica  virginica  virginica 
+## Levels: setosa versicolor virginica
+</code></pre></div></div>
+
+<h2 id="bulk-cortest">Bulk cor.test</h2>
+
+<p>As said on Twitter, this might be
+<a href="https://twitter.com/HBossier/status/943480783288889344">p.hacking</a>, but
+here’s how you can do a <code class="highlighter-rouge">cor.test</code> for all columns in a data.frame, with
+a little help from <code class="highlighter-rouge">tidystringdist</code> and <code class="highlighter-rouge">broom</code> :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidystringdist</span><span class="p">)</span><span class="w"> </span><span class="c1"># Works since v0.1.2 </span><span class="w">
+</span><span class="n">comb</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tidy_comb_all</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">airquality</span><span class="p">))</span><span class="w">
+</span><span class="n">knitr</span><span class="o">::</span><span class="n">kable</span><span class="p">(</span><span class="n">comb</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">V1</th>
+      <th style="text-align: left">V2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Solar.R</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Wind</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Temp</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Month</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Day</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Solar.R</td>
+      <td style="text-align: left">Wind</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Solar.R</td>
+      <td style="text-align: left">Temp</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Solar.R</td>
+      <td style="text-align: left">Month</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Solar.R</td>
+      <td style="text-align: left">Day</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Wind</td>
+      <td style="text-align: left">Temp</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Wind</td>
+      <td style="text-align: left">Month</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Wind</td>
+      <td style="text-align: left">Day</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Temp</td>
+      <td style="text-align: left">Month</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Temp</td>
+      <td style="text-align: left">Day</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Month</td>
+      <td style="text-align: left">Day</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bulk_cor</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">pmap</span><span class="p">(</span><span class="n">comb</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">cor.test</span><span class="p">(</span><span class="n">airquality</span><span class="p">[[</span><span class="n">.x</span><span class="p">]],</span><span class="w"> </span><span class="n">airquality</span><span class="p">[[</span><span class="n">.y</span><span class="p">]]))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">map_df</span><span class="p">(</span><span class="n">broom</span><span class="o">::</span><span class="n">tidy</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">cbind</span><span class="p">(</span><span class="n">comb</span><span class="p">,</span><span class="w"> </span><span class="n">.</span><span class="p">)</span><span class="w">
+
+</span><span class="n">knitr</span><span class="o">::</span><span class="n">kable</span><span class="p">(</span><span class="n">bulk_cor</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">V1</th>
+      <th style="text-align: left">V2</th>
+      <th style="text-align: right">estimate</th>
+      <th style="text-align: right">statistic</th>
+      <th style="text-align: right">p.value</th>
+      <th style="text-align: left">parameter</th>
+      <th style="text-align: left">conf.low</th>
+      <th>conf.high</th>
+      <th>method</th>
+      <th>alternative</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Solar.R</td>
+      <td style="text-align: right">0.348</td>
+      <td style="text-align: right">3.880</td>
+      <td style="text-align: right">0.000</td>
+      <td style="text-align: left">109</td>
+      <td style="text-align: left">0.173</td>
+      <td>0.502</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Wind</td>
+      <td style="text-align: right">-0.602</td>
+      <td style="text-align: right">-8.040</td>
+      <td style="text-align: right">0.000</td>
+      <td style="text-align: left">114</td>
+      <td style="text-align: left">-0.706</td>
+      <td>-0.471</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Temp</td>
+      <td style="text-align: right">0.698</td>
+      <td style="text-align: right">10.418</td>
+      <td style="text-align: right">0.000</td>
+      <td style="text-align: left">114</td>
+      <td style="text-align: left">0.591</td>
+      <td>0.781</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Month</td>
+      <td style="text-align: right">0.165</td>
+      <td style="text-align: right">1.781</td>
+      <td style="text-align: right">0.078</td>
+      <td style="text-align: left">114</td>
+      <td style="text-align: left">-0.018</td>
+      <td>0.337</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ozone</td>
+      <td style="text-align: left">Day</td>
+      <td style="text-align: right">-0.013</td>
+      <td style="text-align: right">-0.141</td>
+      <td style="text-align: right">0.888</td>
+      <td style="text-align: left">114</td>
+      <td style="text-align: left">-0.195</td>
+      <td>0.169</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Solar.R</td>
+      <td style="text-align: left">Wind</td>
+      <td style="text-align: right">-0.057</td>
+      <td style="text-align: right">-0.683</td>
+      <td style="text-align: right">0.496</td>
+      <td style="text-align: left">144</td>
+      <td style="text-align: left">-0.217</td>
+      <td>0.107</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Solar.R</td>
+      <td style="text-align: left">Temp</td>
+      <td style="text-align: right">0.276</td>
+      <td style="text-align: right">3.444</td>
+      <td style="text-align: right">0.001</td>
+      <td style="text-align: left">144</td>
+      <td style="text-align: left">0.119</td>
+      <td>0.419</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Solar.R</td>
+      <td style="text-align: left">Month</td>
+      <td style="text-align: right">-0.075</td>
+      <td style="text-align: right">-0.906</td>
+      <td style="text-align: right">0.366</td>
+      <td style="text-align: left">144</td>
+      <td style="text-align: left">-0.235</td>
+      <td>0.088</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Solar.R</td>
+      <td style="text-align: left">Day</td>
+      <td style="text-align: right">-0.150</td>
+      <td style="text-align: right">-1.824</td>
+      <td style="text-align: right">0.070</td>
+      <td style="text-align: left">144</td>
+      <td style="text-align: left">-0.305</td>
+      <td>0.012</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Wind</td>
+      <td style="text-align: left">Temp</td>
+      <td style="text-align: right">-0.458</td>
+      <td style="text-align: right">-6.331</td>
+      <td style="text-align: right">0.000</td>
+      <td style="text-align: left">151</td>
+      <td style="text-align: left">-0.575</td>
+      <td>-0.323</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Wind</td>
+      <td style="text-align: left">Month</td>
+      <td style="text-align: right">-0.178</td>
+      <td style="text-align: right">-2.227</td>
+      <td style="text-align: right">0.027</td>
+      <td style="text-align: left">151</td>
+      <td style="text-align: left">-0.328</td>
+      <td>-0.020</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Wind</td>
+      <td style="text-align: left">Day</td>
+      <td style="text-align: right">0.027</td>
+      <td style="text-align: right">0.334</td>
+      <td style="text-align: right">0.739</td>
+      <td style="text-align: left">151</td>
+      <td style="text-align: left">-0.132</td>
+      <td>0.185</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Temp</td>
+      <td style="text-align: left">Month</td>
+      <td style="text-align: right">0.421</td>
+      <td style="text-align: right">5.703</td>
+      <td style="text-align: right">0.000</td>
+      <td style="text-align: left">151</td>
+      <td style="text-align: left">0.281</td>
+      <td>0.543</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Temp</td>
+      <td style="text-align: left">Day</td>
+      <td style="text-align: right">-0.131</td>
+      <td style="text-align: right">-1.619</td>
+      <td style="text-align: right">0.108</td>
+      <td style="text-align: left">151</td>
+      <td style="text-align: left">-0.283</td>
+      <td>0.029</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Month</td>
+      <td style="text-align: left">Day</td>
+      <td style="text-align: right">-0.008</td>
+      <td style="text-align: right">-0.098</td>
+      <td style="text-align: right">0.922</td>
+      <td style="text-align: left">151</td>
+      <td style="text-align: left">-0.166</td>
+      <td>0.151</td>
+      <td>Pearson’s product-moment correlation</td>
+      <td>two.sided</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="some-machine-learning">Some Machine Learning</h2>
+
+<h3 id="lm">lm</h3>
+
+<p>Let’s build a linear model of all possible iris combinations:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">pmap</span><span class="p">(</span><span class="n">comb</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="n">airquality</span><span class="p">[[</span><span class="n">.x</span><span class="p">]]</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">airquality</span><span class="p">[[</span><span class="n">.y</span><span class="p">]]))</span><span class="w">
+</span><span class="n">get_rsquared</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">compose</span><span class="p">(</span><span class="n">as_mapper</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">r.squared</span><span class="p">),</span><span class="w"> </span><span class="n">summary</span><span class="p">)</span><span class="w">
+</span><span class="n">map_dbl</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">get_rsquared</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1] 1.213419e-01 3.618582e-01 4.877072e-01 2.706660e-02 1.749177e-04
+##  [6] 3.225293e-03 7.608786e-02 5.670205e-03 2.258257e-02 2.097529e-01
+## [11] 3.178824e-02 7.388015e-04 1.771966e-01 1.705458e-02 6.338966e-05
+</code></pre></div></div>
+
+<p>Any chance there’s a r.squared above 0.5 ?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">get_rsquared</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">some</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.5</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] FALSE
+</code></pre></div></div>
+
+<h3 id="rpart">rpart</h3>
+
+<p>We’ll build 20 <code class="highlighter-rouge">rpart</code> to find the better model. Yes, this will be
+better to do it with a random forest, but we’re here for the example :)</p>
+
+<h4 id="training-and-validation">Training and validation</h4>
+
+<p>Let’s do the train / validation.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span><span class="w">
+</span><span class="n">titanic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.csv"</span><span class="p">)</span><span class="w">
+</span><span class="n">train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rerun</span><span class="p">(</span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">sample_frac</span><span class="p">(</span><span class="n">titanic</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">))</span><span class="w">
+</span><span class="n">validation</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">anti_join</span><span class="p">(</span><span class="n">titanic</span><span class="p">,</span><span class="w"> </span><span class="n">.x</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Check if the sizes of all validation datasets are the same:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_int</span><span class="p">(</span><span class="n">validation</span><span class="p">,</span><span class="w"> </span><span class="n">nrow</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">every</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">262</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] TRUE
+</code></pre></div></div>
+
+<h3 id="create-a-model-builder">Create a model builder</h3>
+
+<p>We’ll create a simple model to predict survival based on sex.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">rpart</span><span class="p">)</span><span class="w">
+</span><span class="n">rpart_pimped</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">partial</span><span class="p">(</span><span class="n">rpart</span><span class="p">,</span><span class="w"> </span><span class="n">formula</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">survived</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">sex</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"class"</span><span class="p">)</span><span class="w">
+</span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">rpart_pimped</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.x</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="make-prediction">Make prediction</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prediction</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map2</span><span class="p">(</span><span class="n">validation</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">predict</span><span class="p">(</span><span class="n">.y</span><span class="p">,</span><span class="w"> </span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"class"</span><span class="p">))</span><span class="w">
+</span><span class="n">w_prediction</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map2</span><span class="p">(</span><span class="n">validation</span><span class="p">,</span><span class="w"> </span><span class="n">prediction</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">mutate</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">prediction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.y</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="confusion-matrix">Confusion matrix</h3>
+
+<p>Now let’s map a conf matrix on all these results:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">caret</span><span class="p">)</span><span class="w">
+</span><span class="n">conf_mats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map</span><span class="p">(</span><span class="n">w_prediction</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">confusionMatrix</span><span class="p">(</span><span class="n">.x</span><span class="o">$</span><span class="n">prediction</span><span class="p">,</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">survived</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Is the “Sensivity” for all models above 0.8?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_dbl</span><span class="p">(</span><span class="n">conf_mats</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">byClass</span><span class="p">[</span><span class="s2">"Sensitivity"</span><span class="p">])</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">every</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] TRUE
+</code></pre></div></div>
+
+<p>Is the “Specificity” for all models above 0.8?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_dbl</span><span class="p">(</span><span class="n">conf_mats</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">byClass</span><span class="p">[</span><span class="s2">"Specificity"</span><span class="p">])</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">every</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] FALSE
+</code></pre></div></div>
+
+<h3 id="keep_index">keep_index</h3>
+
+<p>Let’s modify <code class="highlighter-rouge">keep</code> a little bit so we can extract the models we need:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Here's the keep source code</span><span class="w">
+</span><span class="n">keep</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## function(.x, .p, ...) {
+##   sel &lt;- probe(.x, .p, ...)
+##   .x[!is.na(sel) &amp; sel]
+## }
+## &lt;environment: namespace:purrr&gt;
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Let's tweak it a little bit</span><span class="w">
+</span><span class="n">keep_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.p</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">sel</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">purrr</span><span class="o">:::</span><span class="n">probe</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="n">.p</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+  </span><span class="n">which</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>So, which are the models with a sensitivity superior to
+0.85?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_dbl</span><span class="p">(</span><span class="n">conf_mats</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">byClass</span><span class="p">[</span><span class="s2">"Sensitivity"</span><span class="p">])</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">keep_index</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.85</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1]  1  3  4  6 11 13 14 15 16 18 19
+</code></pre></div></div>
+
+<p>And the models with a specificity superior to
+0.7?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_dbl</span><span class="p">(</span><span class="n">conf_mats</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">byClass</span><span class="p">[</span><span class="s2">"Specificity"</span><span class="p">])</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">keep_index</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.7</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1]  2  7 13 14 17
+</code></pre></div></div>
+
+<p>Which models are in
+both?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sens</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map_dbl</span><span class="p">(</span><span class="n">conf_mats</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">byClass</span><span class="p">[</span><span class="s2">"Sensitivity"</span><span class="p">])</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">keep_index</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.85</span><span class="p">)</span><span class="w">
+</span><span class="n">spec</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map_dbl</span><span class="p">(</span><span class="n">conf_mats</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="o">$</span><span class="n">byClass</span><span class="p">[</span><span class="s2">"Specificity"</span><span class="p">])</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">keep_index</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.7</span><span class="p">)</span><span class="w">
+</span><span class="n">keep</span><span class="p">(</span><span class="n">sens</span><span class="p">,</span><span class="w"> </span><span class="n">map_lgl</span><span class="p">(</span><span class="n">sens</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">spec</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 13 14
+</code></pre></div></div>
+
+<p>So, I guess we’ll go for model(s) number 13, 14!</p>
+
+<p><img src="https://media.giphy.com/media/ohdY5OaQmUmVW/giphy.gif" alt="" /></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#purrr" class="page__taxonomy-item" rel="tag">purrr</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-12-28T00:00:00+01:00">December 28, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=A+Crazy+Little+Thing+Called+%7Bpurrr%7D+-+Part+6+%3A+doing+statistics%20http%3A%2F%2Flocalhost%3A4000%2Fpurrr-statistics%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fpurrr-statistics%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fpurrr-statistics%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fpurrr-statistics%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/purrr-code-optim/" class="pagination--pager" title="A Crazy Little Thing Called {purrr} - Part 5: code optimization
+">←</a>
+    
+    
+      <a href="/attempt-cran/" class="pagination--pager" title="{attempt} is now on CRAN
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/purrr-statistics/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/purrr-statistics"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

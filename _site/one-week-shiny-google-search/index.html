@@ -1,0 +1,788 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>One week as a Shiny dev, seen through Google search - Colin Fay</title>
+<meta name="description" content="Some days ago I read an article on dev.to, entitledsomething like “Googling as a Software Engineer”linkwhich links to thisblogpostfrom Sophie Koonin. And then, I thought… hey, I should do that too!Getting the dataYou can download your browser data attakeout.google.com/. In a matter ofminutes, I had a beautiful JSON which I could bring back inR.res &lt;- jsonlite::read_json(&quot;~/Downloads/Takeout/Chrome/BrowserHistory.json&quot;)library(data.table)library(magrittr)df &lt;- rbindlist(res[[1]], fill = TRUE)  setDT(df)str(df)## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   175321 obs. of  6 variables:##  $ favicon_url    : chr  &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; ...##  $ page_transition: chr  &quot;LINK&quot; &quot;LINK&quot; &quot;LINK&quot; &quot;LINK&quot; ...##  $ title          : chr  &quot;Télécharger vos données&quot; &quot;Gérer les archives&quot; &quot;Télécharger vos données&quot; &quot;Télécharger vos données&quot; ...##  $ url            : chr  &quot;https://takeout.google.com/settings/takeout&quot; &quot;https://takeout.google.com/settings/takeout/downloads&quot; &quot;https://takeout.google.com/settings/takeout&quot; &quot;https://takeout.google.com/?pli=1&quot; ...##  $ client_id      : chr  &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; ...##  $ time_usec      : num  1.57e+15 1.57e+15 1.57e+15 1.57e+15 1.57e+15 ...##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;First thing first, get the data from last week.What about this weird time column?df[, .(time_usec = as.character(time_usec))] %&gt;% head()##           time_usec## 1: 1567623891808102## 2: 1567623890295210## 3: 1567623886825938## 4: 1567623866374017## 5: 1567623864604245## 6: 1567623851481596When seeing these numbers, one thinks of Unixtimestamp, which is “thenumber of seconds that have elapsed since 00:00:00 Thursday, 1 January1970”.So…df[, .(time_usec = as.POSIXct(time_usec, origin=&quot;1970-01-01&quot;))] %&gt;% head()##                  time_usec## 1: 49677993-08-02 03:48:22## 2: 49677993-07-15 15:33:30## 3: 49677993-06-05 11:52:18## 4: 49677992-10-11 18:46:57## 5: 49677992-09-21 07:10:45## 6: 49677992-04-22 09:59:56Well, unless I’ve been trapped in a weird time machine or that episodeof Game of Thrones was very, very long, I don’t remember being in year49677993 :)I have no idea why this number are that long: if we look at today’sdate, we’ve got a UNIX time stamp ofas.numeric(Sys.time())## [1] 1568038038# versusdf[, as.character(time_usec)] %&gt;% head(1)## [1] &quot;1567623891808102&quot;Today’s UNIX date, which has a step of one second, is a 10 digits longnumber. The time stamp in this dataset are 16 digits longs. But we canalso notice that the 10 first digits of both are relatively close:156780 and 156762.My guess so far is that the data are in microseconds, as one microsecondis 1e-6 second. Let’s give this ashot:df[, time_usec := as.POSIXct(time_usec / 1e6, origin=&quot;1970-01-01&quot;)][, time_usec] %&gt;% head()## [1] &quot;2019-09-04 21:04:51 CEST&quot; &quot;2019-09-04 21:04:50 CEST&quot;## [3] &quot;2019-09-04 21:04:46 CEST&quot; &quot;2019-09-04 21:04:26 CEST&quot;## [5] &quot;2019-09-04 21:04:24 CEST&quot; &quot;2019-09-04 21:04:11 CEST&quot;AH! That looks better! Let’s filter and turn the title to lowercase.library(anytime)week &lt;- df[  time_usec &gt; anytime(&quot;2019-08-25&quot;) &amp;    time_usec &lt; anytime(&quot;2019-09-02&quot;)   ][,    tite := tolower(title)    ]Let’s now filter only the Google search:search &lt;- week[  grep(&quot;www.google.com/search&quot;, url),   ]And count the number of search by day:library(ggplot2)ggplot(search, aes(as.Date(time_usec))) +   geom_bar() +   labs(    title = &quot;Search by day of the week (Monday to Sunday)&quot;,     x = &quot;Day of the week&quot;  )Some extractsLet’s now have a look at some of the search terms:Shinysearch[    grep(&quot;shiny&quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()##  [1] &quot;suspend an observe event in shiny&quot;         ##  [2] &quot;create a new shiny app from command line&quot;  ##  [3] &quot;shiny flush react&quot;                         ##  [4] &quot;shiny delete input binding&quot;                ##  [5] &quot;shiny delete an input binding from ui side&quot;##  [6] &quot;shiny dashboard link to a specific tab&quot;    ##  [7] &quot;remove input value shiny r&quot;                ##  [8] &quot;remove input value shiny&quot;                  ##  [9] &quot;log everything shiny does&quot;                 ## [10] &quot;shiny .graphDependsOnId&quot;                   ## [11] &quot;date picker widget shiny&quot;                  ## [12] &quot;jquery datepicker shiny&quot;                   ## [13] &quot;shiny daterangeinput end before finish&quot;    ## [14] &quot;shiny date range input&quot;                    ## [15] &quot;shinyapps io&quot;                              ## [16] &quot;dreal shiny apps&quot;                          ## [17] &quot;shinyexample&quot;                              ## [18] &quot;daterangeinput shiny end superior to start&quot;## [19] &quot;shiny date range&quot;                          ## [20] &quot;shiny date picker&quot;                         ## [21] &quot;shiny DT disablee row name&quot;                ## [22] &quot;shiny jqui&quot;                                ## [23] &quot;shiny jsqui&quot;                               ## [24] &quot;option shiny browser viwer&quot;You can note that:  I can never remember how to set which Viewer Shiny uses  I had trouble with Shiny dateRangeInput being able to end beforestart and tried tosee for other alternative.  Also, this weird one, where I saved some reactiveValue to a MongoDBstorage, and when I tried to reuse them, I had an error about the.graphDependsOnId function not found. Turns out it’s an old Shinyfunction,which might have been saved in the RDS saved in the mongo DB (well,that’s my guess). My solution was to take this piece of code fromthe source and put it back in my app.  I had some trouble with the behavior of a restarting app and theremoveUI function, which in fact does not remove the inputvalue. Also, it’sinteresting to note that some input are not fully restored whenrestarting the app with Firefox, so I wanted to look for a way to(really) delete input from the JS side (unsuccessfully so far).  I also wondered if there was a kind of shiny::createApp(), whichcreates a file with the app skeleton in it. When you use the RStudiointerface for creating app, you’ve got an app skeleton. That must besomewhere.Rsearch[    grep(&quot; r &quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()## [1] &quot;remove input value shiny r&quot;             ## [2] &quot;whereami r package&quot;                     ## [3] &quot;wherami r package&quot;                      ## [4] &quot;fs r package&quot;                           ## [5] &quot;docopt r&quot;                               ## [6] &quot;insert page break in pagedown r pacakge&quot;## [7] &quot;new page in pagedown r pacakge&quot;Nop, still can’t remember how to insert a page break in {pagedown}.Also, still can’t write “package” correctly.JavaScriptYes, being a Shiny developer means you do a significant amount ofJavaScript / jQuery.search[    grep(&quot;javascript|jquery&quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()##  [1] &quot;change variable evaluation environment in javascript&quot;##  [2] &quot;environment in javascript&quot;                           ##  [3] &quot;comafy javascript&quot;                                   ##  [4] &quot;jquery parent&quot;                                       ##  [5] &quot;find element with data attribute jquery&quot;             ##  [6] &quot;javascript function&quot;                                 ##  [7] &quot;confirmation pop up in javascript&quot;                   ##  [8] &quot;function in javascript&quot;                              ##  [9] &quot;javascript void&quot;                                     ## [10] &quot;non standard evaluation in javascript&quot;               ## [11] &quot;list all variables javascript&quot;                       ## [12] &quot;javascript reload page and launch a function&quot;        ## [13] &quot;javascript fin anywhere in object&quot;                   ## [14] &quot;get class of javascript object&quot;                      ## [15] &quot;get class of element jquery&quot;                         ## [16] &quot;add onclick event jquery&quot;                            ## [17] &quot;jquery datepicker shiny&quot;                             ## [18] &quot;jquery launch function on div change&quot;                ## [19] &quot;jquery extract id of all children&quot;                   ## [20] &quot;javascript for loop&quot;                                 ## [21] &quot;jquery drag and drop&quot;                                ## [22] &quot;reorder list javascript&quot;Let’s admit that:  I can never remember the correct syntax for for loops in JavaScript.Like, ever. I always try for (var i, i &lt; x.length, i++). That’s;, Colin, maybe writing it there will make me remember :)  The “find anywhere in object” and JavaScript launch and reload werestill linked to my refresh input in Shiny issue.  And apparently it’s more complicated than I had expected to playwith symbols and environment in JavaScript">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="One week as a Shiny dev, seen through Google search">
+<meta property="og:url" content="http://localhost:4000/one-week-shiny-google-search/">
+
+
+  <meta property="og:description" content="Some days ago I read an article on dev.to, entitledsomething like “Googling as a Software Engineer”linkwhich links to thisblogpostfrom Sophie Koonin. And then, I thought… hey, I should do that too!Getting the dataYou can download your browser data attakeout.google.com/. In a matter ofminutes, I had a beautiful JSON which I could bring back inR.res &lt;- jsonlite::read_json(&quot;~/Downloads/Takeout/Chrome/BrowserHistory.json&quot;)library(data.table)library(magrittr)df &lt;- rbindlist(res[[1]], fill = TRUE)  setDT(df)str(df)## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   175321 obs. of  6 variables:##  $ favicon_url    : chr  &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; ...##  $ page_transition: chr  &quot;LINK&quot; &quot;LINK&quot; &quot;LINK&quot; &quot;LINK&quot; ...##  $ title          : chr  &quot;Télécharger vos données&quot; &quot;Gérer les archives&quot; &quot;Télécharger vos données&quot; &quot;Télécharger vos données&quot; ...##  $ url            : chr  &quot;https://takeout.google.com/settings/takeout&quot; &quot;https://takeout.google.com/settings/takeout/downloads&quot; &quot;https://takeout.google.com/settings/takeout&quot; &quot;https://takeout.google.com/?pli=1&quot; ...##  $ client_id      : chr  &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; ...##  $ time_usec      : num  1.57e+15 1.57e+15 1.57e+15 1.57e+15 1.57e+15 ...##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;First thing first, get the data from last week.What about this weird time column?df[, .(time_usec = as.character(time_usec))] %&gt;% head()##           time_usec## 1: 1567623891808102## 2: 1567623890295210## 3: 1567623886825938## 4: 1567623866374017## 5: 1567623864604245## 6: 1567623851481596When seeing these numbers, one thinks of Unixtimestamp, which is “thenumber of seconds that have elapsed since 00:00:00 Thursday, 1 January1970”.So…df[, .(time_usec = as.POSIXct(time_usec, origin=&quot;1970-01-01&quot;))] %&gt;% head()##                  time_usec## 1: 49677993-08-02 03:48:22## 2: 49677993-07-15 15:33:30## 3: 49677993-06-05 11:52:18## 4: 49677992-10-11 18:46:57## 5: 49677992-09-21 07:10:45## 6: 49677992-04-22 09:59:56Well, unless I’ve been trapped in a weird time machine or that episodeof Game of Thrones was very, very long, I don’t remember being in year49677993 :)I have no idea why this number are that long: if we look at today’sdate, we’ve got a UNIX time stamp ofas.numeric(Sys.time())## [1] 1568038038# versusdf[, as.character(time_usec)] %&gt;% head(1)## [1] &quot;1567623891808102&quot;Today’s UNIX date, which has a step of one second, is a 10 digits longnumber. The time stamp in this dataset are 16 digits longs. But we canalso notice that the 10 first digits of both are relatively close:156780 and 156762.My guess so far is that the data are in microseconds, as one microsecondis 1e-6 second. Let’s give this ashot:df[, time_usec := as.POSIXct(time_usec / 1e6, origin=&quot;1970-01-01&quot;)][, time_usec] %&gt;% head()## [1] &quot;2019-09-04 21:04:51 CEST&quot; &quot;2019-09-04 21:04:50 CEST&quot;## [3] &quot;2019-09-04 21:04:46 CEST&quot; &quot;2019-09-04 21:04:26 CEST&quot;## [5] &quot;2019-09-04 21:04:24 CEST&quot; &quot;2019-09-04 21:04:11 CEST&quot;AH! That looks better! Let’s filter and turn the title to lowercase.library(anytime)week &lt;- df[  time_usec &gt; anytime(&quot;2019-08-25&quot;) &amp;    time_usec &lt; anytime(&quot;2019-09-02&quot;)   ][,    tite := tolower(title)    ]Let’s now filter only the Google search:search &lt;- week[  grep(&quot;www.google.com/search&quot;, url),   ]And count the number of search by day:library(ggplot2)ggplot(search, aes(as.Date(time_usec))) +   geom_bar() +   labs(    title = &quot;Search by day of the week (Monday to Sunday)&quot;,     x = &quot;Day of the week&quot;  )Some extractsLet’s now have a look at some of the search terms:Shinysearch[    grep(&quot;shiny&quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()##  [1] &quot;suspend an observe event in shiny&quot;         ##  [2] &quot;create a new shiny app from command line&quot;  ##  [3] &quot;shiny flush react&quot;                         ##  [4] &quot;shiny delete input binding&quot;                ##  [5] &quot;shiny delete an input binding from ui side&quot;##  [6] &quot;shiny dashboard link to a specific tab&quot;    ##  [7] &quot;remove input value shiny r&quot;                ##  [8] &quot;remove input value shiny&quot;                  ##  [9] &quot;log everything shiny does&quot;                 ## [10] &quot;shiny .graphDependsOnId&quot;                   ## [11] &quot;date picker widget shiny&quot;                  ## [12] &quot;jquery datepicker shiny&quot;                   ## [13] &quot;shiny daterangeinput end before finish&quot;    ## [14] &quot;shiny date range input&quot;                    ## [15] &quot;shinyapps io&quot;                              ## [16] &quot;dreal shiny apps&quot;                          ## [17] &quot;shinyexample&quot;                              ## [18] &quot;daterangeinput shiny end superior to start&quot;## [19] &quot;shiny date range&quot;                          ## [20] &quot;shiny date picker&quot;                         ## [21] &quot;shiny DT disablee row name&quot;                ## [22] &quot;shiny jqui&quot;                                ## [23] &quot;shiny jsqui&quot;                               ## [24] &quot;option shiny browser viwer&quot;You can note that:  I can never remember how to set which Viewer Shiny uses  I had trouble with Shiny dateRangeInput being able to end beforestart and tried tosee for other alternative.  Also, this weird one, where I saved some reactiveValue to a MongoDBstorage, and when I tried to reuse them, I had an error about the.graphDependsOnId function not found. Turns out it’s an old Shinyfunction,which might have been saved in the RDS saved in the mongo DB (well,that’s my guess). My solution was to take this piece of code fromthe source and put it back in my app.  I had some trouble with the behavior of a restarting app and theremoveUI function, which in fact does not remove the inputvalue. Also, it’sinteresting to note that some input are not fully restored whenrestarting the app with Firefox, so I wanted to look for a way to(really) delete input from the JS side (unsuccessfully so far).  I also wondered if there was a kind of shiny::createApp(), whichcreates a file with the app skeleton in it. When you use the RStudiointerface for creating app, you’ve got an app skeleton. That must besomewhere.Rsearch[    grep(&quot; r &quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()## [1] &quot;remove input value shiny r&quot;             ## [2] &quot;whereami r package&quot;                     ## [3] &quot;wherami r package&quot;                      ## [4] &quot;fs r package&quot;                           ## [5] &quot;docopt r&quot;                               ## [6] &quot;insert page break in pagedown r pacakge&quot;## [7] &quot;new page in pagedown r pacakge&quot;Nop, still can’t remember how to insert a page break in {pagedown}.Also, still can’t write “package” correctly.JavaScriptYes, being a Shiny developer means you do a significant amount ofJavaScript / jQuery.search[    grep(&quot;javascript|jquery&quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()##  [1] &quot;change variable evaluation environment in javascript&quot;##  [2] &quot;environment in javascript&quot;                           ##  [3] &quot;comafy javascript&quot;                                   ##  [4] &quot;jquery parent&quot;                                       ##  [5] &quot;find element with data attribute jquery&quot;             ##  [6] &quot;javascript function&quot;                                 ##  [7] &quot;confirmation pop up in javascript&quot;                   ##  [8] &quot;function in javascript&quot;                              ##  [9] &quot;javascript void&quot;                                     ## [10] &quot;non standard evaluation in javascript&quot;               ## [11] &quot;list all variables javascript&quot;                       ## [12] &quot;javascript reload page and launch a function&quot;        ## [13] &quot;javascript fin anywhere in object&quot;                   ## [14] &quot;get class of javascript object&quot;                      ## [15] &quot;get class of element jquery&quot;                         ## [16] &quot;add onclick event jquery&quot;                            ## [17] &quot;jquery datepicker shiny&quot;                             ## [18] &quot;jquery launch function on div change&quot;                ## [19] &quot;jquery extract id of all children&quot;                   ## [20] &quot;javascript for loop&quot;                                 ## [21] &quot;jquery drag and drop&quot;                                ## [22] &quot;reorder list javascript&quot;Let’s admit that:  I can never remember the correct syntax for for loops in JavaScript.Like, ever. I always try for (var i, i &lt; x.length, i++). That’s;, Colin, maybe writing it there will make me remember :)  The “find anywhere in object” and JavaScript launch and reload werestill linked to my refresh input in Shiny issue.  And apparently it’s more complicated than I had expected to playwith symbols and environment in JavaScript">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="One week as a Shiny dev, seen through Google search">
+  <meta name="twitter:description" content="Some days ago I read an article on dev.to, entitledsomething like “Googling as a Software Engineer”linkwhich links to thisblogpostfrom Sophie Koonin. And then, I thought… hey, I should do that too!Getting the dataYou can download your browser data attakeout.google.com/. In a matter ofminutes, I had a beautiful JSON which I could bring back inR.res &lt;- jsonlite::read_json(&quot;~/Downloads/Takeout/Chrome/BrowserHistory.json&quot;)library(data.table)library(magrittr)df &lt;- rbindlist(res[[1]], fill = TRUE)  setDT(df)str(df)## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   175321 obs. of  6 variables:##  $ favicon_url    : chr  &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; ...##  $ page_transition: chr  &quot;LINK&quot; &quot;LINK&quot; &quot;LINK&quot; &quot;LINK&quot; ...##  $ title          : chr  &quot;Télécharger vos données&quot; &quot;Gérer les archives&quot; &quot;Télécharger vos données&quot; &quot;Télécharger vos données&quot; ...##  $ url            : chr  &quot;https://takeout.google.com/settings/takeout&quot; &quot;https://takeout.google.com/settings/takeout/downloads&quot; &quot;https://takeout.google.com/settings/takeout&quot; &quot;https://takeout.google.com/?pli=1&quot; ...##  $ client_id      : chr  &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; ...##  $ time_usec      : num  1.57e+15 1.57e+15 1.57e+15 1.57e+15 1.57e+15 ...##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;First thing first, get the data from last week.What about this weird time column?df[, .(time_usec = as.character(time_usec))] %&gt;% head()##           time_usec## 1: 1567623891808102## 2: 1567623890295210## 3: 1567623886825938## 4: 1567623866374017## 5: 1567623864604245## 6: 1567623851481596When seeing these numbers, one thinks of Unixtimestamp, which is “thenumber of seconds that have elapsed since 00:00:00 Thursday, 1 January1970”.So…df[, .(time_usec = as.POSIXct(time_usec, origin=&quot;1970-01-01&quot;))] %&gt;% head()##                  time_usec## 1: 49677993-08-02 03:48:22## 2: 49677993-07-15 15:33:30## 3: 49677993-06-05 11:52:18## 4: 49677992-10-11 18:46:57## 5: 49677992-09-21 07:10:45## 6: 49677992-04-22 09:59:56Well, unless I’ve been trapped in a weird time machine or that episodeof Game of Thrones was very, very long, I don’t remember being in year49677993 :)I have no idea why this number are that long: if we look at today’sdate, we’ve got a UNIX time stamp ofas.numeric(Sys.time())## [1] 1568038038# versusdf[, as.character(time_usec)] %&gt;% head(1)## [1] &quot;1567623891808102&quot;Today’s UNIX date, which has a step of one second, is a 10 digits longnumber. The time stamp in this dataset are 16 digits longs. But we canalso notice that the 10 first digits of both are relatively close:156780 and 156762.My guess so far is that the data are in microseconds, as one microsecondis 1e-6 second. Let’s give this ashot:df[, time_usec := as.POSIXct(time_usec / 1e6, origin=&quot;1970-01-01&quot;)][, time_usec] %&gt;% head()## [1] &quot;2019-09-04 21:04:51 CEST&quot; &quot;2019-09-04 21:04:50 CEST&quot;## [3] &quot;2019-09-04 21:04:46 CEST&quot; &quot;2019-09-04 21:04:26 CEST&quot;## [5] &quot;2019-09-04 21:04:24 CEST&quot; &quot;2019-09-04 21:04:11 CEST&quot;AH! That looks better! Let’s filter and turn the title to lowercase.library(anytime)week &lt;- df[  time_usec &gt; anytime(&quot;2019-08-25&quot;) &amp;    time_usec &lt; anytime(&quot;2019-09-02&quot;)   ][,    tite := tolower(title)    ]Let’s now filter only the Google search:search &lt;- week[  grep(&quot;www.google.com/search&quot;, url),   ]And count the number of search by day:library(ggplot2)ggplot(search, aes(as.Date(time_usec))) +   geom_bar() +   labs(    title = &quot;Search by day of the week (Monday to Sunday)&quot;,     x = &quot;Day of the week&quot;  )Some extractsLet’s now have a look at some of the search terms:Shinysearch[    grep(&quot;shiny&quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()##  [1] &quot;suspend an observe event in shiny&quot;         ##  [2] &quot;create a new shiny app from command line&quot;  ##  [3] &quot;shiny flush react&quot;                         ##  [4] &quot;shiny delete input binding&quot;                ##  [5] &quot;shiny delete an input binding from ui side&quot;##  [6] &quot;shiny dashboard link to a specific tab&quot;    ##  [7] &quot;remove input value shiny r&quot;                ##  [8] &quot;remove input value shiny&quot;                  ##  [9] &quot;log everything shiny does&quot;                 ## [10] &quot;shiny .graphDependsOnId&quot;                   ## [11] &quot;date picker widget shiny&quot;                  ## [12] &quot;jquery datepicker shiny&quot;                   ## [13] &quot;shiny daterangeinput end before finish&quot;    ## [14] &quot;shiny date range input&quot;                    ## [15] &quot;shinyapps io&quot;                              ## [16] &quot;dreal shiny apps&quot;                          ## [17] &quot;shinyexample&quot;                              ## [18] &quot;daterangeinput shiny end superior to start&quot;## [19] &quot;shiny date range&quot;                          ## [20] &quot;shiny date picker&quot;                         ## [21] &quot;shiny DT disablee row name&quot;                ## [22] &quot;shiny jqui&quot;                                ## [23] &quot;shiny jsqui&quot;                               ## [24] &quot;option shiny browser viwer&quot;You can note that:  I can never remember how to set which Viewer Shiny uses  I had trouble with Shiny dateRangeInput being able to end beforestart and tried tosee for other alternative.  Also, this weird one, where I saved some reactiveValue to a MongoDBstorage, and when I tried to reuse them, I had an error about the.graphDependsOnId function not found. Turns out it’s an old Shinyfunction,which might have been saved in the RDS saved in the mongo DB (well,that’s my guess). My solution was to take this piece of code fromthe source and put it back in my app.  I had some trouble with the behavior of a restarting app and theremoveUI function, which in fact does not remove the inputvalue. Also, it’sinteresting to note that some input are not fully restored whenrestarting the app with Firefox, so I wanted to look for a way to(really) delete input from the JS side (unsuccessfully so far).  I also wondered if there was a kind of shiny::createApp(), whichcreates a file with the app skeleton in it. When you use the RStudiointerface for creating app, you’ve got an app skeleton. That must besomewhere.Rsearch[    grep(&quot; r &quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()## [1] &quot;remove input value shiny r&quot;             ## [2] &quot;whereami r package&quot;                     ## [3] &quot;wherami r package&quot;                      ## [4] &quot;fs r package&quot;                           ## [5] &quot;docopt r&quot;                               ## [6] &quot;insert page break in pagedown r pacakge&quot;## [7] &quot;new page in pagedown r pacakge&quot;Nop, still can’t remember how to insert a page break in {pagedown}.Also, still can’t write “package” correctly.JavaScriptYes, being a Shiny developer means you do a significant amount ofJavaScript / jQuery.search[    grep(&quot;javascript|jquery&quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()##  [1] &quot;change variable evaluation environment in javascript&quot;##  [2] &quot;environment in javascript&quot;                           ##  [3] &quot;comafy javascript&quot;                                   ##  [4] &quot;jquery parent&quot;                                       ##  [5] &quot;find element with data attribute jquery&quot;             ##  [6] &quot;javascript function&quot;                                 ##  [7] &quot;confirmation pop up in javascript&quot;                   ##  [8] &quot;function in javascript&quot;                              ##  [9] &quot;javascript void&quot;                                     ## [10] &quot;non standard evaluation in javascript&quot;               ## [11] &quot;list all variables javascript&quot;                       ## [12] &quot;javascript reload page and launch a function&quot;        ## [13] &quot;javascript fin anywhere in object&quot;                   ## [14] &quot;get class of javascript object&quot;                      ## [15] &quot;get class of element jquery&quot;                         ## [16] &quot;add onclick event jquery&quot;                            ## [17] &quot;jquery datepicker shiny&quot;                             ## [18] &quot;jquery launch function on div change&quot;                ## [19] &quot;jquery extract id of all children&quot;                   ## [20] &quot;javascript for loop&quot;                                 ## [21] &quot;jquery drag and drop&quot;                                ## [22] &quot;reorder list javascript&quot;Let’s admit that:  I can never remember the correct syntax for for loops in JavaScript.Like, ever. I always try for (var i, i &lt; x.length, i++). That’s;, Colin, maybe writing it there will make me remember :)  The “find anywhere in object” and JavaScript launch and reload werestill linked to my refresh input in Shiny issue.  And apparently it’s more complicated than I had expected to playwith symbols and environment in JavaScript">
+  <meta name="twitter:url" content="http://localhost:4000/one-week-shiny-google-search/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2019-09-06T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/one-week-shiny-google-search/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="One week as a Shiny dev, seen through Google search">
+    <meta itemprop="description" content="Some days ago I read an article on dev.to, entitledsomething like “Googling as a Software Engineer”linkwhich links to thisblogpostfrom Sophie Koonin. And then, I thought… hey, I should do that too!Getting the dataYou can download your browser data attakeout.google.com/. In a matter ofminutes, I had a beautiful JSON which I could bring back inR.res &lt;- jsonlite::read_json(&quot;~/Downloads/Takeout/Chrome/BrowserHistory.json&quot;)library(data.table)library(magrittr)df &lt;- rbindlist(res[[1]], fill = TRUE)  setDT(df)str(df)## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   175321 obs. of  6 variables:##  $ favicon_url    : chr  &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; &quot;https://www.google.com/favicon.ico&quot; ...##  $ page_transition: chr  &quot;LINK&quot; &quot;LINK&quot; &quot;LINK&quot; &quot;LINK&quot; ...##  $ title          : chr  &quot;Télécharger vos données&quot; &quot;Gérer les archives&quot; &quot;Télécharger vos données&quot; &quot;Télécharger vos données&quot; ...##  $ url            : chr  &quot;https://takeout.google.com/settings/takeout&quot; &quot;https://takeout.google.com/settings/takeout/downloads&quot; &quot;https://takeout.google.com/settings/takeout&quot; &quot;https://takeout.google.com/?pli=1&quot; ...##  $ client_id      : chr  &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; &quot;slOska0n/CmNUGlceIGQVQ==&quot; ...##  $ time_usec      : num  1.57e+15 1.57e+15 1.57e+15 1.57e+15 1.57e+15 ...##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;First thing first, get the data from last week.What about this weird time column?df[, .(time_usec = as.character(time_usec))] %&gt;% head()##           time_usec## 1: 1567623891808102## 2: 1567623890295210## 3: 1567623886825938## 4: 1567623866374017## 5: 1567623864604245## 6: 1567623851481596When seeing these numbers, one thinks of Unixtimestamp, which is “thenumber of seconds that have elapsed since 00:00:00 Thursday, 1 January1970”.So…df[, .(time_usec = as.POSIXct(time_usec, origin=&quot;1970-01-01&quot;))] %&gt;% head()##                  time_usec## 1: 49677993-08-02 03:48:22## 2: 49677993-07-15 15:33:30## 3: 49677993-06-05 11:52:18## 4: 49677992-10-11 18:46:57## 5: 49677992-09-21 07:10:45## 6: 49677992-04-22 09:59:56Well, unless I’ve been trapped in a weird time machine or that episodeof Game of Thrones was very, very long, I don’t remember being in year49677993 :)I have no idea why this number are that long: if we look at today’sdate, we’ve got a UNIX time stamp ofas.numeric(Sys.time())## [1] 1568038038# versusdf[, as.character(time_usec)] %&gt;% head(1)## [1] &quot;1567623891808102&quot;Today’s UNIX date, which has a step of one second, is a 10 digits longnumber. The time stamp in this dataset are 16 digits longs. But we canalso notice that the 10 first digits of both are relatively close:156780 and 156762.My guess so far is that the data are in microseconds, as one microsecondis 1e-6 second. Let’s give this ashot:df[, time_usec := as.POSIXct(time_usec / 1e6, origin=&quot;1970-01-01&quot;)][, time_usec] %&gt;% head()## [1] &quot;2019-09-04 21:04:51 CEST&quot; &quot;2019-09-04 21:04:50 CEST&quot;## [3] &quot;2019-09-04 21:04:46 CEST&quot; &quot;2019-09-04 21:04:26 CEST&quot;## [5] &quot;2019-09-04 21:04:24 CEST&quot; &quot;2019-09-04 21:04:11 CEST&quot;AH! That looks better! Let’s filter and turn the title to lowercase.library(anytime)week &lt;- df[  time_usec &gt; anytime(&quot;2019-08-25&quot;) &amp;    time_usec &lt; anytime(&quot;2019-09-02&quot;)   ][,    tite := tolower(title)    ]Let’s now filter only the Google search:search &lt;- week[  grep(&quot;www.google.com/search&quot;, url),   ]And count the number of search by day:library(ggplot2)ggplot(search, aes(as.Date(time_usec))) +   geom_bar() +   labs(    title = &quot;Search by day of the week (Monday to Sunday)&quot;,     x = &quot;Day of the week&quot;  )Some extractsLet’s now have a look at some of the search terms:Shinysearch[    grep(&quot;shiny&quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()##  [1] &quot;suspend an observe event in shiny&quot;         ##  [2] &quot;create a new shiny app from command line&quot;  ##  [3] &quot;shiny flush react&quot;                         ##  [4] &quot;shiny delete input binding&quot;                ##  [5] &quot;shiny delete an input binding from ui side&quot;##  [6] &quot;shiny dashboard link to a specific tab&quot;    ##  [7] &quot;remove input value shiny r&quot;                ##  [8] &quot;remove input value shiny&quot;                  ##  [9] &quot;log everything shiny does&quot;                 ## [10] &quot;shiny .graphDependsOnId&quot;                   ## [11] &quot;date picker widget shiny&quot;                  ## [12] &quot;jquery datepicker shiny&quot;                   ## [13] &quot;shiny daterangeinput end before finish&quot;    ## [14] &quot;shiny date range input&quot;                    ## [15] &quot;shinyapps io&quot;                              ## [16] &quot;dreal shiny apps&quot;                          ## [17] &quot;shinyexample&quot;                              ## [18] &quot;daterangeinput shiny end superior to start&quot;## [19] &quot;shiny date range&quot;                          ## [20] &quot;shiny date picker&quot;                         ## [21] &quot;shiny DT disablee row name&quot;                ## [22] &quot;shiny jqui&quot;                                ## [23] &quot;shiny jsqui&quot;                               ## [24] &quot;option shiny browser viwer&quot;You can note that:  I can never remember how to set which Viewer Shiny uses  I had trouble with Shiny dateRangeInput being able to end beforestart and tried tosee for other alternative.  Also, this weird one, where I saved some reactiveValue to a MongoDBstorage, and when I tried to reuse them, I had an error about the.graphDependsOnId function not found. Turns out it’s an old Shinyfunction,which might have been saved in the RDS saved in the mongo DB (well,that’s my guess). My solution was to take this piece of code fromthe source and put it back in my app.  I had some trouble with the behavior of a restarting app and theremoveUI function, which in fact does not remove the inputvalue. Also, it’sinteresting to note that some input are not fully restored whenrestarting the app with Firefox, so I wanted to look for a way to(really) delete input from the JS side (unsuccessfully so far).  I also wondered if there was a kind of shiny::createApp(), whichcreates a file with the app skeleton in it. When you use the RStudiointerface for creating app, you’ve got an app skeleton. That must besomewhere.Rsearch[    grep(&quot; r &quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()## [1] &quot;remove input value shiny r&quot;             ## [2] &quot;whereami r package&quot;                     ## [3] &quot;wherami r package&quot;                      ## [4] &quot;fs r package&quot;                           ## [5] &quot;docopt r&quot;                               ## [6] &quot;insert page break in pagedown r pacakge&quot;## [7] &quot;new page in pagedown r pacakge&quot;Nop, still can’t remember how to insert a page break in {pagedown}.Also, still can’t write “package” correctly.JavaScriptYes, being a Shiny developer means you do a significant amount ofJavaScript / jQuery.search[    grep(&quot;javascript|jquery&quot;, title), gsub(&quot; - Recherche Google&quot;, &quot;&quot;, title)    ] %&gt;% unique()##  [1] &quot;change variable evaluation environment in javascript&quot;##  [2] &quot;environment in javascript&quot;                           ##  [3] &quot;comafy javascript&quot;                                   ##  [4] &quot;jquery parent&quot;                                       ##  [5] &quot;find element with data attribute jquery&quot;             ##  [6] &quot;javascript function&quot;                                 ##  [7] &quot;confirmation pop up in javascript&quot;                   ##  [8] &quot;function in javascript&quot;                              ##  [9] &quot;javascript void&quot;                                     ## [10] &quot;non standard evaluation in javascript&quot;               ## [11] &quot;list all variables javascript&quot;                       ## [12] &quot;javascript reload page and launch a function&quot;        ## [13] &quot;javascript fin anywhere in object&quot;                   ## [14] &quot;get class of javascript object&quot;                      ## [15] &quot;get class of element jquery&quot;                         ## [16] &quot;add onclick event jquery&quot;                            ## [17] &quot;jquery datepicker shiny&quot;                             ## [18] &quot;jquery launch function on div change&quot;                ## [19] &quot;jquery extract id of all children&quot;                   ## [20] &quot;javascript for loop&quot;                                 ## [21] &quot;jquery drag and drop&quot;                                ## [22] &quot;reorder list javascript&quot;Let’s admit that:  I can never remember the correct syntax for for loops in JavaScript.Like, ever. I always try for (var i, i &lt; x.length, i++). That’s;, Colin, maybe writing it there will make me remember :)  The “find anywhere in object” and JavaScript launch and reload werestill linked to my refresh input in Shiny issue.  And apparently it’s more complicated than I had expected to playwith symbols and environment in JavaScript">
+    <meta itemprop="datePublished" content="September 06, 2019">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">One week as a Shiny dev, seen through Google search
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  5 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Some days ago I read an article on <a href="https://dev.to/">dev.to</a>, entitled
+something like “Googling as a Software Engineer”
+<a href="https://dev.to/bamboriz/googling-as-a-software-engineer-3a1n">link</a>
+which links to <a href="https://localghost.dev/2019/09/everything-i-googled-in-a-week-as-a-professional-software-engineer/">this
+blogpost</a>
+from Sophie Koonin. And then, I thought… hey, I should do that too!</p>
+
+<h2 id="getting-the-data">Getting the data</h2>
+
+<p>You can download your browser data at
+<a href="https://takeout.google.com/">takeout.google.com/</a>. In a matter of
+minutes, I had a beautiful JSON which I could bring back in
+R.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">jsonlite</span><span class="o">::</span><span class="n">read_json</span><span class="p">(</span><span class="s2">"~/Downloads/Takeout/Chrome/BrowserHistory.json"</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">data.table</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">magrittr</span><span class="p">)</span><span class="w">
+</span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rbindlist</span><span class="p">(</span><span class="n">res</span><span class="p">[[</span><span class="m">1</span><span class="p">]],</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">  
+</span><span class="n">setDT</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w">
+</span><span class="n">str</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Classes 'data.table' and 'data.frame':   175321 obs. of  6 variables:
+##  $ favicon_url    : chr  "https://www.google.com/favicon.ico" "https://www.google.com/favicon.ico" "https://www.google.com/favicon.ico" "https://www.google.com/favicon.ico" ...
+##  $ page_transition: chr  "LINK" "LINK" "LINK" "LINK" ...
+##  $ title          : chr  "Télécharger vos données" "Gérer les archives" "Télécharger vos données" "Télécharger vos données" ...
+##  $ url            : chr  "https://takeout.google.com/settings/takeout" "https://takeout.google.com/settings/takeout/downloads" "https://takeout.google.com/settings/takeout" "https://takeout.google.com/?pli=1" ...
+##  $ client_id      : chr  "slOska0n/CmNUGlceIGQVQ==" "slOska0n/CmNUGlceIGQVQ==" "slOska0n/CmNUGlceIGQVQ==" "slOska0n/CmNUGlceIGQVQ==" ...
+##  $ time_usec      : num  1.57e+15 1.57e+15 1.57e+15 1.57e+15 1.57e+15 ...
+##  - attr(*, ".internal.selfref")=&lt;externalptr&gt;
+</code></pre></div></div>
+
+<p>First thing first, get the data from last week.</p>
+
+<p>What about this weird time column?</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[,</span><span class="w"> </span><span class="n">.</span><span class="p">(</span><span class="n">time_usec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="n">time_usec</span><span class="p">))]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">head</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##           time_usec
+## 1: 1567623891808102
+## 2: 1567623890295210
+## 3: 1567623886825938
+## 4: 1567623866374017
+## 5: 1567623864604245
+## 6: 1567623851481596
+</code></pre></div></div>
+
+<p>When seeing these numbers, one thinks of <a href="https://en.wikipedia.org/wiki/Unix_time">Unix
+timestamp</a>, which is <em>“the
+number of seconds that have elapsed since 00:00:00 Thursday, 1 January
+1970”</em>.
+So…</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[,</span><span class="w"> </span><span class="n">.</span><span class="p">(</span><span class="n">time_usec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.POSIXct</span><span class="p">(</span><span class="n">time_usec</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="o">=</span><span class="s2">"1970-01-01"</span><span class="p">))]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">head</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##                  time_usec
+## 1: 49677993-08-02 03:48:22
+## 2: 49677993-07-15 15:33:30
+## 3: 49677993-06-05 11:52:18
+## 4: 49677992-10-11 18:46:57
+## 5: 49677992-09-21 07:10:45
+## 6: 49677992-04-22 09:59:56
+</code></pre></div></div>
+
+<p>Well, unless I’ve been trapped in a weird time machine or that episode
+of Game of Thrones was very, very long, I don’t remember being in year
+<code class="highlighter-rouge">49677993</code> :)</p>
+
+<p>I have no idea why this number are that long: if we look at today’s
+date, we’ve got a UNIX time stamp of</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">as.numeric</span><span class="p">(</span><span class="n">Sys.time</span><span class="p">())</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 1568038038
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># versus</span><span class="w">
+</span><span class="n">df</span><span class="p">[,</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="n">time_usec</span><span class="p">)]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">head</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "1567623891808102"
+</code></pre></div></div>
+
+<p>Today’s UNIX date, which has a step of one second, is a 10 digits long
+number. The time stamp in this dataset are 16 digits longs. But we can
+also notice that the 10 first digits of both are relatively close:
+<code class="highlighter-rouge">156780</code> and <code class="highlighter-rouge">156762</code>.</p>
+
+<p>My guess so far is that the data are in microseconds, as one microsecond
+is <code class="highlighter-rouge">1e-6</code> second. Let’s give this a
+shot:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[,</span><span class="w"> </span><span class="n">time_usec</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">as.POSIXct</span><span class="p">(</span><span class="n">time_usec</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1e6</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="o">=</span><span class="s2">"1970-01-01"</span><span class="p">)][,</span><span class="w"> </span><span class="n">time_usec</span><span class="p">]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">head</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "2019-09-04 21:04:51 CEST" "2019-09-04 21:04:50 CEST"
+## [3] "2019-09-04 21:04:46 CEST" "2019-09-04 21:04:26 CEST"
+## [5] "2019-09-04 21:04:24 CEST" "2019-09-04 21:04:11 CEST"
+</code></pre></div></div>
+
+<p>AH! That looks better! Let’s filter and turn the title to lowercase.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">anytime</span><span class="p">)</span><span class="w">
+</span><span class="n">week</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="p">[</span><span class="w">
+  </span><span class="n">time_usec</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">anytime</span><span class="p">(</span><span class="s2">"2019-08-25"</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w">
+    </span><span class="n">time_usec</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">anytime</span><span class="p">(</span><span class="s2">"2019-09-02"</span><span class="p">)</span><span class="w"> 
+  </span><span class="p">][,</span><span class="w">
+    </span><span class="n">tite</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Let’s now filter only the Google search:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">search</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">week</span><span class="p">[</span><span class="w">
+  </span><span class="n">grep</span><span class="p">(</span><span class="s2">"www.google.com/search"</span><span class="p">,</span><span class="w"> </span><span class="n">url</span><span class="p">),</span><span class="w"> 
+  </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>And count the number of search by day:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">search</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">as.Date</span><span class="p">(</span><span class="n">time_usec</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_bar</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="w">
+    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Search by day of the week (Monday to Sunday)"</span><span class="p">,</span><span class="w"> 
+    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Day of the week"</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="../assets/img/searchweek-1.png" alt="" /><!-- --></p>
+
+<h2 id="some-extracts">Some extracts</h2>
+
+<p>Let’s now have a look at some of the search terms:</p>
+
+<h3 id="shiny">Shiny</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">search</span><span class="p">[</span><span class="w">
+    </span><span class="n">grep</span><span class="p">(</span><span class="s2">"shiny"</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">),</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s2">" - Recherche Google"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">unique</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1] "suspend an observe event in shiny"         
+##  [2] "create a new shiny app from command line"  
+##  [3] "shiny flush react"                         
+##  [4] "shiny delete input binding"                
+##  [5] "shiny delete an input binding from ui side"
+##  [6] "shiny dashboard link to a specific tab"    
+##  [7] "remove input value shiny r"                
+##  [8] "remove input value shiny"                  
+##  [9] "log everything shiny does"                 
+## [10] "shiny .graphDependsOnId"                   
+## [11] "date picker widget shiny"                  
+## [12] "jquery datepicker shiny"                   
+## [13] "shiny daterangeinput end before finish"    
+## [14] "shiny date range input"                    
+## [15] "shinyapps io"                              
+## [16] "dreal shiny apps"                          
+## [17] "shinyexample"                              
+## [18] "daterangeinput shiny end superior to start"
+## [19] "shiny date range"                          
+## [20] "shiny date picker"                         
+## [21] "shiny DT disablee row name"                
+## [22] "shiny jqui"                                
+## [23] "shiny jsqui"                               
+## [24] "option shiny browser viwer"
+</code></pre></div></div>
+
+<p>You can note that:</p>
+
+<ul>
+  <li>I can never remember how to set which Viewer Shiny uses</li>
+  <li>I had trouble with Shiny dateRangeInput being able to <a href="https://github.com/rstudio/shiny/issues/2043">end before
+start</a> and tried to
+see for other alternative.</li>
+  <li>Also, this weird one, where I saved some reactiveValue to a MongoDB
+storage, and when I tried to reuse them, I had an error about the
+<code class="highlighter-rouge">.graphDependsOnId</code> function not found. Turns out it’s an <a href="https://rdrr.io/github/ymd526442121/Rproject_shiny/src/R/graph.R">old Shiny
+function</a>,
+which might have been saved in the RDS saved in the mongo DB (well,
+that’s my guess). My solution was to take this piece of code from
+the source and put it back in my app.</li>
+  <li>I had some trouble with the behavior of a restarting app and the
+<code class="highlighter-rouge">removeUI</code> function, which in fact does not <a href="https://github.com/rstudio/shiny/issues/2374">remove the input
+value</a>. Also, it’s
+interesting to note that some input are not fully restored when
+restarting the app with Firefox, so I wanted to look for a way to
+(really) delete input from the JS side (unsuccessfully so far).</li>
+  <li>I also wondered if there was a kind of <code class="highlighter-rouge">shiny::createApp()</code>, which
+creates a file with the app skeleton in it. When you use the RStudio
+interface for creating app, you’ve got an app skeleton. That must be
+somewhere.</li>
+</ul>
+
+<h3 id="r">R</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">search</span><span class="p">[</span><span class="w">
+    </span><span class="n">grep</span><span class="p">(</span><span class="s2">" r "</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">),</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s2">" - Recherche Google"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">unique</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] "remove input value shiny r"             
+## [2] "whereami r package"                     
+## [3] "wherami r package"                      
+## [4] "fs r package"                           
+## [5] "docopt r"                               
+## [6] "insert page break in pagedown r pacakge"
+## [7] "new page in pagedown r pacakge"
+</code></pre></div></div>
+
+<p>Nop, still can’t remember how to insert a page break in <code class="highlighter-rouge">{pagedown}</code>.</p>
+
+<p>Also, still can’t write “package” correctly.</p>
+
+<h3 id="javascript">JavaScript</h3>
+
+<p>Yes, being a Shiny developer means you do a significant amount of
+JavaScript / jQuery.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">search</span><span class="p">[</span><span class="w">
+    </span><span class="n">grep</span><span class="p">(</span><span class="s2">"javascript|jquery"</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">),</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s2">" - Recherche Google"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">unique</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1] "change variable evaluation environment in javascript"
+##  [2] "environment in javascript"                           
+##  [3] "comafy javascript"                                   
+##  [4] "jquery parent"                                       
+##  [5] "find element with data attribute jquery"             
+##  [6] "javascript function"                                 
+##  [7] "confirmation pop up in javascript"                   
+##  [8] "function in javascript"                              
+##  [9] "javascript void"                                     
+## [10] "non standard evaluation in javascript"               
+## [11] "list all variables javascript"                       
+## [12] "javascript reload page and launch a function"        
+## [13] "javascript fin anywhere in object"                   
+## [14] "get class of javascript object"                      
+## [15] "get class of element jquery"                         
+## [16] "add onclick event jquery"                            
+## [17] "jquery datepicker shiny"                             
+## [18] "jquery launch function on div change"                
+## [19] "jquery extract id of all children"                   
+## [20] "javascript for loop"                                 
+## [21] "jquery drag and drop"                                
+## [22] "reorder list javascript"
+</code></pre></div></div>
+
+<p>Let’s admit that:</p>
+
+<ul>
+  <li>I can never remember the correct syntax for for loops in JavaScript.
+Like, ever. I always try <code class="highlighter-rouge">for (var i, i &lt; x.length, i++)</code>. That’s
+<code class="highlighter-rouge">;</code>, Colin, maybe writing it there will make me remember :)</li>
+  <li>The “find anywhere in object” and JavaScript launch and reload were
+still linked to my refresh input in Shiny issue.</li>
+  <li>And apparently it’s more complicated than I had expected to play
+with symbols and environment in JavaScript</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2019-09-06T00:00:00+02:00">September 06, 2019</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=One+week+as+a+Shiny+dev%2C+seen+through+Google+search%20http%3A%2F%2Flocalhost%3A4000%2Fone-week-shiny-google-search%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fone-week-shiny-google-search%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fone-week-shiny-google-search%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fone-week-shiny-google-search%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/playing-with-dolt-one/" class="pagination--pager" title="Playing with dolt - Part One
+">←</a>
+    
+    
+      <a href="/js-const-r/" class="pagination--pager" title="JavaScript const in R
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/create-r-cli-npm/" rel="permalink">Create a CLI for R with npm
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-05-22</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">How to build a CLI for R, with npm.
+
+Background
+
+This blog post was triggered by a discussion on Twitter with Martin
+Skarzynski,
+who was looking for a way to...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/one-week-shiny-google-search/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/what-search-google"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,657 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>A Crazy Little Thing Called {purrr} - Part 1 : Web Mining  - Colin Fay</title>
+<meta name="description" content="Yes, this title is a Queen reference.Yesterday, I presented a talk called “Le Text Mining expliqué à ma grand-mère” at the Breizh Data Club Meetup. As the title suggests (“Text Mining explained to my Grand Mother”), this talk was about explaining text mining to someone that doesn’t understand anything about data science. If you want to check the slides, they are on this GitHub repo.As I was searching for a “light” subject to do text-mining on, and something appealing for my grand-mother, I thought about mining Michel Sardou’s lyrics (if you don’t know him, he’s a famous french singer, who wrote quite a lot of cheesy songs, and was really popular around the 80’s - you should look for him on YouTube or Spotify if you want to hear more about him (but honestly, don’t do that)). As there are no available dataset with the lyrics, I needed to scrap the data from the web.But I’m not here to talk about what’s in the slides, but more to share some tricks to use {purrr} for doing web scraping.Scraping the web with {purrr} and {rvest}  Disclaimer: this post is neither an {rvest} nor a {stringr} tutorial. There’s plenty of available great tutorials out there, feel free to look for them if you’re not familiar with theses packages.So, the first step was to gather the data. I found this website which seemed to be containing everything I needed.library(rvest)library(tidyverse)get_album_list &lt;- function(url){  read_html(url)  %&gt;%     html_nodes(&quot;.col-md-12&quot;) %&gt;%    html_nodes(&quot;a&quot;) %&gt;%    html_attr(&quot;href&quot;)    }url_album &lt;- get_album_list(&quot;http://paroles2chansons.lemonde.fr/paroles-michel-sardou/discographie.html&quot;)No {purrr} there, let’s move to the next function, which get all the infos from an album list :get_album_info &lt;- function(url){  page &lt;- read_html(url)   date &lt;- page %&gt;%     html_nodes(&quot;small&quot;) %&gt;%    html_text() %&gt;%    stringr::str_replace_all(&quot;Date de Sortie : &quot;, &quot;&quot;) %&gt;%    lubridate::dmy()  song_list &lt;- page %&gt;%     html_nodes(&quot;.font-small&quot;) %&gt;%    html_text() %&gt;%    discard(~ .x == &quot;Plan de site&quot; | .x == &quot;Mention légale&quot; | .x == &quot;Chansons de mariage&quot; | .x == &quot;Chansons d&#39;enterrement&quot; )    url_list &lt;- page %&gt;%     html_nodes(&quot;.font-small&quot;) %&gt;%    html_attr(&quot;href&quot;) %&gt;%    discard(~ .x == &quot;/plan-du-site.html&quot; | .x == &quot;/mentions-legales.html&quot; | .x == &quot;/paroles-chansons-de-messe-d-enterrement/&quot;| .x == &quot;/paroles-chansons-de-messe-de-mariage/&quot;)    album_name &lt;- page %&gt;%    html_nodes(&quot;.breadcrumb&quot;) %&gt;%    html_text() %&gt;%    stringr::str_extract(&quot;\t.*$&quot;) %&gt;%    stringr::str_replace_all(&quot;\t&quot;, &quot;&quot;)    tibble(chanson = song_list,          url = url_list,          nom = album_name,          date = date)}When doing web mining, there are sometimes stuffs you want to discard: here, for example, every pages of the website has four links I don’t want to keep. For that, I used the discard function from {purrr}, which is a function that remove everything that matches the predicate it receives.albums_infos &lt;- map_df(url_album, get_album_info) %&gt;%  filter(grepl(&quot;sardou&quot;, url))Here, a simple map_df, which iterates over the list of url, applies the function get_album_info, and always returns a data.frame. Out of security, I filtered the urls to be sure to match the name of the artist.get_lyrics &lt;- function(url, name){  page &lt;- read_html(url)  lyrics &lt;- page %&gt;%    html_nodes(&quot;.text-center&quot;) %&gt;%    html_nodes(&quot;div&quot;) %&gt;%    html_text() %&gt;%    stringr::str_replace_all(&quot;[\t+\r+\n+]&quot;, &quot; &quot;) %&gt;%    stringr::str_replace_all(&quot;[ ]{2}&quot;, &quot; &quot;) %&gt;%    stringr::str_replace_all(&quot;googletag.cmd.push\\(function\\(\\) \\{ googletag.display\\(&#39;container-middle-lyrics&#39;\\)\\; \\}\\)\\;&quot;, &quot;&quot;) %&gt;%     stringr::str_replace_all(&quot;\\/\\* ringtone - Below Lyrics \\*\\/.*&quot;, &quot;&quot;) %&gt;%    discard( ~ grepl(&quot;Corriger les paroles&quot;, .x)) %&gt;%    discard( ~ grepl(&quot;Paroles2Chansons&quot;, .x)) %&gt;%    discard( ~ nchar(.x)  &lt; 2)   tibble(parole = lyrics,          song = name)}safe_lyr &lt;- safely(get_lyrics)lyrics_df &lt;- map2(albums_infos$url,                      albums_infos$chanson,                      ~ safe_lyr(.x,.y)) %&gt;%  map(&quot;result&quot;) %&gt;%  compact() %&gt;%  reduce(bind_rows) %&gt;%  filter(! grepl(&quot;Soumettre une chanson&quot;, parole) )This part is more interesting (in my humble opinion) and quite relevant for web mining. Nothing new in the get_lyrics function, but it turns out that safely can be an amazingly usefull tool for web scraping. What this function does is taking a function A, returning another function B which will run A and returns a list containing two element: result and error, one being NULL depending on the output of the function A.So the point is that this function always works 🎉. If you’ve been doing some bulk web scraping, you know how frustrating it can be when your iteration stops because one out of your 500 urls is a 404. So, safely is here to help you prevent that: even if you iterate over 500 urls which are 404, your process won’t stop: you’ll always get an answer.That’s what I’m doing here with safe_lyr. Once I get the results, I map(&quot;result&quot;) in order to keep only the result elements of the lists, and compact() to remove the NULL elements (i.e the url that returned a 404). As all my result elements are tibbles, I end with a reduce(bind_rows) [*], which iterates over the list binding two elements at a time.So here we are, let’s join everyting up in a big dataframe !albums_infos &lt;- albums_infos %&gt;%  left_join(lyrics_df, by = c(chanson = &quot;song&quot;)) [*] As stated in the comment section, bind_rows() can take a list of data.frames as argument: I chose here to use reduce as an example of how this function works, yet this will not be, in practice, the best way to bind a list of data.frames.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="A Crazy Little Thing Called {purrr} - Part 1 : Web Mining">
+<meta property="og:url" content="http://localhost:4000/purrr-web-mining/">
+
+
+  <meta property="og:description" content="Yes, this title is a Queen reference.Yesterday, I presented a talk called “Le Text Mining expliqué à ma grand-mère” at the Breizh Data Club Meetup. As the title suggests (“Text Mining explained to my Grand Mother”), this talk was about explaining text mining to someone that doesn’t understand anything about data science. If you want to check the slides, they are on this GitHub repo.As I was searching for a “light” subject to do text-mining on, and something appealing for my grand-mother, I thought about mining Michel Sardou’s lyrics (if you don’t know him, he’s a famous french singer, who wrote quite a lot of cheesy songs, and was really popular around the 80’s - you should look for him on YouTube or Spotify if you want to hear more about him (but honestly, don’t do that)). As there are no available dataset with the lyrics, I needed to scrap the data from the web.But I’m not here to talk about what’s in the slides, but more to share some tricks to use {purrr} for doing web scraping.Scraping the web with {purrr} and {rvest}  Disclaimer: this post is neither an {rvest} nor a {stringr} tutorial. There’s plenty of available great tutorials out there, feel free to look for them if you’re not familiar with theses packages.So, the first step was to gather the data. I found this website which seemed to be containing everything I needed.library(rvest)library(tidyverse)get_album_list &lt;- function(url){  read_html(url)  %&gt;%     html_nodes(&quot;.col-md-12&quot;) %&gt;%    html_nodes(&quot;a&quot;) %&gt;%    html_attr(&quot;href&quot;)    }url_album &lt;- get_album_list(&quot;http://paroles2chansons.lemonde.fr/paroles-michel-sardou/discographie.html&quot;)No {purrr} there, let’s move to the next function, which get all the infos from an album list :get_album_info &lt;- function(url){  page &lt;- read_html(url)   date &lt;- page %&gt;%     html_nodes(&quot;small&quot;) %&gt;%    html_text() %&gt;%    stringr::str_replace_all(&quot;Date de Sortie : &quot;, &quot;&quot;) %&gt;%    lubridate::dmy()  song_list &lt;- page %&gt;%     html_nodes(&quot;.font-small&quot;) %&gt;%    html_text() %&gt;%    discard(~ .x == &quot;Plan de site&quot; | .x == &quot;Mention légale&quot; | .x == &quot;Chansons de mariage&quot; | .x == &quot;Chansons d&#39;enterrement&quot; )    url_list &lt;- page %&gt;%     html_nodes(&quot;.font-small&quot;) %&gt;%    html_attr(&quot;href&quot;) %&gt;%    discard(~ .x == &quot;/plan-du-site.html&quot; | .x == &quot;/mentions-legales.html&quot; | .x == &quot;/paroles-chansons-de-messe-d-enterrement/&quot;| .x == &quot;/paroles-chansons-de-messe-de-mariage/&quot;)    album_name &lt;- page %&gt;%    html_nodes(&quot;.breadcrumb&quot;) %&gt;%    html_text() %&gt;%    stringr::str_extract(&quot;\t.*$&quot;) %&gt;%    stringr::str_replace_all(&quot;\t&quot;, &quot;&quot;)    tibble(chanson = song_list,          url = url_list,          nom = album_name,          date = date)}When doing web mining, there are sometimes stuffs you want to discard: here, for example, every pages of the website has four links I don’t want to keep. For that, I used the discard function from {purrr}, which is a function that remove everything that matches the predicate it receives.albums_infos &lt;- map_df(url_album, get_album_info) %&gt;%  filter(grepl(&quot;sardou&quot;, url))Here, a simple map_df, which iterates over the list of url, applies the function get_album_info, and always returns a data.frame. Out of security, I filtered the urls to be sure to match the name of the artist.get_lyrics &lt;- function(url, name){  page &lt;- read_html(url)  lyrics &lt;- page %&gt;%    html_nodes(&quot;.text-center&quot;) %&gt;%    html_nodes(&quot;div&quot;) %&gt;%    html_text() %&gt;%    stringr::str_replace_all(&quot;[\t+\r+\n+]&quot;, &quot; &quot;) %&gt;%    stringr::str_replace_all(&quot;[ ]{2}&quot;, &quot; &quot;) %&gt;%    stringr::str_replace_all(&quot;googletag.cmd.push\\(function\\(\\) \\{ googletag.display\\(&#39;container-middle-lyrics&#39;\\)\\; \\}\\)\\;&quot;, &quot;&quot;) %&gt;%     stringr::str_replace_all(&quot;\\/\\* ringtone - Below Lyrics \\*\\/.*&quot;, &quot;&quot;) %&gt;%    discard( ~ grepl(&quot;Corriger les paroles&quot;, .x)) %&gt;%    discard( ~ grepl(&quot;Paroles2Chansons&quot;, .x)) %&gt;%    discard( ~ nchar(.x)  &lt; 2)   tibble(parole = lyrics,          song = name)}safe_lyr &lt;- safely(get_lyrics)lyrics_df &lt;- map2(albums_infos$url,                      albums_infos$chanson,                      ~ safe_lyr(.x,.y)) %&gt;%  map(&quot;result&quot;) %&gt;%  compact() %&gt;%  reduce(bind_rows) %&gt;%  filter(! grepl(&quot;Soumettre une chanson&quot;, parole) )This part is more interesting (in my humble opinion) and quite relevant for web mining. Nothing new in the get_lyrics function, but it turns out that safely can be an amazingly usefull tool for web scraping. What this function does is taking a function A, returning another function B which will run A and returns a list containing two element: result and error, one being NULL depending on the output of the function A.So the point is that this function always works 🎉. If you’ve been doing some bulk web scraping, you know how frustrating it can be when your iteration stops because one out of your 500 urls is a 404. So, safely is here to help you prevent that: even if you iterate over 500 urls which are 404, your process won’t stop: you’ll always get an answer.That’s what I’m doing here with safe_lyr. Once I get the results, I map(&quot;result&quot;) in order to keep only the result elements of the lists, and compact() to remove the NULL elements (i.e the url that returned a 404). As all my result elements are tibbles, I end with a reduce(bind_rows) [*], which iterates over the list binding two elements at a time.So here we are, let’s join everyting up in a big dataframe !albums_infos &lt;- albums_infos %&gt;%  left_join(lyrics_df, by = c(chanson = &quot;song&quot;)) [*] As stated in the comment section, bind_rows() can take a list of data.frames as argument: I chose here to use reduce as an example of how this function works, yet this will not be, in practice, the best way to bind a list of data.frames.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="A Crazy Little Thing Called {purrr} - Part 1 : Web Mining">
+  <meta name="twitter:description" content="Yes, this title is a Queen reference.Yesterday, I presented a talk called “Le Text Mining expliqué à ma grand-mère” at the Breizh Data Club Meetup. As the title suggests (“Text Mining explained to my Grand Mother”), this talk was about explaining text mining to someone that doesn’t understand anything about data science. If you want to check the slides, they are on this GitHub repo.As I was searching for a “light” subject to do text-mining on, and something appealing for my grand-mother, I thought about mining Michel Sardou’s lyrics (if you don’t know him, he’s a famous french singer, who wrote quite a lot of cheesy songs, and was really popular around the 80’s - you should look for him on YouTube or Spotify if you want to hear more about him (but honestly, don’t do that)). As there are no available dataset with the lyrics, I needed to scrap the data from the web.But I’m not here to talk about what’s in the slides, but more to share some tricks to use {purrr} for doing web scraping.Scraping the web with {purrr} and {rvest}  Disclaimer: this post is neither an {rvest} nor a {stringr} tutorial. There’s plenty of available great tutorials out there, feel free to look for them if you’re not familiar with theses packages.So, the first step was to gather the data. I found this website which seemed to be containing everything I needed.library(rvest)library(tidyverse)get_album_list &lt;- function(url){  read_html(url)  %&gt;%     html_nodes(&quot;.col-md-12&quot;) %&gt;%    html_nodes(&quot;a&quot;) %&gt;%    html_attr(&quot;href&quot;)    }url_album &lt;- get_album_list(&quot;http://paroles2chansons.lemonde.fr/paroles-michel-sardou/discographie.html&quot;)No {purrr} there, let’s move to the next function, which get all the infos from an album list :get_album_info &lt;- function(url){  page &lt;- read_html(url)   date &lt;- page %&gt;%     html_nodes(&quot;small&quot;) %&gt;%    html_text() %&gt;%    stringr::str_replace_all(&quot;Date de Sortie : &quot;, &quot;&quot;) %&gt;%    lubridate::dmy()  song_list &lt;- page %&gt;%     html_nodes(&quot;.font-small&quot;) %&gt;%    html_text() %&gt;%    discard(~ .x == &quot;Plan de site&quot; | .x == &quot;Mention légale&quot; | .x == &quot;Chansons de mariage&quot; | .x == &quot;Chansons d&#39;enterrement&quot; )    url_list &lt;- page %&gt;%     html_nodes(&quot;.font-small&quot;) %&gt;%    html_attr(&quot;href&quot;) %&gt;%    discard(~ .x == &quot;/plan-du-site.html&quot; | .x == &quot;/mentions-legales.html&quot; | .x == &quot;/paroles-chansons-de-messe-d-enterrement/&quot;| .x == &quot;/paroles-chansons-de-messe-de-mariage/&quot;)    album_name &lt;- page %&gt;%    html_nodes(&quot;.breadcrumb&quot;) %&gt;%    html_text() %&gt;%    stringr::str_extract(&quot;\t.*$&quot;) %&gt;%    stringr::str_replace_all(&quot;\t&quot;, &quot;&quot;)    tibble(chanson = song_list,          url = url_list,          nom = album_name,          date = date)}When doing web mining, there are sometimes stuffs you want to discard: here, for example, every pages of the website has four links I don’t want to keep. For that, I used the discard function from {purrr}, which is a function that remove everything that matches the predicate it receives.albums_infos &lt;- map_df(url_album, get_album_info) %&gt;%  filter(grepl(&quot;sardou&quot;, url))Here, a simple map_df, which iterates over the list of url, applies the function get_album_info, and always returns a data.frame. Out of security, I filtered the urls to be sure to match the name of the artist.get_lyrics &lt;- function(url, name){  page &lt;- read_html(url)  lyrics &lt;- page %&gt;%    html_nodes(&quot;.text-center&quot;) %&gt;%    html_nodes(&quot;div&quot;) %&gt;%    html_text() %&gt;%    stringr::str_replace_all(&quot;[\t+\r+\n+]&quot;, &quot; &quot;) %&gt;%    stringr::str_replace_all(&quot;[ ]{2}&quot;, &quot; &quot;) %&gt;%    stringr::str_replace_all(&quot;googletag.cmd.push\\(function\\(\\) \\{ googletag.display\\(&#39;container-middle-lyrics&#39;\\)\\; \\}\\)\\;&quot;, &quot;&quot;) %&gt;%     stringr::str_replace_all(&quot;\\/\\* ringtone - Below Lyrics \\*\\/.*&quot;, &quot;&quot;) %&gt;%    discard( ~ grepl(&quot;Corriger les paroles&quot;, .x)) %&gt;%    discard( ~ grepl(&quot;Paroles2Chansons&quot;, .x)) %&gt;%    discard( ~ nchar(.x)  &lt; 2)   tibble(parole = lyrics,          song = name)}safe_lyr &lt;- safely(get_lyrics)lyrics_df &lt;- map2(albums_infos$url,                      albums_infos$chanson,                      ~ safe_lyr(.x,.y)) %&gt;%  map(&quot;result&quot;) %&gt;%  compact() %&gt;%  reduce(bind_rows) %&gt;%  filter(! grepl(&quot;Soumettre une chanson&quot;, parole) )This part is more interesting (in my humble opinion) and quite relevant for web mining. Nothing new in the get_lyrics function, but it turns out that safely can be an amazingly usefull tool for web scraping. What this function does is taking a function A, returning another function B which will run A and returns a list containing two element: result and error, one being NULL depending on the output of the function A.So the point is that this function always works 🎉. If you’ve been doing some bulk web scraping, you know how frustrating it can be when your iteration stops because one out of your 500 urls is a 404. So, safely is here to help you prevent that: even if you iterate over 500 urls which are 404, your process won’t stop: you’ll always get an answer.That’s what I’m doing here with safe_lyr. Once I get the results, I map(&quot;result&quot;) in order to keep only the result elements of the lists, and compact() to remove the NULL elements (i.e the url that returned a 404). As all my result elements are tibbles, I end with a reduce(bind_rows) [*], which iterates over the list binding two elements at a time.So here we are, let’s join everyting up in a big dataframe !albums_infos &lt;- albums_infos %&gt;%  left_join(lyrics_df, by = c(chanson = &quot;song&quot;)) [*] As stated in the comment section, bind_rows() can take a list of data.frames as argument: I chose here to use reduce as an example of how this function works, yet this will not be, in practice, the best way to bind a list of data.frames.">
+  <meta name="twitter:url" content="http://localhost:4000/purrr-web-mining/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-11-24T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/purrr-web-mining/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="A Crazy Little Thing Called {purrr} - Part 1 : Web Mining">
+    <meta itemprop="description" content="Yes, this title is a Queen reference.Yesterday, I presented a talk called “Le Text Mining expliqué à ma grand-mère” at the Breizh Data Club Meetup. As the title suggests (“Text Mining explained to my Grand Mother”), this talk was about explaining text mining to someone that doesn’t understand anything about data science. If you want to check the slides, they are on this GitHub repo.As I was searching for a “light” subject to do text-mining on, and something appealing for my grand-mother, I thought about mining Michel Sardou’s lyrics (if you don’t know him, he’s a famous french singer, who wrote quite a lot of cheesy songs, and was really popular around the 80’s - you should look for him on YouTube or Spotify if you want to hear more about him (but honestly, don’t do that)). As there are no available dataset with the lyrics, I needed to scrap the data from the web.But I’m not here to talk about what’s in the slides, but more to share some tricks to use {purrr} for doing web scraping.Scraping the web with {purrr} and {rvest}  Disclaimer: this post is neither an {rvest} nor a {stringr} tutorial. There’s plenty of available great tutorials out there, feel free to look for them if you’re not familiar with theses packages.So, the first step was to gather the data. I found this website which seemed to be containing everything I needed.library(rvest)library(tidyverse)get_album_list &lt;- function(url){  read_html(url)  %&gt;%     html_nodes(&quot;.col-md-12&quot;) %&gt;%    html_nodes(&quot;a&quot;) %&gt;%    html_attr(&quot;href&quot;)    }url_album &lt;- get_album_list(&quot;http://paroles2chansons.lemonde.fr/paroles-michel-sardou/discographie.html&quot;)No {purrr} there, let’s move to the next function, which get all the infos from an album list :get_album_info &lt;- function(url){  page &lt;- read_html(url)   date &lt;- page %&gt;%     html_nodes(&quot;small&quot;) %&gt;%    html_text() %&gt;%    stringr::str_replace_all(&quot;Date de Sortie : &quot;, &quot;&quot;) %&gt;%    lubridate::dmy()  song_list &lt;- page %&gt;%     html_nodes(&quot;.font-small&quot;) %&gt;%    html_text() %&gt;%    discard(~ .x == &quot;Plan de site&quot; | .x == &quot;Mention légale&quot; | .x == &quot;Chansons de mariage&quot; | .x == &quot;Chansons d&#39;enterrement&quot; )    url_list &lt;- page %&gt;%     html_nodes(&quot;.font-small&quot;) %&gt;%    html_attr(&quot;href&quot;) %&gt;%    discard(~ .x == &quot;/plan-du-site.html&quot; | .x == &quot;/mentions-legales.html&quot; | .x == &quot;/paroles-chansons-de-messe-d-enterrement/&quot;| .x == &quot;/paroles-chansons-de-messe-de-mariage/&quot;)    album_name &lt;- page %&gt;%    html_nodes(&quot;.breadcrumb&quot;) %&gt;%    html_text() %&gt;%    stringr::str_extract(&quot;\t.*$&quot;) %&gt;%    stringr::str_replace_all(&quot;\t&quot;, &quot;&quot;)    tibble(chanson = song_list,          url = url_list,          nom = album_name,          date = date)}When doing web mining, there are sometimes stuffs you want to discard: here, for example, every pages of the website has four links I don’t want to keep. For that, I used the discard function from {purrr}, which is a function that remove everything that matches the predicate it receives.albums_infos &lt;- map_df(url_album, get_album_info) %&gt;%  filter(grepl(&quot;sardou&quot;, url))Here, a simple map_df, which iterates over the list of url, applies the function get_album_info, and always returns a data.frame. Out of security, I filtered the urls to be sure to match the name of the artist.get_lyrics &lt;- function(url, name){  page &lt;- read_html(url)  lyrics &lt;- page %&gt;%    html_nodes(&quot;.text-center&quot;) %&gt;%    html_nodes(&quot;div&quot;) %&gt;%    html_text() %&gt;%    stringr::str_replace_all(&quot;[\t+\r+\n+]&quot;, &quot; &quot;) %&gt;%    stringr::str_replace_all(&quot;[ ]{2}&quot;, &quot; &quot;) %&gt;%    stringr::str_replace_all(&quot;googletag.cmd.push\\(function\\(\\) \\{ googletag.display\\(&#39;container-middle-lyrics&#39;\\)\\; \\}\\)\\;&quot;, &quot;&quot;) %&gt;%     stringr::str_replace_all(&quot;\\/\\* ringtone - Below Lyrics \\*\\/.*&quot;, &quot;&quot;) %&gt;%    discard( ~ grepl(&quot;Corriger les paroles&quot;, .x)) %&gt;%    discard( ~ grepl(&quot;Paroles2Chansons&quot;, .x)) %&gt;%    discard( ~ nchar(.x)  &lt; 2)   tibble(parole = lyrics,          song = name)}safe_lyr &lt;- safely(get_lyrics)lyrics_df &lt;- map2(albums_infos$url,                      albums_infos$chanson,                      ~ safe_lyr(.x,.y)) %&gt;%  map(&quot;result&quot;) %&gt;%  compact() %&gt;%  reduce(bind_rows) %&gt;%  filter(! grepl(&quot;Soumettre une chanson&quot;, parole) )This part is more interesting (in my humble opinion) and quite relevant for web mining. Nothing new in the get_lyrics function, but it turns out that safely can be an amazingly usefull tool for web scraping. What this function does is taking a function A, returning another function B which will run A and returns a list containing two element: result and error, one being NULL depending on the output of the function A.So the point is that this function always works 🎉. If you’ve been doing some bulk web scraping, you know how frustrating it can be when your iteration stops because one out of your 500 urls is a 404. So, safely is here to help you prevent that: even if you iterate over 500 urls which are 404, your process won’t stop: you’ll always get an answer.That’s what I’m doing here with safe_lyr. Once I get the results, I map(&quot;result&quot;) in order to keep only the result elements of the lists, and compact() to remove the NULL elements (i.e the url that returned a 404). As all my result elements are tibbles, I end with a reduce(bind_rows) [*], which iterates over the list binding two elements at a time.So here we are, let’s join everyting up in a big dataframe !albums_infos &lt;- albums_infos %&gt;%  left_join(lyrics_df, by = c(chanson = &quot;song&quot;)) [*] As stated in the comment section, bind_rows() can take a list of data.frames as argument: I chose here to use reduce as an example of how this function works, yet this will not be, in practice, the best way to bind a list of data.frames.">
+    <meta itemprop="datePublished" content="November 24, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">A Crazy Little Thing Called {purrr} - Part 1 : Web Mining
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  4 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Yes, this title is a Queen reference.</p>
+
+<p>Yesterday, I presented a talk called “Le Text Mining expliqué à ma grand-mère” at the Breizh Data Club Meetup. As the title suggests (“Text Mining explained to my Grand Mother”), this talk was about explaining text mining to someone that doesn’t understand anything about data science. If you want to check the slides, they are <a href="https://github.com/ColinFay/conf/blob/master/2017-11-breizh-data-club/fay_colin_tm_explique_grand_mere.pdf">on this GitHub repo</a>.</p>
+
+<p>As I was searching for a “light” subject to do text-mining on, and something appealing for my grand-mother, I thought about mining Michel Sardou’s lyrics (if you don’t know him, he’s a famous french singer, who wrote quite a lot of cheesy songs, and was really popular around the 80’s - you should look for him on YouTube or Spotify if you want to hear more about him (but honestly, don’t do that)). As there are no available dataset with the lyrics, I needed to scrap the data from the web.</p>
+
+<p>But I’m not here to talk about what’s in the slides, but more to share some tricks to use {purrr} for doing web scraping.</p>
+
+<h2 id="scraping-the-web-with-purrr-and-rvest">Scraping the web with {purrr} and {rvest}</h2>
+
+<blockquote>
+  <p>Disclaimer: this post is neither an {rvest} nor a {stringr} tutorial. There’s plenty of available great tutorials out there, feel free to look for them if you’re not familiar with theses packages.</p>
+</blockquote>
+
+<p>So, the first step was to gather the data. I found <a href="http://paroles2chansons.lemonde.fr">this website</a> which seemed to be containing everything I needed.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">rvest</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">get_album_list</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">url</span><span class="p">){</span><span class="w">
+  </span><span class="n">read_html</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">  </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">html_nodes</span><span class="p">(</span><span class="s2">".col-md-12"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_nodes</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_attr</span><span class="p">(</span><span class="s2">"href"</span><span class="p">)</span><span class="w">
+    
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">url_album</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">get_album_list</span><span class="p">(</span><span class="s2">"http://paroles2chansons.lemonde.fr/paroles-michel-sardou/discographie.html"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>No {purrr} there, let’s move to the next function, which get all the infos from an album list :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get_album_info</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">url</span><span class="p">){</span><span class="w">
+  </span><span class="n">page</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_html</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w"> 
+  </span><span class="n">date</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">html_nodes</span><span class="p">(</span><span class="s2">"small"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_text</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"Date de Sortie : "</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">lubridate</span><span class="o">::</span><span class="n">dmy</span><span class="p">()</span><span class="w">
+  </span><span class="n">song_list</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">html_nodes</span><span class="p">(</span><span class="s2">".font-small"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_text</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">discard</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Plan de site"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Mention légale"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Chansons de mariage"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Chansons d'enterrement"</span><span class="w"> </span><span class="p">)</span><span class="w">
+  
+  </span><span class="n">url_list</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">html_nodes</span><span class="p">(</span><span class="s2">".font-small"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_attr</span><span class="p">(</span><span class="s2">"href"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">discard</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"/plan-du-site.html"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"/mentions-legales.html"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"/paroles-chansons-de-messe-d-enterrement/"</span><span class="o">|</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"/paroles-chansons-de-messe-de-mariage/"</span><span class="p">)</span><span class="w">
+  
+  </span><span class="n">album_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_nodes</span><span class="p">(</span><span class="s2">".breadcrumb"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_text</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_extract</span><span class="p">(</span><span class="s2">"\t.*$"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"\t"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w">
+  
+  </span><span class="n">tibble</span><span class="p">(</span><span class="n">chanson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">song_list</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">url_list</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">nom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">album_name</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">date</span><span class="p">)</span><span class="w">
+
+</span><span class="p">}</span><span class="w">
+
+</span></code></pre></div></div>
+
+<p>When doing web mining, there are sometimes stuffs you want to discard: here, for example, every pages of the website has four links I don’t want to keep. For that, I used the <code class="highlighter-rouge">discard</code> function from {purrr}, which is a function that remove everything that matches the predicate it receives.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">albums_infos</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map_df</span><span class="p">(</span><span class="n">url_album</span><span class="p">,</span><span class="w"> </span><span class="n">get_album_info</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"sardou"</span><span class="p">,</span><span class="w"> </span><span class="n">url</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here, a simple <code class="highlighter-rouge">map_df</code>, which iterates over the list of url, applies the function <code class="highlighter-rouge">get_album_info</code>, and always returns a data.frame. Out of security, I filtered the urls to be sure to match the name of the artist.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get_lyrics</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">){</span><span class="w">
+  </span><span class="n">page</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_html</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">
+  </span><span class="n">lyrics</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_nodes</span><span class="p">(</span><span class="s2">".text-center"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_nodes</span><span class="p">(</span><span class="s2">"div"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">html_text</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"[\t+\r+\n+]"</span><span class="p">,</span><span class="w"> </span><span class="s2">" "</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"[ ]{2}"</span><span class="p">,</span><span class="w"> </span><span class="s2">" "</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"googletag.cmd.push\\(function\\(\\) \\{ googletag.display\\('container-middle-lyrics'\\)\\; \\}\\)\\;"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">stringr</span><span class="o">::</span><span class="n">str_replace_all</span><span class="p">(</span><span class="s2">"\\/\\* ringtone - Below Lyrics \\*\\/.*"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">discard</span><span class="p">(</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">grepl</span><span class="p">(</span><span class="s2">"Corriger les paroles"</span><span class="p">,</span><span class="w"> </span><span class="n">.x</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">discard</span><span class="p">(</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">grepl</span><span class="p">(</span><span class="s2">"Paroles2Chansons"</span><span class="p">,</span><span class="w"> </span><span class="n">.x</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">discard</span><span class="p">(</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">nchar</span><span class="p">(</span><span class="n">.x</span><span class="p">)</span><span class="w">  </span><span class="o">&lt;</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> 
+  </span><span class="n">tibble</span><span class="p">(</span><span class="n">parole</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lyrics</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">song</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">safe_lyr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">safely</span><span class="p">(</span><span class="n">get_lyrics</span><span class="p">)</span><span class="w">
+
+</span><span class="n">lyrics_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">map2</span><span class="p">(</span><span class="n">albums_infos</span><span class="o">$</span><span class="n">url</span><span class="p">,</span><span class="w"> 
+                     </span><span class="n">albums_infos</span><span class="o">$</span><span class="n">chanson</span><span class="p">,</span><span class="w"> 
+                     </span><span class="o">~</span><span class="w"> </span><span class="n">safe_lyr</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="n">.y</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">map</span><span class="p">(</span><span class="s2">"result"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">compact</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">reduce</span><span class="p">(</span><span class="n">bind_rows</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">filter</span><span class="p">(</span><span class="o">!</span><span class="w"> </span><span class="n">grepl</span><span class="p">(</span><span class="s2">"Soumettre une chanson"</span><span class="p">,</span><span class="w"> </span><span class="n">parole</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This part is more interesting (in my humble opinion) and quite relevant for web mining. Nothing new in the <code class="highlighter-rouge">get_lyrics</code> function, but it turns out that <code class="highlighter-rouge">safely</code> can be an amazingly usefull tool for web scraping. What this function does is taking a function A, returning another function B which will run A and returns a list containing two element: <code class="highlighter-rouge">result</code> and <code class="highlighter-rouge">error</code>, one being <code class="highlighter-rouge">NULL</code> depending on the output of the function A.</p>
+
+<p>So the point is that <strong>this function always works</strong> 🎉. If you’ve been doing some bulk web scraping, you know how frustrating it can be when your iteration stops because one out of your 500 urls is a 404. So, safely is here to help you prevent that: even if you iterate over 500 urls which are 404, your process won’t stop: you’ll always get an answer.</p>
+
+<p>That’s what I’m doing here with <code class="highlighter-rouge">safe_lyr</code>. Once I get the results, I <code class="highlighter-rouge">map("result")</code> in order to keep only the result elements of the lists, and <code class="highlighter-rouge">compact()</code> to remove the <code class="highlighter-rouge">NULL</code> elements (i.e the url that returned a 404). As all my result elements are tibbles, I end with a <code class="highlighter-rouge">reduce(bind_rows)</code> [*], which iterates over the list binding two elements at a time.</p>
+
+<p>So here we are, let’s join everyting up in a big dataframe !</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">albums_infos</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">albums_infos</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">left_join</span><span class="p">(</span><span class="n">lyrics_df</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">chanson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"song"</span><span class="p">))</span><span class="w"> 
+</span></code></pre></div></div>
+
+<p><img src="h/assets/img/blogsardou.gif" alt="" /></p>
+
+<p>[*] As stated in the comment section, <code class="highlighter-rouge">bind_rows()</code> can take a list of data.frames as argument: I chose here to use <code class="highlighter-rouge">reduce</code> as an example of how this function works, yet this will not be, in practice, the best way to bind a list of data.frames.</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#purrr" class="page__taxonomy-item" rel="tag">purrr</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-11-24T00:00:00+01:00">November 24, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=A+Crazy+Little+Thing+Called+%7Bpurrr%7D+-+Part+1+%3A+Web+Mining+%20http%3A%2F%2Flocalhost%3A4000%2Fpurrr-web-mining%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fpurrr-web-mining%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fpurrr-web-mining%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fpurrr-web-mining%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/back-budapest/" class="pagination--pager" title="Back from Budapest
+">←</a>
+    
+    
+      <a href="/purrr-text-wrangling/" class="pagination--pager" title="A Crazy Little Thing Called {purrr} - Part 2 : Text Wrangling
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/purrr-web-mining/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/purrr-web-mining"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,701 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>#RStats et Microsoft Computer Vision - Colin Fay</title>
+<meta name="description" content="Exploration des photos de profils des twittos #RStats avec l’API Microsoft Computer Vision.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="#RStats et Microsoft Computer Vision">
+<meta property="og:url" content="http://localhost:4000/rstats-microsoft-computer-vision-api-2/">
+
+
+  <meta property="og:description" content="Exploration des photos de profils des twittos #RStats avec l’API Microsoft Computer Vision.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="#RStats et Microsoft Computer Vision">
+  <meta name="twitter:description" content="Exploration des photos de profils des twittos #RStats avec l’API Microsoft Computer Vision.">
+  <meta name="twitter:url" content="http://localhost:4000/rstats-microsoft-computer-vision-api-2/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-05-10T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/rstats-microsoft-computer-vision-api-2/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="#RStats et Microsoft Computer Vision">
+    <meta itemprop="description" content="Exploration des photos de profils des twittos #RStats avec l’API Microsoft Computer Vision.">
+    <meta itemprop="datePublished" content="May 10, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">#RStats et Microsoft Computer Vision
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  3 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <h2 id="exploration-des-photos-de-profils-des-twittos-rstats-avec-lapi-microsoft-computer-vision">Exploration des photos de profils des twittos #RStats avec l’API Microsoft Computer Vision.</h2>
+
+<p>Ce billet de blog s’inspire du travail de Maelle Salmon avec <a href="http://www.masalmon.eu/2017/03/19/facesofr/" target="_blank" rel="noopener noreferrer">Faces of #RStats twitter</a> et d’un article sur Data Bzh utilisant l’API Microsoft Computer Vision pour examiner d’anciennes <a href="http://data-bzh.fr/photographies-fonds-de-la-guerre-14-18-en-bretagne/" target="_blank" rel="noopener noreferrer">photos de Bretagne</a> .</p>
+<h3 id="microsoft-computer-vision">Microsoft Computer Vision</h3>
+<p>Cette <a href="https://www.microsoft.com/cognitive-services/en-us/computer-vision-api" target="_blank" rel="noopener noreferrer">API</a> est utilisée pour décrire et étiqueter automatiquement une image. Voici comment vous pouvez l’utiliser avec R, avec un jeu de données regroupant des images de profils Twitter.</p>
+<h3 id="les-visages-rstats--Étiquetage-automatique">Les visages #RStats — Étiquetage automatique</h3>
+<p>Dans cet article, vous trouverez un tuto sur comment obtenir des photos de profil de Twitter et les étiqueter automatiquement avec Microsoft Computer Vision.</p>
+<h4 id="collecter-les-données">Collecter les données</h4>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">rtweet</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span><span class="w">
+</span><span class="n">token</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">create_token</span><span class="p">(</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"XX"</span><span class="p">,</span><span class="w"> </span><span class="n">consumer_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"XXX"</span><span class="p">,</span><span class="w"> </span><span class="n">consumer_secret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">"</span><span class="n">XX</span><span class="w">
+</span><span class="n">users</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">search_users</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="w"> </span><span class="s1">'#rstats'</span><span class="p">,</span><span class="w">
+                      </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span><span class="w">
+                      </span><span class="n">parse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">unique</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><em>Note: J’ai ici anonymisé mes API keys.</em>
+Maintenant, utilisons la colonne <code class="highlighter-rouge">profile_image_url</code> pour obtenir l’url des photos de profil.</p>
+
+<p>D’abord, cette variable a besoin d’être nettoyée : les URL contiennent un paramètre <em>normal</em>, créant des images 48x48. L’API Microsoft a besoin d’une résolution minimum de 50x50, nous devons donc nous débarrasser de ce paramètre.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">users</span><span class="o">$</span><span class="n">profile_image_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s2">"_normal"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">users</span><span class="o">$</span><span class="n">profile_image_url</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+<h4 id="interroger-lapi--microsoft">Interroger l’API  Microsoft</h4>
+<p>D’abord, inscrivez-vous sur <a href="https://www.microsoft.com/cognitive-services/en-us/computer-vision-api" target="_blank" rel="noopener noreferrer">Microsoft API service</a>, et lancez un essai gratuit. Ce compte gratuit est limité: vous ne pouvez faire que 5 000 appels par mois et 20 par minute. Mais c’est bien assez pour notre cas (478 images à regarder).</p>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">users_api</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lapply</span><span class="p">(</span><span class="n">users</span><span class="p">[,</span><span class="m">25</span><span class="p">],</span><span class="k">function</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">request_body</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w">
+  </span><span class="n">request_body_json</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s2">"\\[|\\]"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">toJSON</span><span class="p">(</span><span class="n">request_body</span><span class="p">,</span><span class="w"> </span><span class="n">auto_unbox</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"TRUE"</span><span class="p">))</span><span class="w">
+  </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">POST</span><span class="p">(</span><span class="s2">"https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Tags,Description,Faces,Categories"</span><span class="p">,</span><span class="w">
+                 </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request_body_json</span><span class="p">,</span><span class="w">
+                 </span><span class="n">add_headers</span><span class="p">(</span><span class="n">.headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"Content-Type"</span><span class="o">=</span><span class="s2">"application/json"</span><span class="p">,</span><span class="s2">"Ocp-Apim-Subscription-Key"</span><span class="o">=</span><span class="s2">"XXX"</span><span class="p">)))</span><span class="w">
+  </span><span class="n">Output</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">content</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">Output</span><span class="o">$</span><span class="n">description</span><span class="o">$</span><span class="n">tags</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">0</span><span class="p">){</span><span class="w">
+    </span><span class="n">cap</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">Output</span><span class="o">$</span><span class="n">description</span><span class="o">$</span><span class="n">captions</span><span class="w">
+  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">cap</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kc">NA</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">Output</span><span class="o">$</span><span class="n">description</span><span class="o">$</span><span class="n">tags</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="m">0</span><span class="p">){</span><span class="w">
+    </span><span class="n">tag</span><span class="w"> </span><span class="o">&lt;-</span><span class="nf">list</span><span class="p">(</span><span class="n">Output</span><span class="o">$</span><span class="n">description</span><span class="o">$</span><span class="n">tags</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">)</span><span class="w">
+  </span><span class="n">Sys.sleep</span><span class="p">(</span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w">
+  </span><span class="nf">return</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="w">
+</span><span class="p">})</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="n">.</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+<p><em>Remarque: J’ai (à nouveau) caché ma clé API.</em>
+<em>Ce code peut prendre un certain temps à exécuter, car il contient un appel à la fonction Sys.sleep.</em> Pour en savoir plus, <a href="http://colinfay.me/rstats-api-calls-sys-sleep/" target="_blank" rel="noopener noreferrer">lire ce billet</a>.</p>
+
+<h4 id="créer-des-tibbles">Créer des tibbles</h4>
+<p>Maintenant, j’ai un tibble avec une colonne contenant les listes de légendes et de score de confiance, et une colonne avec les listes des balises associées à chaque image.</p>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">users_cap</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lapply</span><span class="p">(</span><span class="n">users_api</span><span class="o">$</span><span class="n">cap</span><span class="p">,</span><span class="w"> </span><span class="n">unlist</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="n">.</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">as.data.frame</span><span class="p">()</span><span class="w"> 
+</span><span class="n">users_cap</span><span class="o">$</span><span class="n">confidence</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="n">users_cap</span><span class="o">$</span><span class="n">confidence</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="nf">as.numeric</span><span class="p">()</span><span class="w">
+</span><span class="n">users_tags</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">unlist</span><span class="p">(</span><span class="n">users_api</span><span class="o">$</span><span class="n">tag</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">data.frame</span><span class="p">(</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+<h3 id="visualisation">Visualisation</h3>
+<p>Chaque légende est donnée avec un score de confiance.</p>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ggplot</span><span class="p">(</span><span class="n">users_cap</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">confidence</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_histogram</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#b78d6a"</span><span class="p">,</span><span class="w"> </span><span class="n">bins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Confidence"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">ylab</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Faces of #RStats - Captions confidence"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">caption</span><span class="o">=</span><span class="s2">"http://colinfay.me"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">theme_light</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/rstats-caption-confidence.png"><img class="size-full wp-image-1583" src="/assets/img/blog/rstats-caption-confidence.png" alt="" width="1000" height="500" /></a> Cliquez pour zoomer</p>
+
+<p>Il semble que les scores de confiance pour les légendes ne soient pas très forts.</p>
+
+<p>Regardons les légendes et les balises les plus fréquentes.</p>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">users</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarize</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">n</span><span class="p">()))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">arrange</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="n">somme</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">na.omit</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">.</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">25</span><span class="p">,]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">reorder</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">somme</span><span class="p">),</span><span class="w"> </span><span class="n">somme</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">,</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#b78d6a"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">xlab</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">ylab</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Faces of #RStats - Captions"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">caption</span><span class="o">=</span><span class="s2">"http://colinfay.me"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">   
+  </span><span class="n">theme_light</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/rstats-captions-users.png"><img class="size-full wp-image-1580" src="/assets/img/blog/rstats-captions-users.png" alt="" width="800" height="400" /></a> Cliquez pour zoomer</p>
+
+<p>Eh bien … Je ne suis pas sûr qu’il y ait tant de passionnés de surf et de skate dans notre liste, mais soit…</p>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">users_tags</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">summarize</span><span class="p">(</span><span class="n">somme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">n</span><span class="p">()))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">arrange</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="n">somme</span><span class="p">))</span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">.</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">25</span><span class="p">,]</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">reorder</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">somme</span><span class="p">),</span><span class="w"> </span><span class="n">somme</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">,</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#b78d6a"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">xlab</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">ylab</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Faces of #RStats - Tags"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">caption</span><span class="o">=</span><span class="s2">"http://colinfay.me"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">   
+  </span><span class="n">theme_light</span><span class="p">()</span><span class="w">
+
+
+</span></code></pre></div></div>
+<p><a href="/assets/img/blog/rstats-tags.png"><img class="aligncenter size-full wp-image-1584" src="/assets/img/blog/rstats-tags.png" alt="" width="1000" height="500" /></a></p>
+
+<h2 id="quelques-vérifications">Quelques vérifications</h2>
+<p>Jetons un coup d’œil à l’image avec le score de confiance le plus élevé, avec la légende que l’API lui a donnée.</p>
+
+<p><a href="/assets/img/blog/9mJTF0PO.jpeg"><img class="size-full wp-image-1459" src="/assets/img/blog/9mJTF0PO.jpeg" alt="" width="300" height="300" /></a></p>
+
+<p>A man wearing a suit and tie — 0.92 confidence.</p>
+
+<p>Il n’a pas de cravate, mais l’API a bien saisi le reste.</p>
+
+<p>Et maintenant, juste pour le plaisir, la légende avec le score de confiance le plus bas :</p>
+
+<p><a href="/assets/img/blog/czR2-o0M.jpg"><img class="size-full wp-image-1460" src="/assets/img/blog/czR2-o0M.jpg" alt="" width="300" height="300" /></a></p>
+
+<p>A close up of two giraffes near a tree - 0.02 confidence</p>
+
+<p>Bien vu ;)</p>
+
+<p>Pour une vérification plus plus systémique, regardons un collage d’images, réalisé à partir des légendes les plus fréquentes.</p>
+<p style="text-align: right;">_Remarque: afin de se concentrer sur les détails des images et de se débarrasser du genre des légendes, j'ai remplacé "man / woman / men / womens" par "persoe / persons" dans l'ensemble de données, avant de créer ces collages. _</p>
+
+<p><a href="/assets/img/blog/caption_man_skatepark.jpg"><img class="size-large wp-image-1533" src="/assets/img/blog/caption_man_skatepark-1024x1024.jpg" alt="" width="840" height="840" /></a></p>
+
+<p>A person on a surf board in a skate park</p>
+
+<p> </p>
+
+<p><a href="/assets/img/blog/smiling_camera.jpg"><img class="size-large wp-image-1556" src="/assets/img/blog/smiling_camera-1024x514.jpg" alt="" width="840" height="422" /></a></p>
+
+<p>A person is smiling at the camera - Confidence mean : 0.54</p>
+
+<p> </p>
+
+<p><a href="/assets/img/blog/caption_girafe.jpg"><img class="size-large wp-image-1535" src="/assets/img/blog/caption_girafe-1024x514.jpg" alt="" width="840" height="422" /></a></p>
+
+<p>A close up of two giraffes near a tree — Confidence mean : 0.0037</p>
+
+<p> </p>
+
+<p><a href="/assets/img/blog/mosaic_glasses.jpg"><img class="size-large wp-image-1557" src="/assets/img/blog/mosaic_glasses-1024x514.jpg" alt="" width="840" height="422" /></a> A person wearing glasses looking at the camera</p>
+
+<p>Les premier et troisième collages sont clairement erronés sur les légendes. Mais, nous pouvons voir que le score de confiance y est très bas. Le deuxième et le quatrième, cependant, semblent être plus précis. Peut-être que nous devons essayer à nouveau avec d’autres images, juste pour être sûr … Mais ça sera pour une autre fois 😉</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#justforfun" class="page__taxonomy-item" rel="tag">justforfun</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#r" class="page__taxonomy-item" rel="tag">r</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-fr" class="page__taxonomy-item" rel="tag">r-blog-fr</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-05-10T00:00:00+02:00">May 10, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=%23RStats+et+Microsoft+Computer+Vision%20http%3A%2F%2Flocalhost%3A4000%2Frstats-microsoft-computer-vision-api-2%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Frstats-microsoft-computer-vision-api-2%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Frstats-microsoft-computer-vision-api-2%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Frstats-microsoft-computer-vision-api-2%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/mapping-the-french-second-round-results-with-r/" class="pagination--pager" title="Mapping the French second round results with R
+">←</a>
+    
+    
+      <a href="/rstats-turbonegro/" class="pagination--pager" title="[Just for fun] New R package — tuRbonegro
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/rstats-microsoft-computer-vision-api-2/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/rstats-microsoft-computer-vision-api-2"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

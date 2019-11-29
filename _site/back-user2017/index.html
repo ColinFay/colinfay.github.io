@@ -1,0 +1,580 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Back from useR!2017: a summer to-do list - Colin Fay</title>
+<meta name="description" content="A quick to-do list brought back from useR!2017.Last week, ThinkR had the chance to go to useR!2017, Brussels. Here’s some stuffs I’ve brought back, in the form of a summer to-do list.purrr all the thingsI’ve been using purrr on a non regular basis so far. Being used to call the apply functions when needed, purrr didn’t come first in my programming habits. Yet, during her workshop, Charlotte Wickham made a good case for the package, explaining how you can really simplify your code with purrr. In a way, this tidyverse package does the same things as the apply family, yet it provides a more logic and consistent syntax, and control over the kind of output you want to have. It’s also more easy to loop over multiple object and/or with multiple functions.Let’s say that now I’ve got quite some work updating my old packages using the map_family !Start using cleanNLPI’m a big fan of the tidytext package, being a great tool for starting with NLP, but lacking some more advanced features. That’s what cleanNLP provides. At the crossroad of the tidyverse and cutting-edge research in linguistics, this package is designed to turn raw text data into rich text, in  tidy format.First (and obviously) cleanNLP is designed to parse the data into tokens, but then you can call the Java or Python back-end to detect co-reference, part of speech, words type… As I’m writting these words, I’ve so far been struggling with the back-end Java installation, but you’ll get some update about this fight very soon (and of course more NLP :) ).Do more R6R6 has been there for quite a while now (3 years), and it’s today the most downloaded package on RStudio CRAN mirror. And yes, this may be due to the fact that well known packages depend on it, like dplyr or shiny. But still, this R class is designed to be lighter, and faster. Object oriented programming is not the way people usually program with R, but I think I have to give it a shot. More on that too very soon.Start using more my Datacamp accountI’ve always be fond of online learning. Datacamp provides a great solution to learn both R and Python. They’re now launching a SQL course, and plan on having about a 100 courses by the end of the year. So, I’m just gonna have to try them all :)Btw, if ever you want to try but don’t know if you should really pay for that, I’ve got quite a few coupons left for a 2 days premium trial for free. Check this link.Get a &gt;ls() tattoo.A real one.Create more Open DataI’ve so far engaged in some open data projects, mainly through Data-Bzh. I’ve created several open-data-sets, but you can say that’s not enough. Epecially when you know how easily you can use rvest for scraping more data from over the web, and put the results online.Try JUGThis package is designed to create API within R. The live demo at useR! was quite convincing, adn I have to say that I really want to dig deeper into it. More on GitHub, and here when I have a chance to try out.Start using minerPresented by David Smith, the miner package allows to control over Minecraft, within R. Quite a good way to get kids into programming !Decide how I should pronounce CRANI’ve always been saying “KRAN”, but Uwe Ligges pronounces it “SEE-RAN”. I think I’m gonna stick to “KRAN”, though, that really sounds more natural to me.Sounds like a good plan for the summer, right?">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Back from useR!2017: a summer to-do list">
+<meta property="og:url" content="http://localhost:4000/back-user2017/">
+
+
+  <meta property="og:description" content="A quick to-do list brought back from useR!2017.Last week, ThinkR had the chance to go to useR!2017, Brussels. Here’s some stuffs I’ve brought back, in the form of a summer to-do list.purrr all the thingsI’ve been using purrr on a non regular basis so far. Being used to call the apply functions when needed, purrr didn’t come first in my programming habits. Yet, during her workshop, Charlotte Wickham made a good case for the package, explaining how you can really simplify your code with purrr. In a way, this tidyverse package does the same things as the apply family, yet it provides a more logic and consistent syntax, and control over the kind of output you want to have. It’s also more easy to loop over multiple object and/or with multiple functions.Let’s say that now I’ve got quite some work updating my old packages using the map_family !Start using cleanNLPI’m a big fan of the tidytext package, being a great tool for starting with NLP, but lacking some more advanced features. That’s what cleanNLP provides. At the crossroad of the tidyverse and cutting-edge research in linguistics, this package is designed to turn raw text data into rich text, in  tidy format.First (and obviously) cleanNLP is designed to parse the data into tokens, but then you can call the Java or Python back-end to detect co-reference, part of speech, words type… As I’m writting these words, I’ve so far been struggling with the back-end Java installation, but you’ll get some update about this fight very soon (and of course more NLP :) ).Do more R6R6 has been there for quite a while now (3 years), and it’s today the most downloaded package on RStudio CRAN mirror. And yes, this may be due to the fact that well known packages depend on it, like dplyr or shiny. But still, this R class is designed to be lighter, and faster. Object oriented programming is not the way people usually program with R, but I think I have to give it a shot. More on that too very soon.Start using more my Datacamp accountI’ve always be fond of online learning. Datacamp provides a great solution to learn both R and Python. They’re now launching a SQL course, and plan on having about a 100 courses by the end of the year. So, I’m just gonna have to try them all :)Btw, if ever you want to try but don’t know if you should really pay for that, I’ve got quite a few coupons left for a 2 days premium trial for free. Check this link.Get a &gt;ls() tattoo.A real one.Create more Open DataI’ve so far engaged in some open data projects, mainly through Data-Bzh. I’ve created several open-data-sets, but you can say that’s not enough. Epecially when you know how easily you can use rvest for scraping more data from over the web, and put the results online.Try JUGThis package is designed to create API within R. The live demo at useR! was quite convincing, adn I have to say that I really want to dig deeper into it. More on GitHub, and here when I have a chance to try out.Start using minerPresented by David Smith, the miner package allows to control over Minecraft, within R. Quite a good way to get kids into programming !Decide how I should pronounce CRANI’ve always been saying “KRAN”, but Uwe Ligges pronounces it “SEE-RAN”. I think I’m gonna stick to “KRAN”, though, that really sounds more natural to me.Sounds like a good plan for the summer, right?">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Back from useR!2017: a summer to-do list">
+  <meta name="twitter:description" content="A quick to-do list brought back from useR!2017.Last week, ThinkR had the chance to go to useR!2017, Brussels. Here’s some stuffs I’ve brought back, in the form of a summer to-do list.purrr all the thingsI’ve been using purrr on a non regular basis so far. Being used to call the apply functions when needed, purrr didn’t come first in my programming habits. Yet, during her workshop, Charlotte Wickham made a good case for the package, explaining how you can really simplify your code with purrr. In a way, this tidyverse package does the same things as the apply family, yet it provides a more logic and consistent syntax, and control over the kind of output you want to have. It’s also more easy to loop over multiple object and/or with multiple functions.Let’s say that now I’ve got quite some work updating my old packages using the map_family !Start using cleanNLPI’m a big fan of the tidytext package, being a great tool for starting with NLP, but lacking some more advanced features. That’s what cleanNLP provides. At the crossroad of the tidyverse and cutting-edge research in linguistics, this package is designed to turn raw text data into rich text, in  tidy format.First (and obviously) cleanNLP is designed to parse the data into tokens, but then you can call the Java or Python back-end to detect co-reference, part of speech, words type… As I’m writting these words, I’ve so far been struggling with the back-end Java installation, but you’ll get some update about this fight very soon (and of course more NLP :) ).Do more R6R6 has been there for quite a while now (3 years), and it’s today the most downloaded package on RStudio CRAN mirror. And yes, this may be due to the fact that well known packages depend on it, like dplyr or shiny. But still, this R class is designed to be lighter, and faster. Object oriented programming is not the way people usually program with R, but I think I have to give it a shot. More on that too very soon.Start using more my Datacamp accountI’ve always be fond of online learning. Datacamp provides a great solution to learn both R and Python. They’re now launching a SQL course, and plan on having about a 100 courses by the end of the year. So, I’m just gonna have to try them all :)Btw, if ever you want to try but don’t know if you should really pay for that, I’ve got quite a few coupons left for a 2 days premium trial for free. Check this link.Get a &gt;ls() tattoo.A real one.Create more Open DataI’ve so far engaged in some open data projects, mainly through Data-Bzh. I’ve created several open-data-sets, but you can say that’s not enough. Epecially when you know how easily you can use rvest for scraping more data from over the web, and put the results online.Try JUGThis package is designed to create API within R. The live demo at useR! was quite convincing, adn I have to say that I really want to dig deeper into it. More on GitHub, and here when I have a chance to try out.Start using minerPresented by David Smith, the miner package allows to control over Minecraft, within R. Quite a good way to get kids into programming !Decide how I should pronounce CRANI’ve always been saying “KRAN”, but Uwe Ligges pronounces it “SEE-RAN”. I think I’m gonna stick to “KRAN”, though, that really sounds more natural to me.Sounds like a good plan for the summer, right?">
+  <meta name="twitter:url" content="http://localhost:4000/back-user2017/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-07-09T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/back-user2017/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Back from useR!2017: a summer to-do list">
+    <meta itemprop="description" content="A quick to-do list brought back from useR!2017.Last week, ThinkR had the chance to go to useR!2017, Brussels. Here’s some stuffs I’ve brought back, in the form of a summer to-do list.purrr all the thingsI’ve been using purrr on a non regular basis so far. Being used to call the apply functions when needed, purrr didn’t come first in my programming habits. Yet, during her workshop, Charlotte Wickham made a good case for the package, explaining how you can really simplify your code with purrr. In a way, this tidyverse package does the same things as the apply family, yet it provides a more logic and consistent syntax, and control over the kind of output you want to have. It’s also more easy to loop over multiple object and/or with multiple functions.Let’s say that now I’ve got quite some work updating my old packages using the map_family !Start using cleanNLPI’m a big fan of the tidytext package, being a great tool for starting with NLP, but lacking some more advanced features. That’s what cleanNLP provides. At the crossroad of the tidyverse and cutting-edge research in linguistics, this package is designed to turn raw text data into rich text, in  tidy format.First (and obviously) cleanNLP is designed to parse the data into tokens, but then you can call the Java or Python back-end to detect co-reference, part of speech, words type… As I’m writting these words, I’ve so far been struggling with the back-end Java installation, but you’ll get some update about this fight very soon (and of course more NLP :) ).Do more R6R6 has been there for quite a while now (3 years), and it’s today the most downloaded package on RStudio CRAN mirror. And yes, this may be due to the fact that well known packages depend on it, like dplyr or shiny. But still, this R class is designed to be lighter, and faster. Object oriented programming is not the way people usually program with R, but I think I have to give it a shot. More on that too very soon.Start using more my Datacamp accountI’ve always be fond of online learning. Datacamp provides a great solution to learn both R and Python. They’re now launching a SQL course, and plan on having about a 100 courses by the end of the year. So, I’m just gonna have to try them all :)Btw, if ever you want to try but don’t know if you should really pay for that, I’ve got quite a few coupons left for a 2 days premium trial for free. Check this link.Get a &gt;ls() tattoo.A real one.Create more Open DataI’ve so far engaged in some open data projects, mainly through Data-Bzh. I’ve created several open-data-sets, but you can say that’s not enough. Epecially when you know how easily you can use rvest for scraping more data from over the web, and put the results online.Try JUGThis package is designed to create API within R. The live demo at useR! was quite convincing, adn I have to say that I really want to dig deeper into it. More on GitHub, and here when I have a chance to try out.Start using minerPresented by David Smith, the miner package allows to control over Minecraft, within R. Quite a good way to get kids into programming !Decide how I should pronounce CRANI’ve always been saying “KRAN”, but Uwe Ligges pronounces it “SEE-RAN”. I think I’m gonna stick to “KRAN”, though, that really sounds more natural to me.Sounds like a good plan for the summer, right?">
+    <meta itemprop="datePublished" content="July 09, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Back from useR!2017: a summer to-do list
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  3 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>A quick to-do list brought back from useR!2017.</p>
+
+<p><img src="/assets/img/blog/badge-usr.JPG" alt="" /></p>
+
+<p>Last week, ThinkR had the chance to go to useR!2017, Brussels. Here’s some stuffs I’ve brought back, in the form of a summer to-do list.</p>
+
+<h2 id="purrr-all-the-things"><code class="highlighter-rouge">purrr</code> all the things</h2>
+
+<p>I’ve been using <code class="highlighter-rouge">purrr</code> on a non regular basis so far. Being used to call the <code class="highlighter-rouge">apply</code> functions when needed, <code class="highlighter-rouge">purrr</code> didn’t come first in my programming habits. Yet, during her workshop, Charlotte Wickham made a good case for the package, explaining how you can really simplify your code with <code class="highlighter-rouge">purrr</code>. In a way, this tidyverse package does the same things as the <code class="highlighter-rouge">apply</code> family, yet it provides a more logic and consistent syntax, and control over the kind of output you want to have. It’s also more easy to loop over multiple object and/or with multiple functions.</p>
+
+<p>Let’s say that now I’ve got quite some work updating my old packages using the <code class="highlighter-rouge">map_</code>family !</p>
+
+<h2 id="start-using-cleannlp">Start using <code class="highlighter-rouge">cleanNLP</code></h2>
+
+<p>I’m a big fan of the <code class="highlighter-rouge">tidytext</code> package, being a great tool for starting with NLP, but lacking some more advanced features. That’s what <code class="highlighter-rouge">cleanNLP</code> provides. At the crossroad of the tidyverse and cutting-edge research in linguistics, this package is designed to turn raw text data into rich text, in  tidy format.</p>
+
+<p>First (and obviously) <code class="highlighter-rouge">cleanNLP</code> is designed to parse the data into tokens, but then you can call the Java or Python back-end to detect co-reference, part of speech, words type… As I’m writting these words, I’ve so far been struggling with the back-end Java installation, but you’ll get some update about this fight very soon (and of course more NLP :) ).</p>
+
+<p><img src="/assets/img/blog/user-sign.JPG" alt="" /></p>
+
+<h1 id="do-more-r6">Do more R6</h1>
+
+<p><code class="highlighter-rouge">R6</code> has been there for quite a while now (3 years), and it’s today the most downloaded package on RStudio CRAN mirror. And yes, this may be due to the fact that well known packages depend on it, like <code class="highlighter-rouge">dplyr</code> or <code class="highlighter-rouge">shiny</code>. But still, this R class is designed to be lighter, and faster. Object oriented programming is not the way people usually program with R, but I think I have to give it a shot. More on that too very soon.</p>
+
+<h2 id="start-using-more-my-datacamp-account">Start using more my Datacamp account</h2>
+
+<p>I’ve always be fond of online learning. Datacamp provides a great solution to learn both R and Python. They’re now launching a SQL course, and plan on having about a 100 courses by the end of the year. So, I’m just gonna have to try them all :)</p>
+
+<p>Btw, if ever you want to try but don’t know if you should really pay for that, I’ve got quite a few coupons left for a 2 days premium trial for free. Check <a href="https://www.datacamp.com/invite/k7K85SDdMAou8">this link</a>.</p>
+
+<h2 id="get-a-ls-tattoo">Get a <code class="highlighter-rouge">&gt;ls()</code> tattoo.</h2>
+
+<p>A real one.</p>
+
+<p><img src="/assets/img/blog/ls-tattoo.jpg" alt="" /></p>
+
+<h2 id="create-more-open-data">Create more Open Data</h2>
+
+<p>I’ve so far engaged in some open data projects, mainly through <a href="http://data-bzh.fr">Data-Bzh</a>. I’ve created several open-data-sets, but you can say that’s not enough. Epecially when you know how easily you can use <code class="highlighter-rouge">rvest</code> for scraping more data from over the web, and put the results online.</p>
+
+<h2 id="try-jug">Try <code class="highlighter-rouge">JUG</code></h2>
+
+<p>This package is designed to create API within R. The live demo at useR! was quite convincing, adn I have to say that I really want to dig deeper into it. More on <a href="https://github.com/Bart6114/jug">GitHub</a>, and here when I have a chance to try out.</p>
+
+<h2 id="start-using-miner">Start using <code class="highlighter-rouge">miner</code></h2>
+
+<p>Presented by David Smith, the <code class="highlighter-rouge">miner</code> package allows to control over Minecraft, within R. Quite a good way to get kids into programming !</p>
+
+<p><img src="/assets/img/blog/r-minecraft.JPG" alt="" /></p>
+
+<h2 id="decide-how-i-should-pronounce-cran">Decide how I should pronounce CRAN</h2>
+
+<p>I’ve always been saying “KRAN”, but Uwe Ligges pronounces it “SEE-RAN”. I think I’m gonna stick to “KRAN”, though, that really sounds more natural to me.</p>
+
+<p>Sounds like a good plan for the summer, right?</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-07-09T00:00:00+02:00">July 09, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Back+from+useR%212017%3A+a+summer+to-do+list%20http%3A%2F%2Flocalhost%3A4000%2Fback-user2017%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fback-user2017%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fback-user2017%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fback-user2017%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/playing-r-infix-functions/" class="pagination--pager" title="Playing with R, infix functions, and pizza
+">←</a>
+    
+    
+      <a href="/tidyeval-1/" class="pagination--pager" title="Down the rabbit hole with tidy eval — Part 1
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/back-user2017/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/back-user2017"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>An Introduction to R</title>
+  <meta name="description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="An Introduction to R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="An Introduction to R" />
+  
+  <meta name="twitter:description" content="An Introduction to R is based on the former ‘Notes on R’, gives an introduction to the language and how to use R for doing statistical analysis and graphics." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-07">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="lists-and-data-frames.html">
+<link rel="next" href="probability-distributions.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">An intro to R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>An Introduction to R</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-and-preliminaries.html"><a href="introduction-and-preliminaries.html"><i class="fa fa-check"></i><b>1</b> Introduction and preliminaries</a></li>
+<li class="chapter" data-level="2" data-path="simple-manipulations-numbers-and-vectors.html"><a href="simple-manipulations-numbers-and-vectors.html"><i class="fa fa-check"></i><b>2</b> Simple manipulations; numbers and vectors</a></li>
+<li class="chapter" data-level="3" data-path="objects-their-modes-and-attributes.html"><a href="objects-their-modes-and-attributes.html"><i class="fa fa-check"></i><b>3</b> Objects, their modes and attributes</a></li>
+<li class="chapter" data-level="4" data-path="ordered-and-unordered-factors.html"><a href="ordered-and-unordered-factors.html"><i class="fa fa-check"></i><b>4</b> Ordered and unordered factors</a></li>
+<li class="chapter" data-level="5" data-path="arrays-and-matrices.html"><a href="arrays-and-matrices.html"><i class="fa fa-check"></i><b>5</b> Arrays and matrices</a></li>
+<li class="chapter" data-level="6" data-path="lists-and-data-frames.html"><a href="lists-and-data-frames.html"><i class="fa fa-check"></i><b>6</b> Lists and data frames</a></li>
+<li class="chapter" data-level="7" data-path="reading-data-from-files.html"><a href="reading-data-from-files.html"><i class="fa fa-check"></i><b>7</b> Reading data from files</a></li>
+<li class="chapter" data-level="8" data-path="probability-distributions.html"><a href="probability-distributions.html"><i class="fa fa-check"></i><b>8</b> Probability distributions</a></li>
+<li class="chapter" data-level="9" data-path="grouping-loops-and-conditional-execution.html"><a href="grouping-loops-and-conditional-execution.html"><i class="fa fa-check"></i><b>9</b> Grouping, loops and conditional execution</a></li>
+<li class="chapter" data-level="10" data-path="writing-your-own-functions.html"><a href="writing-your-own-functions.html"><i class="fa fa-check"></i><b>10</b> Writing your own functions</a></li>
+<li class="chapter" data-level="11" data-path="statistical-models-in-r.html"><a href="statistical-models-in-r.html"><i class="fa fa-check"></i><b>11</b> Statistical models in R</a></li>
+<li class="chapter" data-level="12" data-path="graphical-procedures.html"><a href="graphical-procedures.html"><i class="fa fa-check"></i><b>12</b> Graphical procedures</a></li>
+<li class="chapter" data-level="13" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>13</b> Packages</a></li>
+<li class="chapter" data-level="14" data-path="os-facilities.html"><a href="os-facilities.html"><i class="fa fa-check"></i><b>14</b> OS facilities</a></li>
+<li class="chapter" data-level="15" data-path="appendix-a-a-sample-session.html"><a href="appendix-a-a-sample-session.html"><i class="fa fa-check"></i><b>15</b> Appendix A A sample session</a></li>
+<li class="chapter" data-level="16" data-path="appendix-b-invoking-r.html"><a href="appendix-b-invoking-r.html"><i class="fa fa-check"></i><b>16</b> Appendix B Invoking R</a></li>
+<li class="chapter" data-level="17" data-path="appendix-c-the-command-line-editor.html"><a href="appendix-c-the-command-line-editor.html"><i class="fa fa-check"></i><b>17</b> Appendix C The command-line editor</a></li>
+<li class="chapter" data-level="18" data-path="appendix-d-function-and-variable-index.html"><a href="appendix-d-function-and-variable-index.html"><i class="fa fa-check"></i><b>18</b> Appendix D Function and variable index</a></li>
+<li class="chapter" data-level="19" data-path="appendix-e-concept-index.html"><a href="appendix-e-concept-index.html"><i class="fa fa-check"></i><b>19</b> Appendix E Concept index</a></li>
+<li class="chapter" data-level="20" data-path="appendix-f-references.html"><a href="appendix-f-references.html"><i class="fa fa-check"></i><b>20</b> Appendix F References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="reading-data-from-files" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> Reading data from files</h1>
+<p>
+<a href="" id="index-Reading-data-from-files"></a>
+</p>
+<p>
+Large data objects will usually be read as values from external files rather than entered during an R session at the keyboard. R input facilities are simple and their requirements are fairly strict and even rather inflexible. There is a clear presumption by the designers of R that you will be able to modify your input files using other tools, such as file editors or Perl<a href="023-R-intro.html#FOOT20" id="DOCF20"><sup>20</sup></a> to fit in with the requirements of R. Generally this is very simple.
+</p>
+<p>
+If variables are to be held mainly in data frames, as we strongly suggest they should be, an entire data frame can be read directly with the <code class="calibre2">read.table()</code> function. There is also a more primitive input function, <code class="calibre2">scan()</code>, that can be called directly.
+</p>
+<p>
+For more details on importing data into R and also exporting data, see the <em>R Data Import/Export</em> manual.
+</p>
+<hr />
+<p>
+<a href="" id="The-read_002etable_0028_0029-function"></a> <a href="" id="The-read_002etable_0028_0029-function-1"></a>
+</p>
+<h3 id="the-read.table-function" class="section">
+7.1 The <code class="calibre14">read.table()</code> function
+</h3>
+<p>
+<a href="" id="index-read_002etable"></a>
+</p>
+<p>
+To read an entire data frame directly, the external file will normally have a special form.
+</p>
+<ul>
+<li>
+The first line of the file should have a <em>name</em> for each variable in the data frame.
+</li>
+<li>
+Each additional line of the file has as its first item a <em>row label</em> and the values for each variable.
+</li>
+</ul>
+<p>
+If the file has one fewer item in its first line than in its second, this arrangement is presumed to be in force. So the first few lines of a file to be read as a data frame might look as follows.
+</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left">
+<div class="example">
+<pre class="example1"><code>Input file form with names and row labels:
+
+     Price    Floor     Area   Rooms     Age  Cent.heat
+1   52.00    111.0      830     5       6.2      no
+2   54.75    128.0      710     5       7.5      no
+3   57.50    101.0     1000     5       4.2      no
+4   57.50    131.0      690     6       8.8      no
+5   59.75     93.0      900     5       1.9     yes
+...</code></pre>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+By default numeric items (except row labels) are read as numeric variables and non-numeric variables, such as <code class="calibre2">Cent.heat</code> in the example, as factors. This can be changed if necessary.
+</p>
+<p>
+The function <code class="calibre2">read.table()</code> can then be used to read the data frame directly
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; HousePrice &lt;- read.table(&quot;houses.data&quot;)</code></pre>
+</div>
+<p>
+Often you will want to omit including the row labels directly and use the default labels. In this case the file may omit the row label column as in the following.
+</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left">
+<div class="example">
+<pre class="example1"><code>Input file form without row labels:
+
+Price    Floor     Area   Rooms     Age  Cent.heat
+52.00    111.0      830     5       6.2      no
+54.75    128.0      710     5       7.5      no
+57.50    101.0     1000     5       4.2      no
+57.50    131.0      690     6       8.8      no
+59.75     93.0      900     5       1.9     yes
+...</code></pre>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+The data frame may then be read as
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; HousePrice &lt;- read.table(&quot;houses.data&quot;, header=TRUE)</code></pre>
+</div>
+<p>
+where the <code class="calibre2">header=TRUE</code> option specifies that the first line is a line of headings, and hence, by implication from the form of the file, that no explicit row labels are given.
+</p>
+<hr />
+<p>
+<a href="" id="The-scan_0028_0029-function"></a> <a href="" id="The-scan_0028_0029-function-1"></a>
+</p>
+<h3 id="the-scan-function" class="section">
+7.2 The <code class="calibre14">scan()</code> function
+</h3>
+<p>
+<a href="" id="index-scan"></a>
+</p>
+<p>
+Suppose the data vectors are of equal length and are to be read in parallel. Further suppose that there are three vectors, the first of mode character and the remaining two of mode numeric, and the file is input.dat. The first step is to use <code class="calibre2">scan()</code> to read in the three vectors as a list, as follows
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; inp &lt;- scan(&quot;input.dat&quot;, list(&quot;&quot;,0,0))</code></pre>
+</div>
+<p>
+The second argument is a dummy list structure that establishes the mode of the three vectors to be read. The result, held in <code class="calibre2">inp</code>, is a list whose components are the three vectors read in. To separate the data items into three separate vectors, use assignments like
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; label &lt;- inp[[1]]; x &lt;- inp[[2]]; y &lt;- inp[[3]]</code></pre>
+</div>
+<p>
+More conveniently, the dummy list can have named components, in which case the names can be used to access the vectors read in. For example
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; inp &lt;- scan(&quot;input.dat&quot;, list(id=&quot;&quot;, x=0, y=0))</code></pre>
+</div>
+<p>
+If you wish to access the variables separately they may either be re-assigned to variables in the working frame:
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; label &lt;- inp$id; x &lt;- inp$x; y &lt;- inp$y</code></pre>
+</div>
+<p>
+or the list may be attached at position 2 of the search path (see <a href="009-R-intro.html#Attaching-arbitrary-lists">Attaching arbitrary lists</a>).
+</p>
+<p>
+If the second argument is a single value and not a list, a single vector is read in, all components of which must be of the same mode as the dummy value.
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; X &lt;- matrix(scan(&quot;light.dat&quot;, 0), ncol=5, byrow=TRUE)</code></pre>
+</div>
+<p>
+There are more elaborate input facilities available and these are detailed in the manuals.
+</p>
+<hr />
+<p>
+<a href="" id="Accessing-builtin-datasets"></a> <a href="" id="Accessing-builtin-datasets-1"></a>
+</p>
+<h3 id="accessing-builtin-datasets" class="section">
+7.3 Accessing builtin datasets
+</h3>
+<p>
+<a href="" id="index-Accessing-builtin-datasets"></a> <a href="" id="index-data"></a>
+</p>
+<p>
+Around 100 datasets are supplied with R (in package <strong>datasets</strong>), and others are available in packages (including the recommended packages supplied with R). To see the list of datasets currently available use
+</p>
+<div class="example">
+<pre class="example1"><code>data()</code></pre>
+</div>
+<p>
+All the datasets supplied with R are available directly by name. However, many packages still use the obsolete convention in which <code class="calibre2">data</code> was also used to load datasets into R, for example
+</p>
+<div class="example">
+<pre class="example1"><code>data(infert)</code></pre>
+</div>
+<p>
+and this can still be used with the standard packages (as in this example). In most cases this will load an R object of the same name. However, in a few cases it loads several objects, so see the on-line help for the object to see what to expect.
+</p>
+<p>
+<a href="" id="Loading-data-from-other-R-packages"></a>
+</p>
+<h4 id="loading-data-from-other-r-packages" class="subheading">
+7.3.1 Loading data from other R packages
+</h4>
+<p>
+To access data from a particular package, use the <code class="calibre2">package</code> argument, for example
+</p>
+<div class="example">
+<pre class="example1"><code>data(package=&quot;rpart&quot;)
+data(Puromycin, package=&quot;datasets&quot;)</code></pre>
+</div>
+<p>
+If a package has been attached by <code class="calibre2">library</code>, its datasets are automatically included in the search.
+</p>
+<p>
+User-contributed packages can be a rich source of datasets.
+</p>
+<hr />
+<p>
+<a href="" id="Editing-data"></a> <a href="" id="Editing-data-1"></a>
+</p>
+<h3 id="editing-data" class="section">
+7.4 Editing data
+</h3>
+<p>
+<a href="" id="index-edit"></a>
+</p>
+<p>
+When invoked on a data frame or matrix, <code class="calibre2">edit</code> brings up a separate spreadsheet-like environment for editing. This is useful for making small changes once a data set has been read. The command
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; xnew &lt;- edit(xold)</code></pre>
+</div>
+<p>
+will allow you to edit your data set <code class="calibre2">xold</code>, and on completion the changed object is assigned to <code class="calibre2">xnew</code>. If you want to alter the original dataset <code class="calibre2">xold</code>, the simplest way is to use <code class="calibre2">fix(xold)</code>, which is equivalent to <code class="calibre2">xold &lt;- edit(xold)</code>.
+</p>
+<p>
+Use
+</p>
+<div class="example">
+<pre class="example1"><code>&gt; xnew &lt;- edit(data.frame())</code></pre>
+</div>
+<p>
+to enter new data via the spreadsheet interface.
+</p>
+<hr />
+<p>
+<a href="" id="Probability-distributions"></a> <a href="" id="Probability-distributions-1"></a>
+</p>
+<div id="calibre_pb_18" class="calibre8">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="lists-and-data-frames.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="probability-distributions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

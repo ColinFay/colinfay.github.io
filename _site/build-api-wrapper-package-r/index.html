@@ -1,0 +1,854 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[How to] Build an API wrapper package in 10 minutes. - Colin Fay</title>
+<meta name="description" content="Well… documentation not included (of course).API are cool. They allow to retrieve data from the web, and if everyou’re familiar with {httr}, {jsonlite} and packages like these,you’re able to build requests and retrieve data in a matter ofminutes.But no worry, if you’re not familiar with http requests and web formatslike html, JSON and such, you can still go and look for a packagewrapper around that specific API: someone had probably been coding italready.And, if you want to be that someone that code an API wrapper package,here’s a short tutorial that will allow you to create it.  Disclaimer: the 10 minutes workflow does not (of course) include thepackage documentation.Find the APIWell, this first step can take a while… but, let’s say we have alreadyfound it, and want to build an package around the french database foraddresses: https://adresse.data.gouv.fr/api/.Step 0: be sure you have all the packages you’ll needRun this if you want to be sure you have all the packages we’ll usehere:install.packages(&quot;devtools&quot;)install.packages(&quot;roxygen2&quot;)install.packages(&quot;usethis&quot;)install.packages(&quot;curl&quot;)install.packages(&quot;httr&quot;)install.packages(&quot;jsonlite&quot;)install.packages(&quot;attempt&quot;)install.packages(&quot;purrr&quot;)devtools::install_github(&quot;r-lib/desc&quot;)Step 1: the projectCreate a new project with RStudio, and click on “Create a package withdevtools”.Step 2: devstuffs      In your terminal, run usethis::use_data_raw().        Open a new R Script, save it into /data_raw as “devstuffs”, or anyother name. Copy and paste into this script:  library(devtools)library(usethis)library(desc)# Remove default DESCunlink(&quot;DESCRIPTION&quot;)# Create and clean descmy_desc &lt;- description$new(&quot;!new&quot;)# Set your package namemy_desc$set(&quot;Package&quot;, &quot;yourpackage&quot;)#Set your namemy_desc$set(&quot;Authors@R&quot;, &quot;person(&#39;Colin&#39;, &#39;Fay&#39;, email = &#39;contact@colinfay.me&#39;, role = c(&#39;cre&#39;, &#39;aut&#39;))&quot;)# Remove some author fieldsmy_desc$del(&quot;Maintainer&quot;)# Set the versionmy_desc$set_version(&quot;0.0.0.9000&quot;)# The title of your packagemy_desc$set(Title = &quot;My Supper API Wrapper&quot;)# The description of your packagemy_desc$set(Description = &quot;A long description of this super package I&#39;m working on.&quot;)# The urlsmy_desc$set(&quot;URL&quot;, &quot;http://this&quot;)my_desc$set(&quot;BugReports&quot;, &quot;http://that&quot;)# Save everytingmy_desc$write(file = &quot;DESCRIPTION&quot;)# If you want to use the MIT licence, code of conduct, and lifecycle badgeuse_mit_license(name = &quot;Colin FAY&quot;)use_code_of_conduct()use_lifecycle_badge(&quot;Experimental&quot;)use_news_md()# Get the dependenciesuse_package(&quot;httr&quot;)use_package(&quot;jsonlite&quot;)use_package(&quot;curl&quot;)use_package(&quot;attempt&quot;)use_package(&quot;purrr&quot;)# Clean your descriptionuse_tidy_description()Then, run everything from this script.Copy and paste at the top of you README.Rmd:  [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)And at the bottom:  Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).  By participating in this project you agree to abide by its terms.Step 3: get the API urlThere are two ways you can request on an API :      By building url: url.and/path/to/the/data        With parameters: url.that/q=this&amp;data=that  This is the case for https://adresse.data.gouv.fr/api/. We’ve got thebase url: http &#39;https://api-adresse.data.gouv.fr/search/?q=8 bd duport&#39;, and search parameters.Here, the base url is everything before the ?, and the parameters arethe key-value pairs after the.Step 4: utilsBefore creating the main calling functions, we’ll create some utilitaryfunctions that will run some tests: is the internet connexion running?Does the {httr} result return the right http code?For this, we’ll create a file called utils.R, save it in the R/folder, and put into it:#&#39; @importFrom attempt stop_if_not#&#39; @importFrom curl has_internetcheck_internet &lt;- function(){  stop_if_not(.x = has_internet(), msg = &quot;Please check your internet connexion&quot;)}#&#39; @importFrom httr status_codecheck_status &lt;- function(res){  stop_if_not(.x = status_code(res),               .p = ~ .x == 200,              msg = &quot;The API returned an error&quot;)}In this same file we’ll also create two objects that will contain thebase API urls:base_url &lt;- &quot;https://api-adresse.data.gouv.fr/search/&quot;reverse_url &lt;- &quot;https://api-adresse.data.gouv.fr/reverse/&quot;Step 5 : the function that will call on the APITo call the API, we’ll use GET function from {httr}. Let’s first tryjust this:httr::GET(url = base_url, query = list(q = &quot;Yeaye&quot;))## Response [https://api-adresse.data.gouv.fr/search/?q=Yeaye]##   Date: 2018-02-04 21:40##   Status: 200##   Content-Type: application/json; charset=utf-8##   Size: 574 BAs you can see, the status is 200. Which is a good sign: no error fromthe API.In the API we have chosen, there are 4 entry points: search, reverse,and their counterparts with csv. These counterparts work by POSTing acsv to the API, so let’s forget them for now.The search entrypoint can take 8 parameters:  q: text search  limit: maximum number of results to return  autocomplete: autocompletion  lat: latitude  lon: longitude  type: type of elements to return (housenumber, street,place,municipality)  postcode: Postal code  citycode: INSEE codeThese are the elements which will be passed as a list in the queryparameter from httr::GET.  Note: if you’re going for an url based request(url.and/path/to/the/data or url.and/?path=this&amp;to=that), youdon’t need to set the query parameter, you can simply paste the urlwith the elements (url &lt;- paste0(&quot;url.and/?path=&quot;, this, &quot;&amp;to=&quot;,that)).Create a new R script and write the functions used to call the API:#&#39; Search the BAN#&#39; #&#39; @param q text search#&#39; @param limit maximum number of results to return #&#39; @param autocomplete autocompletion#&#39; @param lat latitude#&#39; @param lon longitude#&#39; @param type type of elements to return (housenumber, street,place, municipality)#&#39; @param postcode Postal code#&#39; @param citycode INSEE code#&#39;#&#39; @importFrom attempt stop_if_all#&#39; @importFrom purrr compact#&#39; @importFrom jsonlite fromJSON#&#39; @importFrom httr GET#&#39; @export#&#39; @rdname searchban#&#39;#&#39; @return the results from the search#&#39; @examples #&#39; \dontrun{#&#39; search_ban(&quot;Rennes&quot;)#&#39; reverse_search_ban(&quot;48.11&quot;, &quot;-1.68&quot;)#&#39; }search_ban &lt;- function(q = NULL, limit = NULL, autocomplete = NULL, lat = NULL, lon = NULL, type = NULL, postcode = NULL, citycode = NULL){  args &lt;- list(q = q, limit = limit, autocomplete = autocomplete, lat = lat,                lon = lon, type = type, postcode = postcode, citycode = citycode)  # Check that at least one argument is not null  stop_if_all(args, is.null, &quot;You need to specify at least one argument&quot;)  # Chek for internet  check_internet()  # Create the   res &lt;- GET(base_url, query = compact(args))  # Check the result  check_status(res)  # Get the content and return it as a data.frame  fromJSON(rawToChar(res$content))$features}#&#39; @export#&#39; @rdname searchbanreverse_search_ban &lt;- function(lat = NULL, lon = NULL){  args &lt;- list(lat = lat, lon = lon)  # Check that at least one argument is not null  stop_if_all(args, is.null, &quot;You need to specify at least one argument&quot;)  # Chek for internet  check_internet()  # Create the   res &lt;- GET(reverse_url, query = compact(args))  # Check the result  check_status(res)  # Get the content and return it as a data.frame  fromJSON(rawToChar(res$content))$features}  Note: you’ll need to change the arguments and documentation for yourspecific API (obviously).If ever you want to a part of this roxygen filling programmatically, youshould check the excellent {sinew}package by Jonathan Sidi.Step 6 : RoxygeniseNow, run in your console :roxygen2::roxygenise()And that’s it! You’ve got a working package :)Step 7 : build your packageYou can test that everything is ok with:devtools::check()# Then build it with:devtools::build()What’s leftAs I said, the 10 minutes workflow does not include the doc, so here’swhat left for you to do:  Write the Readme  Write a Vignette  Write testsFor that, go back to your dev file, add, and run:use_testthat()use_vignette(&quot;{your-package-name}&quot;)use_readme_rmd()And now, grab you best pen and write documentation ;)">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="[How to] Build an API wrapper package in 10 minutes.">
+<meta property="og:url" content="http://localhost:4000/build-api-wrapper-package-r/">
+
+
+  <meta property="og:description" content="Well… documentation not included (of course).API are cool. They allow to retrieve data from the web, and if everyou’re familiar with {httr}, {jsonlite} and packages like these,you’re able to build requests and retrieve data in a matter ofminutes.But no worry, if you’re not familiar with http requests and web formatslike html, JSON and such, you can still go and look for a packagewrapper around that specific API: someone had probably been coding italready.And, if you want to be that someone that code an API wrapper package,here’s a short tutorial that will allow you to create it.  Disclaimer: the 10 minutes workflow does not (of course) include thepackage documentation.Find the APIWell, this first step can take a while… but, let’s say we have alreadyfound it, and want to build an package around the french database foraddresses: https://adresse.data.gouv.fr/api/.Step 0: be sure you have all the packages you’ll needRun this if you want to be sure you have all the packages we’ll usehere:install.packages(&quot;devtools&quot;)install.packages(&quot;roxygen2&quot;)install.packages(&quot;usethis&quot;)install.packages(&quot;curl&quot;)install.packages(&quot;httr&quot;)install.packages(&quot;jsonlite&quot;)install.packages(&quot;attempt&quot;)install.packages(&quot;purrr&quot;)devtools::install_github(&quot;r-lib/desc&quot;)Step 1: the projectCreate a new project with RStudio, and click on “Create a package withdevtools”.Step 2: devstuffs      In your terminal, run usethis::use_data_raw().        Open a new R Script, save it into /data_raw as “devstuffs”, or anyother name. Copy and paste into this script:  library(devtools)library(usethis)library(desc)# Remove default DESCunlink(&quot;DESCRIPTION&quot;)# Create and clean descmy_desc &lt;- description$new(&quot;!new&quot;)# Set your package namemy_desc$set(&quot;Package&quot;, &quot;yourpackage&quot;)#Set your namemy_desc$set(&quot;Authors@R&quot;, &quot;person(&#39;Colin&#39;, &#39;Fay&#39;, email = &#39;contact@colinfay.me&#39;, role = c(&#39;cre&#39;, &#39;aut&#39;))&quot;)# Remove some author fieldsmy_desc$del(&quot;Maintainer&quot;)# Set the versionmy_desc$set_version(&quot;0.0.0.9000&quot;)# The title of your packagemy_desc$set(Title = &quot;My Supper API Wrapper&quot;)# The description of your packagemy_desc$set(Description = &quot;A long description of this super package I&#39;m working on.&quot;)# The urlsmy_desc$set(&quot;URL&quot;, &quot;http://this&quot;)my_desc$set(&quot;BugReports&quot;, &quot;http://that&quot;)# Save everytingmy_desc$write(file = &quot;DESCRIPTION&quot;)# If you want to use the MIT licence, code of conduct, and lifecycle badgeuse_mit_license(name = &quot;Colin FAY&quot;)use_code_of_conduct()use_lifecycle_badge(&quot;Experimental&quot;)use_news_md()# Get the dependenciesuse_package(&quot;httr&quot;)use_package(&quot;jsonlite&quot;)use_package(&quot;curl&quot;)use_package(&quot;attempt&quot;)use_package(&quot;purrr&quot;)# Clean your descriptionuse_tidy_description()Then, run everything from this script.Copy and paste at the top of you README.Rmd:  [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)And at the bottom:  Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).  By participating in this project you agree to abide by its terms.Step 3: get the API urlThere are two ways you can request on an API :      By building url: url.and/path/to/the/data        With parameters: url.that/q=this&amp;data=that  This is the case for https://adresse.data.gouv.fr/api/. We’ve got thebase url: http &#39;https://api-adresse.data.gouv.fr/search/?q=8 bd duport&#39;, and search parameters.Here, the base url is everything before the ?, and the parameters arethe key-value pairs after the.Step 4: utilsBefore creating the main calling functions, we’ll create some utilitaryfunctions that will run some tests: is the internet connexion running?Does the {httr} result return the right http code?For this, we’ll create a file called utils.R, save it in the R/folder, and put into it:#&#39; @importFrom attempt stop_if_not#&#39; @importFrom curl has_internetcheck_internet &lt;- function(){  stop_if_not(.x = has_internet(), msg = &quot;Please check your internet connexion&quot;)}#&#39; @importFrom httr status_codecheck_status &lt;- function(res){  stop_if_not(.x = status_code(res),               .p = ~ .x == 200,              msg = &quot;The API returned an error&quot;)}In this same file we’ll also create two objects that will contain thebase API urls:base_url &lt;- &quot;https://api-adresse.data.gouv.fr/search/&quot;reverse_url &lt;- &quot;https://api-adresse.data.gouv.fr/reverse/&quot;Step 5 : the function that will call on the APITo call the API, we’ll use GET function from {httr}. Let’s first tryjust this:httr::GET(url = base_url, query = list(q = &quot;Yeaye&quot;))## Response [https://api-adresse.data.gouv.fr/search/?q=Yeaye]##   Date: 2018-02-04 21:40##   Status: 200##   Content-Type: application/json; charset=utf-8##   Size: 574 BAs you can see, the status is 200. Which is a good sign: no error fromthe API.In the API we have chosen, there are 4 entry points: search, reverse,and their counterparts with csv. These counterparts work by POSTing acsv to the API, so let’s forget them for now.The search entrypoint can take 8 parameters:  q: text search  limit: maximum number of results to return  autocomplete: autocompletion  lat: latitude  lon: longitude  type: type of elements to return (housenumber, street,place,municipality)  postcode: Postal code  citycode: INSEE codeThese are the elements which will be passed as a list in the queryparameter from httr::GET.  Note: if you’re going for an url based request(url.and/path/to/the/data or url.and/?path=this&amp;to=that), youdon’t need to set the query parameter, you can simply paste the urlwith the elements (url &lt;- paste0(&quot;url.and/?path=&quot;, this, &quot;&amp;to=&quot;,that)).Create a new R script and write the functions used to call the API:#&#39; Search the BAN#&#39; #&#39; @param q text search#&#39; @param limit maximum number of results to return #&#39; @param autocomplete autocompletion#&#39; @param lat latitude#&#39; @param lon longitude#&#39; @param type type of elements to return (housenumber, street,place, municipality)#&#39; @param postcode Postal code#&#39; @param citycode INSEE code#&#39;#&#39; @importFrom attempt stop_if_all#&#39; @importFrom purrr compact#&#39; @importFrom jsonlite fromJSON#&#39; @importFrom httr GET#&#39; @export#&#39; @rdname searchban#&#39;#&#39; @return the results from the search#&#39; @examples #&#39; \dontrun{#&#39; search_ban(&quot;Rennes&quot;)#&#39; reverse_search_ban(&quot;48.11&quot;, &quot;-1.68&quot;)#&#39; }search_ban &lt;- function(q = NULL, limit = NULL, autocomplete = NULL, lat = NULL, lon = NULL, type = NULL, postcode = NULL, citycode = NULL){  args &lt;- list(q = q, limit = limit, autocomplete = autocomplete, lat = lat,                lon = lon, type = type, postcode = postcode, citycode = citycode)  # Check that at least one argument is not null  stop_if_all(args, is.null, &quot;You need to specify at least one argument&quot;)  # Chek for internet  check_internet()  # Create the   res &lt;- GET(base_url, query = compact(args))  # Check the result  check_status(res)  # Get the content and return it as a data.frame  fromJSON(rawToChar(res$content))$features}#&#39; @export#&#39; @rdname searchbanreverse_search_ban &lt;- function(lat = NULL, lon = NULL){  args &lt;- list(lat = lat, lon = lon)  # Check that at least one argument is not null  stop_if_all(args, is.null, &quot;You need to specify at least one argument&quot;)  # Chek for internet  check_internet()  # Create the   res &lt;- GET(reverse_url, query = compact(args))  # Check the result  check_status(res)  # Get the content and return it as a data.frame  fromJSON(rawToChar(res$content))$features}  Note: you’ll need to change the arguments and documentation for yourspecific API (obviously).If ever you want to a part of this roxygen filling programmatically, youshould check the excellent {sinew}package by Jonathan Sidi.Step 6 : RoxygeniseNow, run in your console :roxygen2::roxygenise()And that’s it! You’ve got a working package :)Step 7 : build your packageYou can test that everything is ok with:devtools::check()# Then build it with:devtools::build()What’s leftAs I said, the 10 minutes workflow does not include the doc, so here’swhat left for you to do:  Write the Readme  Write a Vignette  Write testsFor that, go back to your dev file, add, and run:use_testthat()use_vignette(&quot;{your-package-name}&quot;)use_readme_rmd()And now, grab you best pen and write documentation ;)">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="[How to] Build an API wrapper package in 10 minutes.">
+  <meta name="twitter:description" content="Well… documentation not included (of course).API are cool. They allow to retrieve data from the web, and if everyou’re familiar with {httr}, {jsonlite} and packages like these,you’re able to build requests and retrieve data in a matter ofminutes.But no worry, if you’re not familiar with http requests and web formatslike html, JSON and such, you can still go and look for a packagewrapper around that specific API: someone had probably been coding italready.And, if you want to be that someone that code an API wrapper package,here’s a short tutorial that will allow you to create it.  Disclaimer: the 10 minutes workflow does not (of course) include thepackage documentation.Find the APIWell, this first step can take a while… but, let’s say we have alreadyfound it, and want to build an package around the french database foraddresses: https://adresse.data.gouv.fr/api/.Step 0: be sure you have all the packages you’ll needRun this if you want to be sure you have all the packages we’ll usehere:install.packages(&quot;devtools&quot;)install.packages(&quot;roxygen2&quot;)install.packages(&quot;usethis&quot;)install.packages(&quot;curl&quot;)install.packages(&quot;httr&quot;)install.packages(&quot;jsonlite&quot;)install.packages(&quot;attempt&quot;)install.packages(&quot;purrr&quot;)devtools::install_github(&quot;r-lib/desc&quot;)Step 1: the projectCreate a new project with RStudio, and click on “Create a package withdevtools”.Step 2: devstuffs      In your terminal, run usethis::use_data_raw().        Open a new R Script, save it into /data_raw as “devstuffs”, or anyother name. Copy and paste into this script:  library(devtools)library(usethis)library(desc)# Remove default DESCunlink(&quot;DESCRIPTION&quot;)# Create and clean descmy_desc &lt;- description$new(&quot;!new&quot;)# Set your package namemy_desc$set(&quot;Package&quot;, &quot;yourpackage&quot;)#Set your namemy_desc$set(&quot;Authors@R&quot;, &quot;person(&#39;Colin&#39;, &#39;Fay&#39;, email = &#39;contact@colinfay.me&#39;, role = c(&#39;cre&#39;, &#39;aut&#39;))&quot;)# Remove some author fieldsmy_desc$del(&quot;Maintainer&quot;)# Set the versionmy_desc$set_version(&quot;0.0.0.9000&quot;)# The title of your packagemy_desc$set(Title = &quot;My Supper API Wrapper&quot;)# The description of your packagemy_desc$set(Description = &quot;A long description of this super package I&#39;m working on.&quot;)# The urlsmy_desc$set(&quot;URL&quot;, &quot;http://this&quot;)my_desc$set(&quot;BugReports&quot;, &quot;http://that&quot;)# Save everytingmy_desc$write(file = &quot;DESCRIPTION&quot;)# If you want to use the MIT licence, code of conduct, and lifecycle badgeuse_mit_license(name = &quot;Colin FAY&quot;)use_code_of_conduct()use_lifecycle_badge(&quot;Experimental&quot;)use_news_md()# Get the dependenciesuse_package(&quot;httr&quot;)use_package(&quot;jsonlite&quot;)use_package(&quot;curl&quot;)use_package(&quot;attempt&quot;)use_package(&quot;purrr&quot;)# Clean your descriptionuse_tidy_description()Then, run everything from this script.Copy and paste at the top of you README.Rmd:  [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)And at the bottom:  Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).  By participating in this project you agree to abide by its terms.Step 3: get the API urlThere are two ways you can request on an API :      By building url: url.and/path/to/the/data        With parameters: url.that/q=this&amp;data=that  This is the case for https://adresse.data.gouv.fr/api/. We’ve got thebase url: http &#39;https://api-adresse.data.gouv.fr/search/?q=8 bd duport&#39;, and search parameters.Here, the base url is everything before the ?, and the parameters arethe key-value pairs after the.Step 4: utilsBefore creating the main calling functions, we’ll create some utilitaryfunctions that will run some tests: is the internet connexion running?Does the {httr} result return the right http code?For this, we’ll create a file called utils.R, save it in the R/folder, and put into it:#&#39; @importFrom attempt stop_if_not#&#39; @importFrom curl has_internetcheck_internet &lt;- function(){  stop_if_not(.x = has_internet(), msg = &quot;Please check your internet connexion&quot;)}#&#39; @importFrom httr status_codecheck_status &lt;- function(res){  stop_if_not(.x = status_code(res),               .p = ~ .x == 200,              msg = &quot;The API returned an error&quot;)}In this same file we’ll also create two objects that will contain thebase API urls:base_url &lt;- &quot;https://api-adresse.data.gouv.fr/search/&quot;reverse_url &lt;- &quot;https://api-adresse.data.gouv.fr/reverse/&quot;Step 5 : the function that will call on the APITo call the API, we’ll use GET function from {httr}. Let’s first tryjust this:httr::GET(url = base_url, query = list(q = &quot;Yeaye&quot;))## Response [https://api-adresse.data.gouv.fr/search/?q=Yeaye]##   Date: 2018-02-04 21:40##   Status: 200##   Content-Type: application/json; charset=utf-8##   Size: 574 BAs you can see, the status is 200. Which is a good sign: no error fromthe API.In the API we have chosen, there are 4 entry points: search, reverse,and their counterparts with csv. These counterparts work by POSTing acsv to the API, so let’s forget them for now.The search entrypoint can take 8 parameters:  q: text search  limit: maximum number of results to return  autocomplete: autocompletion  lat: latitude  lon: longitude  type: type of elements to return (housenumber, street,place,municipality)  postcode: Postal code  citycode: INSEE codeThese are the elements which will be passed as a list in the queryparameter from httr::GET.  Note: if you’re going for an url based request(url.and/path/to/the/data or url.and/?path=this&amp;to=that), youdon’t need to set the query parameter, you can simply paste the urlwith the elements (url &lt;- paste0(&quot;url.and/?path=&quot;, this, &quot;&amp;to=&quot;,that)).Create a new R script and write the functions used to call the API:#&#39; Search the BAN#&#39; #&#39; @param q text search#&#39; @param limit maximum number of results to return #&#39; @param autocomplete autocompletion#&#39; @param lat latitude#&#39; @param lon longitude#&#39; @param type type of elements to return (housenumber, street,place, municipality)#&#39; @param postcode Postal code#&#39; @param citycode INSEE code#&#39;#&#39; @importFrom attempt stop_if_all#&#39; @importFrom purrr compact#&#39; @importFrom jsonlite fromJSON#&#39; @importFrom httr GET#&#39; @export#&#39; @rdname searchban#&#39;#&#39; @return the results from the search#&#39; @examples #&#39; \dontrun{#&#39; search_ban(&quot;Rennes&quot;)#&#39; reverse_search_ban(&quot;48.11&quot;, &quot;-1.68&quot;)#&#39; }search_ban &lt;- function(q = NULL, limit = NULL, autocomplete = NULL, lat = NULL, lon = NULL, type = NULL, postcode = NULL, citycode = NULL){  args &lt;- list(q = q, limit = limit, autocomplete = autocomplete, lat = lat,                lon = lon, type = type, postcode = postcode, citycode = citycode)  # Check that at least one argument is not null  stop_if_all(args, is.null, &quot;You need to specify at least one argument&quot;)  # Chek for internet  check_internet()  # Create the   res &lt;- GET(base_url, query = compact(args))  # Check the result  check_status(res)  # Get the content and return it as a data.frame  fromJSON(rawToChar(res$content))$features}#&#39; @export#&#39; @rdname searchbanreverse_search_ban &lt;- function(lat = NULL, lon = NULL){  args &lt;- list(lat = lat, lon = lon)  # Check that at least one argument is not null  stop_if_all(args, is.null, &quot;You need to specify at least one argument&quot;)  # Chek for internet  check_internet()  # Create the   res &lt;- GET(reverse_url, query = compact(args))  # Check the result  check_status(res)  # Get the content and return it as a data.frame  fromJSON(rawToChar(res$content))$features}  Note: you’ll need to change the arguments and documentation for yourspecific API (obviously).If ever you want to a part of this roxygen filling programmatically, youshould check the excellent {sinew}package by Jonathan Sidi.Step 6 : RoxygeniseNow, run in your console :roxygen2::roxygenise()And that’s it! You’ve got a working package :)Step 7 : build your packageYou can test that everything is ok with:devtools::check()# Then build it with:devtools::build()What’s leftAs I said, the 10 minutes workflow does not include the doc, so here’swhat left for you to do:  Write the Readme  Write a Vignette  Write testsFor that, go back to your dev file, add, and run:use_testthat()use_vignette(&quot;{your-package-name}&quot;)use_readme_rmd()And now, grab you best pen and write documentation ;)">
+  <meta name="twitter:url" content="http://localhost:4000/build-api-wrapper-package-r/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2018-01-21T00:00:00+01:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/build-api-wrapper-package-r/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[How to] Build an API wrapper package in 10 minutes.">
+    <meta itemprop="description" content="Well… documentation not included (of course).API are cool. They allow to retrieve data from the web, and if everyou’re familiar with {httr}, {jsonlite} and packages like these,you’re able to build requests and retrieve data in a matter ofminutes.But no worry, if you’re not familiar with http requests and web formatslike html, JSON and such, you can still go and look for a packagewrapper around that specific API: someone had probably been coding italready.And, if you want to be that someone that code an API wrapper package,here’s a short tutorial that will allow you to create it.  Disclaimer: the 10 minutes workflow does not (of course) include thepackage documentation.Find the APIWell, this first step can take a while… but, let’s say we have alreadyfound it, and want to build an package around the french database foraddresses: https://adresse.data.gouv.fr/api/.Step 0: be sure you have all the packages you’ll needRun this if you want to be sure you have all the packages we’ll usehere:install.packages(&quot;devtools&quot;)install.packages(&quot;roxygen2&quot;)install.packages(&quot;usethis&quot;)install.packages(&quot;curl&quot;)install.packages(&quot;httr&quot;)install.packages(&quot;jsonlite&quot;)install.packages(&quot;attempt&quot;)install.packages(&quot;purrr&quot;)devtools::install_github(&quot;r-lib/desc&quot;)Step 1: the projectCreate a new project with RStudio, and click on “Create a package withdevtools”.Step 2: devstuffs      In your terminal, run usethis::use_data_raw().        Open a new R Script, save it into /data_raw as “devstuffs”, or anyother name. Copy and paste into this script:  library(devtools)library(usethis)library(desc)# Remove default DESCunlink(&quot;DESCRIPTION&quot;)# Create and clean descmy_desc &lt;- description$new(&quot;!new&quot;)# Set your package namemy_desc$set(&quot;Package&quot;, &quot;yourpackage&quot;)#Set your namemy_desc$set(&quot;Authors@R&quot;, &quot;person(&#39;Colin&#39;, &#39;Fay&#39;, email = &#39;contact@colinfay.me&#39;, role = c(&#39;cre&#39;, &#39;aut&#39;))&quot;)# Remove some author fieldsmy_desc$del(&quot;Maintainer&quot;)# Set the versionmy_desc$set_version(&quot;0.0.0.9000&quot;)# The title of your packagemy_desc$set(Title = &quot;My Supper API Wrapper&quot;)# The description of your packagemy_desc$set(Description = &quot;A long description of this super package I&#39;m working on.&quot;)# The urlsmy_desc$set(&quot;URL&quot;, &quot;http://this&quot;)my_desc$set(&quot;BugReports&quot;, &quot;http://that&quot;)# Save everytingmy_desc$write(file = &quot;DESCRIPTION&quot;)# If you want to use the MIT licence, code of conduct, and lifecycle badgeuse_mit_license(name = &quot;Colin FAY&quot;)use_code_of_conduct()use_lifecycle_badge(&quot;Experimental&quot;)use_news_md()# Get the dependenciesuse_package(&quot;httr&quot;)use_package(&quot;jsonlite&quot;)use_package(&quot;curl&quot;)use_package(&quot;attempt&quot;)use_package(&quot;purrr&quot;)# Clean your descriptionuse_tidy_description()Then, run everything from this script.Copy and paste at the top of you README.Rmd:  [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)And at the bottom:  Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).  By participating in this project you agree to abide by its terms.Step 3: get the API urlThere are two ways you can request on an API :      By building url: url.and/path/to/the/data        With parameters: url.that/q=this&amp;data=that  This is the case for https://adresse.data.gouv.fr/api/. We’ve got thebase url: http &#39;https://api-adresse.data.gouv.fr/search/?q=8 bd duport&#39;, and search parameters.Here, the base url is everything before the ?, and the parameters arethe key-value pairs after the.Step 4: utilsBefore creating the main calling functions, we’ll create some utilitaryfunctions that will run some tests: is the internet connexion running?Does the {httr} result return the right http code?For this, we’ll create a file called utils.R, save it in the R/folder, and put into it:#&#39; @importFrom attempt stop_if_not#&#39; @importFrom curl has_internetcheck_internet &lt;- function(){  stop_if_not(.x = has_internet(), msg = &quot;Please check your internet connexion&quot;)}#&#39; @importFrom httr status_codecheck_status &lt;- function(res){  stop_if_not(.x = status_code(res),               .p = ~ .x == 200,              msg = &quot;The API returned an error&quot;)}In this same file we’ll also create two objects that will contain thebase API urls:base_url &lt;- &quot;https://api-adresse.data.gouv.fr/search/&quot;reverse_url &lt;- &quot;https://api-adresse.data.gouv.fr/reverse/&quot;Step 5 : the function that will call on the APITo call the API, we’ll use GET function from {httr}. Let’s first tryjust this:httr::GET(url = base_url, query = list(q = &quot;Yeaye&quot;))## Response [https://api-adresse.data.gouv.fr/search/?q=Yeaye]##   Date: 2018-02-04 21:40##   Status: 200##   Content-Type: application/json; charset=utf-8##   Size: 574 BAs you can see, the status is 200. Which is a good sign: no error fromthe API.In the API we have chosen, there are 4 entry points: search, reverse,and their counterparts with csv. These counterparts work by POSTing acsv to the API, so let’s forget them for now.The search entrypoint can take 8 parameters:  q: text search  limit: maximum number of results to return  autocomplete: autocompletion  lat: latitude  lon: longitude  type: type of elements to return (housenumber, street,place,municipality)  postcode: Postal code  citycode: INSEE codeThese are the elements which will be passed as a list in the queryparameter from httr::GET.  Note: if you’re going for an url based request(url.and/path/to/the/data or url.and/?path=this&amp;to=that), youdon’t need to set the query parameter, you can simply paste the urlwith the elements (url &lt;- paste0(&quot;url.and/?path=&quot;, this, &quot;&amp;to=&quot;,that)).Create a new R script and write the functions used to call the API:#&#39; Search the BAN#&#39; #&#39; @param q text search#&#39; @param limit maximum number of results to return #&#39; @param autocomplete autocompletion#&#39; @param lat latitude#&#39; @param lon longitude#&#39; @param type type of elements to return (housenumber, street,place, municipality)#&#39; @param postcode Postal code#&#39; @param citycode INSEE code#&#39;#&#39; @importFrom attempt stop_if_all#&#39; @importFrom purrr compact#&#39; @importFrom jsonlite fromJSON#&#39; @importFrom httr GET#&#39; @export#&#39; @rdname searchban#&#39;#&#39; @return the results from the search#&#39; @examples #&#39; \dontrun{#&#39; search_ban(&quot;Rennes&quot;)#&#39; reverse_search_ban(&quot;48.11&quot;, &quot;-1.68&quot;)#&#39; }search_ban &lt;- function(q = NULL, limit = NULL, autocomplete = NULL, lat = NULL, lon = NULL, type = NULL, postcode = NULL, citycode = NULL){  args &lt;- list(q = q, limit = limit, autocomplete = autocomplete, lat = lat,                lon = lon, type = type, postcode = postcode, citycode = citycode)  # Check that at least one argument is not null  stop_if_all(args, is.null, &quot;You need to specify at least one argument&quot;)  # Chek for internet  check_internet()  # Create the   res &lt;- GET(base_url, query = compact(args))  # Check the result  check_status(res)  # Get the content and return it as a data.frame  fromJSON(rawToChar(res$content))$features}#&#39; @export#&#39; @rdname searchbanreverse_search_ban &lt;- function(lat = NULL, lon = NULL){  args &lt;- list(lat = lat, lon = lon)  # Check that at least one argument is not null  stop_if_all(args, is.null, &quot;You need to specify at least one argument&quot;)  # Chek for internet  check_internet()  # Create the   res &lt;- GET(reverse_url, query = compact(args))  # Check the result  check_status(res)  # Get the content and return it as a data.frame  fromJSON(rawToChar(res$content))$features}  Note: you’ll need to change the arguments and documentation for yourspecific API (obviously).If ever you want to a part of this roxygen filling programmatically, youshould check the excellent {sinew}package by Jonathan Sidi.Step 6 : RoxygeniseNow, run in your console :roxygen2::roxygenise()And that’s it! You’ve got a working package :)Step 7 : build your packageYou can test that everything is ok with:devtools::check()# Then build it with:devtools::build()What’s leftAs I said, the 10 minutes workflow does not include the doc, so here’swhat left for you to do:  Write the Readme  Write a Vignette  Write testsFor that, go back to your dev file, add, and run:use_testthat()use_vignette(&quot;{your-package-name}&quot;)use_readme_rmd()And now, grab you best pen and write documentation ;)">
+    <meta itemprop="datePublished" content="January 21, 2018">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">[How to] Build an API wrapper package in 10 minutes.
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  5 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Well… documentation not included (of course).</p>
+
+<p>API are cool. They allow to retrieve data from the web, and if ever
+you’re familiar with {httr}, {jsonlite} and packages like these,
+you’re able to build requests and retrieve data in a matter of
+minutes.</p>
+
+<p>But no worry, if you’re not familiar with http requests and web formats
+like html, JSON and such, you can still go and look for a package
+wrapper around that specific API: someone had probably been coding it
+already.</p>
+
+<p>And, if you want to be that someone that code an API wrapper package,
+here’s a short tutorial that will allow you to create it.</p>
+
+<blockquote>
+  <p>Disclaimer: the 10 minutes workflow does not (of course) include the
+package documentation.</p>
+</blockquote>
+
+<h2 id="find-the-api">Find the API</h2>
+
+<p>Well, this first step can take a while… but, let’s say we have already
+found it, and want to build an package around the french database for
+addresses: <a href="https://adresse.data.gouv.fr/api/">https://adresse.data.gouv.fr/api/</a>.</p>
+
+<h2 id="step-0-be-sure-you-have-all-the-packages-youll-need">Step 0: be sure you have all the packages you’ll need</h2>
+
+<p>Run this if you want to be sure you have all the packages we’ll use
+here:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="s2">"devtools"</span><span class="p">)</span><span class="w">
+</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"roxygen2"</span><span class="p">)</span><span class="w">
+</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"usethis"</span><span class="p">)</span><span class="w">
+</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"curl"</span><span class="p">)</span><span class="w">
+</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"httr"</span><span class="p">)</span><span class="w">
+</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"jsonlite"</span><span class="p">)</span><span class="w">
+</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"attempt"</span><span class="p">)</span><span class="w">
+</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"purrr"</span><span class="p">)</span><span class="w">
+</span><span class="n">devtools</span><span class="o">::</span><span class="n">install_github</span><span class="p">(</span><span class="s2">"r-lib/desc"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="step-1-the-project">Step 1: the project</h2>
+
+<p>Create a new project with RStudio, and click on “Create a package with
+devtools”.</p>
+
+<h2 id="step-2-devstuffs">Step 2: devstuffs</h2>
+
+<ul>
+  <li>
+    <p>In your terminal, run <code class="highlighter-rouge">usethis::use_data_raw()</code>.</p>
+  </li>
+  <li>
+    <p>Open a new R Script, save it into <code class="highlighter-rouge">/data_raw</code> as “devstuffs”, or any
+other name. Copy and paste into this script:</p>
+  </li>
+</ul>
+
+<!-- end list -->
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">devtools</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">usethis</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Remove default DESC</span><span class="w">
+</span><span class="n">unlink</span><span class="p">(</span><span class="s2">"DESCRIPTION"</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Create and clean desc</span><span class="w">
+</span><span class="n">my_desc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">description</span><span class="o">$</span><span class="n">new</span><span class="p">(</span><span class="s2">"!new"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Set your package name</span><span class="w">
+</span><span class="n">my_desc</span><span class="o">$</span><span class="n">set</span><span class="p">(</span><span class="s2">"Package"</span><span class="p">,</span><span class="w"> </span><span class="s2">"yourpackage"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1">#Set your name</span><span class="w">
+</span><span class="n">my_desc</span><span class="o">$</span><span class="n">set</span><span class="p">(</span><span class="s2">"Authors@R"</span><span class="p">,</span><span class="w"> </span><span class="s2">"person('Colin', 'Fay', email = 'contact@colinfay.me', role = c('cre', 'aut'))"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Remove some author fields</span><span class="w">
+</span><span class="n">my_desc</span><span class="o">$</span><span class="n">del</span><span class="p">(</span><span class="s2">"Maintainer"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Set the version</span><span class="w">
+</span><span class="n">my_desc</span><span class="o">$</span><span class="n">set_version</span><span class="p">(</span><span class="s2">"0.0.0.9000"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># The title of your package</span><span class="w">
+</span><span class="n">my_desc</span><span class="o">$</span><span class="n">set</span><span class="p">(</span><span class="n">Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"My Supper API Wrapper"</span><span class="p">)</span><span class="w">
+</span><span class="c1"># The description of your package</span><span class="w">
+</span><span class="n">my_desc</span><span class="o">$</span><span class="n">set</span><span class="p">(</span><span class="n">Description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"A long description of this super package I'm working on."</span><span class="p">)</span><span class="w">
+</span><span class="c1"># The urls</span><span class="w">
+</span><span class="n">my_desc</span><span class="o">$</span><span class="n">set</span><span class="p">(</span><span class="s2">"URL"</span><span class="p">,</span><span class="w"> </span><span class="s2">"http://this"</span><span class="p">)</span><span class="w">
+</span><span class="n">my_desc</span><span class="o">$</span><span class="n">set</span><span class="p">(</span><span class="s2">"BugReports"</span><span class="p">,</span><span class="w"> </span><span class="s2">"http://that"</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Save everyting</span><span class="w">
+</span><span class="n">my_desc</span><span class="o">$</span><span class="n">write</span><span class="p">(</span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"DESCRIPTION"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># If you want to use the MIT licence, code of conduct, and lifecycle badge</span><span class="w">
+</span><span class="n">use_mit_license</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Colin FAY"</span><span class="p">)</span><span class="w">
+</span><span class="n">use_code_of_conduct</span><span class="p">()</span><span class="w">
+</span><span class="n">use_lifecycle_badge</span><span class="p">(</span><span class="s2">"Experimental"</span><span class="p">)</span><span class="w">
+</span><span class="n">use_news_md</span><span class="p">()</span><span class="w">
+
+</span><span class="c1"># Get the dependencies</span><span class="w">
+</span><span class="n">use_package</span><span class="p">(</span><span class="s2">"httr"</span><span class="p">)</span><span class="w">
+</span><span class="n">use_package</span><span class="p">(</span><span class="s2">"jsonlite"</span><span class="p">)</span><span class="w">
+</span><span class="n">use_package</span><span class="p">(</span><span class="s2">"curl"</span><span class="p">)</span><span class="w">
+</span><span class="n">use_package</span><span class="p">(</span><span class="s2">"attempt"</span><span class="p">)</span><span class="w">
+</span><span class="n">use_package</span><span class="p">(</span><span class="s2">"purrr"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Clean your description</span><span class="w">
+</span><span class="n">use_tidy_description</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Then, run everything from this script.</p>
+
+<p>Copy and paste at the top of you README.Rmd
+:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+</code></pre></div></div>
+
+<p>And at the bottom
+:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
+  By participating in this project you agree to abide by its terms.
+</code></pre></div></div>
+
+<h2 id="step-3-get-the-api-url">Step 3: get the API url</h2>
+
+<p>There are two ways you can request on an API :</p>
+
+<ul>
+  <li>
+    <p>By building url: <code class="highlighter-rouge">url.and/path/to/the/data</code></p>
+  </li>
+  <li>
+    <p>With parameters: <code class="highlighter-rouge">url.that/q=this&amp;data=that</code></p>
+  </li>
+</ul>
+
+<p>This is the case for <a href="https://adresse.data.gouv.fr/api/">https://adresse.data.gouv.fr/api/</a>. We’ve got the
+base url: <code class="highlighter-rouge">http 'https://api-adresse.data.gouv.fr/search/?q=8 bd du
+port'</code>, and search parameters.</p>
+
+<p>Here, the base url is everything before the <code class="highlighter-rouge">?</code>, and the parameters are
+the key-value pairs after the
+.</p>
+
+<p><img src="https://github.com/ColinFay/colinfay.github.io/raw/master/_posts/img/api.png" alt="" /></p>
+
+<h2 id="step-4-utils">Step 4: utils</h2>
+
+<p>Before creating the main calling functions, we’ll create some utilitary
+functions that will run some tests: is the internet connexion running?
+Does the {httr} result return the right http code?</p>
+
+<p>For this, we’ll create a file called <code class="highlighter-rouge">utils.R</code>, save it in the R/
+folder, and put into it:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">#' @importFrom attempt stop_if_not</span><span class="w">
+</span><span class="cd">#' @importFrom curl has_internet</span><span class="w">
+</span><span class="n">check_internet</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(){</span><span class="w">
+  </span><span class="n">stop_if_not</span><span class="p">(</span><span class="n">.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">has_internet</span><span class="p">(),</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Please check your internet connexion"</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="cd">#' @importFrom httr status_code</span><span class="w">
+</span><span class="n">check_status</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">res</span><span class="p">){</span><span class="w">
+  </span><span class="n">stop_if_not</span><span class="p">(</span><span class="n">.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status_code</span><span class="p">(</span><span class="n">res</span><span class="p">),</span><span class="w"> 
+              </span><span class="n">.p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w">
+              </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"The API returned an error"</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>In this same file we’ll also create two objects that will contain the
+base API urls:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">base_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"https://api-adresse.data.gouv.fr/search/"</span><span class="w">
+</span><span class="n">reverse_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"https://api-adresse.data.gouv.fr/reverse/"</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="step-5--the-function-that-will-call-on-the-api">Step 5 : the function that will call on the API</h2>
+
+<p>To call the API, we’ll use <code class="highlighter-rouge">GET</code> function from {httr}. Let’s first try
+just this:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">httr</span><span class="o">::</span><span class="n">GET</span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">base_url</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Yeaye"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Response [https://api-adresse.data.gouv.fr/search/?q=Yeaye]
+##   Date: 2018-02-04 21:40
+##   Status: 200
+##   Content-Type: application/json; charset=utf-8
+##   Size: 574 B
+</code></pre></div></div>
+
+<p>As you can see, the status is 200. Which is a good sign: no error from
+the API.</p>
+
+<p>In the API we have chosen, there are 4 entry points: search, reverse,
+and their counterparts with csv. These counterparts work by POSTing a
+csv to the API, so let’s forget them for now.</p>
+
+<p>The search entrypoint can take 8 parameters:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">q</code>: text search</li>
+  <li><code class="highlighter-rouge">limit</code>: maximum number of results to return</li>
+  <li><code class="highlighter-rouge">autocomplete</code>: autocompletion</li>
+  <li><code class="highlighter-rouge">lat</code>: latitude</li>
+  <li><code class="highlighter-rouge">lon</code>: longitude</li>
+  <li><code class="highlighter-rouge">type</code>: type of elements to return (housenumber, street,place,
+municipality)</li>
+  <li><code class="highlighter-rouge">postcode</code>: Postal code</li>
+  <li><code class="highlighter-rouge">citycode</code>: INSEE code</li>
+</ul>
+
+<p>These are the elements which will be passed as a list in the <code class="highlighter-rouge">query</code>
+parameter from <code class="highlighter-rouge">httr::GET</code>.</p>
+
+<blockquote>
+  <p>Note: if you’re going for an url based request
+(<code class="highlighter-rouge">url.and/path/to/the/data</code> or <code class="highlighter-rouge">url.and/?path=this&amp;to=that</code>), you
+don’t need to set the query parameter, you can simply paste the url
+with the elements (<code class="highlighter-rouge">url &lt;- paste0("url.and/?path=", this, "&amp;to=",
+that)</code>).</p>
+</blockquote>
+
+<p>Create a new R script and write the functions used to call the API:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">#' Search the BAN</span><span class="w">
+</span><span class="cd">#' </span><span class="w">
+</span><span class="cd">#' @param q text search</span><span class="w">
+</span><span class="cd">#' @param limit maximum number of results to return </span><span class="w">
+</span><span class="cd">#' @param autocomplete autocompletion</span><span class="w">
+</span><span class="cd">#' @param lat latitude</span><span class="w">
+</span><span class="cd">#' @param lon longitude</span><span class="w">
+</span><span class="cd">#' @param type type of elements to return (housenumber, street,place, municipality)</span><span class="w">
+</span><span class="cd">#' @param postcode Postal code</span><span class="w">
+</span><span class="cd">#' @param citycode INSEE code</span><span class="w">
+</span><span class="cd">#'</span><span class="w">
+</span><span class="cd">#' @importFrom attempt stop_if_all</span><span class="w">
+</span><span class="cd">#' @importFrom purrr compact</span><span class="w">
+</span><span class="cd">#' @importFrom jsonlite fromJSON</span><span class="w">
+</span><span class="cd">#' @importFrom httr GET</span><span class="w">
+</span><span class="cd">#' @export</span><span class="w">
+</span><span class="cd">#' @rdname searchban</span><span class="w">
+</span><span class="cd">#'</span><span class="w">
+</span><span class="cd">#' @return the results from the search</span><span class="w">
+</span><span class="cd">#' @examples </span><span class="w">
+</span><span class="cd">#' \dontrun{</span><span class="w">
+</span><span class="cd">#' search_ban("Rennes")</span><span class="w">
+</span><span class="cd">#' reverse_search_ban("48.11", "-1.68")</span><span class="w">
+</span><span class="cd">#' }</span><span class="w">
+
+</span><span class="n">search_ban</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">autocomplete</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">lat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">lon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">postcode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">citycode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">){</span><span class="w">
+  </span><span class="n">args</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">limit</span><span class="p">,</span><span class="w"> </span><span class="n">autocomplete</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">autocomplete</span><span class="p">,</span><span class="w"> </span><span class="n">lat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="p">,</span><span class="w"> 
+               </span><span class="n">lon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lon</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">postcode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">postcode</span><span class="p">,</span><span class="w"> </span><span class="n">citycode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">citycode</span><span class="p">)</span><span class="w">
+  </span><span class="c1"># Check that at least one argument is not null</span><span class="w">
+  </span><span class="n">stop_if_all</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">is.null</span><span class="p">,</span><span class="w"> </span><span class="s2">"You need to specify at least one argument"</span><span class="p">)</span><span class="w">
+  </span><span class="c1"># Chek for internet</span><span class="w">
+  </span><span class="n">check_internet</span><span class="p">()</span><span class="w">
+  </span><span class="c1"># Create the </span><span class="w">
+  </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compact</span><span class="p">(</span><span class="n">args</span><span class="p">))</span><span class="w">
+  </span><span class="c1"># Check the result</span><span class="w">
+  </span><span class="n">check_status</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w">
+  </span><span class="c1"># Get the content and return it as a data.frame</span><span class="w">
+  </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">rawToChar</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">content</span><span class="p">))</span><span class="o">$</span><span class="n">features</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="cd">#' @export</span><span class="w">
+</span><span class="cd">#' @rdname searchban</span><span class="w">
+</span><span class="n">reverse_search_ban</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">lat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">lon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">){</span><span class="w">
+  </span><span class="n">args</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">lat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="p">,</span><span class="w"> </span><span class="n">lon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lon</span><span class="p">)</span><span class="w">
+  </span><span class="c1"># Check that at least one argument is not null</span><span class="w">
+  </span><span class="n">stop_if_all</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">is.null</span><span class="p">,</span><span class="w"> </span><span class="s2">"You need to specify at least one argument"</span><span class="p">)</span><span class="w">
+  </span><span class="c1"># Chek for internet</span><span class="w">
+  </span><span class="n">check_internet</span><span class="p">()</span><span class="w">
+  </span><span class="c1"># Create the </span><span class="w">
+  </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GET</span><span class="p">(</span><span class="n">reverse_url</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compact</span><span class="p">(</span><span class="n">args</span><span class="p">))</span><span class="w">
+  </span><span class="c1"># Check the result</span><span class="w">
+  </span><span class="n">check_status</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w">
+  </span><span class="c1"># Get the content and return it as a data.frame</span><span class="w">
+  </span><span class="n">fromJSON</span><span class="p">(</span><span class="n">rawToChar</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">content</span><span class="p">))</span><span class="o">$</span><span class="n">features</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<blockquote>
+  <p>Note: you’ll need to change the arguments and documentation for your
+specific API (obviously).</p>
+</blockquote>
+
+<p>If ever you want to a part of this roxygen filling programmatically, you
+should check the excellent <a href="https://github.com/metrumresearchgroup/sinew">{sinew}
+package</a> by Jonathan Sidi.</p>
+
+<h2 id="step-6--roxygenise">Step 6 : Roxygenise</h2>
+
+<p>Now, run in your console :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">roxygen2</span><span class="o">::</span><span class="n">roxygenise</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>And that’s it! You’ve got a working package :)</p>
+
+<h2 id="step-7--build-your-package">Step 7 : build your package</h2>
+
+<p>You can test that everything is ok with:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">devtools</span><span class="o">::</span><span class="n">check</span><span class="p">()</span><span class="w">
+</span><span class="c1"># Then build it with:</span><span class="w">
+</span><span class="n">devtools</span><span class="o">::</span><span class="n">build</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="whats-left">What’s left</h2>
+
+<p>As I said, the 10 minutes workflow does not include the doc, so here’s
+what left for you to do:</p>
+
+<ul>
+  <li>Write the Readme</li>
+  <li>Write a Vignette</li>
+  <li>Write tests</li>
+</ul>
+
+<p>For that, go back to your dev file, add, and run:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">use_testthat</span><span class="p">()</span><span class="w">
+</span><span class="n">use_vignette</span><span class="p">(</span><span class="s2">"{your-package-name}"</span><span class="p">)</span><span class="w">
+</span><span class="n">use_readme_rmd</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>And now, grab you best pen and write documentation ;)</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2018-01-21T00:00:00+01:00">January 21, 2018</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=%5BHow+to%5D+Build+an+API+wrapper+package+in+10+minutes.%20http%3A%2F%2Flocalhost%3A4000%2Fbuild-api-wrapper-package-r%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fbuild-api-wrapper-package-r%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Fbuild-api-wrapper-package-r%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fbuild-api-wrapper-package-r%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/active-binding-r-enigma/" class="pagination--pager" title="Can (a==1 &amp; a==2 &amp; a==3) ever evaluate to TRUE?
+">←</a>
+    
+    
+      <a href="/explain-environments-eli5/" class="pagination--pager" title="Explain R environments like I’m five
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/build-api-wrapper-package-r/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/build-api-wrapper-package-r"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

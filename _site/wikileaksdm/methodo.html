@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="Wikileaks Twitter DM - Methodo" />
+<meta property="og:type" content="article" />
+
+
+
+<meta name="author" content="@_colinfay" />
+
+<meta name="date" content="2018-08-16" />
+
+<title>Wikileaks Twitter DM - Methodo</title>
+
+<style type="text/css">
+
+html {
+font-family: sans-serif; 
+-ms-text-size-adjust: 100%; 
+-webkit-text-size-adjust: 100%; 
+}
+
+body {
+margin: 0;
+}
+
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+display: block;
+}
+
+audio,
+canvas,
+progress,
+video {
+display: inline-block; 
+vertical-align: baseline; 
+}
+
+audio:not([controls]) {
+display: none;
+height: 0;
+}
+
+[hidden],
+template {
+display: none;
+}
+
+
+a {
+background-color: transparent;
+}
+
+a:active,
+a:hover {
+outline: 0;
+}
+
+
+abbr[title] {
+border-bottom: 1px dotted;
+}
+
+b,
+strong {
+font-weight: bold;
+}
+
+dfn {
+font-style: italic;
+}
+
+h1 {
+font-size: 2em;
+margin: 0.67em 0;
+}
+
+mark {
+background: #ff0;
+color: #000;
+}
+
+small {
+font-size: 80%;
+}
+
+sub,
+sup {
+font-size: 75%;
+line-height: 0;
+position: relative;
+vertical-align: baseline;
+}
+sup {
+top: -0.5em;
+}
+sub {
+bottom: -0.25em;
+}
+
+
+img {
+border: 0;
+}
+
+svg:not(:root) {
+overflow: hidden;
+}
+
+
+figure {
+margin: 1em 40px;
+}
+
+hr {
+-moz-box-sizing: content-box;
+box-sizing: content-box;
+height: 0;
+}
+
+pre {
+overflow: auto;
+}
+
+code,
+kbd,
+pre,
+samp {
+font-family: monospace, monospace;
+font-size: 1em;
+}
+
+
+
+button,
+input,
+optgroup,
+select,
+textarea {
+color: inherit; 
+font: inherit; 
+margin: 0; 
+}
+
+button {
+overflow: visible;
+}
+
+button,
+select {
+text-transform: none;
+}
+
+button,
+html input[type="button"], 
+input[type="reset"],
+input[type="submit"] {
+-webkit-appearance: button; 
+cursor: pointer; 
+}
+
+button[disabled],
+html input[disabled] {
+cursor: default;
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+border: 0;
+padding: 0;
+}
+
+input {
+line-height: normal;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+box-sizing: border-box; 
+padding: 0; 
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+height: auto;
+}
+
+input[type="search"] {
+-webkit-appearance: textfield; 
+-moz-box-sizing: content-box;
+-webkit-box-sizing: content-box; 
+box-sizing: content-box;
+}
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+-webkit-appearance: none;
+}
+
+fieldset {
+border: 1px solid #c0c0c0;
+margin: 0 2px;
+padding: 0.35em 0.625em 0.75em;
+}
+
+legend {
+border: 0; 
+padding: 0; 
+}
+
+textarea {
+overflow: auto;
+}
+
+optgroup {
+font-weight: bold;
+}
+
+
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+td,
+th {
+padding: 0;
+}</style>
+<style type="text/css">
+
+
+.container {
+position: relative;
+width: 100%;
+max-width: 960px;
+margin: 0 auto;
+padding: 0 20px;
+box-sizing: border-box; }
+.column,
+.columns {
+width: 100%;
+float: left;
+box-sizing: border-box; }
+
+@media (min-width: 400px) {
+.container {
+width: 85%;
+padding: 0; }
+}
+
+@media (min-width: 550px) {
+.container {
+width: 80%; }
+.column,
+.columns {
+margin-left: 4%; }
+.column:first-child,
+.columns:first-child {
+margin-left: 0; }
+.one.column,
+.one.columns { width: 4.66666666667%; }
+.two.columns { width: 13.3333333333%; }
+.three.columns { width: 22%; }
+.four.columns { width: 30.6666666667%; }
+.five.columns { width: 39.3333333333%; }
+.six.columns { width: 48%; }
+.seven.columns { width: 56.6666666667%; }
+.eight.columns { width: 65.3333333333%; }
+.nine.columns { width: 74.0%; }
+.ten.columns { width: 82.6666666667%; }
+.eleven.columns { width: 91.3333333333%; }
+.twelve.columns { width: 100%; margin-left: 0; }
+.one-third.column { width: 30.6666666667%; }
+.two-thirds.column { width: 65.3333333333%; }
+.one-half.column { width: 48%; }
+
+.offset-by-one.column,
+.offset-by-one.columns { margin-left: 8.66666666667%; }
+.offset-by-two.column,
+.offset-by-two.columns { margin-left: 17.3333333333%; }
+.offset-by-three.column,
+.offset-by-three.columns { margin-left: 26%; }
+.offset-by-four.column,
+.offset-by-four.columns { margin-left: 34.6666666667%; }
+.offset-by-five.column,
+.offset-by-five.columns { margin-left: 43.3333333333%; }
+.offset-by-six.column,
+.offset-by-six.columns { margin-left: 52%; }
+.offset-by-seven.column,
+.offset-by-seven.columns { margin-left: 60.6666666667%; }
+.offset-by-eight.column,
+.offset-by-eight.columns { margin-left: 69.3333333333%; }
+.offset-by-nine.column,
+.offset-by-nine.columns { margin-left: 78.0%; }
+.offset-by-ten.column,
+.offset-by-ten.columns { margin-left: 86.6666666667%; }
+.offset-by-eleven.column,
+.offset-by-eleven.columns { margin-left: 95.3333333333%; }
+.offset-by-one-third.column,
+.offset-by-one-third.columns { margin-left: 34.6666666667%; }
+.offset-by-two-thirds.column,
+.offset-by-two-thirds.columns { margin-left: 69.3333333333%; }
+.offset-by-one-half.column,
+.offset-by-one-half.columns { margin-left: 52%; }
+}
+
+
+html {
+font-size: 62.5%; }
+body {
+font-size: 1.5em; 
+line-height: 1.6;
+font-weight: 400;
+font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+color: #222; }
+
+h1, h2, h3, h4, h5, h6 {
+margin-top: 0;
+margin-bottom: 2rem;
+font-weight: 300; }
+h1 { font-size: 4.0rem; line-height: 1.2; letter-spacing: -.1rem;}
+h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -.1rem; }
+h3 { font-size: 3.0rem; line-height: 1.3; letter-spacing: -.1rem; }
+h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -.08rem; }
+h5 { font-size: 1.8rem; line-height: 1.5; letter-spacing: -.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.6; letter-spacing: 0; }
+
+@media (min-width: 550px) {
+h1 { font-size: 5.0rem; }
+h2 { font-size: 4.2rem; }
+h3 { font-size: 3.6rem; }
+h4 { font-size: 3.0rem; }
+h5 { font-size: 2.4rem; }
+h6 { font-size: 1.5rem; }
+}
+p {
+margin-top: 0; }
+
+a {
+color: #1EAEDB; }
+a:hover {
+color: #0FA0CE; }
+
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+display: inline-block;
+height: 38px;
+padding: 0 30px;
+color: #555;
+text-align: center;
+font-size: 11px;
+font-weight: 600;
+line-height: 38px;
+letter-spacing: .1rem;
+text-transform: uppercase;
+text-decoration: none;
+white-space: nowrap;
+background-color: transparent;
+border-radius: 4px;
+border: 1px solid #bbb;
+cursor: pointer;
+box-sizing: border-box; }
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+color: #333;
+border-color: #888;
+outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+color: #FFF;
+background-color: #33C3F0;
+border-color: #33C3F0; }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+color: #FFF;
+background-color: #1EAEDB;
+border-color: #1EAEDB; }
+
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+height: 38px;
+padding: 6px 10px; 
+background-color: #fff;
+border: 1px solid #D1D1D1;
+border-radius: 4px;
+box-shadow: none;
+box-sizing: border-box; }
+
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea {
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none; }
+textarea {
+min-height: 65px;
+padding-top: 6px;
+padding-bottom: 6px; }
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+border: 1px solid #33C3F0;
+outline: 0; }
+label,
+legend {
+display: block;
+margin-bottom: .5rem;
+font-weight: 600; }
+fieldset {
+padding: 0;
+border-width: 0; }
+input[type="checkbox"],
+input[type="radio"] {
+display: inline; }
+label > .label-body {
+display: inline-block;
+margin-left: .5rem;
+font-weight: normal; }
+
+ul {
+list-style: circle inside; }
+ol {
+list-style: decimal inside; }
+ol, ul {
+padding-left: 0;
+margin-top: 0; }
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+margin: 1.5rem 0 1.5rem 3rem;
+font-size: 90%; }
+li {
+margin-bottom: 1rem; }
+
+code {
+padding: .2rem .5rem;
+margin: 0 .2rem;
+font-size: 90%;
+white-space: nowrap;
+background: #F1F1F1;
+border: 1px solid #E1E1E1;
+border-radius: 4px; }
+pre > code {
+display: block;
+padding: 1rem 1.5rem;
+white-space: pre; }
+
+th,
+td {
+padding: 12px 15px;
+text-align: left;
+border-bottom: 1px solid #E1E1E1; }
+th:first-child,
+td:first-child {
+padding-left: 0; }
+th:last-child,
+td:last-child {
+padding-right: 0; }
+
+button,
+.button {
+margin-bottom: 1rem; }
+input,
+textarea,
+select,
+fieldset {
+margin-bottom: 1.5rem; }
+pre,
+blockquote,
+dl,
+figure,
+table,
+p,
+ul,
+ol,
+form {
+margin-bottom: 2.5rem; }
+
+.u-full-width {
+width: 100%;
+box-sizing: border-box; }
+.u-max-full-width {
+max-width: 100%;
+box-sizing: border-box; }
+.u-pull-right {
+float: right; }
+.u-pull-left {
+float: left; }
+
+hr {
+margin-top: 3rem;
+margin-bottom: 3.5rem;
+border-width: 0;
+border-top: 1px solid #E1E1E1; }
+
+
+.container:after,
+.row:after,
+.u-cf {
+content: "";
+display: table;
+clear: both; }
+
+
+
+@media (min-width: 400px) {}
+
+@media (min-width: 550px) {}
+
+@media (min-width: 750px) {}
+
+@media (min-width: 1000px) {}
+
+@media (min-width: 1200px) {}
+</style>
+<style type="text/css">.authordate {
+border-top:1px solid #94bd5a;
+border-bottom:1px solid #94bd5a;
+margin-bottom:30px;
+}
+img { max-width:100%; }
+.main-container {
+margin-top:48pt;
+color:#06062c;
+}
+h1 {
+font-weight:700;
+}
+h2 {
+color: #94bd5a;
+font-weight:500;
+}
+h3 {
+color: #94bd5a;
+font-weight:400;
+}
+h4 {
+color: #94bd5a;
+font-weight:300;
+}
+.hdr {
+position:fixed;
+width:100%;
+background:#06062c;
+color:white;
+font-weight:400;
+font-size:24pt;
+height:40pt;
+padding:2px;
+padding-right:10px;
+top: 0;
+z-index: 100;
+text-align:right;
+}
+.hdr > a:link,
+.hdr > a:visited,
+.hdr > a:hover,
+.hdr > a:active {
+color:white;
+text-decoration: none;
+}
+.hdr > a:hover {
+color:#94bd5a;
+}
+.ftr {
+border-top:1px solid #94bd5a;
+margin-top:30px;
+text-align:center;
+font-size:10px;
+}
+.ftr > a:link,
+.ftr > a:visited,
+.ftr > a:hover,
+.ftr > a:active {
+color:#06062c;
+text-decoration: none;
+}
+.ftr > a:hover {
+color:#94bd5a;
+}
+</style>
+
+
+
+
+</head>
+
+<body>
+
+<div class="hdr u-max-full-width"><a href="https://colinfay.me/wikileaksdm">Wikileaks Twitter DM</a></div>
+
+<div class="container" style="margin-top:48pt">
+  <div class="row">
+    <div class="twelve columns">
+
+
+<div id="header">
+<h1 class="title">Wikileaks Twitter DM - Methodo</h1>
+
+<div class="authordate">
+<span class="author"><em><span class="citation">@_colinfay</span></em></span>
+• <span class="date"><em>2018-08-16</em></span>
+</div>
+</div>
+
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans:400,700');
+
+body{
+  font-family: 'Nunito Sans';
+}
+
+h2 {
+  border-bottom: 2px solid darkgrey;
+}
+h3:before {
+    content: "> ";
+    margin-right: 6px;
+}
+h4 {
+  text-align: center;
+  font-size: 2em;
+}
+.dataTables_wrapper{
+  padding-bottom: 30px ;
+}
+
+div .dygraphs {
+  margin-bottom: 30px ;
+}
+
+details {
+    margin-bottom: 30px;
+}
+</style>
+
+<h2>About</h2>
+
+<p>On the 29th of July 2018, Emma Best published on her website the copy of 11k+ wikileaks Twitter DM : <a href="https://emma.best/2018/07/29/11000-messages-from-private-wikileaks-chat-released/">https://emma.best/2018/07/29/11000-messages-from-private-wikileaks-chat-released/</a></p>
+
+<p>Here is a data extraction and wrangling of this corpus, to make it easily searchable, extractable and sharable. </p>
+
+<h2>How to use this page</h2>
+
+<ul>
+<li>Every &ldquo;<a href="link.csv">link.csv</a>&rdquo; is a downloadable csv.</li>
+<li>You can search and order every table. Results of the search are downloadable as csv or can be copied in the clipboard.</li>
+<li>You can zoom in the time series by selecting the date range. You can also use the selector beside to choose this range. Double click to reset the settings.</li>
+<li>Under each dynamic plot, you can find a static plot by clicking on &ldquo;Static plost&rdquo;.</li>
+</ul>
+
+<blockquote>
+<p>This page may not work as expected on Internet Explorer / Edge. Please switch to another browser if you have trouble reading this page.</p>
+</blockquote>
+
+<h2>Data format</h2>
+
+<ul>
+<li>Every csv is encoded in UTF8</li>
+<li>You can find these csv in JSON format on the <a href="https://github.com/ColinFay/wikileaksdm/json">GitHub repo</a></li>
+</ul>
+
+<h2>Browse through the content</h2>
+
+<ul>
+<li><a href="index.html">Home</a> has the full dataset, to search and download.</li>
+<li><a href="timeline.html">Timeline</a> has a series of time-related content: notably DMs by years, and daily count of DMs.</li>
+<li><a href="users.html">Users</a> holds the dataset for each users.</li>
+<li><a href="mention_urls.html">mentions_urls</a> holds the extracted mentions and urls</li>
+<li><a href="methodo.html">methodo</a> contains the methodology used for the data wrangling</li>
+</ul>
+
+<h3>About DMConversationEntry</h3>
+
+<p>As documented in the methodo, the DMConversationEntry have no date in the dataset, hence the date is inferred from the directly preceeding date, <strong>so these entries might not be correct when it comes to date</strong>.</p>
+
+<div id="raw-to-csv" class="section level2">
+<h2>Raw to csv</h2>
+<div id="downloading" class="section level3">
+<h3>Downloading</h3>
+<p>Made once, saved in <a href="raw.txt" class="uri">raw.txt</a>.</p>
+<pre class="r"><code>library(tidyverse)
+library(rvest)
+doc &lt;- read_html(&quot;https://emma.best/2018/07/29/11000-messages-from-private-wikileaks-chat-released/&quot;)
+doc &lt;- doc %&gt;% 
+  # Getting the p
+  html_nodes(&quot;p&quot;) %&gt;%
+  html_text()
+
+doc &lt;- doc[! nchar(doc)  == 0]
+# Element 1 to 9 are the content of the blogpost, not the content of the conversation. Removing it:
+
+doc &lt;- doc[10:length(doc)]
+write(doc, &quot;raw.txt&quot;)</code></pre>
+</div>
+<div id="getting-data-as-a-table" class="section level3">
+<h3>Getting data as a table</h3>
+<pre class="r"><code>library(tidyverse)
+res_raw &lt;- read.delim(&quot;raw.txt&quot;, sep = &quot;\n&quot;, header = FALSE) %&gt;% 
+  as.tibble() %&gt;% 
+  rename(value = V1)</code></pre>
+<p>In order to tidy the format, add <DMConversationEntry> as author when the text is a <code>DMConversationEntry</code></p>
+<pre class="r"><code>res &lt;- res_raw %&gt;% 
+  mutate(value = str_replace_all(value, 
+                                 &quot;\\[DMConversationEntry\\]&quot;,
+                                 &quot;&lt;DMConversationEntry&gt;&quot;)) </code></pre>
+<p>Removed, the last of the corpus:</p>
+<ul>
+<li>“[LatestTweetID] 931704226425856001”, line 22751 of the original document</li>
+</ul>
+<pre class="r"><code>res &lt;- filter(res, ! str_detect(value, &quot;931704226425856001&quot;))</code></pre>
+<p>When a line <code>n</code> doesn’t start with a date (middle of a DM), paste the content at the end of the line n-1.</p>
+<p>Example with lines 93 &amp; 94:</p>
+<table>
+<colgroup>
+<col width="100%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">“[2015-05-02 14:12:27] <WISE Up Wales> OK, thanks H. Security issues were about who was on the list then?”</td>
+</tr>
+<tr class="even">
+<td align="right">“Never quite know who you’re dealing with online I guess. I don’t, anyway!”</td>
+</tr>
+</tbody>
+</table>
+<p>94 is paste at the end of 93 and removed.</p>
+<pre class="r"><code>for (i in nrow(res):1){
+  if (!grepl(pattern = &quot;\\[.{4}-.{2}-.{2} .{2}:.{2}:.{2}\\]|DMConversationEntry&quot;, res[i,])){
+    res[i-1,] &lt;- paste(res[i-1,], res[i,])
+  }
+}
+# Remove column with no date
+res &lt;- res %&gt;% 
+  mutate(has_date = str_detect(value, pattern = &quot;\\[.{4}-.{2}-.{2} .{2}:.{2}:.{2}\\]|DMConversationEntry&quot;)) %&gt;%
+  filter(has_date) %&gt;%
+  select(-has_date)</code></pre>
+</div>
+<div id="extract-key-elements" class="section level3">
+<h3>Extract key elements</h3>
+<pre class="r"><code>res &lt;- res %&gt;%
+  extract(value,&quot;user&quot;, regex = &quot;&lt;([a-zA-Z0-9 ]*)&gt;&quot;, remove = FALSE) %&gt;%
+  extract(value,&quot;date&quot;, regex = &quot;\\[(.{4}-.{2}-.{2} .{2}:.{2}:.{2})\\] .*&quot;, remove = FALSE) %&gt;%
+  extract(value, &quot;text&quot;, regex = &quot;&lt;[a-zA-Z0-9 ]*&gt; (.*)&quot;, remove = FALSE) %&gt;%
+  select(-value)</code></pre>
+<p>When date is missing, it’s because it’s a <code>DMConversationEntry</code>.</p>
+<pre class="r"><code>res %&gt;% 
+  filter(user == &quot;DMConversationEntry&quot;) %&gt;%
+  summarize(nas = sum(is.na(date)), 
+            nrow = n())</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##     nas  nrow
+##   &lt;int&gt; &lt;int&gt;
+## 1    20    20</code></pre>
+<p>We fill this with the directly preceeding date:</p>
+<pre class="r"><code>res &lt;- fill(res, date)</code></pre>
+</div>
+<div id="save" class="section level3">
+<h3>Save</h3>
+<div id="global" class="section level4">
+<h4>Global</h4>
+<pre class="r"><code>write_csv(res, &quot;wikileaks_dm.csv&quot;)</code></pre>
+</div>
+<div id="year" class="section level4">
+<h4>Year</h4>
+<pre class="r"><code>range(res$date)</code></pre>
+<pre><code>## [1] &quot;2015-05-01 13:52:11&quot; &quot;2017-11-10 04:30:46&quot;</code></pre>
+<pre class="r"><code>walk(2015:2017, 
+    ~ filter(res, lubridate::year(date) == .x) %&gt;%
+    write_csv(glue::glue(&quot;{.x}.csv&quot;))
+    )</code></pre>
+</div>
+<div id="user" class="section level4">
+<h4>User</h4>
+<pre class="r"><code>walk(unique(res$user), 
+    ~ filter(res, user == .x) %&gt;%
+    write_csv(glue::glue(&quot;user_{make.names(.x)}.csv&quot;))
+    )</code></pre>
+</div>
+</div>
+</div>
+<div id="counting-users-participation" class="section level2">
+<h2>Counting users participation</h2>
+<pre class="r"><code>res %&gt;%
+  count(user, sort = TRUE) %&gt;%
+  write_csv(&quot;user_count.csv&quot;)</code></pre>
+</div>
+<div id="counting-activity-by-days" class="section level2">
+<h2>Counting activity by days</h2>
+<pre class="r"><code>res %&gt;%
+  mutate(date = lubridate::ymd_hms(date), 
+         date = lubridate::date(date)) %&gt;% 
+  count(date) %&gt;%
+  write_csv(&quot;daily.csv&quot;)</code></pre>
+</div>
+<div id="adding-extra-info" class="section level2">
+<h2>Adding extra info</h2>
+<pre class="r"><code>mentions &lt;- res %&gt;% 
+  mutate(mention = str_extract_all(text, &quot;@[a-zA-Z0-9_]+&quot;)) %&gt;%
+  unnest(mention) %&gt;% 
+  select(mention, everything())
+write_csv(mentions, &quot;mentions.csv&quot;)
+
+mentions %&gt;%
+  count(mention, sort = TRUE) %&gt;%
+  write_csv(&quot;mentions_count.csv&quot;)</code></pre>
+<pre class="r"><code>urls &lt;- res %&gt;% 
+  mutate(url = str_extract_all(text, &quot;http.+&quot;)) %&gt;%
+  unnest() %&gt;% 
+  select(url, everything())
+write_csv(urls, &quot;urls.csv&quot;)</code></pre>
+</div>
+<div id="adding-json-format" class="section level2">
+<h2>Adding JSON format</h2>
+<pre class="r"><code>list.files(pattern = &quot;csv&quot;) %&gt;%
+  walk(function(x) {
+    o &lt;- read_csv(x)
+    jsonlite::write_json(
+      o,
+      path = glue::glue(&quot;{tools::file_path_sans_ext(x)}.json&quot;)
+    )
+  })
+dir.create(&quot;json&quot;)
+list.files(pattern = &quot;json&quot;) %&gt;%
+  walk(function(x){
+    file.copy(x, glue::glue(&quot;json/{x}&quot;))
+    unlink(x)
+  })</code></pre>
+</div>
+
+
+<div class="ftr">
+<a href="https://colinfay.me">colinfay.me</a> • <a href="https://twitter.com/_ColinFay"><span class="citation">@_colinfay</span></a><br />
+</div>
+
+</div>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,823 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.11.1 by Michael Rose
+  Copyright 2013-2018 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Down the rabbit hole with tidy eval — Part 1 - Colin Fay</title>
+<meta name="description" content="Some random explanations about programming with tidy eval.What on earth is evaluation?So, let’s start with a simple question: what is evaluation? Evaluation is the process of analyzing an expression, in order to give the user something back. For example, in R, the standard evaluations is :  you type/send something to the console (called a symbol)  press enter  R does some magic stuffs  R returns you the value associated with the expressionFor example :# You type 1, the expression1# R evaluates 1, and returns you [1] 1a &lt;- 1# Here, the expression is a (a is the symbol)# Standard eval: when a symbol is evaluated, it return its valuea [1] 1Pretty clear isn’t it?Spoiler: the part about R doing magic stuffs wasn’t quite true. In fact, R takes the symbol you’ve entered (here a), turns it into and internal representation, then looks in the direct environment of the expression in order to return the value associated with it. If R doesn’t find the value in the environment the expression is linked to, it goes up to the parent env, then to the parent env, so on and so forth.This is R standard evaluation. The returned object is the value the symbol is linked to. Keep this in mind, you’ll need this later.Aside: about lazy evalutionAn R strength is lazy evaluation. These strange words mean that R only evaluates the expression if the expression is actually used. That’s why this kind of function works:lazy &lt;- function(a, b){  print(&quot;please take a nap&quot;)}lazy()[1] &quot;please take a nap&quot;lazy &lt;- function(a, b){  print(a)}lazy(&quot;please take a nap&quot;)[1] &quot;please take a nap&quot;Here in function 1, a and b are not evaluated in the environment of the function, so no error. In function 2, b is never called, so it’s not evaluated, and no error is thrown either. On the other hand, this doesn’t work:lazy &lt;- function(a, b){  print(a)  print(b)}lazy(&quot;please take a nap&quot;)[1] &quot;please take a nap&quot;Error in print(b) :   argument &quot;b&quot; is missing, with no defaultHere, you can see that it throws an error: b is needed. You can also notice that a is first evaluated, the strings are printed, and only then the missing b throws an error.About scopingQuick thing to keep in mind here, the notion of environment. Each expression is by default evaluated in its environment. Then if it’s missing, R goes up to its parent env, then to the parent env, etc.Each function defines its own environment, which can have its own rules (so basically its own rule for evaluation of a symbol). The env opened when the function is launched and closed when finished. That’s why you can’t directly access the object created inside a function :create &lt;- function(){  a &lt;- 1}create()a&gt; Error: could not find &#39;a&#39;# Special character to override this  create &lt;- function(){  a &lt;&lt;- 1}create()a[1] 1# But please DON&#39;T do that. Let’s focus: what about tidy eval?So, back to our original point. I’ve been diving into tidy eval lately as I’ve been contributing to {narnia}, a package designed to analyse missing data, the tidy way. The whole philosophy of the package being the tidyverse, I needed to contribute with the same philosophy in mind.So basically, I needed to create a function that took a df, the unquoted name x of a column, and dplyr::group_by with this column, and then ggplot::ggplot, with aes(x), the name of the column previously specified. Thing is, you can’t simply do :# Note : this is obviously not the function I was working on. This is an example.# # So you want to turn this into a function : library(tidyverse)iris %&gt;%   group_by(Species) %&gt;%   slice(5:10) %&gt;%   ggplot(aes(Species, Sepal.Length)) +   geom_point() # Let&#39;s try the simple waygg_top &lt;- function(df, col_group, col_plot){  df %&gt;%    group_by(col_group) %&gt;%     slice(5:10) %&gt;%     ggplot(aes(col_group, col_plot)) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)Error in grouped_df_impl(data, unname(vars), drop) :   Column `col_group` is unknownOK. Here R simply can’t find col_group. But where is this coming from? I did specified that col_group was equal to Species. Why is it looking for col?Let’s try something else.# This works select(iris, Species)# So what if I want to reproduce it?# I can think of select_custom &lt;- function(df, col){  df[, col]}select_custom(df = iris, col = Species)&gt; Error in `[.data.frame`(df, , col) : could not find &#39;Species&#39; # But this works: select_custom(df = iris, col = &quot;Species&quot;)God damn, how is it that dplyr::select works with unquoted element, while select_custom needs a quoted string? That’s because :  select_custom uses the standard evaluation: R sees the symbol Species, and tries to evaluate the standard way — i.e. by looking in the environment of the function for the value of Species. It doesn’t find it, so throws an error.  When &quot;Species&quot; is quoted, R evaluates it for what it is: a string. So R doesn’t try to return a value from it.  dplyr::select creates an environment, which has a custom method of evaluation. This is why you can pass unquoted string there — R will not look computer the symbol looking for a value in the env.In each dplyr::function(df, var), every var is evaluated in the environment of the function, which have special way of computed symbols. In the case of filter, R looks for a column named var in df (in practice, that’s not exactly how it works, but you get the point).This explains the error being thrown earlier: group_by was looking for the col_group column inside our data.frame.Getting startedThen, the big question: how can we program with dplyr? How can we pass the unquoted Species arg from the function gg_top to our group_by, and Sepal.Length to the ggplot? Let’s start by breaking our problem into two parts: the dplyr, then the ggplot.So first, we need to create a function that takes a data.frame, makes a group_by on a column, then returns the slice(5:10). Basically something doing:iris %&gt;%  group_by(Species) %&gt;%  slice(5:10)# We could think of slicer &lt;- function(df, var){  df %&gt;%  group_by(var) %&gt;%  slice(5:10)}slicer(df = iris, var = Species)&gt; Error in grouped_df_impl(data, unname(vars), drop) :   Column `var` is unknownHere, you can see that R is looking for a var column. That’s because var is evaluated in the environment created by group_by, so looking for the column var in the iris df. So how to prevent that?We could think of:slicer(df = iris, var = &quot;Species&quot;)&gt; Error in grouped_df_impl(data, unname(vars), drop) :   Column `var` is unknownBut 1:  that’s not working (because group_by doesn’t take a string), 2: we don’t want to quote.So the thing is: dplyr functions work with a special type of objects, called quosure — this is how symbols are evaluated. You can create them with quo().quo(Species)&lt;quosure: global&gt;~Species# So is this going to work? slicer &lt;- function(df, var){  df %&gt;%  group_by(quo(var)) %&gt;%  slice(5:10)}slicer(df = iris, var = Species)Error in mutate_impl(.data, dots) :   Column `quo(var)` is of unsupported type quoted callNop! Obviously here, group_by(quo(var)) compute quo(var) as a quosure, so it does:quo(quo(var))&lt;quosure: frame&gt;~quo(var)Not what we’ve been looking for either. We need a way to prevent the symbol var from being evaluated the standard way, but evaluated with tidy eval. Good news, there’s a function for that — enquo(). This function :  Takes a symbol  quotes the R code supplied  captures the environment  returns a quosureThen, we need a way to tell group_by that we’ve taken care to the “quosurisation” (that’s not the real word, you know!). So… here comes !! (to be pronounced “Bang Bang” :) )slicer &lt;- function(df, var){  enquo_var &lt;- enquo(var)  df %&gt;%    # !! tells dplyr not to compute the object as a quosure  group_by(!!enquo_var) %&gt;%  slice(5:10)}# That works!slicer(df = iris, var = Species)[emoji party]the ggplot partSo now, we need to pass the col_group and col_plot into the ggplot call. We may be tempted to pass !!enquo_col_plot the same way we passed it through group_by. Thing is: tidy eval is not yet implemented in ggplot2 — so you can’t pass the enquo(var) to it.gg_top &lt;- function(df, col_group, col_plot){  enquo_col_group &lt;- enquo(col_group)  enquo_col_plot &lt;- enquo(col_plot)  df %&gt;%  group_by(!!enquo_col_group) %&gt;%    slice(5:10) %&gt;%     ggplot(aes(!!enquo_col_group, !!enquo_col_plot)) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)Error in (function (x)  : could not find &#39;enquo_var&#39; The trick is: you can use quo_name, which returns a character string with the name of the expression you’ve typed. Pass it to ggplot2::aes_string… and Voilà!gg_top &lt;- function(df, col_group, col_plot){  enquo_col_group &lt;- enquo(col_group)  enquo_col_plot &lt;- enquo(col_plot)    df %&gt;%  group_by(!!enquo_col_group) %&gt;%    slice(5:10) %&gt;%     ggplot(aes_string(quo_name(enquo_col_group), quo_name(enquo_col_plot))) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)[emoji party]^2Sorry, that was quite a long post.. I hope it has enlightened some dark side of the tidyverse :)Coming soon: more on tidy eval, environment, and computing on the R language.">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Colin Fay">
+<meta property="og:title" content="Down the rabbit hole with tidy eval — Part 1">
+<meta property="og:url" content="http://localhost:4000/tidyeval-1/">
+
+
+  <meta property="og:description" content="Some random explanations about programming with tidy eval.What on earth is evaluation?So, let’s start with a simple question: what is evaluation? Evaluation is the process of analyzing an expression, in order to give the user something back. For example, in R, the standard evaluations is :  you type/send something to the console (called a symbol)  press enter  R does some magic stuffs  R returns you the value associated with the expressionFor example :# You type 1, the expression1# R evaluates 1, and returns you [1] 1a &lt;- 1# Here, the expression is a (a is the symbol)# Standard eval: when a symbol is evaluated, it return its valuea [1] 1Pretty clear isn’t it?Spoiler: the part about R doing magic stuffs wasn’t quite true. In fact, R takes the symbol you’ve entered (here a), turns it into and internal representation, then looks in the direct environment of the expression in order to return the value associated with it. If R doesn’t find the value in the environment the expression is linked to, it goes up to the parent env, then to the parent env, so on and so forth.This is R standard evaluation. The returned object is the value the symbol is linked to. Keep this in mind, you’ll need this later.Aside: about lazy evalutionAn R strength is lazy evaluation. These strange words mean that R only evaluates the expression if the expression is actually used. That’s why this kind of function works:lazy &lt;- function(a, b){  print(&quot;please take a nap&quot;)}lazy()[1] &quot;please take a nap&quot;lazy &lt;- function(a, b){  print(a)}lazy(&quot;please take a nap&quot;)[1] &quot;please take a nap&quot;Here in function 1, a and b are not evaluated in the environment of the function, so no error. In function 2, b is never called, so it’s not evaluated, and no error is thrown either. On the other hand, this doesn’t work:lazy &lt;- function(a, b){  print(a)  print(b)}lazy(&quot;please take a nap&quot;)[1] &quot;please take a nap&quot;Error in print(b) :   argument &quot;b&quot; is missing, with no defaultHere, you can see that it throws an error: b is needed. You can also notice that a is first evaluated, the strings are printed, and only then the missing b throws an error.About scopingQuick thing to keep in mind here, the notion of environment. Each expression is by default evaluated in its environment. Then if it’s missing, R goes up to its parent env, then to the parent env, etc.Each function defines its own environment, which can have its own rules (so basically its own rule for evaluation of a symbol). The env opened when the function is launched and closed when finished. That’s why you can’t directly access the object created inside a function :create &lt;- function(){  a &lt;- 1}create()a&gt; Error: could not find &#39;a&#39;# Special character to override this  create &lt;- function(){  a &lt;&lt;- 1}create()a[1] 1# But please DON&#39;T do that. Let’s focus: what about tidy eval?So, back to our original point. I’ve been diving into tidy eval lately as I’ve been contributing to {narnia}, a package designed to analyse missing data, the tidy way. The whole philosophy of the package being the tidyverse, I needed to contribute with the same philosophy in mind.So basically, I needed to create a function that took a df, the unquoted name x of a column, and dplyr::group_by with this column, and then ggplot::ggplot, with aes(x), the name of the column previously specified. Thing is, you can’t simply do :# Note : this is obviously not the function I was working on. This is an example.# # So you want to turn this into a function : library(tidyverse)iris %&gt;%   group_by(Species) %&gt;%   slice(5:10) %&gt;%   ggplot(aes(Species, Sepal.Length)) +   geom_point() # Let&#39;s try the simple waygg_top &lt;- function(df, col_group, col_plot){  df %&gt;%    group_by(col_group) %&gt;%     slice(5:10) %&gt;%     ggplot(aes(col_group, col_plot)) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)Error in grouped_df_impl(data, unname(vars), drop) :   Column `col_group` is unknownOK. Here R simply can’t find col_group. But where is this coming from? I did specified that col_group was equal to Species. Why is it looking for col?Let’s try something else.# This works select(iris, Species)# So what if I want to reproduce it?# I can think of select_custom &lt;- function(df, col){  df[, col]}select_custom(df = iris, col = Species)&gt; Error in `[.data.frame`(df, , col) : could not find &#39;Species&#39; # But this works: select_custom(df = iris, col = &quot;Species&quot;)God damn, how is it that dplyr::select works with unquoted element, while select_custom needs a quoted string? That’s because :  select_custom uses the standard evaluation: R sees the symbol Species, and tries to evaluate the standard way — i.e. by looking in the environment of the function for the value of Species. It doesn’t find it, so throws an error.  When &quot;Species&quot; is quoted, R evaluates it for what it is: a string. So R doesn’t try to return a value from it.  dplyr::select creates an environment, which has a custom method of evaluation. This is why you can pass unquoted string there — R will not look computer the symbol looking for a value in the env.In each dplyr::function(df, var), every var is evaluated in the environment of the function, which have special way of computed symbols. In the case of filter, R looks for a column named var in df (in practice, that’s not exactly how it works, but you get the point).This explains the error being thrown earlier: group_by was looking for the col_group column inside our data.frame.Getting startedThen, the big question: how can we program with dplyr? How can we pass the unquoted Species arg from the function gg_top to our group_by, and Sepal.Length to the ggplot? Let’s start by breaking our problem into two parts: the dplyr, then the ggplot.So first, we need to create a function that takes a data.frame, makes a group_by on a column, then returns the slice(5:10). Basically something doing:iris %&gt;%  group_by(Species) %&gt;%  slice(5:10)# We could think of slicer &lt;- function(df, var){  df %&gt;%  group_by(var) %&gt;%  slice(5:10)}slicer(df = iris, var = Species)&gt; Error in grouped_df_impl(data, unname(vars), drop) :   Column `var` is unknownHere, you can see that R is looking for a var column. That’s because var is evaluated in the environment created by group_by, so looking for the column var in the iris df. So how to prevent that?We could think of:slicer(df = iris, var = &quot;Species&quot;)&gt; Error in grouped_df_impl(data, unname(vars), drop) :   Column `var` is unknownBut 1:  that’s not working (because group_by doesn’t take a string), 2: we don’t want to quote.So the thing is: dplyr functions work with a special type of objects, called quosure — this is how symbols are evaluated. You can create them with quo().quo(Species)&lt;quosure: global&gt;~Species# So is this going to work? slicer &lt;- function(df, var){  df %&gt;%  group_by(quo(var)) %&gt;%  slice(5:10)}slicer(df = iris, var = Species)Error in mutate_impl(.data, dots) :   Column `quo(var)` is of unsupported type quoted callNop! Obviously here, group_by(quo(var)) compute quo(var) as a quosure, so it does:quo(quo(var))&lt;quosure: frame&gt;~quo(var)Not what we’ve been looking for either. We need a way to prevent the symbol var from being evaluated the standard way, but evaluated with tidy eval. Good news, there’s a function for that — enquo(). This function :  Takes a symbol  quotes the R code supplied  captures the environment  returns a quosureThen, we need a way to tell group_by that we’ve taken care to the “quosurisation” (that’s not the real word, you know!). So… here comes !! (to be pronounced “Bang Bang” :) )slicer &lt;- function(df, var){  enquo_var &lt;- enquo(var)  df %&gt;%    # !! tells dplyr not to compute the object as a quosure  group_by(!!enquo_var) %&gt;%  slice(5:10)}# That works!slicer(df = iris, var = Species)[emoji party]the ggplot partSo now, we need to pass the col_group and col_plot into the ggplot call. We may be tempted to pass !!enquo_col_plot the same way we passed it through group_by. Thing is: tidy eval is not yet implemented in ggplot2 — so you can’t pass the enquo(var) to it.gg_top &lt;- function(df, col_group, col_plot){  enquo_col_group &lt;- enquo(col_group)  enquo_col_plot &lt;- enquo(col_plot)  df %&gt;%  group_by(!!enquo_col_group) %&gt;%    slice(5:10) %&gt;%     ggplot(aes(!!enquo_col_group, !!enquo_col_plot)) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)Error in (function (x)  : could not find &#39;enquo_var&#39; The trick is: you can use quo_name, which returns a character string with the name of the expression you’ve typed. Pass it to ggplot2::aes_string… and Voilà!gg_top &lt;- function(df, col_group, col_plot){  enquo_col_group &lt;- enquo(col_group)  enquo_col_plot &lt;- enquo(col_plot)    df %&gt;%  group_by(!!enquo_col_group) %&gt;%    slice(5:10) %&gt;%     ggplot(aes_string(quo_name(enquo_col_group), quo_name(enquo_col_plot))) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)[emoji party]^2Sorry, that was quite a long post.. I hope it has enlightened some dark side of the tidyverse :)Coming soon: more on tidy eval, environment, and computing on the R language.">
+
+
+
+  <meta property="og:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+
+
+
+  <meta name="twitter:site" content="@_ColinFay">
+  <meta name="twitter:title" content="Down the rabbit hole with tidy eval — Part 1">
+  <meta name="twitter:description" content="Some random explanations about programming with tidy eval.What on earth is evaluation?So, let’s start with a simple question: what is evaluation? Evaluation is the process of analyzing an expression, in order to give the user something back. For example, in R, the standard evaluations is :  you type/send something to the console (called a symbol)  press enter  R does some magic stuffs  R returns you the value associated with the expressionFor example :# You type 1, the expression1# R evaluates 1, and returns you [1] 1a &lt;- 1# Here, the expression is a (a is the symbol)# Standard eval: when a symbol is evaluated, it return its valuea [1] 1Pretty clear isn’t it?Spoiler: the part about R doing magic stuffs wasn’t quite true. In fact, R takes the symbol you’ve entered (here a), turns it into and internal representation, then looks in the direct environment of the expression in order to return the value associated with it. If R doesn’t find the value in the environment the expression is linked to, it goes up to the parent env, then to the parent env, so on and so forth.This is R standard evaluation. The returned object is the value the symbol is linked to. Keep this in mind, you’ll need this later.Aside: about lazy evalutionAn R strength is lazy evaluation. These strange words mean that R only evaluates the expression if the expression is actually used. That’s why this kind of function works:lazy &lt;- function(a, b){  print(&quot;please take a nap&quot;)}lazy()[1] &quot;please take a nap&quot;lazy &lt;- function(a, b){  print(a)}lazy(&quot;please take a nap&quot;)[1] &quot;please take a nap&quot;Here in function 1, a and b are not evaluated in the environment of the function, so no error. In function 2, b is never called, so it’s not evaluated, and no error is thrown either. On the other hand, this doesn’t work:lazy &lt;- function(a, b){  print(a)  print(b)}lazy(&quot;please take a nap&quot;)[1] &quot;please take a nap&quot;Error in print(b) :   argument &quot;b&quot; is missing, with no defaultHere, you can see that it throws an error: b is needed. You can also notice that a is first evaluated, the strings are printed, and only then the missing b throws an error.About scopingQuick thing to keep in mind here, the notion of environment. Each expression is by default evaluated in its environment. Then if it’s missing, R goes up to its parent env, then to the parent env, etc.Each function defines its own environment, which can have its own rules (so basically its own rule for evaluation of a symbol). The env opened when the function is launched and closed when finished. That’s why you can’t directly access the object created inside a function :create &lt;- function(){  a &lt;- 1}create()a&gt; Error: could not find &#39;a&#39;# Special character to override this  create &lt;- function(){  a &lt;&lt;- 1}create()a[1] 1# But please DON&#39;T do that. Let’s focus: what about tidy eval?So, back to our original point. I’ve been diving into tidy eval lately as I’ve been contributing to {narnia}, a package designed to analyse missing data, the tidy way. The whole philosophy of the package being the tidyverse, I needed to contribute with the same philosophy in mind.So basically, I needed to create a function that took a df, the unquoted name x of a column, and dplyr::group_by with this column, and then ggplot::ggplot, with aes(x), the name of the column previously specified. Thing is, you can’t simply do :# Note : this is obviously not the function I was working on. This is an example.# # So you want to turn this into a function : library(tidyverse)iris %&gt;%   group_by(Species) %&gt;%   slice(5:10) %&gt;%   ggplot(aes(Species, Sepal.Length)) +   geom_point() # Let&#39;s try the simple waygg_top &lt;- function(df, col_group, col_plot){  df %&gt;%    group_by(col_group) %&gt;%     slice(5:10) %&gt;%     ggplot(aes(col_group, col_plot)) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)Error in grouped_df_impl(data, unname(vars), drop) :   Column `col_group` is unknownOK. Here R simply can’t find col_group. But where is this coming from? I did specified that col_group was equal to Species. Why is it looking for col?Let’s try something else.# This works select(iris, Species)# So what if I want to reproduce it?# I can think of select_custom &lt;- function(df, col){  df[, col]}select_custom(df = iris, col = Species)&gt; Error in `[.data.frame`(df, , col) : could not find &#39;Species&#39; # But this works: select_custom(df = iris, col = &quot;Species&quot;)God damn, how is it that dplyr::select works with unquoted element, while select_custom needs a quoted string? That’s because :  select_custom uses the standard evaluation: R sees the symbol Species, and tries to evaluate the standard way — i.e. by looking in the environment of the function for the value of Species. It doesn’t find it, so throws an error.  When &quot;Species&quot; is quoted, R evaluates it for what it is: a string. So R doesn’t try to return a value from it.  dplyr::select creates an environment, which has a custom method of evaluation. This is why you can pass unquoted string there — R will not look computer the symbol looking for a value in the env.In each dplyr::function(df, var), every var is evaluated in the environment of the function, which have special way of computed symbols. In the case of filter, R looks for a column named var in df (in practice, that’s not exactly how it works, but you get the point).This explains the error being thrown earlier: group_by was looking for the col_group column inside our data.frame.Getting startedThen, the big question: how can we program with dplyr? How can we pass the unquoted Species arg from the function gg_top to our group_by, and Sepal.Length to the ggplot? Let’s start by breaking our problem into two parts: the dplyr, then the ggplot.So first, we need to create a function that takes a data.frame, makes a group_by on a column, then returns the slice(5:10). Basically something doing:iris %&gt;%  group_by(Species) %&gt;%  slice(5:10)# We could think of slicer &lt;- function(df, var){  df %&gt;%  group_by(var) %&gt;%  slice(5:10)}slicer(df = iris, var = Species)&gt; Error in grouped_df_impl(data, unname(vars), drop) :   Column `var` is unknownHere, you can see that R is looking for a var column. That’s because var is evaluated in the environment created by group_by, so looking for the column var in the iris df. So how to prevent that?We could think of:slicer(df = iris, var = &quot;Species&quot;)&gt; Error in grouped_df_impl(data, unname(vars), drop) :   Column `var` is unknownBut 1:  that’s not working (because group_by doesn’t take a string), 2: we don’t want to quote.So the thing is: dplyr functions work with a special type of objects, called quosure — this is how symbols are evaluated. You can create them with quo().quo(Species)&lt;quosure: global&gt;~Species# So is this going to work? slicer &lt;- function(df, var){  df %&gt;%  group_by(quo(var)) %&gt;%  slice(5:10)}slicer(df = iris, var = Species)Error in mutate_impl(.data, dots) :   Column `quo(var)` is of unsupported type quoted callNop! Obviously here, group_by(quo(var)) compute quo(var) as a quosure, so it does:quo(quo(var))&lt;quosure: frame&gt;~quo(var)Not what we’ve been looking for either. We need a way to prevent the symbol var from being evaluated the standard way, but evaluated with tidy eval. Good news, there’s a function for that — enquo(). This function :  Takes a symbol  quotes the R code supplied  captures the environment  returns a quosureThen, we need a way to tell group_by that we’ve taken care to the “quosurisation” (that’s not the real word, you know!). So… here comes !! (to be pronounced “Bang Bang” :) )slicer &lt;- function(df, var){  enquo_var &lt;- enquo(var)  df %&gt;%    # !! tells dplyr not to compute the object as a quosure  group_by(!!enquo_var) %&gt;%  slice(5:10)}# That works!slicer(df = iris, var = Species)[emoji party]the ggplot partSo now, we need to pass the col_group and col_plot into the ggplot call. We may be tempted to pass !!enquo_col_plot the same way we passed it through group_by. Thing is: tidy eval is not yet implemented in ggplot2 — so you can’t pass the enquo(var) to it.gg_top &lt;- function(df, col_group, col_plot){  enquo_col_group &lt;- enquo(col_group)  enquo_col_plot &lt;- enquo(col_plot)  df %&gt;%  group_by(!!enquo_col_group) %&gt;%    slice(5:10) %&gt;%     ggplot(aes(!!enquo_col_group, !!enquo_col_plot)) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)Error in (function (x)  : could not find &#39;enquo_var&#39; The trick is: you can use quo_name, which returns a character string with the name of the expression you’ve typed. Pass it to ggplot2::aes_string… and Voilà!gg_top &lt;- function(df, col_group, col_plot){  enquo_col_group &lt;- enquo(col_group)  enquo_col_plot &lt;- enquo(col_plot)    df %&gt;%  group_by(!!enquo_col_group) %&gt;%    slice(5:10) %&gt;%     ggplot(aes_string(quo_name(enquo_col_group), quo_name(enquo_col_plot))) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)[emoji party]^2Sorry, that was quite a long post.. I hope it has enlightened some dark side of the tidyverse :)Coming soon: more on tidy eval, environment, and computing on the R language.">
+  <meta name="twitter:url" content="http://localhost:4000/tidyeval-1/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:image" content="https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500">
+    
+  
+
+  
+
+
+
+  <meta property="article:published_time" content="2017-07-14T00:00:00+02:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/tidyeval-1/">
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "http://localhost:4000",
+      "logo": "https://pbs.twimg.com/profile_banners/84618490/1545734426/1500x500"
+    }
+  </script>
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Colin Fay",
+      "url": "http://localhost:4000",
+      "sameAs": null
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Colin Fay Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/concrete.css">
+<link rel="stylesheet" href="/assets/css/normalize.css">
+<link rel="stylesheet" href="/assets/css/github.css">
+
+<script type="text/javascript" src=" "></script>
+
+<!--[if lte IE 9]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  
+    <div class="author__avatar">
+      
+
+      
+        <img src="https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" alt="Colin FAY" itemprop="image">
+      
+    </div>
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name">Colin FAY</h3>
+    
+    
+      <p class="author__bio" itemprop="description">
+        Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team.
+      </p>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse"><i class = 'fas fa-bars'></i></button>
+    <ul class="author__urls social-icons">
+      <p><b>Navigation:</b></p>
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+<li>
+  <a href="/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Home
+  </a>
+</li>
+<li>
+  <a href="/categories/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Blog
+  </a>
+</li>
+<li>
+  <a href="/about/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> About
+  </a>
+</li>
+<li>
+  <a href="/talks-publications/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Talks & Publications
+  </a>
+</li>
+<li>
+  <a href="/open-source/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Open Source
+  </a>
+</li>
+<li>
+  <a href="/search/">
+    <i class="fa fa-arrow-right" aria-hidden="true"></i> Search
+  </a>
+</li>
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Down the rabbit hole with tidy eval — Part 1">
+    <meta itemprop="description" content="Some random explanations about programming with tidy eval.What on earth is evaluation?So, let’s start with a simple question: what is evaluation? Evaluation is the process of analyzing an expression, in order to give the user something back. For example, in R, the standard evaluations is :  you type/send something to the console (called a symbol)  press enter  R does some magic stuffs  R returns you the value associated with the expressionFor example :# You type 1, the expression1# R evaluates 1, and returns you [1] 1a &lt;- 1# Here, the expression is a (a is the symbol)# Standard eval: when a symbol is evaluated, it return its valuea [1] 1Pretty clear isn’t it?Spoiler: the part about R doing magic stuffs wasn’t quite true. In fact, R takes the symbol you’ve entered (here a), turns it into and internal representation, then looks in the direct environment of the expression in order to return the value associated with it. If R doesn’t find the value in the environment the expression is linked to, it goes up to the parent env, then to the parent env, so on and so forth.This is R standard evaluation. The returned object is the value the symbol is linked to. Keep this in mind, you’ll need this later.Aside: about lazy evalutionAn R strength is lazy evaluation. These strange words mean that R only evaluates the expression if the expression is actually used. That’s why this kind of function works:lazy &lt;- function(a, b){  print(&quot;please take a nap&quot;)}lazy()[1] &quot;please take a nap&quot;lazy &lt;- function(a, b){  print(a)}lazy(&quot;please take a nap&quot;)[1] &quot;please take a nap&quot;Here in function 1, a and b are not evaluated in the environment of the function, so no error. In function 2, b is never called, so it’s not evaluated, and no error is thrown either. On the other hand, this doesn’t work:lazy &lt;- function(a, b){  print(a)  print(b)}lazy(&quot;please take a nap&quot;)[1] &quot;please take a nap&quot;Error in print(b) :   argument &quot;b&quot; is missing, with no defaultHere, you can see that it throws an error: b is needed. You can also notice that a is first evaluated, the strings are printed, and only then the missing b throws an error.About scopingQuick thing to keep in mind here, the notion of environment. Each expression is by default evaluated in its environment. Then if it’s missing, R goes up to its parent env, then to the parent env, etc.Each function defines its own environment, which can have its own rules (so basically its own rule for evaluation of a symbol). The env opened when the function is launched and closed when finished. That’s why you can’t directly access the object created inside a function :create &lt;- function(){  a &lt;- 1}create()a&gt; Error: could not find &#39;a&#39;# Special character to override this  create &lt;- function(){  a &lt;&lt;- 1}create()a[1] 1# But please DON&#39;T do that. Let’s focus: what about tidy eval?So, back to our original point. I’ve been diving into tidy eval lately as I’ve been contributing to {narnia}, a package designed to analyse missing data, the tidy way. The whole philosophy of the package being the tidyverse, I needed to contribute with the same philosophy in mind.So basically, I needed to create a function that took a df, the unquoted name x of a column, and dplyr::group_by with this column, and then ggplot::ggplot, with aes(x), the name of the column previously specified. Thing is, you can’t simply do :# Note : this is obviously not the function I was working on. This is an example.# # So you want to turn this into a function : library(tidyverse)iris %&gt;%   group_by(Species) %&gt;%   slice(5:10) %&gt;%   ggplot(aes(Species, Sepal.Length)) +   geom_point() # Let&#39;s try the simple waygg_top &lt;- function(df, col_group, col_plot){  df %&gt;%    group_by(col_group) %&gt;%     slice(5:10) %&gt;%     ggplot(aes(col_group, col_plot)) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)Error in grouped_df_impl(data, unname(vars), drop) :   Column `col_group` is unknownOK. Here R simply can’t find col_group. But where is this coming from? I did specified that col_group was equal to Species. Why is it looking for col?Let’s try something else.# This works select(iris, Species)# So what if I want to reproduce it?# I can think of select_custom &lt;- function(df, col){  df[, col]}select_custom(df = iris, col = Species)&gt; Error in `[.data.frame`(df, , col) : could not find &#39;Species&#39; # But this works: select_custom(df = iris, col = &quot;Species&quot;)God damn, how is it that dplyr::select works with unquoted element, while select_custom needs a quoted string? That’s because :  select_custom uses the standard evaluation: R sees the symbol Species, and tries to evaluate the standard way — i.e. by looking in the environment of the function for the value of Species. It doesn’t find it, so throws an error.  When &quot;Species&quot; is quoted, R evaluates it for what it is: a string. So R doesn’t try to return a value from it.  dplyr::select creates an environment, which has a custom method of evaluation. This is why you can pass unquoted string there — R will not look computer the symbol looking for a value in the env.In each dplyr::function(df, var), every var is evaluated in the environment of the function, which have special way of computed symbols. In the case of filter, R looks for a column named var in df (in practice, that’s not exactly how it works, but you get the point).This explains the error being thrown earlier: group_by was looking for the col_group column inside our data.frame.Getting startedThen, the big question: how can we program with dplyr? How can we pass the unquoted Species arg from the function gg_top to our group_by, and Sepal.Length to the ggplot? Let’s start by breaking our problem into two parts: the dplyr, then the ggplot.So first, we need to create a function that takes a data.frame, makes a group_by on a column, then returns the slice(5:10). Basically something doing:iris %&gt;%  group_by(Species) %&gt;%  slice(5:10)# We could think of slicer &lt;- function(df, var){  df %&gt;%  group_by(var) %&gt;%  slice(5:10)}slicer(df = iris, var = Species)&gt; Error in grouped_df_impl(data, unname(vars), drop) :   Column `var` is unknownHere, you can see that R is looking for a var column. That’s because var is evaluated in the environment created by group_by, so looking for the column var in the iris df. So how to prevent that?We could think of:slicer(df = iris, var = &quot;Species&quot;)&gt; Error in grouped_df_impl(data, unname(vars), drop) :   Column `var` is unknownBut 1:  that’s not working (because group_by doesn’t take a string), 2: we don’t want to quote.So the thing is: dplyr functions work with a special type of objects, called quosure — this is how symbols are evaluated. You can create them with quo().quo(Species)&lt;quosure: global&gt;~Species# So is this going to work? slicer &lt;- function(df, var){  df %&gt;%  group_by(quo(var)) %&gt;%  slice(5:10)}slicer(df = iris, var = Species)Error in mutate_impl(.data, dots) :   Column `quo(var)` is of unsupported type quoted callNop! Obviously here, group_by(quo(var)) compute quo(var) as a quosure, so it does:quo(quo(var))&lt;quosure: frame&gt;~quo(var)Not what we’ve been looking for either. We need a way to prevent the symbol var from being evaluated the standard way, but evaluated with tidy eval. Good news, there’s a function for that — enquo(). This function :  Takes a symbol  quotes the R code supplied  captures the environment  returns a quosureThen, we need a way to tell group_by that we’ve taken care to the “quosurisation” (that’s not the real word, you know!). So… here comes !! (to be pronounced “Bang Bang” :) )slicer &lt;- function(df, var){  enquo_var &lt;- enquo(var)  df %&gt;%    # !! tells dplyr not to compute the object as a quosure  group_by(!!enquo_var) %&gt;%  slice(5:10)}# That works!slicer(df = iris, var = Species)[emoji party]the ggplot partSo now, we need to pass the col_group and col_plot into the ggplot call. We may be tempted to pass !!enquo_col_plot the same way we passed it through group_by. Thing is: tidy eval is not yet implemented in ggplot2 — so you can’t pass the enquo(var) to it.gg_top &lt;- function(df, col_group, col_plot){  enquo_col_group &lt;- enquo(col_group)  enquo_col_plot &lt;- enquo(col_plot)  df %&gt;%  group_by(!!enquo_col_group) %&gt;%    slice(5:10) %&gt;%     ggplot(aes(!!enquo_col_group, !!enquo_col_plot)) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)Error in (function (x)  : could not find &#39;enquo_var&#39; The trick is: you can use quo_name, which returns a character string with the name of the expression you’ve typed. Pass it to ggplot2::aes_string… and Voilà!gg_top &lt;- function(df, col_group, col_plot){  enquo_col_group &lt;- enquo(col_group)  enquo_col_plot &lt;- enquo(col_plot)    df %&gt;%  group_by(!!enquo_col_group) %&gt;%    slice(5:10) %&gt;%     ggplot(aes_string(quo_name(enquo_col_group), quo_name(enquo_col_plot))) +     geom_point()  }gg_top(df = iris, col_group = Species, col_plot = Sepal.Length)[emoji party]^2Sorry, that was quite a long post.. I hope it has enlightened some dark side of the tidyverse :)Coming soon: more on tidy eval, environment, and computing on the R language.">
+    <meta itemprop="datePublished" content="July 14, 2017">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Down the rabbit hole with tidy eval — Part 1
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  7 minute(s) read
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>Some random explanations about programming with tidy eval.</p>
+
+<h2 id="what-on-earth-is-evaluation">What on earth is evaluation?</h2>
+
+<p>So, let’s start with a simple question: what is evaluation? Evaluation is the process of analyzing an expression, in order to give the user something back. For example, in R, the standard evaluations is :</p>
+
+<ul>
+  <li>you type/send something to the console (called a symbol)</li>
+  <li>press enter</li>
+  <li>R does some magic stuffs</li>
+  <li>R returns you the value associated with the expression</li>
+</ul>
+
+<p>For example :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># You type 1, the expression</span><span class="w">
+</span><span class="m">1</span><span class="w">
+</span><span class="c1"># R evaluates 1, and returns you </span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">1</span><span class="w">
+
+</span><span class="n">a</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="c1"># Here, the expression is a (a is the symbol)</span><span class="w">
+</span><span class="c1"># Standard eval: when a symbol is evaluated, it return its value</span><span class="w">
+</span><span class="n">a</span><span class="w"> 
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Pretty clear isn’t it?</p>
+
+<p>Spoiler: the part about R doing magic stuffs wasn’t quite true. In fact, R takes the symbol you’ve entered (here <code class="highlighter-rouge">a</code>), turns it into and internal representation, then looks in the <strong>direct environment</strong> of the expression in order to <strong>return the value</strong> associated with it. If R doesn’t find the value in the environment the expression is linked to, it goes up to the parent env, then to the parent env, so on and so forth.</p>
+
+<p>This is R standard evaluation. The returned object is the value the symbol is linked to. Keep this in mind, you’ll need this later.</p>
+
+<h2 id="aside-about-lazy-evalution">Aside: about lazy evalution</h2>
+
+<p>An R strength is <em>lazy evaluation</em>. These strange words mean that R only evaluates the expression if the expression is actually used. That’s why this kind of function works:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lazy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">){</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="s2">"please take a nap"</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">lazy</span><span class="p">()</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"please take a nap"</span><span class="w">
+
+</span><span class="n">lazy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">){</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">lazy</span><span class="p">(</span><span class="s2">"please take a nap"</span><span class="p">)</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"please take a nap"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here in function 1, <code class="highlighter-rouge">a</code> and <code class="highlighter-rouge">b</code> are not evaluated in the environment of the function, so no error. In function 2, <code class="highlighter-rouge">b</code> is never called, so it’s not evaluated, and no error is thrown either. On the other hand, this doesn’t work:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lazy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">){</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w">
+  </span><span class="n">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">lazy</span><span class="p">(</span><span class="s2">"please take a nap"</span><span class="p">)</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="s2">"please take a nap"</span><span class="w">
+</span><span class="n">Error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> 
+  </span><span class="n">argument</span><span class="w"> </span><span class="s2">"b"</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">missing</span><span class="p">,</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">default</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here, you can see that it throws an error: <code class="highlighter-rouge">b</code> is needed. You can also notice that <code class="highlighter-rouge">a</code> is first evaluated, the strings are printed, and only then the missing <code class="highlighter-rouge">b</code> throws an error.</p>
+
+<h2 id="about-scoping">About scoping</h2>
+
+<p>Quick thing to keep in mind here, the notion of environment. Each expression is by default evaluated in its environment. Then if it’s missing, R goes up to its parent env, then to the parent env, etc.</p>
+
+<p><strong>Each function defines its own environment</strong>, which can have its own rules (so basically its own rule for evaluation of a symbol). The env opened when the function is launched and closed when finished. That’s why you can’t directly access the object created inside a function :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(){</span><span class="w">
+  </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">create</span><span class="p">()</span><span class="w">
+</span><span class="n">a</span><span class="w">
+</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Error</span><span class="o">:</span><span class="w"> </span><span class="n">could</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="s1">'a'</span><span class="w">
+
+</span><span class="c1"># Special character to override this  </span><span class="w">
+
+</span><span class="n">create</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(){</span><span class="w">
+  </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">create</span><span class="p">()</span><span class="w">
+</span><span class="n">a</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">1</span><span class="w">
+
+</span><span class="c1"># But please DON'T do that. </span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="lets-focus-what-about-tidy-eval">Let’s focus: what about tidy eval?</h2>
+
+<p>So, back to our original point. I’ve been diving into tidy eval lately as I’ve been contributing to <a href="https://github.com/njtierney/narnia">{narnia}</a>, a package designed to analyse missing data, the tidy way. The whole philosophy of the package being the tidyverse, I needed to contribute with the same philosophy in mind.</p>
+
+<p>So basically, I needed to create a function that took a <code class="highlighter-rouge">df</code>, the unquoted name <code class="highlighter-rouge">x</code> of a column, and <code class="highlighter-rouge">dplyr::group_by</code> with this column, and then <code class="highlighter-rouge">ggplot::ggplot</code>, with <code class="highlighter-rouge">aes(x)</code>, the name of the column previously specified. Thing is, you can’t simply do :</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Note : this is obviously not the function I was working on. This is an example.</span><span class="w">
+</span><span class="c1"># </span><span class="w">
+</span><span class="c1"># So you want to turn this into a function : </span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">iris</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">Species</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">slice</span><span class="p">(</span><span class="m">5</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">Sepal.Length</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> 
+
+</span><span class="c1"># Let's try the simple way</span><span class="w">
+
+</span><span class="n">gg_top</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">col_group</span><span class="p">,</span><span class="w"> </span><span class="n">col_plot</span><span class="p">){</span><span class="w">
+  </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">group_by</span><span class="p">(</span><span class="n">col_group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">slice</span><span class="p">(</span><span class="m">5</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">col_group</span><span class="p">,</span><span class="w"> </span><span class="n">col_plot</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+    </span><span class="n">geom_point</span><span class="p">()</span><span class="w">  
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">gg_top</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">col_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">col_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Sepal.Length</span><span class="p">)</span><span class="w">
+
+</span><span class="n">Error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">grouped_df_impl</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">unname</span><span class="p">(</span><span class="n">vars</span><span class="p">),</span><span class="w"> </span><span class="n">drop</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> 
+  </span><span class="n">Column</span><span class="w"> </span><span class="n">`col_group`</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">unknown</span><span class="w">
+</span></code></pre></div></div>
+
+<p>OK. Here R simply can’t find <code class="highlighter-rouge">col_group</code>. But where is this coming from? I did specified that <code class="highlighter-rouge">col_group</code> was equal to <code class="highlighter-rouge">Species</code>. Why is it looking for <code class="highlighter-rouge">col</code>?</p>
+
+<p>Let’s try something else.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># This works </span><span class="w">
+</span><span class="n">select</span><span class="p">(</span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">Species</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># So what if I want to reproduce it?</span><span class="w">
+</span><span class="c1"># I can think of </span><span class="w">
+
+</span><span class="n">select_custom</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="p">){</span><span class="w">
+  </span><span class="n">df</span><span class="p">[,</span><span class="w"> </span><span class="n">col</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">select_custom</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">)</span><span class="w">
+</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">`[.data.frame`</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">could</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="s1">'Species'</span><span class="w"> 
+
+</span><span class="c1"># But this works: </span><span class="w">
+</span><span class="n">select_custom</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Species"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>God damn, how is it that <code class="highlighter-rouge">dplyr::select</code> works with unquoted element, while <code class="highlighter-rouge">select_custom</code> needs a quoted string? That’s because :</p>
+
+<ul>
+  <li><code class="highlighter-rouge">select_custom</code> uses the standard evaluation: R sees the symbol <code class="highlighter-rouge">Species</code>, and tries to evaluate the standard way — i.e. by looking in the environment of the function for the value of <code class="highlighter-rouge">Species</code>. It doesn’t find it, so throws an error.</li>
+  <li>When <code class="highlighter-rouge">"Species"</code> is quoted, R evaluates it for what it is: a string. So R doesn’t try to return a value from it.</li>
+  <li><code class="highlighter-rouge">dplyr::select</code> creates an environment, which has a custom method of evaluation. This is why you can pass unquoted string there — R will not look computer the symbol looking for a value in the env.</li>
+</ul>
+
+<p>In each <code class="highlighter-rouge">dplyr::function(df, var)</code>, every <code class="highlighter-rouge">var</code> is evaluated in the environment of the function, which have special way of computed symbols. In the case of <code class="highlighter-rouge">filter</code>, R looks for a column named <code class="highlighter-rouge">var</code> in <code class="highlighter-rouge">df</code> (in practice, that’s not exactly how it works, but you get the point).</p>
+
+<p>This explains the error being thrown earlier: <code class="highlighter-rouge">group_by</code> was looking for the <code class="highlighter-rouge">col_group</code> column inside our data.frame.</p>
+
+<h2 id="getting-started">Getting started</h2>
+
+<p>Then, the big question: how can we program with dplyr? How can we pass the unquoted <code class="highlighter-rouge">Species</code> arg from the function <code class="highlighter-rouge">gg_top</code> to our <code class="highlighter-rouge">group_by</code>, and <code class="highlighter-rouge">Sepal.Length</code> to the <code class="highlighter-rouge">ggplot</code>? Let’s start by breaking our problem into two parts: the <code class="highlighter-rouge">dplyr</code>, then the <code class="highlighter-rouge">ggplot</code>.</p>
+
+<p>So first, we need to create a function that takes a data.frame, makes a <code class="highlighter-rouge">group_by</code> on a column, then returns the <code class="highlighter-rouge">slice(5:10)</code>. Basically something doing:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iris</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">Species</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">slice</span><span class="p">(</span><span class="m">5</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># We could think of </span><span class="w">
+</span><span class="n">slicer</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="p">){</span><span class="w">
+  </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">slice</span><span class="p">(</span><span class="m">5</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">slicer</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">)</span><span class="w">
+
+</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">grouped_df_impl</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">unname</span><span class="p">(</span><span class="n">vars</span><span class="p">),</span><span class="w"> </span><span class="n">drop</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> 
+  </span><span class="n">Column</span><span class="w"> </span><span class="n">`var`</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">unknown</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here, you can see that R is looking for a <code class="highlighter-rouge">var</code> column. That’s because <code class="highlighter-rouge">var</code> is <strong>evaluated in the environment created by <code class="highlighter-rouge">group_by</code></strong>, so looking for the column <code class="highlighter-rouge">var</code> in the <code class="highlighter-rouge">iris</code> df. So how to prevent that?</p>
+
+<p>We could think of:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">slicer</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Species"</span><span class="p">)</span><span class="w">
+
+</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">grouped_df_impl</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">unname</span><span class="p">(</span><span class="n">vars</span><span class="p">),</span><span class="w"> </span><span class="n">drop</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> 
+  </span><span class="n">Column</span><span class="w"> </span><span class="n">`var`</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">unknown</span><span class="w">
+</span></code></pre></div></div>
+
+<p>But 1:  that’s not working (because <code class="highlighter-rouge">group_by</code> doesn’t take a string), 2: we don’t want to quote.</p>
+
+<p>So the thing is: <code class="highlighter-rouge">dplyr</code> functions work with a special type of objects, called <code class="highlighter-rouge">quosure</code> — this is how symbols are evaluated. You can create them with <code class="highlighter-rouge">quo()</code>.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">quo</span><span class="p">(</span><span class="n">Species</span><span class="p">)</span><span class="w">
+</span><span class="o">&lt;</span><span class="n">quosure</span><span class="o">:</span><span class="w"> </span><span class="n">global</span><span class="o">&gt;</span><span class="w">
+</span><span class="o">~</span><span class="n">Species</span><span class="w">
+
+</span><span class="c1"># So is this going to work? </span><span class="w">
+</span><span class="n">slicer</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="p">){</span><span class="w">
+  </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="n">quo</span><span class="p">(</span><span class="n">var</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">slice</span><span class="p">(</span><span class="m">5</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">slicer</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">)</span><span class="w">
+</span><span class="n">Error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">mutate_impl</span><span class="p">(</span><span class="n">.data</span><span class="p">,</span><span class="w"> </span><span class="n">dots</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> 
+  </span><span class="n">Column</span><span class="w"> </span><span class="n">`quo(var)`</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">unsupported</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="n">quoted</span><span class="w"> </span><span class="n">call</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Nop! Obviously here, <code class="highlighter-rouge">group_by(quo(var))</code> compute <code class="highlighter-rouge">quo(var)</code> as a quosure, so it does:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">quo</span><span class="p">(</span><span class="n">quo</span><span class="p">(</span><span class="n">var</span><span class="p">))</span><span class="w">
+</span><span class="o">&lt;</span><span class="n">quosure</span><span class="o">:</span><span class="w"> </span><span class="n">frame</span><span class="o">&gt;</span><span class="w">
+</span><span class="o">~</span><span class="n">quo</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Not what we’ve been looking for either. We need a way to prevent the symbol <code class="highlighter-rouge">var</code> from being evaluated the standard way, but evaluated with tidy eval. Good news, there’s a function for that — <code class="highlighter-rouge">enquo()</code>. This function :</p>
+<ul>
+  <li>Takes a symbol</li>
+  <li>quotes the R code supplied</li>
+  <li>captures the environment</li>
+  <li>returns a quosure</li>
+</ul>
+
+<p>Then, we need a way to tell <code class="highlighter-rouge">group_by</code> that we’ve taken care to the “quosurisation” (that’s not the real word, you know!). So… here comes <code class="highlighter-rouge">!!</code> (to be pronounced “Bang Bang” :) )</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">slicer</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="p">){</span><span class="w">
+  </span><span class="n">enquo_var</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">enquo</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="w">
+  </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="c1"># !! tells dplyr not to compute the object as a quosure</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="o">!!</span><span class="n">enquo_var</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">slice</span><span class="p">(</span><span class="m">5</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="c1"># That works!</span><span class="w">
+</span><span class="n">slicer</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>[emoji party]</p>
+
+<h2 id="the-ggplot-part">the ggplot part</h2>
+
+<p>So now, we need to pass the <code class="highlighter-rouge">col_group</code> and <code class="highlighter-rouge">col_plot</code> into the ggplot call. We may be tempted to pass <code class="highlighter-rouge">!!enquo_col_plot</code> the same way we passed it through <code class="highlighter-rouge">group_by</code>. Thing is: tidy eval is not yet implemented in <code class="highlighter-rouge">ggplot2</code> — so you can’t pass the <code class="highlighter-rouge">enquo(var)</code> to it.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gg_top</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">col_group</span><span class="p">,</span><span class="w"> </span><span class="n">col_plot</span><span class="p">){</span><span class="w">
+  </span><span class="n">enquo_col_group</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">enquo</span><span class="p">(</span><span class="n">col_group</span><span class="p">)</span><span class="w">
+  </span><span class="n">enquo_col_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">enquo</span><span class="p">(</span><span class="n">col_plot</span><span class="p">)</span><span class="w">
+  </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="o">!!</span><span class="n">enquo_col_group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">slice</span><span class="p">(</span><span class="m">5</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="o">!!</span><span class="n">enquo_col_group</span><span class="p">,</span><span class="w"> </span><span class="o">!!</span><span class="n">enquo_col_plot</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+    </span><span class="n">geom_point</span><span class="p">()</span><span class="w">  
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">gg_top</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">col_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">col_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Sepal.Length</span><span class="p">)</span><span class="w">
+
+</span><span class="n">Error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">(</span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="n">could</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="s1">'enquo_var'</span><span class="w"> 
+
+</span></code></pre></div></div>
+
+<p>The trick is: you can use <code class="highlighter-rouge">quo_name</code>, which returns a character string with the name of the expression you’ve typed. Pass it to <code class="highlighter-rouge">ggplot2::aes_string</code>… and Voilà!</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gg_top</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">col_group</span><span class="p">,</span><span class="w"> </span><span class="n">col_plot</span><span class="p">){</span><span class="w">
+  </span><span class="n">enquo_col_group</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">enquo</span><span class="p">(</span><span class="n">col_group</span><span class="p">)</span><span class="w">
+  </span><span class="n">enquo_col_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">enquo</span><span class="p">(</span><span class="n">col_plot</span><span class="p">)</span><span class="w">  
+  </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">group_by</span><span class="p">(</span><span class="o">!!</span><span class="n">enquo_col_group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">slice</span><span class="p">(</span><span class="m">5</span><span class="o">:</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+    </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes_string</span><span class="p">(</span><span class="n">quo_name</span><span class="p">(</span><span class="n">enquo_col_group</span><span class="p">),</span><span class="w"> </span><span class="n">quo_name</span><span class="p">(</span><span class="n">enquo_col_plot</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+    </span><span class="n">geom_point</span><span class="p">()</span><span class="w">  
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">gg_top</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iris</span><span class="p">,</span><span class="w"> </span><span class="n">col_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Species</span><span class="p">,</span><span class="w"> </span><span class="n">col_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Sepal.Length</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>[emoji party]^2</p>
+
+<p>Sorry, that was quite a long post.. I hope it has enlightened some dark side of the tidyverse :)</p>
+
+<p>Coming soon: more on tidy eval, environment, and computing on the R language.</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#tidyeval" class="page__taxonomy-item" rel="tag">tidyeval</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#tidyverse" class="page__taxonomy-item" rel="tag">tidyverse</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#r-blog-en" class="page__taxonomy-item" rel="tag">r-blog-en</a>
+    
+    </span>
+  </p>
+
+
+        
+          <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2017-07-14T00:00:00+02:00">July 14, 2017</time></p>
+        
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?via=_ColinFay&text=Down+the+rabbit+hole+with+tidy+eval+%E2%80%94+Part+1%20http%3A%2F%2Flocalhost%3A4000%2Ftidyeval-1%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Ftidyeval-1%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http%3A%2F%2Flocalhost%3A4000%2Ftidyeval-1%2F" class="btn btn--google-plus" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Google Plus"><i class="fab fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Ftidyeval-1%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/back-user2017/" class="pagination--pager" title="Back from useR!2017: a summer to-do list
+">←</a>
+    
+    
+      <a href="/languagelayer110/" class="pagination--pager" title="languagelayeR 1.1.0 is now on CRAN
+">→</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">The machine thinks you might also like:</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/js-const-r/" rel="permalink">JavaScript const in R
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-23</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">One thing I like about JavaScript is the const declaration method,
+which allows you to declare a variable one time, and that variable can’t
+be reassigned aft...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/one-week-shiny-google-search/" rel="permalink">One week as a Shiny dev, seen through Google search
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-09-08</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">Some days ago I read an article on dev.to, entitled
+something like “Googling as a Software Engineer”
+link
+which links to this
+blogpost
+from Sophie Koonin. An...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/playing-with-dolt-one/" rel="permalink">Playing with dolt - Part One
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-08-17</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">A few weeks back, I subscribed to become a beta tester for dolt, the
+“Git for data”. This post is the first of a series of posts
+exploring this tool.
+
+What i...</p>-->
+  </article>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    
+    <li class="archive__item-title" itemprop="headline">
+      <span>
+        
+        <a href="/back-from-toulouse/" rel="permalink">Back from useR! 2019
+</a>
+      
+      </span>
+      <span class="page__meta" >
+        
+      —  <i>2019-07-14</i>
+    
+      </span>
+    </li>
+    
+    <!--<p class="archive__item-excerpt" itemprop="description">I’m back from useR! 2019!, Toulouse, where I gave one talk and a
+workshop. Here are the links to the materials.
+
+2019-07-08
+
+Contributing to the R ecosystem
+...</p>-->
+  </article>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+    </div>
+
+    
+
+    <div class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Get social:</strong></li>
+    
+    
+      <li><a href="https://twitter.com/_ColinFay"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+      <li><a href="https://github.com/ColinFay"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    
+    
+    
+    
+      <li><a href="https://www.linkedin.com/in/colinfay"><i class="fab fa-fw fa-linkedin-in" aria-hidden="true"></i> LinkedIn</a></li>
+    
+     
+        <li>
+          <a href="mailto:">
+            <meta itemprop="email" content="" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email
+          </a>
+        </li>
+      
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2019 Colin Fay. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a>, built on top of the <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a> jekyll theme. </div>
+
+<div class="page__footer-copyright">All blog posts are aggregated to <a href = "https://www.r-bloggers.com/">R-bloggers</a> and <a href="http://www.rweekly.org">RWeekly</a>.</div>
+
+<div class="page__footer-copyright">All written content on this blog is released under the <a href = "https://creativecommons.org/licenses/by-nc-sa/4.0//">CC BY-NC-SA 4.0</a> license, with the exception of code which is released under the <a href="https://opensource.org/licenses/mit-license.php">MIT</a> license</div>.
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "http://localhost:4000/tidyeval-1/";  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = "/tidyeval-1"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>R Installation and Administration</title>
+  <meta name="description" content="R Installation and administration">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="R Installation and Administration" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="R Installation and administration" />
+  <meta name="github-repo" content="ColinFay/r-installation-administration" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="R Installation and Administration" />
+  
+  <meta name="twitter:description" content="R Installation and administration" />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="appendix-b-configuration-on-a-unix-alike.html">
+<link rel="next" href="appendix-d-the-windows-toolset.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-3');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R Installation and Administration</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Installation and Administration</a></li>
+<li class="chapter" data-level="1" data-path="obtaining-r.html"><a href="obtaining-r.html"><i class="fa fa-check"></i><b>1</b> Obtaining R</a></li>
+<li class="chapter" data-level="2" data-path="installing-r-under-unix-alikes.html"><a href="installing-r-under-unix-alikes.html"><i class="fa fa-check"></i><b>2</b> Installing R under Unix-alikes</a></li>
+<li class="chapter" data-level="3" data-path="installing-r-under-windows.html"><a href="installing-r-under-windows.html"><i class="fa fa-check"></i><b>3</b> Installing R under Windows</a></li>
+<li class="chapter" data-level="4" data-path="installing-r-under-macos.html"><a href="installing-r-under-macos.html"><i class="fa fa-check"></i><b>4</b> Installing R under macOS</a></li>
+<li class="chapter" data-level="5" data-path="running-r.html"><a href="running-r.html"><i class="fa fa-check"></i><b>5</b> Running R</a></li>
+<li class="chapter" data-level="6" data-path="add-on-packages.html"><a href="add-on-packages.html"><i class="fa fa-check"></i><b>6</b> Add-on packages</a></li>
+<li class="chapter" data-level="7" data-path="internationalization-and-localization.html"><a href="internationalization-and-localization.html"><i class="fa fa-check"></i><b>7</b> Internationalization and Localization</a></li>
+<li class="chapter" data-level="8" data-path="choosing-between-32-and-64-bit-builds.html"><a href="choosing-between-32-and-64-bit-builds.html"><i class="fa fa-check"></i><b>8</b> Choosing between 32- and 64-bit builds</a></li>
+<li class="chapter" data-level="9" data-path="the-standalone-rmath-library.html"><a href="the-standalone-rmath-library.html"><i class="fa fa-check"></i><b>9</b> The standalone Rmath library</a></li>
+<li class="chapter" data-level="10" data-path="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><a href="appendix-a-essential-and-useful-other-programs-under-a-unix-alike.html"><i class="fa fa-check"></i><b>10</b> Appendix A Essential and useful other programs under a Unix-alike</a></li>
+<li class="chapter" data-level="11" data-path="appendix-b-configuration-on-a-unix-alike.html"><a href="appendix-b-configuration-on-a-unix-alike.html"><i class="fa fa-check"></i><b>11</b> Appendix B Configuration on a Unix-alike</a></li>
+<li class="chapter" data-level="12" data-path="appendix-c-platform-notes.html"><a href="appendix-c-platform-notes.html"><i class="fa fa-check"></i><b>12</b> Appendix C Platform notes</a></li>
+<li class="chapter" data-level="13" data-path="appendix-d-the-windows-toolset.html"><a href="appendix-d-the-windows-toolset.html"><i class="fa fa-check"></i><b>13</b> Appendix D The Windows toolset</a></li>
+<li class="chapter" data-level="14" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>14</b> Function and variable index</a></li>
+<li class="chapter" data-level="15" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>15</b> Concept index</a></li>
+<li class="chapter" data-level="16" data-path="environment-variable-index.html"><a href="environment-variable-index.html"><i class="fa fa-check"></i><b>16</b> Environment variable index</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Installation and Administration</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix-c-platform-notes" class="section level1">
+<h1><span class="header-section-number">Chapter 12</span> Appendix C Platform notes</h1>
+<p>
+This section provides some notes on building R on different Unix-alike platforms. These notes are based on tests run on one or two systems in each case with particular sets of compilers and support libraries. Success in building R depends on the proper installation and functioning of support software; your results may differ if you have other versions of compilers and support libraries.
+</p>
+<p>
+Older versions of this manual (for R &lt; 2.10.0) contain notes on platforms such as HP-UX, IRIX and Alpha/OSF1 for which we have had no recent reports.
+</p>
+<p>
+C macros to select particular platforms can be tricky to track down (there is a fair amount of misinformation on the Web). The Wiki (currently) at <a href="http://sourceforge.net/p/predef/wiki/Home/" class="uri">http://sourceforge.net/p/predef/wiki/Home/</a> can be helpful. The R sources have used (often in included software under src/extra)
+</p>
+<div class="example">
+<pre class="example1"><code>AIX: _AIX
+Cygwin: __CYGWIN__
+FreeBSD: __FreeBSD__
+HP-UX: __hpux__, __hpux
+IRIX: sgi, __sgi
+Linux: __linux__
+macOS: __APPLE__
+NetBSD: __NetBSD__
+OpenBSD: __OpenBSD__
+Solaris: __sun, sun
+Windows: _WIN32, _WIN64</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="X11-issues"></a> <a href="" id="X11-issues-1"></a>
+</p>
+<h3 id="c.1-x11-issues" class="section">
+C.1 X11 issues
+</h3>
+<p>
+The ‘X11()’ graphics device is the one started automatically on Unix-alikes when plotting. As its name implies, it displays on a (local or remote) X server, and relies on the services provided by the X server.
+</p>
+<p>
+The ‘modern’ version of the ‘X11()’ device is based on ‘cairo’ graphics and (in most implementations) uses ‘fontconfig’ to pick and render fonts. This is done on the server, and although there can be selection issues, they are more amenable than the issues with ‘X11()’ discussed in the rest of this section.
+</p>
+<p>
+When X11 was designed, most displays were around 75dpi, whereas today they are of the order of 100dpi or more. If you find that X11() is reporting<a href="environment-variable-index.html#FOOT63" id="DOCF63"><sup>63</sup></a> missing font sizes, especially larger ones, it is likely that you are not using scalable fonts and have not installed the 100dpi versions of the X11 fonts. The names and details differ by system, but will likely have something like Fedora’s
+</p>
+<div class="example">
+<pre class="example1"><code>xorg-x11-fonts-75dpi
+xorg-x11-fonts-100dpi
+xorg-x11-fonts-ISO8859-2-75dpi
+xorg-x11-fonts-Type1
+xorg-x11-fonts-cyrillic</code></pre>
+</div>
+<p>
+and you need to ensure that the ‘-100dpi’ versions are installed and on the X11 font path (check via <code class="calibre6">xset -q</code>). The ‘X11()’ device does try to set a pointsize and not a pixel size: laptop users may find the default setting of 12 too large (although very frequently laptop screens are set to a fictitious dpi to appear like a scaled-down desktop screen).
+</p>
+<p>
+More complicated problems can occur in non-Western-European locales, so if you are using one, the first thing to check is that things work in the <code class="calibre6">C</code> locale. The likely issues are a failure to find any fonts or glyphs being rendered incorrectly (often as a pair of ASCII characters). X11 works by being asked for a font specification and coming up with its idea of a close match. For text (as distinct from the symbols used by plotmath), the specification is the first element of the option <code class="calibre6">“X11fonts”</code> which defaults to
+</p>
+<div class="example">
+<pre class="example1"><code>&quot;-adobe-helvetica-%s-%s-*-*-%d-*-*-*-*-*-*-*&quot;</code></pre>
+</div>
+<p>
+If you are using a single-byte encoding, for example ISO 8859-2 in Eastern Europe or KOI8-R in Russian, use <code class="calibre6">xlsfonts</code> to find an appropriate family of fonts in your encoding (the last field in the listing). If you find none, it is likely that you need to install further font packages, such as ‘xorg-x11-fonts-ISO8859-2-75dpi’ and ‘xorg-x11-fonts-cyrillic’ shown in the listing above.
+</p>
+<p>
+Multi-byte encodings (most commonly UTF-8) are even more complicated. There are few fonts in ‘iso10646-1’, the Unicode encoding, and they only contain a subset of the available glyphs (and are often fixed-width designed for use in terminals). In such locales <em>fontsets</em> are used, made up of fonts encoded in other encodings. If the locale you are using has an entry in the ‘XLC_LOCALE’ directory (typically /usr/share/X11/locale), it is likely that all you need to do is to pick a suitable font specification that has fonts in the encodings specified there. If not, you may have to get hold of a suitable locale entry for X11. This may mean that, for example, Japanese text can be displayed when running in ‘ja_JP.UTF-8’ but not when running in ‘en_GB.UTF-8’ on the same machine (although on some systems many UTF-8 X11 locales are aliased to ‘en_US.UTF-8’ which covers several character sets, e.g. ISO 8859-1 (Western European), JISX0208 (Kanji), KSC5601 (Korean), GB2312 (Chinese Han) and JISX0201 (Kana)).
+</p>
+<p>
+On some systems scalable fonts are available covering a wide range of glyphs. One source is TrueType/OpenType fonts, and these can provide high coverage. Another is Type 1 fonts: the URW set of Type 1 fonts provides standard typefaces such as Helvetica with a larger coverage of Unicode glyphs than the standard X11 bitmaps, including Cyrillic. These are generally not part of the default install, and the X server may need to be configured to use them. They might be under the X11 fonts directory or elsewhere, for example,
+</p>
+<div class="example">
+<pre class="example1"><code>/usr/share/fonts/default/Type1
+/usr/share/fonts/ja/TrueType</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Linux"></a> <a href="" id="Linux-1"></a>
+</p>
+<h3 id="c.2-linux" class="section">
+C.2 Linux
+</h3>
+<p>
+<a href="" id="index-Linux-1"></a>
+</p>
+<p>
+Linux is the main development platform for R, so compilation from the sources is normally straightforward with the standard compilers and libraries.<a href="environment-variable-index.html#FOOT64" id="DOCF64"><sup>64</sup></a>
+</p>
+<p>
+Remember that some package management systems (such as RPM and deb) make a distinction between the user version of a package and the developer version. The latter usually has the same name but with the extension ‘-devel’ or ‘-dev’: you need both versions installed. So please check the <code class="calibre6">configure</code> output to see if the expected features are detected: if for example ‘readline’ is missing add the developer package. (On most systems you will also need ‘ncurses’ and its developer package, although these should be dependencies of the ‘readline’ package(s).) You should expect to see in the <code class="calibre6">configure</code> summary
+</p>
+<div class="example">
+<pre class="example1"><code>  Interfaces supported:      X11, tcltk
+  External libraries:        readline, curl
+  Additional capabilities:   PNG, JPEG, TIFF, NLS, cairo, ICU</code></pre>
+</div>
+<p>
+When R has been installed from a binary distribution there are sometimes problems with missing components such as the FORTRAN compiler. Searching the ‘R-help’ archives will normally reveal what is needed.
+</p>
+<p>
+It seems that ‘ix86’ Linux accepts non-PIC code in shared libraries, but this is not necessarily so on other platforms, in particular on 64-bit CPUs such as ‘x86_64’. So care can be needed with BLAS libraries and when building R as a shared library to ensure that position-independent code is used in any static libraries (such as the Tcl/Tk libraries, <code class="calibre6">libpng</code>, <code class="calibre6">libjpeg</code> and <code class="calibre6">zlib</code>) which might be linked against. Fortunately these are normally built as shared libraries with the exception of the ATLAS BLAS libraries.
+</p>
+<p>
+The default optimization settings chosen for <code class="calibre6">CFLAGS</code> etc are conservative. It is likely that using -mtune will result in significant performance improvements on recent CPUs (especially for ‘ix86’): one possibility is to add -mtune=native for the best possible performance on the machine on which R is being installed: if the compilation is for a site-wide installation, it may still be desirable to use something like -mtume=core2.<a href="environment-variable-index.html#FOOT65" id="DOCF65"><sup>65</sup></a> It is also possible to increase the optimization levels to -O3: however for many versions of the compilers this has caused problems in at least one CRAN package.
+</p>
+<p>
+For platforms with both 64- and 32-bit support, it is likely that
+</p>
+<div class="example">
+<pre class="example1"><code>LDFLAGS=&quot;-L/usr/local/lib64 -L/usr/local/lib&quot;</code></pre>
+</div>
+<p>
+is appropriate since most (but not all) software installs its 64-bit libraries in /usr/local/lib64. To build a 32-bit version of R on ‘x86_64’ with Fedora 24 we used
+</p>
+<div class="example">
+<pre class="example1"><code>CC=&quot;gcc -m32&quot;
+CXX=&quot;g++ -m32&quot;
+F77=&quot;gfortran -m32&quot;
+FC=${F77}
+OBJC=${CC}
+LDFLAGS=&quot;-L/usr/local/lib&quot;
+LIBnn=lib</code></pre>
+</div>
+<p>
+Note the use of ‘LIBnn’: ‘x86_64’ Fedora installs its 64-bit software in /usr/lib64 and 32-bit software in /usr/lib. Linking will skip over inappropriate binaries, but for example the 32-bit Tcl/Tk configure scripts are in /usr/lib. It may also be necessary to set the <code class="calibre6">pkg-config</code> path, e.g. by
+</p>
+<div class="example">
+<pre class="example1"><code>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/pkgconfig</code></pre>
+</div>
+<p>
+The 32-bit system <code class="calibre6">libcurl</code> did not work with the system CA certificates: this is worked around in R’s test suite.
+</p>
+<p>
+64-bit versions of Linux are built with support for files &gt; 2Gb, and 32-bit versions will be if possible unless –disable-largefile is specified.
+</p>
+<p>
+Note that 32-bit <code class="calibre6">glibc</code> currently uses a 32-bit <code class="calibre6">time_t</code> type, so to pass all the date-time checks needs R built with flag –with-internal-tzcode.
+</p>
+<p>
+To build a 64-bit version of R on ‘ppc64’ (also known as ‘powerpc64’) with <code class="calibre6">gcc</code> 4.1.1, Ei-ji Nakama used
+</p>
+<div class="example">
+<pre class="example1"><code>CC=&quot;gcc -m64&quot;
+CXX=&quot;gxx -m64&quot;
+F77=&quot;gfortran -m64&quot;
+FC=&quot;gfortran -m64&quot;
+CFLAGS=&quot;-mminimal-toc -fno-optimize-sibling-calls -g -O2&quot;
+FFLAGS=&quot;-mminimal-toc -fno-optimize-sibling-calls -g -O2&quot;</code></pre>
+</div>
+<p>
+the additional flags being needed to resolve problems linking against libnmath.a and when linking R as a shared library.
+</p>
+<hr />
+<p>
+<a href="" id="Clang"></a> <a href="" id="Clang-1"></a>
+</p>
+<h4 id="c.2.1-clang" class="subsection">
+C.2.1 Clang
+</h4>
+<p>
+R has been built with Linux ‘ix86’ and ‘x86_64’ C and C++ compilers (<a href="http://clang.llvm.org" class="uri">http://clang.llvm.org</a>) based on the Clang front-ends, invoked by <code class="calibre6">CC=clang CXX=clang++</code>, together with <code class="calibre6">gfortran</code>. These take very similar options to the corresponding GCC compilers.
+</p>
+<p>
+This has to be used in conjunction with a Fortran compiler: the <code class="calibre6">configure</code> code will remove -lgcc from <code class="calibre6">FLIBS</code>, which is needed for some versions of <code class="calibre6">gfortran</code>.
+</p>
+<p>
+The current default for <code class="calibre6">clang++</code> is to use the C++ runtime from the installed <code class="calibre6">g++</code>. Using the runtime from the <code class="calibre6">libc++</code> project (<a href="http://libcxx.llvm.org/" class="uri">http://libcxx.llvm.org/</a>, Fedora RPM <code class="calibre6">libcxx-devel</code>) has also been tested: for some R packages only the variant using <code class="calibre6">libcxxabi</code> was successful.
+</p>
+<p>
+Earlier builds of <code class="calibre6">clang</code> have no OpenMP support, those of versions 3.7.0 or later may.<a href="environment-variable-index.html#FOOT66" id="DOCF66"><sup>66</sup></a>
+</p>
+<hr />
+<p>
+<a href="" id="Intel-compilers"></a> <a href="" id="Intel-compilers-1"></a>
+</p>
+<h4 id="c.2.2-intel-compilers" class="subsection">
+C.2.2 Intel compilers
+</h4>
+<p>
+Intel compilers have been used under ‘ix86’ and ‘x86_64’ Linux. Brian Ripley used version 9.0 of the compilers for ‘x86_64’ on Fedora Core 5 with
+</p>
+<div class="example">
+<pre class="example1"><code>CC=icc
+CFLAGS=&quot;-g -O3 -wd188 -ip -mp&quot;
+F77=ifort
+FLAGS=&quot;-g -O3 -mp&quot;
+CXX=icpc
+CXXFLAGS=&quot;-g -O3 -mp&quot;
+FC=ifort
+FCFLAGS=&quot;-g -O3 -mp&quot;
+ICC_LIBS=/opt/compilers/intel/cce/9.1.039/lib
+IFC_LIBS=/opt/compilers/intel/fce/9.1.033/lib
+LDFLAGS=&quot;-L$ICC_LIBS -L$IFC_LIBS -L/usr/local/lib64&quot;
+SHLIB_CXXLD=icpc</code></pre>
+</div>
+<p>
+<code class="calibre6">configure</code> will add ‘-c99’ to <code class="calibre6">CC</code> for C99-compliance. This causes warnings with <code class="calibre6">icc</code> 10 and later, so use <code class="calibre6">CC=“icc -std=c99”</code> there. The flag -wd188 suppresses a large number of warnings about the enumeration type ‘Rboolean’. Because the Intel C compiler sets ‘<strong>GNUC</strong>’ without complete emulation of <code class="calibre6">gcc</code>, we suggest adding <code class="calibre6">CPPFLAGS=-no-gcc</code>.
+</p>
+<p>
+To maintain correct IEC 60559 arithmetic you most likely need add flags to <code class="calibre6">CFLAGS</code>, <code class="calibre6">FFLAGS</code> and <code class="calibre6">CXXFLAGS</code> such as -mp (shown above) or -fp-model precise -fp-model source, depending on the compiler version.
+</p>
+<p>
+Others have reported success with versions 10.x and 11.x. Bjørn-Helge Mevik reported success with version 2015.3 of the compilers, using (for a SandyBridge CPU on Centos 6.x)
+</p>
+<div class="example">
+<pre class="example1"><code>fast=&quot;-fp-model precise -ip -O3 -opt-mem-layout-trans=3 -xHost -mavx&quot;
+CC=icc
+CFLAGS=&quot;$fast -wd188&quot;
+F77=ifort
+FFLAGS=&quot;$fast&quot;
+CXX=icpc
+CXXFLAGS=&quot;$fast&quot;
+FC=$F77
+FCFLAGS=$F77FLAGS</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="macOS"></a> <a href="" id="macOS-2"></a>
+</p>
+<h3 id="c.3-macos" class="section">
+C.3 macOS
+</h3>
+<p>
+<a href="" id="index-macOS-2"></a>
+</p>
+<p>
+(‘macOS’ was known as ‘OS X’ from 2012–2016.)
+</p>
+<p>
+The instructions here are for ‘x86_64’ builds on 10.11 (El Capitan) or later. R can be built for 10.9 and 10.10 and in principle<a href="environment-variable-index.html#FOOT67" id="DOCF67"><sup>67</sup></a> for 10.6 to 10.8.
+</p>
+<p>
+To build R you need Apple’s ‘Command Line Tools’: these can be (re-)installed by <code class="calibre6">xcode-select –install</code>. (If you have a fresh OS installation, running e.g. <code class="calibre6">make</code> in a terminal will offer the installation of the command-line tools. If you have installed Xcode, this provides the command-line tools. The tools will need to be reinstalled when macOS is upgraded, as upgrading partially removes them.)
+</p>
+<p>
+You need GNU <code class="calibre6">readline</code><a href="environment-variable-index.html#FOOT68" id="DOCF68"><sup>68</sup></a> That and other binary components are available from <a href="https://r.research.att.com/libs" class="uri">https://r.research.att.com/libs</a>: you will need <code class="calibre6">pcre</code> and <code class="calibre6">xz</code> (for <code class="calibre6">libzma</code>) as recent macOS versions provide libraries but not headers for these (and the system <code class="calibre6">pcre</code> is too old at version 8.02).
+</p>
+<p>
+An X sub-system is required unless configuring using –without-x: see <a href="https://xquartz.macosforge.org/" class="uri">https://xquartz.macosforge.org/</a>. R’s <code class="calibre6">configure</code> script can be told to look for <code class="calibre6">X11</code> in <code class="calibre6">XQuartz</code>’s main location of /opt/X11, e.g. by
+</p>
+<div class="example">
+<pre class="example1"><code>--x-includes=/opt/X11/include --x-libraries=/opt/X11/lib</code></pre>
+</div>
+<p>
+although linked versions under /usr/X11 will be found.
+</p>
+<p>
+To use the <code class="calibre6">quartz()</code> graphics device you need to configure with –with-aqua (which is the default): <code class="calibre6">quartz()</code> then becomes the default device when running R at the console and X11 would only be used for the command-line-R data editor/viewer and one version of Tcl/Tk. (This option needs an Objective-C compiler<a href="environment-variable-index.html#FOOT69" id="DOCF69"><sup>69</sup></a> which can compile the source code of <code class="calibre6">quartz()</code>.)
+</p>
+<p>
+Use –without-aqua if you want a standard Unix-alike build: apart from disabling <code class="calibre6">quartz()</code> and the ability to use the build with R.APP, it also changes the default location of the personal library (see <code class="calibre6">?.libPaths</code>).
+</p>
+<p>
+Various compilers can be used. One could use
+</p>
+<div class="example">
+<pre class="example1"><code>CC=clang
+CXX=clang++
+F77=/usr/local/gfortran/bin/gfortran
+FC=$F77
+OBJC=clang
+CFLAGS=&#39;-Wal -g -O2&#39;
+CXXFLAGS=&#39;-Wall -g -O2&#39;
+OBJCFLAGS=&#39;-Wall -g -O2&#39;
+F77FLAGS=&#39;-Wall -g -O2 -mtune=generic&#39;
+FCFLAGS=$F77FLAGS</code></pre>
+</div>
+<p>
+with <code class="calibre6">clang</code> and <code class="calibre6">clang++</code> from the ‘Command Line Tools’ and the Fortran compiler from one of the packages described in the next paragraph.
+</p>
+<p>
+There are installers<a href="environment-variable-index.html#FOOT70" id="DOCF70"><sup>70</sup></a> for Fortran compilers for El Capitan and Sierra at <a href="http://coudert.name/software/gfortran-6.1-ElCapitan.dmg" class="uri">http://coudert.name/software/gfortran-6.1-ElCapitan.dmg</a> and <a href="http://coudert.name/software/gfortran-6.3-Sierra.dmg" class="uri">http://coudert.name/software/gfortran-6.3-Sierra.dmg</a>. (These compilers are also available from a <code class="calibre6">CRAN</code> mirror: select ‘Other’ under ‘Software’ from the left-hand menu.) One way to use these builds with a binary distribution of R is to have a ~/.R/Makevars file similar to (El Capitan)
+</p>
+<div class="example">
+<pre class="example1"><code>F77 = /usr/local/gfortran/bin/gfortran
+FC = $F77
+FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin15/6.1.0
+  -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm</code></pre>
+</div>
+<p>
+or (Sierra or High Sierra)
+</p>
+<div class="example">
+<pre class="example1"><code>F77 = /usr/local/gfortran/bin/gfortran
+FC = $F77
+FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin16/6.3.0
+  -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm</code></pre>
+</div>
+<p>
+(with lines broken here for legibility).
+</p>
+<p>
+More recent and complete distributions of <code class="calibre6">clang</code> are often available from <a href="http://llvm.org/releases/" class="uri">http://llvm.org/releases/</a>: for example at the time of writing for 4.0.1, built for Sierra or later. In particular, these should include support for OpenMP. Another build of clang 4.0.0 is available at <a href="https://r.research.att.com/libs/clang-4.0.0-darwin15.6-Release.tar.gz" class="uri">https://r.research.att.com/libs/clang-4.0.0-darwin15.6-Release.tar.gz</a>. Suppose one of these distributions is installed under /usr/local/clang4. Then R could be configured by something like
+</p>
+<div class="example">
+<pre class="example1"><code>./configure --x-includes=/opt/X11/include --x-libraries=/opt/X11/lib \
+PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig \
+DYLD_FALLBACK_LIBRARY_PATH=/usr/local/clang4/lib:/usr/local/lib</code></pre>
+</div>
+<p>
+with config.site containing
+</p>
+<div class="example">
+<pre class="example1"><code>CC=/usr/local/clang4/bin/clang
+OBJC=$CC
+F77=/usr/local/gfortran/bin/gfortran
+FC=$F77
+CXX=/usr/local/clang4/bin/clang++
+LDFLAGS=&quot;-L/usr/local/clang4/lib -L/usr/local/lib&quot;
+R_LD_LIBRARY_PATH=/usr/local/clang4/lib:/usr/local/lib</code></pre>
+</div>
+<p>
+The care to specify library paths is to ensure that the OpenMP runtime library, here /usr/local/clang4/lib/libomp.dylib, is found when needed. If this works, you should see the line
+</p>
+<div class="example">
+<pre class="example1"><code>checking whether OpenMP SIMD reduction is supported... yes</code></pre>
+</div>
+<p>
+in the <code class="calibre6">configure</code> output. Also, ‘R_LD_LIBRARY_PATH’ needs to be set to find the latest version of the C++ run-time libraries rather than the system ones.
+</p>
+<p>
+Pre-compiled versions of many of the <a href="the-standalone-rmath-library.html#Useful-libraries-and-programs">Useful libraries and programs</a> are available from <a href="https://r.research.att.com/libs/" class="uri">https://r.research.att.com/libs/</a>. You will most likely want at least <code class="calibre6">jpeg</code> and <code class="calibre6">tiff</code>. The <code class="calibre6">pkg-config</code> utility is not provided by Apple and used for the installation from source of many packages: it will also be used if present when configuring the <code class="calibre6">X11()</code> and bitmap devices.
+</p>
+<p>
+Support for <code class="calibre6">cairo</code> (without <code class="calibre6">Pango</code>) can be enabled if <code class="calibre6">pkg-config</code> and XQuartz are available, Make sure the XQuartz’s <code class="calibre6">pkg-config</code> files are found first on the configuration path: for example by setting
+</p>
+<div class="example">
+<pre class="example1"><code>export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig</code></pre>
+</div>
+<p>
+or appending that variable to the <code class="calibre6">configure</code> command.
+</p>
+<p>
+<a href="" id="index-BLAS-library-1"></a> <a href="" id="index-LAPACK-library-1"></a>
+</p>
+<p>
+The <code class="calibre6">Accelerate</code> library can be used <em>via</em> the configuration options
+</p>
+<div class="example">
+<pre class="example1"><code>--with-blas=&quot;-framework Accelerate&quot; --with-lapack</code></pre>
+</div>
+<p>
+to provide potentially higher-performance versions of the BLAS and LAPACK routines.<a href="environment-variable-index.html#FOOT71" id="DOCF71"><sup>71</sup></a>
+</p>
+<p>
+Looking at the top of /Library/Frameworks/R.framework/Resources/etc/Makeconf will show the compilers and configuration options used for the CRAN binary package for R: at the time of writing the non-default options
+</p>
+<div class="example">
+<pre class="example1"><code>--enable-memory-profiling --enable-R-framework</code></pre>
+</div>
+<p>
+were used.
+</p>
+<p>
+Configure option –with-internal-tzcode is the default on macOS, as the system implementation of time zones does not work correctly for times before 1902 or after 2037 (despite using a 64-bit <code class="calibre6">time_t</code>).
+</p>
+<p>
+The TeX implementation used by the developers is MacTeX (<a href="https://www.tug.org/mactex/" class="uri">https://www.tug.org/mactex/</a>): the full installation is about 5GB, but a smaller version (‘Basic TeX’) is available at <a href="https://www.tug.org/mactex/morepackages.html" class="uri">https://www.tug.org/mactex/morepackages.html</a> to which you will need to add some packages, e.g. for the 2017 version we needed to add<a href="environment-variable-index.html#FOOT72" id="DOCF72"><sup>72</sup></a> <strong>cm-super</strong>, <strong>helvetic</strong>, <strong>inconsolata</strong> and <strong>texinfo</strong> which brought this to about 310MB. ‘TeX Live Utility’ (available <em>via</em> the MacTeX front page) provides a graphical means to manage TeX packages.
+</p>
+<p>
+One macOS quirk is that the default path has /usr/local/bin after /usr/bin, contrary to common practice on Unix-alikes. This means that if you install tools from the sources they will by default be installed under /usr/local and not supersede the system versions.
+</p>
+<p>
+If you upgrade your OS you should re-install the ‘Command Line Tools’ and may need to re-install XQuartz and Java (this has been needed for some upgrades but not others).
+</p>
+<hr />
+<p>
+<a href="" id="High-Sierra"></a> <a href="" id="High-Sierra-1"></a>
+</p>
+<h4 id="c.3.1-high-sierra" class="subsection">
+C.3.1 High Sierra
+</h4>
+<p>
+Default builds<a href="environment-variable-index.html#FOOT73" id="DOCF73"><sup>73</sup></a> of R on High Sierra fail to detect the system time zone, as it gets reported something like
+</p>
+<div class="example">
+<pre class="example1"><code>  unknown timezone ‘default/Europe/London’</code></pre>
+</div>
+<p>
+which is not a standard form. This can be circumvented by setting the environment variable <code class="calibre6">TZ</code> (in the example, to ‘Europe/London’.
+</p>
+<hr />
+<p>
+<a href="" id="Tcl_002fTk-headers-and-libraries"></a> <a href="" id="Tcl_002fTk-headers-and-libraries-1"></a>
+</p>
+<h4 id="c.3.2-tcltk-headers-and-libraries" class="subsection">
+C.3.2 Tcl/Tk headers and libraries
+</h4>
+<p>
+If you plan to use the <code class="calibre6">tcltk</code> package for R, you need to install a distribution of Tcl/Tk. There are two alternatives. If you use R.APP you will want to use X11-based Tcl/Tk (as used on other Unix-alikes), which is installed as part of the CRAN binary for R and available as separate <code class="calibre6">tcl</code> and <code class="calibre6">tk</code> components from <a href="https://r.research.att.com/libs/" class="uri">https://r.research.att.com/libs/</a>. This may need <code class="calibre6">configure</code> options
+</p>
+<div class="example">
+<pre class="example1"><code>-with-tcltk=/usr/local/lib</code></pre>
+</div>
+<p>
+or
+</p>
+<div class="example">
+<pre class="example1"><code>--with-tcl-config=/usr/local/lib/tclConfig.sh 
+--with-tk-config=/usr/local/lib/tkConfig.sh</code></pre>
+</div>
+<p>
+Note that this requires a matching XQuartz installation.
+</p>
+<p>
+There is also a native (‘Aqua’) version of Tcl/Tk which produces widgets in the native macOS style: this will not work with R.APP because of conflicts over the macOS menu, but for those only using command-line R this provides a much more intuitive interface to Tk for experienced Mac users. Most versions of macOS come with Aqua Tcl/Tk libraries, but these are not at all recent versions of Tcl/Tk (8.5.9 in Sierra, which is not even the latest patched version in that series). It is better to install Tcl/Tk 8.6.x from the sources or a binary distribution from <a href="https://www.activestate.com/activetcl/downloads" class="uri">https://www.activestate.com/activetcl/downloads</a>. Configure R with
+</p>
+<div class="example">
+<pre class="example1"><code>--with-tcl-config=/Library/Frameworks/Tcl.framework/tclConfig.sh 
+--with-tk-config=/Library/Frameworks/Tk.framework/tkConfig.sh</code></pre>
+</div>
+<p>
+(for the versions bundled with macOS, use paths starting with /System/Library).
+</p>
+<p>
+If you need to find out which distribution of Tk is in use at run time, use
+</p>
+<div class="example">
+<pre class="example1"><code>library(tcltk)
+tclvalue(.Tcl(&quot;tk windowingsystem&quot;))  # &quot;x11&quot; or &quot;aqua&quot;</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Java-_0028macOS_0029"></a> <a href="" id="Java"></a>
+</p>
+<h4 id="c.3.3-java" class="subsection">
+C.3.3 Java
+</h4>
+<p>
+The situation with Java support on macOS is messy.<a href="environment-variable-index.html#FOOT74" id="DOCF74"><sup>74</sup></a> As from R 3.4.0 the CRAN distribution of <a href="https://CRAN.R-project.org/package=rJava"><strong>rJava</strong></a> requires Java 8 (aka 1.8).
+</p>
+<p>
+macOS no longer comes with an installed Java runtime (JRE), and a macOS upgrade may remove one if already installed: it is intended to be installed at first use. Check if a JRE is installed by running <code class="calibre6">java -version</code> in a <code class="calibre6">Terminal</code> window: if Java is not installed<a href="environment-variable-index.html#FOOT75" id="DOCF75"><sup>75</sup></a> this should prompt you to install it. You can also install directly the latest Java from Oracle (currently from <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" class="uri">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a>).
+</p>
+<p>
+Binary distributions of R are built against a specific version (e.g. 1.8.0_131) of Oracle Java so <code class="calibre6">sudo R CMD javareconf</code> may be needed before using Java-using packages.
+</p>
+<p>
+To see what compatible versions of Java are currently installed, run <code class="calibre6">/usr/libexec/java_home -V -a x86_64</code>. If needed, set the environment variable <code class="calibre6">JAVA_HOME</code> to choose between these, both when R is built from the sources and when <code class="calibre6">R CMD javareconf</code> is run.
+</p>
+<p>
+Configuring and building R both looks for a JRE and for support for compiling JNI programs (used by packages <a href="https://CRAN.R-project.org/package=rJava"><strong>rJava</strong></a> and <a href="https://CRAN.R-project.org/package=JavaGD"><strong>JavaGD</strong></a>); the latter requires a JDK (Java SDK) and not just a JRE.
+</p>
+<p>
+The build process tries to fathom out what JRE/JDK to use, but it may need some help, e.g. by setting <code class="calibre6">JAVA_HOME</code>. The Oracle JDK can be specified explicitly by something like
+</p>
+<div class="example">
+<pre class="example1"><code>JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home
+JAVA_CPPFLAGS=&quot;-I/${JAVA_HOME}/include -I/${JAVA_HOME}/include/darwin&quot;
+JAVA_LD_LIBRARY_PATH=&quot;${JAVA_HOME}/jre/lib/server&quot;
+JAVA_LIBS=&quot;-L/${JAVA_HOME}/jre/lib/server -ljvm&quot; </code></pre>
+</div>
+<p>
+in config.site.
+</p>
+<p>
+(An Apple JRE, if available, can be specified explicitly by something like
+</p>
+<div class="example">
+<pre class="example1"><code>JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+JAVA_CPPFLAGS=&quot;-I/System/Library/Frameworks/JavaVM.framework/Headers&quot;
+JAVA_LD_LIBRARY_PATH=
+JAVA_LIBS=&quot;-framework JavaVM&quot;</code></pre>
+</div>
+<p>
+.)
+</p>
+<p>
+Note that it is necessary to set the environment variable <code class="calibre6">NOAWT</code> to <code class="calibre6">1</code> to install many of the Java-using packages.
+</p>
+<hr />
+<p>
+<a href="" id="Frameworks"></a> <a href="" id="Frameworks-1"></a>
+</p>
+<h4 id="c.3.4-frameworks" class="subsection">
+C.3.4 Frameworks
+</h4>
+<p>
+The CRAN build of R is installed as a framework, which is selected by the option
+</p>
+<div class="example">
+<pre class="example1"><code>./configure --enable-R-framework</code></pre>
+</div>
+<p>
+(This is intended to be used with an Apple toolchain: others may not support frameworks correctly but that from <code class="calibre6">llvm.org</code> does.)
+</p>
+<p>
+It is only needed if you want to build R for use with the R.APP console, and implies –enable-R-shlib to build R as a dynamic library. This option configures R to be built and installed as a framework called R.framework. The default installation path for R.framework is /Library/Frameworks but this can be changed at configure time by specifying the flag –enable-R-framework[=DIR] (or –prefix) or at install time <em>via</em>
+</p>
+<div class="example">
+<pre class="example1"><code>make prefix=/where/you/want/R.framework/to/go install</code></pre>
+</div>
+<p>
+Note that installation as a framework is non-standard (especially to a non-standard location) and Unix utilities may not support it (e.g. the <code class="calibre6">pkg-config</code> file libR.pc will be put somewhere unknown to <code class="calibre6">pkg-config</code>).
+</p>
+<hr />
+<p>
+<a href="" id="Building-R_002eapp"></a> <a href="" id="Building-R_002eapp-1"></a>
+</p>
+<h4 id="c.3.5-building-r.app" class="subsection">
+C.3.5 Building R.app
+</h4>
+<p>
+Note that building the R.APP GUI console is a separate project, using Xcode. Before compiling R.APP make sure the current version of R is installed in /Library/Frameworks/R.framework and working at the command-line (this can be a binary install).
+</p>
+<p>
+The current sources can be checked out by
+</p>
+<div class="example">
+<pre class="example1"><code>svn co https://svn.r-project.org/R-packages/trunk/Mac-GUI</code></pre>
+</div>
+<p>
+and built by loading the <code class="calibre6">R.xcodeproj</code> project (select the <code class="calibre6">R</code> target and a suitable configuration), or from the command-line by e.g.
+</p>
+<div class="example">
+<pre class="example1"><code>xcodebuild -target R -configuration Release</code></pre>
+</div>
+<p>
+See also the INSTALL file in the checkout or directly at <a href="https://svn.r-project.org/R-packages/trunk/Mac-GUI/INSTALL" class="uri">https://svn.r-project.org/R-packages/trunk/Mac-GUI/INSTALL</a>.
+</p>
+<p>
+R.APP does not need to be installed in any specific way. Building R.APP results in the R.APP bundle which appears as one R icon. This application bundle can be run anywhere and it is customary to place it in the /Applications folder.
+</p>
+<hr />
+<p>
+<a href="" id="Solaris"></a> <a href="" id="Solaris-1"></a>
+</p>
+<h3 id="c.4-solaris" class="section">
+C.4 Solaris
+</h3>
+<p>
+<a href="" id="index-Solaris"></a>
+</p>
+<p>
+R has been built successfully on Solaris 10 using the (zero cost) Oracle Developer Studio<a href="environment-variable-index.html#FOOT76" id="DOCF76"><sup>76</sup></a> compilers: there has been some success with <code class="calibre6">gcc</code>/<code class="calibre6">gfortran</code>. (Recent Sun machines are AMD Opterons or Intel Xeons (‘amd64’) rather than ‘x86’, but 32-bit ‘x86’ executables are the default.) How these compilers identify<a href="environment-variable-index.html#FOOT77" id="DOCF77"><sup>77</sup></a> themselves is slightly confusing: Solaris Studio versions 12.3 and 12.4 report C++ 5.12 and 5.13, and Developer Studio 12.5 reports C++ 5.14. We will only consider 12.5 (May 2016): instructions for 12.3 can be found in versions of this manual for R 3.3.x.
+</p>
+<p>
+There have been few reports on Solaris 11, with no known extra issues.
+</p>
+<p>
+Solaris was last tested on Sparc machines in June 2017.
+</p>
+<p>
+The Solaris versions of several of the tools needed to build R (e.g. <code class="calibre6">make</code>, <code class="calibre6">ar</code> and <code class="calibre6">ld</code>) are in /usr/ccs/bin, so if using those tools ensure this is in your path. A version of the preferred GNU <code class="calibre6">tar</code> is (if installed) in /usr/sfw/bin. It may be necessary to avoid the tools in /usr/ucb: POSIX-compliant versions of some tools can be found in /usr/xpg4/bin and /usr/xpg6/bin.
+</p>
+<p>
+A large selection of Open Source software can be installed from <a href="https://www.opencsw.org" class="uri">https://www.opencsw.org</a>, by default installed under /opt/csw. Solaris 10 ships with <code class="calibre6">bzlib</code> version 1.0.6 (sufficient) but <code class="calibre6">zlib</code> version 1.2.3 (too old): OpenCSW has 1.2.8.
+</p>
+<p>
+At least when compiling with Oracle compilers, Solaris uses far more stack space than other platforms. This makes it desirable to build PCRE with the option –disable-stack-for-recursion: the OpenCSW distribution was at the time of writing.
+</p>
+<p>
+The Oracle compilers are unusual in not including /usr/local/include in the default include search path: R’s default <code class="calibre6">CPPFLAGS=-I/usr/local/include</code> remedies this. If you rely on OpenCSW software you may need <code class="calibre6">CPPFLAGS=-I/opt/csw/include</code> (or both).
+</p>
+<p>
+You will need GNU <code class="calibre6">libiconv</code> and <code class="calibre6">readline</code>: the Solaris version of <code class="calibre6">iconv</code> is not sufficiently powerful.
+</p>
+<p>
+The native <code class="calibre6">make</code> suffices to build R but a small number of packages require GNU <code class="calibre6">make</code> (some without good reason and without declaring it as ‘SystemRequirements’ in the DESCRIPTION file).
+</p>
+<p>
+The support for the C99 <code class="calibre6">long double</code> type on Sparc hardware uses quad-precision arithmetic, and this is usually slow because it is done by software emulation. On such systems the <code class="calibre6">configure</code> option –disable-long-double can be used for faster but less accurate computations.
+</p>
+<p>
+The Solaris time-zone conversion services seem to be unreliable pre-1916 in Europe (when daylight-savings time was first introduced): most often reporting in the non-existent DST variant. Using <code class="calibre6">configure</code> option –with-internal-tzcode is recommended, and required if you find time-zone abbreviations being given odd values (as has been seen on 64-bit builds without it).
+</p>
+<p>
+When using the Oracle compilers do <em>not</em> specify -fast, as this disables IEEE arithmetic and <code class="calibre6">make check</code> will fail.
+</p>
+<p>
+A little juggling of paths was needed to ensure GNU <code class="calibre6">libiconv</code> (in /usr/local) was used rather than the Solaris <code class="calibre6">iconv</code>:
+</p>
+<div class="example">
+<pre class="example1"><code>CC=&quot;cc -xc99&quot;
+CFLAGS=&quot;-O -xlibmieee&quot;
+F77=f95
+FFLAGS=-O
+CXX=CC
+CXXSTD=&quot;-library=stlport4&quot;
+CXXFLAGS=-O
+FC=$F77
+FCFLAGS=$FFLAGS
+FCLIBS=&quot;-lfsu /opt/developerstudio12.5/lib/libfui.so.2&quot;
+R_LD_LIBRARY_PATH=&quot;/opt/developerstudio12.5/lib:/usr/local/lib:/opt/csw/lib&quot;</code></pre>
+</div>
+<p>
+The Oracle compilers do not by default conform to the C99 standard (appendix F 8.9) on the return values of functions such as <code class="calibre6">log</code>: use -xlibmieee to ensure this.
+</p>
+<p>
+A peculiarity of the Fortran compiler is that when asked to link a shared object it does not link against the Fortran runtime libraries. In R this is only used for packages with F9x code, hence the <code class="calibre6">FCLIBS</code> definition (which sufficed for CRAN packages with 12.5).
+</p>
+<p>
+Using <code class="calibre6">-xlibmil</code> in <code class="calibre6">CFLAGS</code> or <code class="calibre6">-xlibmil</code> in <code class="calibre6">FFLAGS</code> allows more system mathematical functions to be inlined.
+</p>
+<p>
+On ‘x86’ you will get marginally higher performance <em>via</em>
+</p>
+<div class="example">
+<pre class="example1"><code>CFLAGS=&quot;-xO5 -xlibmieee -xlibmil -nofstore -xtarget=native&quot;
+FFLAGS=&quot;-xO5 -libmil -nofstore -xtarget=native&quot;
+CXXFLAGS=&quot;-xO5 -xlibmil -nofstore -xtarget=native&quot;
+SAFE_FFLAGS=&quot;-O -libmil -fstore -xtarget=native&quot;</code></pre>
+</div>
+<p>
+but the use of <code class="calibre6">-nofstore</code> can be less numerically stable, and some packages have in the past failed to compile at optimization level 5.
+</p>
+<p>
+The Oracle compilers provide several implementations of the C++98 standard which select both the set of headers and a C++ runtime library. These are selected by the -library flag, which as it is needed for both compiling and linking is best specified as part of the compiler. The examples above use ‘stlport4’, currently the most modern of the options: the default (but still needed to be specified as it is needed for linking) is ‘Cstd’: see <a href="http://www.oracle.com/technetwork/server-storage/solaris/cmp-stlport-libcstd-142559.html" class="uri">http://www.oracle.com/technetwork/server-storage/solaris/cmp-stlport-libcstd-142559.html</a>. Note though that most external Solaris C++ libraries will have been built with ‘Cstd’ and so an R package using such libraries also needs to be. Occasionally the option -library=stlport4,Crun has been needed.
+</p>
+<p>
+<a href="" id="index-BLAS-library-2"></a> <a href="" id="index-LAPACK-library-2"></a>
+</p>
+<p>
+The performance library <code class="calibre6">sunperf</code> is available for use with the Oracle compilers. If selected as a BLAS, it must also be selected as LAPACK <em>via</em>
+</p>
+<div class="example">
+<pre class="example1"><code>./configure --with-blas=&#39;-library=sunperf&#39; --with-lapack</code></pre>
+</div>
+<p>
+This has often given test failures in the past, in several different places.<a href="environment-variable-index.html#FOOT78" id="DOCF78"><sup>78</sup></a>
+</p>
+<p>
+Parsing very complex R expressions needs a lot of stack space when the Oracle compilers are used: several packages require the stack increased to at least 20MB.
+</p>
+<p>
+Some people have reported that the Solaris <code class="calibre6">libintl</code> needs to be avoided, for example by using –disable-nls or –with-included-gettext or using <code class="calibre6">libintl</code> from OpenCSW. (On the other hand, there have been many successful installs which automatically detected <code class="calibre6">libintl</code> from OpenCSW or selected the included <code class="calibre6">gettext</code>.)
+</p>
+<p>
+It has been reported that some Solaris installations need
+</p>
+<div class="example">
+<pre class="example1"><code>INTERNET_LIBS=&quot;-lsocket -lnsl&quot;</code></pre>
+</div>
+<p>
+on the <code class="calibre6">configure</code> command line or in file config.site; however, there have been many successful installs without this.
+</p>
+<hr />
+<p>
+<a href="" id="g_t64_002dbit-builds"></a> <a href="" id="g_t64_002dbit-builds-1"></a>
+</p>
+<h4 id="c.4.1-64-bit-builds" class="subsection">
+C.4.1 64-bit builds
+</h4>
+<p>
+On both ‘x86’ and ‘Sparc’ platforms the compilers default to 32-bit code.
+</p>
+<p>
+For a 64-bit target add -m64 to the compiler macros and use something like <code class="calibre6">LDFLAGS=-L/usr/local/lib/amd64</code> or <code class="calibre6">LDFLAGS=-L/usr/local/lib/sparcv9</code> as appropriate (and other 64-bit library directories if used, e.g. <code class="calibre6">-L/opt/csw/lib/arm64</code>). It will also be necessary to point <code class="calibre6">pkg-config</code> at the 64-bit directories, e.g. by something like
+</p>
+<div class="example">
+<pre class="example1"><code>PKG_CONFIG_PATH=/opt/csw/lib/64/pkgconfig:/usr/lib/64/pkgconfig</code></pre>
+</div>
+<p>
+and to specify a 64-bit Java VM by e.g.
+</p>
+<div class="example">
+<pre class="example1"><code>JAVA_CPPFLAGS=&quot;-I${JAVA_HOME}/../include -I${JAVA_HOME}/../include/solaris&quot;
+JAVA_LD_LIBRARY_PATH=${JAVA_HOME}/lib/amd64/server
+JAVA_LIBS=&quot;-L${JAVA_HOME}/lib/amd64/server \
+  -R${JAVA_HOME}/lib/amd64/server -ljvm&quot;</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Using-gcc"></a> <a href="" id="Using-gcc-1"></a>
+</p>
+<h4 id="c.4.2-using-gcc" class="subsection">
+C.4.2 Using gcc
+</h4>
+<p>
+If using <code class="calibre6">gcc</code>, ensure that the compiler was compiled for the version of Solaris in use. (This can be ascertained from <code class="calibre6">gcc -v</code>.) <code class="calibre6">gcc</code> makes modified versions of some header files, and several reports of problems were due to using <code class="calibre6">gcc</code> compiled on one version of Solaris on a later version. Note that this can even apply to OS patches: some 2016 patches to Solaris 10 changed its C header files in way incompatible<a href="environment-variable-index.html#FOOT79" id="DOCF79"><sup>79</sup></a> with the modified versions included with OpenCSW’s binary distribution.
+</p>
+<p>
+The notes here are for <code class="calibre6">gcc</code> set up to use the Solaris linker: it can also be set up to use GNU <code class="calibre6">ld</code>, but that has not been tested. The tests were for compilers from the OpenCSW repository: Solaris systems often come with much older compilers installed under /usr/sfw/bin. One of -m32 or -m64 will be the default and could be omitted, but it is not easy to find out which. (For OpenCSW it is -m32.)
+</p>
+<p>
+Compilation for an ‘x86’ target with <code class="calibre6">gcc</code> 4.9.2 or <code class="calibre6">gcc</code> 5.2.0 needed
+</p>
+<div class="example">
+<pre class="example1"><code>CC=&quot;gcc -m32&quot;
+CPPFLAGS=&quot;-I/opt/csw/include -I/usr/local/include&quot;
+F77=&quot;gfortran -m32&quot;
+CXX=&quot;g++ -m32&quot;
+FC=$F77
+LDFLAGS=&quot;-L/opt/csw/lib -L/usr/local/lib&quot;</code></pre>
+</div>
+<p>
+For an ‘amd64’ target we used
+</p>
+<div class="example">
+<pre class="example1"><code>CC=&quot;gcc -m64&quot;
+CPPFLAGS=&quot;-I/opt/csw/include -I/usr/local/include&quot;
+F77=&quot;gfortran -m64&quot;
+CXX=&quot;g++ -m64&quot;
+FC=$F77
+LDFLAGS=&quot;-L/opt/csw/lib/amd64 -L/usr/local/lib/amd64&quot;</code></pre>
+</div>
+<p>
+Note that paths such as /opt/csw/lib, /usr/local/lib/amd64 and /opt/csw/lib/amd64 may need to be in the <a href="" id="index-LD_005fLIBRARY_005fPATH-4"></a> <code class="calibre6">LD_LIBRARY_PATH</code> during configuration.
+</p>
+<hr />
+<p>
+<a href="" id="AIX"></a> <a href="" id="AIX-1"></a>
+</p>
+<h3 id="c.5-aix" class="section">
+C.5 AIX
+</h3>
+<p>
+<a href="" id="index-AIX"></a>
+</p>
+<p>
+We no longer support AIX prior to 4.2, and <code class="calibre6">configure</code> will throw an error on such systems.
+</p>
+<p>
+Ei-ji Nakama was able to build under AIX 5.2 on ‘powerpc’ with GCC 4.0.3 in several configurations. 32-bit versions could be configured with –without-iconv as well as –enable-R-shlib. For 64-bit versions he used
+</p>
+<div class="example">
+<pre class="example1"><code>OBJECT_MODE=64
+CC=&quot;gcc -maix64&quot;
+CXX=&quot;g++ -maix64&quot;
+F77=&quot;gfortran -maix64&quot;
+FC=&quot;gfortran -maix64&quot;</code></pre>
+</div>
+<p>
+and was also able to build with the IBM <code class="calibre6">xlc</code> and Hitachi <code class="calibre6">f90</code> compilers by
+</p>
+<div class="example">
+<pre class="example1"><code>OBJECT_MODE=64
+CC=&quot;xlc -q64&quot;
+CXX=&quot;g++ -maix64&quot;
+F77=&quot;f90 -cpu=pwr4 -hf77 -parallel=0 -i,L -O3 -64&quot;
+FC=&quot;f90 -cpu=pwr4 -hf77 -parallel=0 -i,L -O3 -64&quot;
+FLIBS=&quot;-L/opt/ofort90/lib -lhf90vecmath -lhf90math -lf90&quot;</code></pre>
+</div>
+<p>
+Some systems have <code class="calibre6">f95</code> as an IBM compiler that does not by default accept FORTRAN 77. It needs the flag -qfixed=72, or to be invoked as <code class="calibre6">xlf_r</code>.
+</p>
+<p>
+The AIX native <code class="calibre6">iconv</code> does not support encodings ‘latin1’ nor ‘“”’ and so cannot be used. (As far as we know GNU <code class="calibre6">libiconv</code> could be installed.)
+</p>
+<p>
+Fan Long reported success on AIX 5.3 using
+</p>
+<div class="example">
+<pre class="example1"><code>OBJECT_MODE=64
+LIBICONV=/where/libiconv/installed
+CC=&quot;xlc_r -q64&quot; 
+CFLAGS=&quot;-O -qstrict&quot;
+CXX=&quot;xlC_r -q64&quot;
+CXXFLAGS=&quot;-O -qstrict&quot;
+F77=&quot;xlf_r -q64&quot;
+AR=&quot;ar -X64&quot;
+CPPFLAGS=&quot;-I$LIBICONV/include -I/usr/lpp/X11/include/X11&quot;
+LDFLAGS=&quot;-L$LIBICONV/lib -L/usr/lib -L/usr/X11R6/lib&quot;</code></pre>
+</div>
+<p>
+<a href="" id="index-R_005fSHELL"></a>
+</p>
+<p>
+On one AIX 6.x system it was necessary to use <code class="calibre6">R_SHELL</code> to set the default shell to be Bash rather than Zsh.
+</p>
+<p>
+Kurt Hornik and Stefan Theussl at WU (Wirtschaftsuniversität Wien) successfully built R on a ‘powerpc’ (8-CPU Power6 system) running AIX 6.1, configuring with or without –enable-R-shlib (Ei-ji Nakama’s support is gratefully acknowledged).
+</p>
+<p>
+It helps to describe the WU build environment first. A small part of the software needed to build R and/or install packages is available directly from the AIX Installation DVDs, e.g., Java 6 and X11. Additional open source software (OSS) is packaged for AIX in .rpm files and available from both IBM’s “AIX Toolbox for Linux Applications” (<a href="http://www-03.ibm.com/systems/power/software/aix/linux/" class="uri">http://www-03.ibm.com/systems/power/software/aix/linux/</a>) and <a href="http://www.oss4aix.org/download/" class="uri">http://www.oss4aix.org/download/</a>. The latter website typically offers more recent versions of the available OSS. All tools needed and libraries downloaded from these repositories (e.g., GCC, Make, <code class="calibre6">libreadline</code>, etc.) are typically installed to /opt/freeware, hence corresponding executables are found in <a href="" id="index-PATH-2"></a> /opt/freeware/bin which thus needs to be in <code class="calibre6">PATH</code> for using these tools. As on other Unix systems one needs GNU <code class="calibre6">libiconv</code> as the AIX version of iconv is not sufficiently powerful. Additionally, for proper Unicode compatibility one should install the corresponding package from the ICU project (<a href="http://www.icu-project.org/download/" class="uri">http://www.icu-project.org/download/</a>), which offers pre-compiled binaries for various platforms which in case of AIX can be installed via unpacking the tarball to the root file system. For full LaTeX support one can install the TeX Live DVD distribution (<a href="https://www.tug.org/texlive/" class="uri">https://www.tug.org/texlive/</a>): it is recommended to update the distribution using the <code class="calibre6">tlmgr</code> update manager. For 64-bit R builds supporting Tcl/Tk this needs to installed from the sources as available pre-compiled binaries supply only 32-bit shared objects.
+</p>
+<p>
+The recent WU testing was done using compilers from both the GNU Compiler Collection (version 4.2.4) which is available from one of the above OSS repositories, and the IBM C/C++ (XL C/C++ 10.01) as well as FORTRAN (XL Fortran 12.01) compilers (<a href="http://www14.software.ibm.com/webapp/download/byproduct.jsp#X" class="uri">http://www14.software.ibm.com/webapp/download/byproduct.jsp#X</a>).
+</p>
+<p>
+To compile for a 64-bit ‘powerpc’ (Power6 CPU) target one can use
+</p>
+<div class="example">
+<pre class="example1"><code>CC =&quot;gcc -maix64 -pthread&quot;
+CXX=&quot;g++ -maix64 -pthread&quot;
+FC=&quot;gfortran -maix64 -pthread&quot;
+F77=&quot;gfortran -maix64 -pthread&quot;
+CFLAGS=&quot;-O2 -g -mcpu=power6&quot;
+FFLAGS=&quot;-O2 -g -mcpu=power6&quot;
+FCFLAGS=&quot;-O2 -g -mcpu=power6&quot;</code></pre>
+</div>
+<p>
+for the GCC and
+</p>
+<div class="example">
+<pre class="example1"><code>CC=xlc
+CXX=xlc++
+FC=xlf
+F77=xlf
+CFLAGS=&quot;-qarch=auto -qcache=auto -qtune=auto -O3 -qstrict -ma&quot;
+FFLAGS=&quot;-qarch=auto -qcache=auto -qtune=auto -O3 -qstrict&quot;
+FCFLAGS=&quot;-qarch=auto -qcache=auto -qtune=auto -O3 -qstrict&quot;
+CXXFLAGS=&quot;-qarch=auto -qcache=auto -qtune=auto -O3 -qstrict&quot;</code></pre>
+</div>
+<p>
+for the IBM XL compilers. For the latter, it is important to note that the decision for generating 32-bit or 64-bit code is done by setting the <a href="" id="index-OBJECT_005fMODE"></a> <code class="calibre6">OBJECT_MODE</code> environment variable appropriately (recommended) or using an additional compiler flag (-q32 or -q64). By default the IBM XL compilers produce 32 bit code. Thus, to build R with 64-bit support one needs to either export <code class="calibre6">OBJECT_MODE=64</code> in the environment or, alternatively, use the -q64 compiler options.
+</p>
+<p>
+It is strongly recommended to install Bash and use it as the configure shell, e.g., via setting <code class="calibre6">CONFIG_SHELL=/usr/bin/bash</code> in the environment, and to use GNU Make (e.g., via (<code class="calibre6">MAKE=/opt/freeware/bin/make</code>).
+</p>
+<p>
+Further installation instructions to set up a proper R development environment can be found in the “R on AIX” project on R-Forge (<a href="https://R-Forge.R-project.org/projects/aix/" class="uri">https://R-Forge.R-project.org/projects/aix/</a>).
+</p>
+<hr />
+<p>
+<a href="" id="FreeBSD"></a> <a href="" id="FreeBSD-1"></a>
+</p>
+<h3 id="c.6-freebsd" class="section">
+C.6 FreeBSD
+</h3>
+<p>
+<a href="" id="index-FreeBSD"></a>
+</p>
+<p>
+There have been few recent reports on FreeBSD: there is a ‘port’ at <a href="https://www.freebsd.org/ports/math.html" class="uri">https://www.freebsd.org/ports/math.html</a>.
+</p>
+<p>
+Use of ICU for collation and the <code class="calibre6">configure</code> option –with-internal-tzcode are desirable workarounds.
+</p>
+<hr />
+<p>
+<a href="" id="OpenBSD"></a> <a href="" id="OpenBSD-1"></a>
+</p>
+<h3 id="c.7-openbsd" class="section">
+C.7 OpenBSD
+</h3>
+<p>
+<a href="" id="index-OpenBSD"></a>
+</p>
+<p>
+Ingo Feinerer installed R version 3.2.2 on OpenBSD 5.8 arch ‘amd64’ (their name for ‘x86_64’). Details of the build (and patches applied) are at <a href="http://cvsweb.openbsd.org/cgi-bin/cvsweb/ports/math/R/" class="uri">http://cvsweb.openbsd.org/cgi-bin/cvsweb/ports/math/R/</a>. (Downgrading the <code class="calibre6">zlib</code> requirement to 1.2.3 is against the advice of the R developers.)
+</p>
+<hr />
+<p>
+<a href="" id="Cygwin"></a> <a href="" id="Cygwin-1"></a>
+</p>
+<h3 id="c.8-cygwin" class="section">
+C.8 Cygwin
+</h3>
+<p>
+The 32-bit version has never worked well enough to pass R’s <code class="calibre6">make check</code>, and residual support from earlier experiments was removed in R 3.3.0.
+</p>
+<p>
+The 64-bit version is completely unsupported.
+</p>
+<hr />
+<p>
+<a href="" id="New-platforms"></a> <a href="" id="New-platforms-1"></a>
+</p>
+<h3 id="c.9-new-platforms" class="section">
+C.9 New platforms
+</h3>
+<p>
+There are a number of sources of problems when installing R on a new hardware/OS platform. These include
+</p>
+<p>
+<strong>Floating Point Arithmetic</strong>: R requires arithmetic compliant with IEC 60559, also known as IEEE 754. This mandates the use of plus and minus infinity and <code class="calibre6">NaN</code> (not a number) as well as specific details of rounding. Although almost all current FPUs can support this, selecting such support can be a pain. The problem is that there is no agreement on how to set the signalling behaviour; Sun/Sparc, SGI/IRIX and ‘ix86’ Linux require no special action, FreeBSD requires a call to (the macro) <code class="calibre6">fpsetmask(0)</code> and OSF1 required that computation be done with a -ieee_with_inexact flag etc. On a new platform you must find out the magic recipe and add some code to make it work. This can often be done via the file config.site which resides in the top level directory.
+</p>
+<p>
+Beware of using high levels of optimization, at least initially. On many compilers these reduce the degree of compliance to the IEEE model. For example, using -fast on the Oracle compilers has caused R’s <code class="calibre6">NaN</code> to be set incorrectly, and <code class="calibre6">gcc</code>’s -ffast-math and <code class="calibre6">clang</code>’s -Ofast have given incorrect results.
+</p>
+<p>
+<strong>Shared Objects</strong>: There seems to be very little agreement across platforms on what needs to be done to build shared objects. there are many different combinations of flags for the compilers and loaders. GNU libtool cannot be used (yet), as it currently does not fully support FORTRAN: one would need a shell wrapper for this). The technique we use is to first interrogate the X window system about what it does (using <code class="calibre6">xmkmf</code>), and then override this in situations where we know better (for tools from the GNU Compiler Collection and/or platforms we know about). This typically works, but you may have to manually override the results. Scanning the manual entries for <code class="calibre6">cc</code> and <code class="calibre6">ld</code> usually reveals the correct incantation. Once you know the recipe you can modify the file config.site (following the instructions therein) so that the build will use these options.
+</p>
+<p>
+It seems that <code class="calibre6">gcc</code> 3.4.x and later on ‘ix86’ Linux defeat attempts by the LAPACK code to avoid computations entirely in extended-precision registers, so file src/modules/lapack/dlamc.f may need to be compiled without optimization. Set the configure variable <code class="calibre6">SAFE_FFLAGS</code> to the flags to be used for this file. If configure detects GNU FORTRAN it adds flag -ffloat-store to <code class="calibre6">FFLAGS</code>. (Other settings are needed when using <code class="calibre6">icc</code> on ‘ix86’ Linux, for example. Using -mpc64 is preferable on more recent GCC compilers.)
+</p>
+<p>
+If you do manage to get R running on a new platform please let us know about it so we can modify the configuration procedures to include that platform.
+</p>
+<p>
+If you are having trouble getting R to work on your platform please feel free to use the ‘R-devel’ mailing list to ask questions. We have had a fair amount of practice at porting R to new platforms …
+</p>
+<hr />
+<p>
+<a href="" id="The-Windows-toolset"></a> <a href="" id="The-Windows-toolset-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="appendix-b-configuration-on-a-unix-alike.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix-d-the-windows-toolset.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

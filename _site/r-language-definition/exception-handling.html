@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The R language definition</title>
+  <meta name="description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="The R language definition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  <meta name="github-repo" content="ColinFay/r-language-definition" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The R language definition" />
+  
+  <meta name="twitter:description" content="A draft of The R language definition documents the language per se. That is, the objects that it works on, and the details of the expression evaluation process, which are useful to know when programming R functions." />
+  
+
+<meta name="author" content="R Core Team">
+
+
+<meta name="date" content="2017-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="system-and-foreign-language-interfaces.html">
+<link rel="next" href="debugging.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">The R language definition</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>R Language Definition</a></li>
+<li class="chapter" data-level="1" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="objects.html"><a href="objects.html"><i class="fa fa-check"></i><b>2</b> Objects</a></li>
+<li class="chapter" data-level="3" data-path="evaluation-of-expressions.html"><a href="evaluation-of-expressions.html"><i class="fa fa-check"></i><b>3</b> Evaluation of expressions</a></li>
+<li class="chapter" data-level="4" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>4</b> Functions</a></li>
+<li class="chapter" data-level="5" data-path="object-oriented-programming.html"><a href="object-oriented-programming.html"><i class="fa fa-check"></i><b>5</b> Object-oriented programming</a></li>
+<li class="chapter" data-level="6" data-path="computing-on-the-language.html"><a href="computing-on-the-language.html"><i class="fa fa-check"></i><b>6</b> Computing on the language</a></li>
+<li class="chapter" data-level="7" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>7</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="8" data-path="exception-handling.html"><a href="exception-handling.html"><i class="fa fa-check"></i><b>8</b> Exception handling</a></li>
+<li class="chapter" data-level="9" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>9</b> Debugging</a></li>
+<li class="chapter" data-level="10" data-path="parser.html"><a href="parser.html"><i class="fa fa-check"></i><b>10</b> Parser</a></li>
+<li class="chapter" data-level="11" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>11</b> Function and Variable Index</a></li>
+<li class="chapter" data-level="12" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>12</b> Concept Index</a></li>
+<li class="chapter" data-level="13" data-path="appendix-a-references.html"><a href="appendix-a-references.html"><i class="fa fa-check"></i><b>13</b> Appendix A References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://github.com/ColinFay" target="blank">Adapted by Colin Fay</a></li>
+<li><a href="https://cran.r-project.org/manuals.html" target="blank">from the R manuals</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The R language definition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="exception-handling" class="section level1">
+<h1><span class="header-section-number">Chapter 8</span> Exception handling</h1>
+<p>
+The exception handling facilities in R are provided through two mechanisms. Functions such as <code class="calibre7">stop</code> or <code class="calibre7">warning</code> can be called directly or options such as <code class="calibre7">“warn”</code> can be used to control the handling of problems.
+</p>
+<hr />
+<p>
+<a href="" id="stop"></a> <a href="" id="stop-1"></a>
+</p>
+<h3 id="stop" class="section">
+8.1 stop
+</h3>
+<p>
+<a href="" id="index-stop"></a>
+</p>
+<p>
+A call to <code class="calibre7">stop</code> halts the evaluation of the current expression, prints the message argument and returns execution to top-level.
+</p>
+<hr />
+<p>
+<a href="" id="warning"></a> <a href="" id="warning-1"></a>
+</p>
+<h3 id="warning" class="section">
+8.2 warning
+</h3>
+<p>
+<a href="" id="index-warning"></a> <a href="" id="index-warnings"></a>
+</p>
+<p>
+The function <code class="calibre7">warning</code> takes a single argument that is a character string. The behaviour of a call to <code class="calibre7">warning</code> depends on the value of the option <code class="calibre7">“warn”</code>. If <code class="calibre7">“warn”</code> is negative warnings are ignored. If it is zero, they are stored and printed after the top-level function has completed. If it is one, they are printed as they occur and if it is 2 (or larger) warnings are turned into errors.
+</p>
+<p>
+If <code class="calibre7">“warn”</code> is zero (the default), a variable <code class="calibre7">last.warning</code> is created and the messages associated with each call to <code class="calibre7">warning</code> are stored, sequentially, in this vector. If there are fewer than 10 warnings they are printed after the function has finished evaluating. If there are more than 10 then a message indicating how many warnings occurred is printed. In either case <code class="calibre7">last.warning</code> contains the vector of messages, and <code class="calibre7">warnings</code> provides a way to access and print it.
+</p>
+<hr />
+<p>
+<a href="" id="on_002eexit"></a> <a href="" id="on_002eexit-1"></a>
+</p>
+<h3 id="on.exit" class="section">
+8.3 on.exit
+</h3>
+<p>
+<a href="" id="index-on_002eexit"></a>
+</p>
+<p>
+A function can insert a call to <code class="calibre7">on.exit</code> at any point in the body of a function. The effect of a call to <code class="calibre7">on.exit</code> is to store the value of the body so that it will be executed when the function exits. This allows the function to change some system parameters and to ensure that they are reset to appropriate values when the function is finished. The <code class="calibre7">on.exit</code> is guaranteed to be executed when the function exits either directly or as the result of a warning.
+</p>
+<p>
+An error in the evaluation of the <code class="calibre7">on.exit</code> code causes an immediate jump to top-level without further processing of the <code class="calibre7">on.exit</code> code.
+</p>
+<p>
+<code class="calibre7">on.exit</code> takes a single argument which is an expression to be evaluated when the function is exited.
+</p>
+<hr />
+<p>
+<a href="" id="Error-options"></a> <a href="" id="Error-options-1"></a>
+</p>
+<h3 id="error-options" class="section">
+8.4 Error options
+</h3>
+<p>
+There are a number of <code class="calibre7">options</code> variables that can be used to control how R handles errors and warnings. They are listed in the table below.
+</p>
+<dl>
+<dt>
+‘warn’
+</dt>
+<dd>
+<p>
+Controls the printing of warnings.
+</p>
+</dd>
+<dt>
+‘warning.expression’
+</dt>
+<dd>
+<p>
+Sets an expression that is to be evaluated when a warning occurs. The normal printing of warnings is suppressed if this option is set.
+</p>
+</dd>
+<dt>
+‘error’
+</dt>
+<dd>
+<p>
+Installs an expression that will be evaluated when an error occurs. The normal printing of error messages and warning messages precedes the evaluation of the expression.
+</p>
+</dd>
+</dl>
+<p>
+Expressions installed by <code class="calibre7">options(“error”)</code> are evaluated before calls to <code class="calibre7">on.exit</code> are carried out.
+</p>
+<p>
+One can use <code class="calibre7">options(error = expression(q(“yes”)))</code> to get R to quit when an error has been signalled. In this case an error will cause R to shut down and the global environment will be saved.
+</p>
+<hr />
+<p>
+<a href="" id="Debugging"></a> <a href="" id="Debugging-1"></a>
+</p>
+<div id="calibre_pb_19" class="calibre5">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="system-and-foreign-language-interfaces.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="debugging.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
