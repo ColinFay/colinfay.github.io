@@ -24,6 +24,7 @@ td {
 
 |  __2019-07-09__|  ["Hacking RStudio: Advanced Use of your Favorite IDE"](https://speakerdeck.com/colinfay/hacking-rstudio-advanced-use-of-your-favorite-ide), useR!2019, Toulouse.||
 |  __2019-07-08__|  ["Contributing to the R ecosystem"](https://speakerdeck.com/colinfay/contributing-to-the-r-ecosystem), useR!2019, Toulouse.||
+|  __2019-06-06__|  ["Production-grade Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/production-grade-shiny-apps-with-golem), ThinkR x RStudio Roadshow.||
 | __2019-04-25__ | ["R in Production"](https://speakerdeck.com/colinfay/r-in-production), R Nantes Meetup, Nantes.||
 | __2019-01-16__ | ["Building Big Shiny Apps - A Workflow"](https://thinkr-open.github.io/rstudioconf2019/), RStudio Conference 2019, Austin, Texas. ||
 | __2018-11-05__ |  ["Data Science en production avec R — Quels enjeux ? Quelles solutions?"](https://speakerdeck.com/colinfay/data-science-en-production-avec-r-quels-enjeux-quelles-solutions), Lyon Data Science Meetup, Lyon. | [ &#127909; ](https://www.youtube.com/watch?v=rjQ1CcHEEF4) |
@@ -54,9 +55,11 @@ td {
 
 ## I've been writing &#x1F4DA;
 
-### Books
+### Open source Books
 
 + [WIP] - [Building Big Shiny Apps - A Workflow](https://thinkr-open.github.io/building-shiny-apps-workflow/)
+
++ [JavaScript 4 Shiny - Field Notes](https://connect.thinkr.fr/js4shinyfieldnotes/)
 
 + [WIP] - [Licensing R](https://thinkr-open.github.io/licensing-r/)
  
