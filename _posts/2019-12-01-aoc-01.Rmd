@@ -88,5 +88,5 @@ function floorish(val, start = 0){
 }
 
 // Doing the computation
-console.log( res.map( floorish ).reduce( add ) );
+console.log( res.map( x => floorish(x) ).reduce( add ) );
 ```
