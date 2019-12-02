@@ -10,6 +10,7 @@ excerpt_separator: <!--more-->
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+bubble::set_node_engine()
 ```
 
 Solving Advent of Code 2019-01 with R and JavaScript. 
@@ -58,25 +59,44 @@ sum( purrr::map_dbl(ipt$V1, floorish) )
 
 ### Part one & Two
 
-```{node}
-var fs = require('fs');
+```{node results = 'hide'}
+var fs = require('fs')
+```
 
-// Reading the file
+> // Reading the file
+
+```{node results = "hide"}
 var res = fs.readFileSync("input1.txt", 'utf8').split("\n").filter(x => x.length != 0);
+```
 
-// Turning to integer
+> // Turning to integer
+
+```{node results = "hide"}
 res = res.map(x => parseInt(x));
+```
 
-// Doing the floor of division less 2
+> // Doing the floor of division less 2
+
+```{node results = "hide"}
 var val = res.map(x => Math.floor(x / 3) - 2);
+```
 
-// Suming
+> // Suming
+
+```{node results = "hide"}
 var add = (x, y) => x + y;
+```
 
-// Solution
-console.log( val.reduce(add) );
+> // Solution
 
-// Creating the recursive function
+```{node}
+val.reduce(add)
+```
+
+> // Creating the recursive function
+
+```{node results = "hide"}
+
 function floorish(val, start = 0){
   loc = Math.floor(val / 3) - 2;
   if (loc > 0){
@@ -87,6 +107,10 @@ function floorish(val, start = 0){
   } 
 }
 
-// Doing the computation
-console.log( res.map( x => floorish(x) ).reduce( add ) );
+```
+
+> // Doing the computation
+
+```{node}
+res.map( x => floorish(x) ).reduce( add ) 
 ```
