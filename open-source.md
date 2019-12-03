@@ -66,10 +66,12 @@ permalink: /open-source/
 <script>
 /*Colinfay*/
 var repos = ["ColinFay/attempt", 
+  "ColinFay/bubble", 
   "ColinFay/proustr", 
   "ColinFay/backyard", 
   "ColinFay/dockerfiler", 
-  "ColinFay/argh", 
+  "ColinFay/darkmode", 
+  "ColinFay/glouton", 
   "ColinFay/nessy", 
   "ColinFay/tidystringdist",  
   "ColinFay/feathericons", 
@@ -77,8 +79,7 @@ var repos = ["ColinFay/attempt",
   "ColinFay/skeleton", 
   "ColinFay/geoloc",  
   "ColinFay/handydandy", 
-  "ColinFay/fryingpane", 
-  "ColinFay/wtfismyip"
+  "ColinFay/fryingpane"
   ]
     
 add_repos(repos, "colinthings")
