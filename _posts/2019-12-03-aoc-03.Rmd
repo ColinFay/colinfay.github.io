@@ -1,0 +1,163 @@
+---
+title: "Advent of Code 2019-01 with R & JavaScript"
+post_date: 2019-12-01
+layout: single
+permalink: /aoc-2019-01/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2019-01 with R and JavaScript. 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code, as it gives solutions for solving day 1.
+
+[Disclaimer bis] I'm no JavaScript expert so this might not be the perfect solution. TBH, that's also the case for the R solution. 
+
+## About the JavaScript code
+
+The JavaScript code has been written in the same RMarkdown as the R code. It runs thanks to the `{bubble}` package: https://github.com/ColinFay/bubble
+
+## Instructions
+
+Find the instructions at: <https://adventofcode.com/2019/day/2>
+
+## R solution
+
+### Part one
+
+```{r}
+
+extract <- function(vec, idx) vec[as.character(idx)]
+
+day_2 <- function(vec){
+  names(vec) <- 0:(length(vec) - 1)
+  start <- 0
+  repeat {
+    req <- extract(vec, start)
+    if (req == 1){
+      fun <- `+`
+    } else if (req == 2){
+      fun <- `*`
+    } else if (req == 99){
+      break
+    }
+    
+    pos1 <- extract(vec, start + 1)
+    pos2 <- extract(vec, start + 2)
+    pos3 <- extract(vec, start + 3)
+    vec[as.character(pos3)] <- fun(
+      extract(vec, pos1), 
+      extract(vec, pos2)
+    )
+    start <- start + 4
+  }
+  
+  vec
+}
+
+ipt <- scan( "input2.txt", what = numeric(), sep = ",")
+ipt[2] <- 12
+ipt[3] <- 2
+
+day_2(ipt)
+```
+
+### Part two 
+
+
+```{r}
+day_2_bis <- function(ipt, two, three){
+  ipt[2] <- two
+  ipt[3] <- three
+  day_2(ipt)[1]
+}
+
+x <- purrr::cross2(0:99, 0:99)
+i <- 1
+
+repeat{
+  res <- day_2_bis(ipt, x[[i]][[1]], x[[i]][[2]])
+  cli::cat_line(res)
+  if (res == 19690720){
+    break
+  } 
+  i <- i + 1
+}
+# Answer
+100 * x[[i]][[1]] +  x[[i]][[2]]
+```
+
+## JS solution
+
+### Part one & Two
+
+> // Reading the file
+
+```{node results = "hide"}
+var res = fs.readFileSync("input2.txt", 'utf8').split(",").filter(x => x.length != 0);
+```
+
+> // Turning to integer
+
+```{node results = "hide"}
+res = res.map(x => parseInt(x));
+```
+
+```{node}
+function day_2(vec){
+  start = 0;
+  do {
+    var req = vec[start];
+    if (req === 1){
+    pos1 = vec[start + 1]
+    pos2 = vec[start + 2]
+    pos3 = vec[start + 3]
+    vec[pos3] = vec[pos1] + vec[pos2]
+    start = start + 4
+
+    } else if (req === 2){
+    pos1 = vec[start + 1]
+    pos2 = vec[start + 2]
+    pos3 = vec[start + 3]
+    vec[pos3] = vec[pos1] * vec[pos2]
+    start = start + 4
+    } else if (req === 99){
+      break
+    } 
+  } while (true)
+  return vec
+}
+res[1] = 12
+res[2] = 2
+day_2(res)[0]
+```
+
+
+```{node}
+function day_2_bis(ipt, two, three){
+  ipt[1] = two
+  ipt[2] = three
+  day_2(ipt)[0]
+}
+
+x <- Array.from({length: 100}, (el, index) => index);
+i <- 1
+
+repeat{
+  res <- day_2_bis(ipt, x[[i]][[1]], x[[i]][[2]])
+  cli::cat_line(res)
+  if (res == 19690720){
+    break
+  } 
+  i <- i + 1
+}
+# Answer
+100 * x[[i]][[1]] +  x[[i]][[2]]
+```
+
