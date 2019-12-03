@@ -117,6 +117,9 @@ function day_2(vec, one = 12, two = 2){
   } while (start < vec.length)
   return loc[0]
 }
+```
+
+```{node}
 day_2(res)
 ```
 
