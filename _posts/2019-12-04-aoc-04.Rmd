@@ -1,0 +1,146 @@
+---
+title: "Advent of Code 2019-04 with R & JavaScript"
+post_date: 2019-12-04
+layout: single
+permalink: /aoc-2019-04/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2019-04 with R and JavaScript. 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code, as it gives solutions for solving day 4.
+
+[Disclaimer bis] I'm no JavaScript expert so this might not be the perfect solution. TBH, that's also the case for the R solution. 
+
+## About the JavaScript code
+
+The JavaScript code has been written in the same RMarkdown as the R code. It runs thanks to the `{bubble}` package: https://github.com/ColinFay/bubble
+
+## Instructions
+
+Find the instructions at: <https://adventofcode.com/2019/day/4>
+
+## R solution
+
+### Part one
+
+```{r}
+test <- 156218:652527
+cond <- function(vec){
+  splt <- strsplit(
+    as.character(vec), 
+    ""
+  )[[1]] %>% as.numeric()
+  adj_eq <- splt == lag(splt)
+  incre <- splt >= lag(splt)
+  any(na.omit(adj_eq)) & all(na.omit(incre))
+}
+vapply(test, cond, logical(1)) %>% sum()
+```
+
+### Part two 
+
+```{r}
+cond2 <- function(vec){
+  splt <- strsplit(
+    as.character(vec), 
+    ""
+  )[[1]] %>% as.numeric()
+  adj_eq <- na.omit(splt == lag(splt))
+  if (any(adj_eq)){
+    tb <- table(splt)
+    adj_eq <- any(tb == 2)
+  }
+  incre <- na.omit(splt >= lag(splt))
+  any(adj_eq) & all(incre)
+}
+vapply(test, cond2, logical(1)) %>% sum()
+```
+
+## JS solution
+
+### Part one & Two
+
+> // Generating the array (from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#Polyfill)
+
+```{node results = "hide"}
+const range = (start, stop, step = 1) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
+var test = range(156218, 652527)
+```
+
+
+```{node results = "hide"}
+function lag(vec){
+  var res = [];
+  res.push(null);
+  for (var i = 0; i < vec.length - 1; i ++){
+    res.push(vec[i])
+  }
+  return res
+}
+
+function cond(vec){
+  var vec = vec.toString().split("").map(x => parseInt(x));
+  var laged = lag(vec);
+  var adj_eq = vec.map( (x, i) => x == laged[i] )
+  adj_eq.shift()
+  var adj_eq = adj_eq.some(z => z);
+  var incre = vec.map( (x, i) => x >= laged[i] )
+  incre.shift()
+  var incre = incre.every(z => z);
+  var all = [incre, adj_eq].every(z => z);
+  return all
+}
+```
+
+```{node}
+test.map(cond).filter(v => v).length
+```
+
+
+```{node results = "hide"}
+function table(vec){
+  var tbl = {}
+  vec.map(function(x){
+    if (tbl[x]){
+      tbl[x] = tbl[x] + 1;
+    } else {
+      tbl[x] = 1;
+    }
+  })
+  return tbl
+}
+function cond2(vec){
+  var vec = vec.toString().split("").map(x => parseInt(x));
+  var laged = lag(vec);
+  var adj_eq = vec.map( (x, i) => x == laged[i] )
+  adj_eq.shift()
+  var adj_eq = adj_eq.some(z => z);
+  if (adj_eq){
+    var tb = table(vec);
+    var res = [];
+    for (i in tb){
+      res.push(tb[i] == 2);
+    }
+    var adj_eq = res.some(x => x);
+  }
+  
+  var incre = vec.map( (x, i) => x >= laged[i] );
+  incre.shift();
+  var incre = incre.every(z => z);
+  var all = [incre, adj_eq].every(z => z);
+  return all;
+}
+```
+
+```{node}
+test.map(cond2).filter(v => v).length;
+```
+
