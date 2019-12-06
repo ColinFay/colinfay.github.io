@@ -1,0 +1,54 @@
+---
+title: "Advent of Code 2019-06 with R "
+post_date: 2019-12-06
+layout: single
+permalink: /aoc-2019-06/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2019-06 with R (and no JavaScript this time). 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code, as it gives solutions for solving day 6.
+
+## Instructions
+
+Find the instructions at: <https://adventofcode.com/2019/day/6>
+
+## R solution
+
+### Part one
+
+```{r}
+library(magrittr)
+library(igraph)
+
+ipt <- read.delim("input6.txt", header = FALSE, sep = ")", stringsAsFactor = FALSE)
+grph <- ipt %>% 
+  graph_from_data_frame() 
+
+grph %>% 
+  distance_table() %>% 
+  extract2("res") %>% 
+  sum()
+```
+
+### Part two 
+
+```{r}
+distances(
+  grph, 
+  v = V(grph)[["YOU"]], 
+  to = V(grph)[["SAN"]]
+) - 2
+```
+
+## JS solution
+
+> Nop, no JS solution today... I didn't feel like reimplementing igraph in JavaScript, neither digging into the graph modules today ;) 
