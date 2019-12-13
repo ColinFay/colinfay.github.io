@@ -1,0 +1,255 @@
+---
+title: "Advent of Code 2019-05 with R & JavaScript"
+post_date: 2019-12-05
+layout: single
+permalink: /aoc-2019-05/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2019-05 with R and JavaScript. 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code, as it gives solutions for solving day 5.
+
+[Disclaimer bis] I'm no JavaScript expert so this might not be the perfect solution. TBH, that's also the case for the R solution. 
+
+## About the JavaScript code
+
+The JavaScript code has been written in the same RMarkdown as the R code. It runs thanks to the `{bubble}` package: https://github.com/ColinFay/bubble
+
+## Instructions
+
+Find the instructions at: <https://adventofcode.com/2019/day/5>
+
+## R solution
+
+```{r}
+vec <- scan("input5.txt", numeric(), sep = ",")
+library(magrittr)
+library(zeallot)
+parse_opcode <- function(vec, pos){
+  code <- vec[pos]
+  op_code <- stringr::str_pad(
+    as.character(code), 
+    5, 
+    side = "left", "0"
+  ) %>% strsplit(split = "")
+  op_code <- op_code[[1]] %>% 
+    setNames(letters[1:5])
+  list(
+    op_code = paste0(
+      op_code[4:5], 
+      collapse = ""
+    ) %>% as.numeric(), 
+    c = op_code["c"],
+    b = op_code["b"], 
+    a = op_code["a"]
+  ) %>%
+    one_two_three(
+      vec, 
+      pos
+    )
+}
+
+one_two_three <- function(res, vec, pos){
+  if (res$c == "0"){
+    one <- vec[vec[pos + 1] + 1]
+  } else {
+    one <- vec[pos + 1] 
+  } 
+  if (res$b == "0"){
+    two <- vec[vec[pos + 2] + 1]
+  } else {
+    two <- vec[pos + 2] 
+  } 
+  if (res$a == "0"){
+    three <- vec[pos + 3] + 1
+  } else {
+    three <- vec[pos + 3]
+  } 
+  list(
+    res$op_code,
+    one, 
+    two, 
+    three
+  )
+}
+
+prog <- function(vec, ipt){
+  pos <- 1
+  while (pos < length(vec)) {
+    
+    c(op_code, one, two, three) %<-%  parse_opcode( vec,  pos )
+    
+    if (op_code == 99) break
+    
+    if (op_code %in% 1:2){
+      
+      if (op_code == 1) fun <- `+`
+      if (op_code == 2) fun <- `*`
+      vec[three] <- fun(one, two)
+      pos <- pos + 4
+    } else if (op_code == 3){
+      vec[ vec[pos + 1] + 1 ] <- ipt
+      pos <- pos + 2
+    } else if (op_code == 4){
+      print(vec[vec[pos + 1] + 1])
+      pos <- pos + 2
+    } else if (op_code == 5){
+      if (one != 0){
+        pos <- two + 1
+      } else {
+        pos <- pos + 3
+      }
+    } else if (op_code == 6){
+      if (one == 0){
+        pos <- two + 1
+      } else {
+        pos <- pos + 3
+      }
+    } else if (op_code == 7){
+      if (one < two){
+        vec[three] <- 1 
+      } else {
+        vec[three] <- 0 
+      }
+      pos <- pos + 4
+    } else if (op_code == 8){
+      if (one == two){
+        vec[three] <- 1 
+      } else {
+        vec[three] <- 0 
+      }
+      pos <- pos + 4
+    }
+  }
+}
+prog(vec, 1)
+```
+
+### Part two 
+
+```{r}
+prog(vec, 5)
+```
+
+## JS solution
+
+### Part one & Two
+
+
+```{node results = "hide"}
+var vec = fs.readFileSync("input5.txt", 'utf8').split(",").map(x => parseInt(x)).filter(x => x.length != 0)
+```
+
+
+```{node results = "hide"}
+function parse_opcode(vec, pos){
+  var code = vec[pos];
+  code = code.toString();
+  while(code.length < 5){
+    code = '0' + code
+  }
+  code = code.split("");
+  var l = [];
+  l.opcode = code[3] + code[4]
+  l.c = code[2]
+  l.b = code[1]
+  l.a = code[0]
+  var res = one_two_three(l, vec, pos);
+  return res
+}
+
+function one_two_three(l, vec, pos){
+  var out = {};
+  out.opcode = l.opcode;
+  if (l.c == "0"){
+    out.one = vec[vec[pos + 1]]
+  } else {
+    out.one = vec[pos + 1] 
+  } 
+  if (l.b === "0"){
+    out.two = vec[vec[pos + 2]]
+  } else {
+    out.two = vec[pos + 2] 
+  } 
+  if (l.a === "0"){
+    out.three = vec[pos + 3]
+  } else {
+    three = vec[pos + 3]
+  } 
+  return out
+}
+
+function prog(vec, ipt){
+  var vec = vec.slice()
+  var pos = 0;
+  res = [];
+  while (pos < vec.length) {
+    var out = parse_opcode( vec,  pos );
+    var op_code = parseInt(out.opcode);
+    var one =  parseInt(out.one);
+    var two = parseInt(out.two);
+    var three = parseInt(out.three);
+    
+    if (op_code == 99) break
+    
+    if (op_code == 1) {
+      vec[three] = one + two;
+      pos = pos + 4;
+    } else  if (op_code == 2) {
+      vec[three] = one * two;
+      pos = pos + 4;
+    } else if (op_code == 3){
+      vec[ vec[pos + 1] ] = ipt
+      pos = pos + 2
+    } else if (op_code == 4){
+      res.push(vec[vec[pos + 1]])
+      pos = pos + 2
+    } else if (op_code === 5){
+      if (one !== 0){
+        pos = two 
+      } else {
+        pos = pos + 3
+      }
+    } else if (op_code === 6){
+      if (one === 0){
+        pos = two 
+      } else {
+        pos = pos + 3
+      }
+    } else if (op_code === 7){
+      if (one < two){
+        vec[three] = 1 
+      } else {
+        vec[three] = 0 
+      }
+      pos = pos + 4
+    } else if (op_code === 8){
+      if (one == two){
+        vec[three] = 1 
+      } else {
+        vec[three] = 0 
+      }
+      pos = pos + 4
+    }
+  }
+  return res.pop()
+}
+
+```
+
+```{node}
+prog(vec, 1)
+```
+
+```{node}
+prog(vec, 5)
+```
+
