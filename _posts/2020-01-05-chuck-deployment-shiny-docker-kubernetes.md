@@ -8,6 +8,7 @@ output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---
 
+
 `chuck` is a small app you can use as a training tool for deploying
 Shiny applications.
 
@@ -29,11 +30,15 @@ course you don’t have any feedback about the context of the application
 features that can be used to train your skills when it comes to
 deploying Shiny apps with Docker and Kubernetes.
 
-<div data-align="center">
+<!--html_preserve-->
 
-<img src = "/assets/img/chuck1.png" width = "800px">
+<div align="center">
+
+<img src="/assets/img/chuck1.png" width="800px"/>
 
 </div>
+
+<!--/html_preserve-->
 
 Let me describe the infrastructure of this app:
 
@@ -61,11 +66,15 @@ Let me describe the infrastructure of this app:
     output inside the modals, so you can retrieve info about the R
     session the app is run in, and about the location of the server.
 
-<div data-align="center">
+<!--html_preserve-->
 
-<img src = "/assets/img/chuck2.png" width = "800px">
+<div align="center">
+
+<img src="/assets/img/chuck1.png" width="800px"/>
 
 </div>
+
+<!--/html_preserve-->
 
 ## Find `chuck`
 
@@ -88,12 +97,12 @@ If you don’t want to go into too much trouble, you can simply run:
     docker network create chucknet
     
     docker run -v $(pwd)/db:/data/db -p 27017:27017 \
-      -d --name mongo --net chucknet mongo:3.4
+    -d --name mongo --net chucknet mongo:3.4
     
     docker run -e MONGOPORT=27017 -e MONGOURL=mongo \
-      -e MONGODB=pouet -e MONGOCOLLECTION=pouet -p 3838:3838 \
-      --name chuck --net chucknet -d colinfay/chuck \
-      && sleep 5 && open http://localhost:3838
+    -e MONGODB=pouet -e MONGOCOLLECTION=pouet -p 3838:3838 \
+    --name chuck --net chucknet -d colinfay/chuck \
+    && sleep 5 && open http://localhost:3838
 
 In the `kube/` folder, you’ll find the YAMLs used during the training to
 deploy the app with minikube. If you’re in minikube right now, you’ll

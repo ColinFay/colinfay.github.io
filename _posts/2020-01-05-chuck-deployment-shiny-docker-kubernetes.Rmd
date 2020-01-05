@@ -13,6 +13,13 @@ knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
 ```
 
 
+<style>
+.center{
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
 `chuck` is a small app you can use as a training tool for deploying Shiny applications. 
 
 ### Why?
@@ -24,11 +31,15 @@ One challenging thing for this training was to find an app that was useful for t
 
 `chuck` is a small, relatively funny Shiny app that contains some features that can be used to train your skills when it comes to deploying Shiny apps with Docker and Kubernetes. 
 
-<div align = "center">
-
-<img src = "/assets/img/chuck1.png" width = "800px">
-
-</div>
+```{r echo = FALSE}
+htmltools::div(
+  align="center", 
+  htmltools::img(
+    src="/assets/img/chuck1.png",
+    width="800px"
+  )
+)
+```
 
 
 Let me describe the infrastructure of this app: 
@@ -44,11 +55,17 @@ You can see the number of elements registered in the mongo collection + the info
 That allows you to play with mongo collection and database name, storage systems (keep the db content when the app / docker / pods are closed), etc. 
 + The "Show R Session" and "Server wtfismyip" respectively run `utils::sessionInfo()` and `jsonlite::read_json("https://wtfismyip.com/json")` and prints the output inside the modals, so you can retrieve info about the R session the app is run in, and about the location of the server.
 
-<div align = "center">
+```{r echo = FALSE}
+htmltools::div(
+  align="center", 
+  htmltools::img(
+    src="/assets/img/chuck1.png",
+    width="800px"
+  )
+)
+```
 
-<img src = "/assets/img/chuck2.png" width = "800px">
 
-</div>
 
 ## Find `chuck`
 
@@ -70,12 +87,12 @@ docker pull mongo:3.4
 docker network create chucknet
 
 docker run -v $(pwd)/db:/data/db -p 27017:27017 \
-  -d --name mongo --net chucknet mongo:3.4
+-d --name mongo --net chucknet mongo:3.4
 
 docker run -e MONGOPORT=27017 -e MONGOURL=mongo \
-  -e MONGODB=pouet -e MONGOCOLLECTION=pouet -p 3838:3838 \
-  --name chuck --net chucknet -d colinfay/chuck \
-  && sleep 5 && open http://localhost:3838
+-e MONGODB=pouet -e MONGOCOLLECTION=pouet -p 3838:3838 \
+--name chuck --net chucknet -d colinfay/chuck \
+&& sleep 5 && open http://localhost:3838
 ```
 
 In the `kube/` folder, you'll find the YAMLs used during the training to deploy the app with minikube. 
