@@ -34,7 +34,7 @@ deploying Shiny apps with Docker and Kubernetes.
 
 <div align="center">
 
-<img src="/assets/img/chuck1.png" width="800px"/>
+<img src="/assets/img/chuck1.png" width="600px"/>
 
 </div>
 
@@ -70,7 +70,7 @@ Let me describe the infrastructure of this app:
 
 <div align="center">
 
-<img src="/assets/img/chuck1.png" width="800px"/>
+<img src="/assets/img/chuck2.png" width="600px"/>
 
 </div>
 
