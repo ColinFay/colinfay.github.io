@@ -29,7 +29,7 @@ course you don’t have any feedback about the context of the application
 features that can be used to train your skills when it comes to
 deploying Shiny apps with Docker and Kubernetes.
 
-![](assets/img/chuck1.png)
+![](/assets/img/chuck1.png)
 
 Let me describe the infrastructure of this app:
 
@@ -57,7 +57,7 @@ Let me describe the infrastructure of this app:
     output inside the modals, so you can retrieve info about the R
     session the app is run in, and about the location of the server.
 
-![](assets/img/chuck2.png)
+![](/assets/img/chuck2.png)
 
 ## Find `chuck`
 
