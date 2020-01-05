@@ -12,6 +12,7 @@ excerpt_separator: <!--more-->
 knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE)
 ```
 
+
 `chuck` is a small app you can use as a training tool for deploying Shiny applications. 
 
 ### Why?
@@ -23,7 +24,12 @@ One challenging thing for this training was to find an app that was useful for t
 
 `chuck` is a small, relatively funny Shiny app that contains some features that can be used to train your skills when it comes to deploying Shiny apps with Docker and Kubernetes. 
 
-![](/assets/img/chuck1.png)
+<div align = "center">
+
+<img src = "/assets/img/chuck1.png" width = "800px">
+
+</div>
+
 
 Let me describe the infrastructure of this app: 
 
@@ -38,7 +44,11 @@ You can see the number of elements registered in the mongo collection + the info
 That allows you to play with mongo collection and database name, storage systems (keep the db content when the app / docker / pods are closed), etc. 
 + The "Show R Session" and "Server wtfismyip" respectively run `utils::sessionInfo()` and `jsonlite::read_json("https://wtfismyip.com/json")` and prints the output inside the modals, so you can retrieve info about the R session the app is run in, and about the location of the server.
 
-![](/assets/img/chuck2.png)
+<div align = "center">
+
+<img src = "/assets/img/chuck2.png" width = "800px">
+
+</div>
 
 ## Find `chuck`
 
