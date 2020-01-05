@@ -1,5 +1,5 @@
 ---
-title: "chuck — A playground for deploying Shiny Apps"
+title: "chuck — A training tool for deploying Shiny Apps"
 post_date: 2020-01-05
 layout: single
 permalink: /chuck-deployment-shiny-docker-kubernetes/
