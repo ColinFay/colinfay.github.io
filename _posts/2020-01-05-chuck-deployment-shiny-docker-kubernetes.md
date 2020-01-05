@@ -8,12 +8,12 @@ output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---
 
-`chuck` is a small app you can use as an example as a training tool for
-deploying Shiny applications.
+`chuck` is a small app you can use as a training tool for deploying
+Shiny applications.
 
 ### Why?
 
-In late december the ThinkR team followed a three day workshop on
+In late December the ThinkR team followed a three day workshop on
 Kubernetes, which was the opportunity for us to receive a proper
 training on how to deploy apps to Kube. One challenging thing for this
 training was to find an app that was useful for toying around: the *Old
@@ -27,8 +27,11 @@ course you don’t have any feedback about the context of the application
 
 `chuck` is a small, relatively funny Shiny app that contains some
 features that can be used to train your skills when it comes to
-deploying Shiny apps with Docker and Kubernetes. Let me describe the
-infrastructure of this app:
+deploying Shiny apps with Docker and Kubernetes.
+
+![](assets/img/chuck1.png)
+
+Let me describe the infrastructure of this app:
 
   - This app takes a random “Chuck Norris Fact” from the *icndb*
     website, aka the Internet Chuck Norris Data Base
@@ -36,14 +39,14 @@ infrastructure of this app:
     needs to have access to the internet.
   - This app needs to be connected to a Mongo DB database, so you also
     need to handle the access to this DB.
-  - DataBase info are printed to R stdout so you have something to look
-    for in the Docker & Kube logs.
+  - Database info is printed to R so you have something to look for in
+    the Docker & Kube logs.
   - As it relies on `{mongolite}`, it has system requirements.
   - The connection parameters are passed through environment variables,
     so you can also play with these ones either in Docker, or in Kube
     with Environment variables, configMap or Secrets.
   - On the app, you can chose to “save” or “skip” when a joke is
-    randomly selected. If you chose save, it’s saved inside the mongo
+    randomly shown. If you chose save, it’s saved inside the mongo
     database. You can see the number of elements registered in the mongo
     collection + the info about the db. That allows you to play with
     mongo collection and database name, storage systems (keep the db
@@ -54,6 +57,8 @@ infrastructure of this app:
     output inside the modals, so you can retrieve info about the R
     session the app is run in, and about the location of the server.
 
+![](assets/img/chuck2.png)
+
 ## Find `chuck`
 
 You can find chuck on my GitHub at: <https://github.com/ColinFay/chuck>
@@ -62,11 +67,10 @@ You’ll find the app in the `chuck/` folder. It’s a rather basic Shiny
 App built with `{golem}` so nothing fancy here.
 
 The `Dockerfile` at the root of the project is the one used to build the
-container fors
-<https://hub.docker.com/repository/docker/colinfay/chuck>. As you can
-see, it contains a series of environment variables which are used inside
-the Shiny App to connect to mongo. It defaults to serving on port 3838
-but that can also be set by an env variable.
+container for <https://hub.docker.com/repository/docker/colinfay/chuck>.
+As you can see, it contains a series of environment variables which are
+used inside the Shiny App to connect to mongo. It defaults to serving on
+port 3838 but that can also be set by an env variable.
 
 If you don’t want to go into too much trouble, you can simply run:
 
@@ -88,13 +92,14 @@ deploy the app with minikube. If you’re in minikube right now, you’ll
 probably just have to `git clone` and `kubectl apply -f chuck/` to get
 this running. This folder contains three yaml files for the mongo
 database: one for the deployment, one for the persistent volume claim,
-and one for the service. The shiny app has more files: one for the
-deployment and one for the service (classical), and also a configMap and
-a secret, which are mainly used as an example for practicing these
-features. The ingress was there to help exposing the app to the world
-during the training, but you might want to use other configs for your
-plateform (for example, I had to use another method for Google Cloud
-Engine).
+and one for the service.
+
+The shiny app has more files: one for the deployment and one for the
+service (classical), and also a configMap and a secret, which are mainly
+used as an example for practicing these features. The ingress was there
+to help exposing the app to the world during the training, but you might
+want to use other configs for your platform (for example, I had to use
+another method for Google Cloud Engine).
 
 The main goal is to have something to exercise your skills, so maybe
 you’d want to write your own Dockerfile & kube YAMLs.
