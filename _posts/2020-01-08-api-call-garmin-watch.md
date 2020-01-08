@@ -1,5 +1,5 @@
 ---
-title: "Using your Garmin watch to tell your team you're going for a run"
+title: "How to use your Garmin watch to tell your team you're going for a run"
 post_date: 2020-01-08
 layout: single
 permalink: /api-call-garmin-watch/
