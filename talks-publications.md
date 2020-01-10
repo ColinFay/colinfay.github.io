@@ -22,6 +22,8 @@ td {
 
 ## I've been talking &#128483;
 
+|  __2019-12-03__|  ["{golem} - Engineering Production-Grade Shiny Apps"](https://speakerdeck.com/colinfay/hacking-rstudio-advanced-use-of-your-favorite-ide), Barcelona R Meetup, Barcelona.||
+|  __2019-09-29__|  ["R & Microservices"](https://speakerdeck.com/colinfay/r-and-microservices), whyR 2019, Warsaw.||
 |  __2019-07-09__|  ["Hacking RStudio: Advanced Use of your Favorite IDE"](https://speakerdeck.com/colinfay/hacking-rstudio-advanced-use-of-your-favorite-ide), useR!2019, Toulouse.||
 |  __2019-07-08__|  ["Contributing to the R ecosystem"](https://speakerdeck.com/colinfay/contributing-to-the-r-ecosystem), useR!2019, Toulouse.||
 |  __2019-06-06__|  ["Production-grade Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/production-grade-shiny-apps-with-golem), ThinkR x RStudio Roadshow.||
