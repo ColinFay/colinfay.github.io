@@ -20,8 +20,9 @@ td {
 }
 </style>
 
-## I've been talking &#128483;
+## &#128483; I've been talking &#128483;
 
+| __2020-01-30__ |  ["Production-grade Shiny Apps with golem"](https://resources.rstudio.com/rstudio-conf-2020/production-grade-shiny-apps-with-golem-colin-fay), rstudio::conf(2020L), San Fransisco. | [ &#127909; ](https://resources.rstudio.com/rstudio-conf-2020/production-grade-shiny-apps-with-golem-colin-fay) |
 |  __2019-12-03__|  ["{golem} - Engineering Production-Grade Shiny Apps"](https://speakerdeck.com/colinfay/hacking-rstudio-advanced-use-of-your-favorite-ide), Barcelona R Meetup, Barcelona.||
 |  __2019-09-29__|  ["R & Microservices"](https://speakerdeck.com/colinfay/r-and-microservices), whyR 2019, Warsaw.||
 |  __2019-07-09__|  ["Hacking RStudio: Advanced Use of your Favorite IDE"](https://speakerdeck.com/colinfay/hacking-rstudio-advanced-use-of-your-favorite-ide), useR!2019, Toulouse.||
