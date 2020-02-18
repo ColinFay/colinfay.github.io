@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-## What I'm doing right now
+## &#128187; What I'm doing right now &#128187;
 
 ### Data Scientist & R Hacker at <a href = "https://www.thinkr.fr">ThinkR</a>
 
@@ -25,7 +25,7 @@ The Breizh Data Club is a professionnal association that aims at gathering data 
 
 ***
 
-## Skills
+## &#129337; Skills &#129337;
 
 ### Programming languages 
 
@@ -52,7 +52,7 @@ The Breizh Data Club is a professionnal association that aims at gathering data 
 
 ***
 
-## Education
+## &#127891; Education &#127891;
 
 ### Certifications
 
