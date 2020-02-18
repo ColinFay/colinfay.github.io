@@ -50,17 +50,17 @@ td {
 
 ***
 
-## I've been on podcasts &#127911;
+## &#127911 I've been on podcasts &#127911;
 
 + ["`{golem}` and Effective Shiny Development Methods"](https://shinydevseries.com/ep2/) - Shiny Developer Series, episode 2.
 
 ***
 
-## I've been writing &#x1F4DA;
+## &#x1F4DA; I've been writing &#x1F4DA;
 
 ### Open source Books
 
-+ [WIP] - [Building Big Shiny Apps - A Workflow](https://thinkr-open.github.io/building-shiny-apps-workflow/)
++ [WIP] - [Engineering Production Grade Shiny Apps](https://connect.thinkr.fr/engineering-shiny/)
 
 + [JavaScript 4 Shiny - Field Notes](https://connect.thinkr.fr/js4shinyfieldnotes/)
 
@@ -80,13 +80,13 @@ td {
 
 ***
 
-## I've compiled Bookdowns &#x1F4D6;
+## &#x1F4D6; I've compiled Bookdowns &#x1F4D6;
 
 + The R manuals converted to bookdown:  [R manuals](/r-manuals/)
 
 ***
 
-## I've been to the University &#127891;
+## &#127891; I've been to the University &#127891;
 
 ### 2014-09
 
