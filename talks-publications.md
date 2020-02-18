@@ -50,7 +50,7 @@ td {
 
 ***
 
-## &#127911 I've been on podcasts &#127911;
+## &#127911; I've been on podcasts &#127911;
 
 + ["`{golem}` and Effective Shiny Development Methods"](https://shinydevseries.com/ep2/) - Shiny Developer Series, episode 2.
 
