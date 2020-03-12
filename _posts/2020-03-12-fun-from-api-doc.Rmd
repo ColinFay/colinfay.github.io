@@ -1,0 +1,306 @@
+---
+title: "Automate the Creation of an API Wrapper package by Scraping its Online Documentation"
+post_date: 2020-03-12
+layout: single
+permalink: /fun-from-api-doc/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, comment = "")
+```
+
+I've recently been building a package to interact with the [Rocket.chat](https://rocket.chat/) API. 
+One thing I don't like about building API wrapper is that it's very repetitive: you have to copy and paste things over and over again, for each endpoint of the API. 
+Arguments, documentation... 
+
+But here's a fun idea, how about scraping the help page of the API to generate the whole thing?
+
+## General idea
+
+So the global skeleton I need is the one for a `.R` file for a function, with `{roxygen2}` skeleton, and as much of the function as possible. 
+Then, I need the arguments to the function, which are the available parameters of the API call. 
+
+If they are required by the API, I'll leave them without a default value. If they are not, I'll pass them `NULL` as a default parameter. 
+Then, I'll create a list with these params, remove the `NULL` with an internal fun, and turn them to `JSON`. 
+Then I'll be building the `{httr}` call. 
+
+One thing I know upfront is that I won't be able to generate the whole thing, but let's try to do as much as I can!
+
+## The code
+
+I'll try to build a function page for a call to `"https://rocket.chat/docs/developer-guides/rest-api/users/create/"`
+
+```{r}
+library(rvest)
+library(magrittr, warn.conflicts = FALSE)
+library(purrr, warn.conflicts = FALSE)
+page <- read_html("https://rocket.chat/docs/developer-guides/rest-api/users/create/") 
+```
+
+When on the page, we will find the args and their doc on the second table
+
+```{r}
+fun_args <- page %>% 
+  html_table() %>% 
+  purrr::pluck(2)
+fun_args
+```
+
+Nice! We can start by creating some roxy tags out of this. 
+
+```{r}
+# Small util functions
+tag_app <- function(var) {
+  sprintf("#' %s", var)
+}
+
+ap_em_rox <- function(val){
+  val %<>% c(
+    "#' "
+  )
+  val
+}
+```
+
+The title of the function is at the second h2 of the page:
+
+```{r}
+page %>% 
+  html_nodes("h1") %>%
+  pluck(2) %>%
+  html_text()
+```
+
+Let's add it.
+
+```{r}
+title <- page %>% 
+  html_nodes("h1") %>%
+  pluck(2) %>%
+  html_text()
+fun_code <- title %>%
+  tag_app() %>% 
+  ap_em_rox()
+cat(fun_code, sep = "\n")
+```
+
+And use the first paragraph as a function description.
+
+```{r}
+fun_code %<>% c(
+  page %>% 
+    html_nodes("p") %>% 
+    pluck(1)%>%
+    html_text() %>%
+    gsub("\n", ". ", .) %>%
+    tag_app() %>% 
+    ap_em_rox()
+)
+
+cat(fun_code, sep = "\n")
+
+```
+
+Now, something our API doc doesn't have, the connection token we'll be passing from the auth.
+
+```{r}
+fun_code %<>% c("#' @param token The token to connect to the app.") 
+styler::style_text(fun_code)
+```
+
+Ok remember our table of parameters? Let's us it now to create the roxygen tags.
+
+```{r}
+fun_code %<>% c(
+  purrr::pmap_chr(
+    fun_args,
+    ~ {
+      sprintf(
+        "#' @param %s %s %s", 
+        thinkr::clean_vec(..1), ..4, ..3
+      )
+    }
+  )
+) %<>% ap_em_rox()
+cat(fun_code, sep = "\n")
+```
+
+Of course we'll export the function: 
+
+```{r}
+fun_code %<>% c(
+  tag_app("@export")
+)
+```
+
+Some deps
+
+```{r}
+fun_code %<>% c(
+  tag_app("@importFrom httr POST GET add_headers content stop_for_status"),
+  tag_app("@importFrom jsonlite toJSON")
+  
+)
+```
+
+Now, let's create the function and its arguments.
+
+```{r}
+fun_code %<>% c(
+  sprintf(
+    "%s <- function(tok,",
+    thinkr::clean_vec(title)
+  )
+)
+
+fun_code %<>% c(
+  purrr::pmap_chr(
+    fun_args,
+    ~ {
+      if (
+        grepl("Optional", ..3)
+      ){
+        sprintf(
+          "  %s = NULL,", 
+          thinkr::clean_vec(..1)
+        )
+      } else {
+        sprintf(
+          "  %s,", 
+          thinkr::clean_vec(..1)
+        )
+      }
+      
+    }
+  )
+)
+
+fun_code[
+  length(fun_code)
+  ] %<>% gsub(",", "", .)
+cat(fun_code, sep = "\n")
+```
+
+Ok now a little bit of the internals: 
+
+```{r}
+fun_code %<>% c(
+  "){", 
+  " ", 
+  "  params <- list("
+)
+
+fun_code %<>% c(
+  purrr::pmap_chr(
+    fun_args,
+    ~ {
+      sprintf(
+        "    %s = %s,", 
+        thinkr::clean_vec(..1), thinkr::clean_vec(..1)
+      )
+    }
+  )
+)
+
+fun_code[
+  length(fun_code)
+  ] %<>% gsub(",", "", .)
+
+fun_code %<>% c(
+  ")", 
+  "", 
+  "params <- no_null(params)", 
+  "", 
+  "params <- toJSON(params, auto_unbox = TRUE)"
+)
+cat(fun_code, sep = "\n")
+```
+
+A piece of the `{httr}` request. 
+Note that our token contains a `$url` that contains the url of the chat, and the `authToken` and `userId`.
+
+The endpoint is on the first table, as is the http method.
+
+```{r}
+method <- page %>%
+  html_table() %>% 
+  pluck(1)
+method["HTTP Method"] 
+method["URL"] 
+```
+
+
+```{r}
+
+if ( method["HTTP Method" ] == "POST"){
+  fun_code %<>% c(
+    sprintf(
+      "res <- httr::%s(", 
+      method["HTTP Method"]
+    ), 
+    "add_headers('Content-type' = 'application/json',",
+    "'X-Auth-Token' = tok$data$authToken,",
+    "'X-User-Id' = tok$data$userId",
+    "),",
+    sprintf("url = paste0(tok$url, '%s'),", method["URL"] ),
+    "body = params"
+  )
+} else {
+  fun_code %<>% c(
+    sprintf(
+      "res <- httr::%s(", 
+      method["HTTP Method" ]
+    ), 
+    "add_headers('Content-type' = 'application/json',",
+    "'X-Auth-Token' = tok$data$authToken,",
+    "'X-User-Id' = tok$data$userId",
+    "),",
+    sprintf("url = paste0(tok$url, '%s')", method["URL"] )
+  )
+}
+```
+
+End this:
+
+```{r}
+fun_code %<>% c(
+  ")", 
+  " ",
+  "stop_for_status(res)", 
+  "content(res)",
+  "}"
+) 
+```
+
+Let's see what this looks like:
+
+```{r}
+styler::style_text(fun_code)
+```
+
+And to automate even more:
+
+```{r eval = FALSE}
+usethis::use_r(title)
+write(fun_code, sprintf("R/%s.R", title))
+```
+
+Pretty cool! 
+Seems like I have everything... or almost. 
+Let's automate it even more:
+
+```{r}
+user_methods <- read_html("https://rocket.chat/docs/developer-guides/rest-api/users/")
+user_methods %>% 
+  html_nodes("a") %>%
+  html_attr("href") %>% 
+  grep("rest-api/users/.*/", ., value = TRUE)
+```
+
+`r emo::ji("tada")`, now we have all the endpoints! Wrapping the previous code in a function, and we can automate even more. 
+
+Wanna see the created package? 
+Here is the beginning: [ColinFay/rrocketchat](https://github.com/ColinFay/rrocketchat), the function that creates all other file can be found at [data-raw/DATASET.R](https://github.com/ColinFay/rrocketchat/blob/master/data-raw/DATASET.R)
