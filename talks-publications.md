@@ -22,6 +22,8 @@ td {
 
 ## &#128483; I've been talking &#128483;
 
+| __2020-03-07__ |  ["Keynote - 'prod' is not a four letter word"](https://speakerdeck.com/colinfay/keynote-prod-is-not-a-four-letter-word), satRday, Johannesburg. | [ &#127909; ](https://youtu.be/UoNhFn_QoFw) |
+| __2020-03-06__ |  ["Workshop - Building Successful Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/workshop-building-successful-shiny-apps-with-golem), satRday, Johannesburg.. | |
 | __2020-01-30__ |  ["Production-grade Shiny Apps with golem"](https://resources.rstudio.com/rstudio-conf-2020/production-grade-shiny-apps-with-golem-colin-fay), rstudio::conf(2020L), San Fransisco. | [ &#127909; ](https://resources.rstudio.com/rstudio-conf-2020/production-grade-shiny-apps-with-golem-colin-fay) |
 |  __2019-12-03__|  ["{golem} - Engineering Production-Grade Shiny Apps"](https://speakerdeck.com/colinfay/hacking-rstudio-advanced-use-of-your-favorite-ide), Barcelona R Meetup, Barcelona.||
 |  __2019-09-29__|  ["R & Microservices"](https://speakerdeck.com/colinfay/r-and-microservices), whyR 2019, Warsaw.||
