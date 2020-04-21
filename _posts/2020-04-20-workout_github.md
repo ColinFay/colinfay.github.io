@@ -1,5 +1,5 @@
 ---
-title: "Use R & Git as a Workout planner"
+title: "Use R & GitHub as a Workout planner"
 post_date: 2020-04-20
 layout: single
 permalink: /r-git-workout-planner/
@@ -127,21 +127,21 @@ generate_workout <- function(
 cat(generate_workout(4))
 ```
 
-    + [ ] Bodyweight - Leg Lift (16 x) 
+    + [ ] KettleBell - KettleBell clean and press (16 x / each side) 
     
-     <div align = 'center'><img src ='https://thumbs.gfycat.com/SickBrownIsabellinewheatear-max-1mb.gif' width = '400px'> </img></div>
+     <div align = 'center'><img src ='https://media.giphy.com/media/128vrPxCk9JQ6k/giphy.gif' width = '400px'> </img></div>
     
-    + [ ] KettleBell - Goblet squat (16 x) 
+    + [ ] Bodyweight - Bicycle Crunch (16 x / each side) 
     
-     <div align = 'center'><img src ='https://www.sport-equipements.fr/wp-content/uploads/2019/06/giphy.gif' width = '400px'> </img></div>
+     <div align = 'center'><img src ='https://thumbs.gfycat.com/CheapMadeupLeafhopper-size_restricted.gif' width = '400px'> </img></div>
     
-    + [ ] Bodyweight - Leg Lift (16 x) 
+    + [ ] KettleBell - KettleBell clean and press (16 x / each side) 
     
-     <div align = 'center'><img src ='https://thumbs.gfycat.com/SickBrownIsabellinewheatear-max-1mb.gif' width = '400px'> </img></div>
+     <div align = 'center'><img src ='https://media.giphy.com/media/128vrPxCk9JQ6k/giphy.gif' width = '400px'> </img></div>
     
-    + [ ] KettleBell - Goblet squat (16 x) 
+    + [ ] Bodyweight - Bicycle Crunch (16 x / each side) 
     
-     <div align = 'center'><img src ='https://www.sport-equipements.fr/wp-content/uploads/2019/06/giphy.gif' width = '400px'> </img></div>
+     <div align = 'center'><img src ='https://thumbs.gfycat.com/CheapMadeupLeafhopper-size_restricted.gif' width = '400px'> </img></div>
 
 Let’s now push this to Github:
 

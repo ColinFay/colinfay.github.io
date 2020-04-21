@@ -1,5 +1,5 @@
 ---
-title: "Use R & Git as a Workout planner"
+title: "Use R & GitHub as a Workout planner"
 post_date: 2020-04-20
 layout: single
 permalink: /r-git-workout-planner/
