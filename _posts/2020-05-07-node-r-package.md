@@ -9,7 +9,7 @@ excerpt_separator: <!--more-->
 ---
 
 Mr [A Bichat](https://github.com/abichat) was looking for a way to
-bundle a NodeJS module inside n R package. Here is an attempt at a
+bundle a NodeJS module inside an R package. Here is an attempt at a
 reproducible example, that might also help others\!
 
 ## About NodeJS Packages
@@ -21,9 +21,9 @@ or your script, you bundle inside one big folder everything needed to
 make that piece of JavaScript code run. That way, you can have various
 versions of a Node module on the same computer without one interfering
 with another. On a production server, that also means that when
-publishing your app, you don’t have to care about some global libraries,
-or about putting an app to prod with a module version that might break
-another application.
+publishing your app, you don’t have to care about machine-wide versions,
+or about putting an app to prod with a version that might break another
+application.
 
 I love the way NodeJS allows to handle dependencies, but that’s the
 subject for another day.
@@ -34,22 +34,23 @@ To create an app or cli in NodeJS, you will be following these steps:
 
   - Creating a new folder
   - Inside this folder, run `npm init -y` (the `-y` pre-fills all the
-    fields), which creates `package.json`
-  - Create a script (`app.js`, `index.js`, `whatever.js`) which will
-    contain your JavaScript logic ; this file takes command lines
-    arguments that will be processed inside the script
-  - Install external modules with `npm install module`, which add
-    elements to `package.json`, and creates `package-lock.json` ; here,
-    the whole module and its deps are downloaded and put inside a
-    `node_modules/` folder
+    fields) ; this function creates a `package.json` file
+  - Create a JavaScript script (`app.js`, `index.js`, `whatever.js`)
+    which will contain your JavaScript logic ; this file can take
+    command lines arguments that will be processed inside the script
+  - Install external modules with `npm install modulename`: this
+    function adds elements to `package.json`, creates/add to
+    `package-lock.json`, and the whole module and its deps are
+    downloaded and put inside a `node_modules/` folder inside your
+    project
 
 Once your software is built, be it an app or a cli, you will be sharing
 to the world the `package.json`, `package-lock.json`, and all the files
-that are required to run the tool, but not the `node_modules/` folder.
+that are required to run the tool. But not the `node_modules/` folder.
 
-It can then be shared on `npm`, the Node package manager, or simply put
-on git, so that users `git clone` it, and install with `npm install`
-inside the folder.
+It can then be shared on `npm`, the Node package manager, shared as a
+zip, or put on git, so that users can `git clone` it, and install it by
+running `npm install` inside the folder.
 
 Let’s create a small example:
 
@@ -122,14 +123,17 @@ fs::dir_tree("/tmp/nodeexample", recurse= 1)
 ```
 
     /tmp/nodeexample
-    └── node_modules
-        ├── @types
-        ├── ansi-styles
-        ├── chalk
-        ├── color-convert
-        ├── color-name
-        ├── has-flag
-        └── supports-color
+    ├── node_modules
+    │   ├── @types
+    │   ├── ansi-styles
+    │   ├── chalk
+    │   ├── color-convert
+    │   ├── color-name
+    │   ├── has-flag
+    │   └── supports-color
+    ├── package-lock.json
+    ├── package.json
+    └── whatever.js
 
 As you can see, you have a `node_modules` folder that contains all the
 modules, installed with the requirements of your machine.
@@ -140,9 +144,9 @@ to install it to there machine.
 
 ``` bash
 mkdir /tmp/nodeexample2
-mv /tmp/nodeexample/package-lock.json  /tmp/nodeexample2/package-lock.json
-mv /tmp/nodeexample/package.json  /tmp/nodeexample2/package.json
-mv /tmp/nodeexample/whatever.js  /tmp/nodeexample2/whatever.js
+cp /tmp/nodeexample/package-lock.json  /tmp/nodeexample2/package-lock.json
+cp /tmp/nodeexample/package.json  /tmp/nodeexample2/package.json
+cp /tmp/nodeexample/whatever.js  /tmp/nodeexample2/whatever.js
 ```
 
 But if we try to run this script:
@@ -218,17 +222,18 @@ Tada 🎉\!
 Ok, but how can we bundle this into an R package? Here is what we will
 do:
 
-  - on our machine, we will create the full, working script into the
+  - On our machine, we will create the full, working script into the
     `inst/` folder of the package, and share everything but our
     `node_modules` folder
-  - Once the users install our package on their machine, they will have
-    something that will look like the first version of our
+  - After the users has installed our package on their machines, they
+    will have something that will look like the first version of our
     `/tmp/nodeexample2` inside their package installation folder
-  - Then, from R, they will run an `npm install` inside the package
-    installation folder, *i.e* inside `system.file(package = "mypak")`
-  - Once the installation is completed, we will call the script with the
-    working directory being our installed package ; this script will
-    take command line arguments passed from R
+  - Then, from R, they will run an installation wrapper, that will call
+    `npm install` inside the package installation folder, *i.e* inside
+    `system.file(package = "mypak")`
+  - Once the installation is completed, we will call the Node script
+    inside the working directory where we just installed everything.
+    This script will take command line arguments passed from R
 
 ## `node-minify`
 
@@ -261,8 +266,8 @@ npm install @node-minify/core @node-minify/clean-css
 touch app.js
 ```
 
-This app.js will do one thing: take the path to a file and an output
-file, and then run the `node-minify` on this file.
+This app.js will do one thing: take the path to an input and an output
+file, and then run the `node-minify` with these two arguments.
 
 ### Step 3, creating the NodeJS script
 
@@ -273,8 +278,8 @@ const compressor = require('node-minify');
  
 compressor.minify({
   compressor: 'gcc',
-  input: process.argv[2], // processing the script argument
-  output: process.argv[3],
+  input: process.argv[2], // processing the script arguments
+  output: process.argv[3], // processing the script arguments
   callback: (err, min) => {} // not adding any callback but you should
 });
 ```
@@ -287,11 +292,14 @@ echo "  color:white;" >> test.css
 echo "}" >> test.css
 ```
 
-And it can be processed it:
+And try to process it:
 
 ``` bash
 node app.js test.css test2.css
+cat test2.css
 ```
+
+    body{color:#fff}
 
 Nice, we now have a script in `inst/` that can be run with Node\! How to
 make it available in R?
@@ -338,9 +346,11 @@ minifyr_run <- function(
   input,
   output
 ){
-  input <- path_abs(input)
-  output <- path_abs(output)
-  run(
+  # We're taking the absolute path as we will move to another folder to 
+  # execute the Node Script
+  input <- fs::path_abs(input)
+  output <- fs::path_abs(output)
+  processx::run(
     command = "node",
     args = c(
       "app.js",
@@ -353,12 +363,14 @@ minifyr_run <- function(
 }
 ```
 
-And here it is\! With some extra package infrastructure, we’ve got
-everything we need :)
+And here it is\!
+
+And with some extra package infrastructure, we’ve got everything we need
+:)
 
 ### Step 5, try on our machine
 
-Let’s run the build package on our machine:
+Let’s run the built package on our machine:
 
 ``` r
 # To do once
@@ -404,8 +416,6 @@ minifyr::minifyr_run(
 )
 ```
 
-    /Users/colin/Seafile/documents_colin/R/site/colinfaypointme/_posts/test2.css
-
 ``` bash
 cat test2.css
 ```
@@ -419,9 +429,9 @@ Result package at: <https://github.com/ColinFay/minifyr>
 ### Step 6, one last thing
 
 Of course, one cool thing would be to test that `npm` and `Node` are
-installed on the user machine. We can do that by running a dummy node
-command, and check if the result of `system()` is either 0 or 127, 127
-meaning that the command failed to run.
+installed on the user’s machine. We can do that by running the version
+commands for`npm` and `node`, and check if the results of `system()` are
+either 0 or 127, 127 meaning that the command failed to run.
 
 ``` r
 node_available <- function(){
