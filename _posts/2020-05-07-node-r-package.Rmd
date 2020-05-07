@@ -1,0 +1,398 @@
+---
+title: "How to Write an R Package Wrapping a NodeJS Module"
+post_date: 2020-05-07
+layout: single
+permalink: /node-r-package/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, comment = "")
+```
+
+Mr [A Bichat](https://github.com/abichat) was looking for a way to bundle a NodeJS module inside n R package. 
+Here is an attempt at a reproducible example, that might also help others!
+
+## About NodeJS Packages
+
+There are two ways to install NodeJS packages: globally and locally. 
+
+The idea with local dependencies is that when writing your application or your script, you bundle inside one big folder everything needed to make that piece of JavaScript code run. 
+That way, you can have various versions of a Node module on the same computer without one interfering with another. 
+On a production server, that also means that when publishing your app, you don't have to care about some global libraries, or about putting an app to prod with a module version that might break another application. 
+
+I love the way NodeJS allows to handle dependencies, but that's the subject for another day.
+
+## Node JS inside an R package
+
+To create an app or cli in NodeJS, you will be following these steps: 
+
++ Creating a new folder
++ Inside this folder, run `npm init -y` (the `-y` pre-fills all the fields), which creates `package.json`
++ Create a script (`app.js`, `index.js`, `whatever.js`) which will contain your JavaScript logic ; this file takes command lines arguments that will be processed inside the script
++ Install external modules with `npm install module`, which add elements to `package.json`, and creates `package-lock.json` ; here, the whole module and its deps are downloaded and put inside a `node_modules/` folder
+
+Once your software is built, be it an app or a cli, you will be sharing to the world the `package.json`, `package-lock.json`, and all the files that are required to run the tool, but not the `node_modules/` folder. 
+
+It can then be shared on `npm`, the Node package manager, or simply put on git, so that users `git clone` it, and install with `npm install` inside the folder. 
+
+Let's create a small example: 
+
+```bash
+cd /tmp
+mkdir nodeexample
+cd nodeexample
+npm init -y
+```
+
+```
+Wrote to /private/tmp/nodeexample/package.json:
+
+{
+  "name": "nodeexample",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.0.0"
+  },
+  "devDependencies": {},
+  "description": ""
+}
+```
+
+```bash
+touch whatever.js
+npm install chalk
+```
+
+```
+
+npm WARN nodeexample@1.0.0 No description
+npm WARN nodeexample@1.0.0 No repository field.
+
++ chalk@4.0.0
+updated 1 package and audited 7 packages in 6.686s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+```
+
+```bash
+echo "const chalk = require('chalk');" >> whatever.js
+echo "console.log(chalk.blue('Hello world'));" >> whatever.js
+cat whatever.js
+```
+
+```
+const chalk = require('chalk');
+console.log(chalk.blue('Hello world'));
+```
+
+Now this can be run with Node:
+
+```bash
+node /tmp/nodeexample/whatever.js
+```
+
+```
+Hello world
+```
+
+Here is our current file structure:
+
+```{r}
+fs::dir_tree("/tmp/nodeexample", recurse= 1)
+```
+
+As you can see, you have a `node_modules` folder that contains all the modules, installed with the requirements of your machine.
+
+Let's now move this file to another folder (imagine it's a `git clone`), where we won't be sharing the `node_modules` folder: the users will have to install it to there machine. 
+
+```bash
+mkdir /tmp/nodeexample2
+mv /tmp/nodeexample/package-lock.json  /tmp/nodeexample2/package-lock.json
+mv /tmp/nodeexample/package.json  /tmp/nodeexample2/package.json
+mv /tmp/nodeexample/whatever.js  /tmp/nodeexample2/whatever.js
+```
+
+But if we try to run this script:
+
+```bash
+node /tmp/nodeexample2/whatever.js
+```
+
+```
+node /tmp/nodeexample2/whatever.js
+internal/modules/cjs/loader.js:979
+  throw err;
+  ^
+
+Error: Cannot find module 'chalk'
+Require stack:
+- /private/tmp/nodeexample2/whatever.js
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:976:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:859:27)
+    at Module.require (internal/modules/cjs/loader.js:1036:19)
+    at require (internal/modules/cjs/helpers.js:72:18)
+    at Object.<anonymous> (/private/tmp/nodeexample2/whatever.js:1:15)
+    at Module._compile (internal/modules/cjs/loader.js:1147:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1167:10)
+    at Module.load (internal/modules/cjs/loader.js:996:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ '/private/tmp/nodeexample2/whatever.js' ]
+}
+```
+
+We have a "Module not found" error: that's because we haven't installed the dependencies yet. 
+
+```bash
+cd /tmp/nodeexample2 && npm install
+```
+
+```
+npm WARN nodeexample@1.0.0 No description
+npm WARN nodeexample@1.0.0 No repository field.
+
+added 7 packages from 4 contributors and audited 7 packages in 2.132s
+
+2 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+```
+
+```{r}
+fs::dir_tree("/tmp/nodeexample2", recurse= 1)
+```
+
+```bash
+cd /tmp/nodeexample2 &&  node whatever.js
+```
+
+```
+Hello world
+```
+
+Tada `r emo::ji("tada")`!
+
+Ok, but how can we bundle this into an R package? 
+Here is what we will do: 
+
++ on our machine, we will create the full, working script into the `inst/` folder of the package, and share everything but our `node_modules` folder
++ Once the users install our package on their machine, they will have something that will look like the first version of our `/tmp/nodeexample2` inside their package installation folder
++ Then, from R, they will run an `npm install` inside the package installation folder, _i.e_ inside `system.file(package = "mypak")`
++ Once the installation is completed, we will call the script with the working directory being our installed package ; this script will take command line arguments passed from R
+
+## `node-minify`
+ 
+While I'm at it, let's try to use something that I might use in the future: `node-minify`, a node library which can minify CSS, notably through the `clean-css` extension: <https://www.npmjs.com/package/@node-minify/clean-css>.
+
+If you don't know what the minification is and what it's used for, it's the process of removing every unnecessary characters from a file so that it's lighter. 
+Because you know, on the web every byte counts. 
+
+See <https://en.wikipedia.org/wiki/Minification_(programming)> for more info. 
+
+### Step 1, create the package
+
+I won't expand on that, please refer to online documentation. 
+
+### Step 2, initiate npm infrastructure
+
+Once in the package, here is the script to initiate everything:
+
+```{bash eval = FALSE}
+mkdir -p inst/node
+cd inst/node 
+npm init -y
+npm install @node-minify/core @node-minify/clean-css
+
+touch app.js
+```
+
+This app.js will do one thing: take the path to a file and an output file, and then run the `node-minify` on this file.
+
+### Step 3, creating the NodeJS script
+
+Here is app.js: 
+
+``` javascript
+const compressor = require('node-minify');
+ 
+compressor.minify({
+  compressor: 'gcc',
+  input: process.argv[2], // processing the script argument
+  output: process.argv[3],
+  callback: (err, min) => {} // not adding any callback but you should
+});
+```
+
+Let's now create a dummy css file:
+
+```{bash eval = FALSE}
+echo "body {" >> test.css
+echo "  color:white;" >> test.css
+echo "}" >> test.css
+```
+
+And it can be processed it:
+
+```{bash eval = FALSE}
+node app.js test.css test2.css
+```
+
+Nice, we now have a script in `inst/` that can be run with Node!
+How to make it available in R? 
+
+### Step 4, building functions
+
+Let's start by ignoring the node_modules folder.
+
+```{r eval = FALSE}
+usethis::use_build_ignore("inst/node/node_modules/")
+```
+
+Then, create a function that will install the Node app on the users' machines, _i.e_ where the package is installed. 
+
+```{r}
+minifyr_npm_install <- function(
+  force = FALSE
+){
+  # Prompt the users unless they bypass (we're installing stuff on their machine)
+  if (!force) {
+    ok <- yesno::yesno("This will install our app on your local library.
+                       Are you ok with that? ")
+  } else {
+    ok <- TRUE
+  }
+  
+  # If user is ok, run npm install in the node folder in the package folder
+  # We should also check that the infra is not already there
+  if (ok){
+    processx::run(
+      command = "npm", 
+      args = c("install"), 
+      wd = system.file("node", package = "minifyr")
+    )
+  }
+}
+```
+
+Let's now build a function to run the minifyer: 
+
+```{r}
+minifyr_run <- function(
+  input,
+  output
+){
+  input <- path_abs(input)
+  output <- path_abs(output)
+  run(
+    command = "node",
+    args = c(
+      "app.js",
+      input,
+      output
+    ),
+    wd = system.file("node", package = "minifyr")
+  )
+  return(output)
+}
+```
+
+And here it is! 
+With some extra package infrastructure, we've got everything we need :) 
+
+### Step 5, try on our machine
+
+Let's run the build package on our machine:
+
+```{r eval = FALSE}
+# To do once
+minifyr::minifyr_npm_install()
+```
+
+Then, if we have a look at our local package lib:
+
+```{r}
+fs::dir_tree(
+  system.file(
+    "node",
+    package = "minifyr"
+  ), 
+  recurse = FALSE
+)
+```
+
+Let's try our function: 
+
+```{bash}
+# Dummy CSS creation
+echo "body {" > test.css
+echo "  color:white;" >> test.css
+echo "}" >> test.css
+cat test.css
+```
+
+
+```{r}
+minifyr::minifyr_run(
+  "test.css", 
+  "test2.css"
+)
+```
+
+```{bash}
+cat test2.css
+```
+
+Tada `r emo::ji("tada")`!
+
+Result package at: https://github.com/ColinFay/minifyr
+
+### Step 6, one last thing
+
+Of course, one cool thing would be to test that `npm` and `Node` are installed on the user machine. 
+We can do that by running a dummy node command, and check if the result of `system()` is either 0 or 127, 127 meaning that the command failed to run. 
+
+```{r}
+node_available <- function(){
+  test <- suppressWarnings(
+    system(
+      "npm -v",
+      ignore.stdout = TRUE,
+      ignore.stderr = TRUE
+    )
+  )
+  attempt::warn_if(
+    test, 
+    ~ .x != 0, 
+    "Error launching npm"
+  )
+    test <- suppressWarnings(
+    system(
+      "node -v",
+      ignore.stdout = TRUE,
+      ignore.stderr = TRUE
+    )
+  )
+  attempt::message_if(
+    test, 
+    ~ .x != 0,
+    "Error launching Node"
+  )
+}
+```
+
+
