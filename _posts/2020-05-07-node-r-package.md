@@ -274,13 +274,14 @@ file, and then run the `node-minify` with these two arguments.
 Here is app.js:
 
 ``` javascript
-const compressor = require('node-minify');
- 
-compressor.minify({
-  compressor: 'gcc',
-  input: process.argv[2], // processing the script arguments
-  output: process.argv[3], // processing the script arguments
-  callback: (err, min) => {} // not adding any callback but you should
+const minify = require('@node-minify/core');
+const cleanCSS = require('@node-minify/clean-css');
+
+minify({
+  compressor: cleanCSS,
+  input: process.argv[2],
+  output: process.argv[3],
+  callback: (e, res) => {}
 });
 ```
 
