@@ -51,6 +51,7 @@ data.table::fwrite(dataset, "datasetwithusers.csv")
 The main purpose of this image is to provide a "real life" tool for teaching databases use.
 
 Info: 
+
 - the `POSTGRES_DB` used is `clients`
 - the `POSTGRES_PASSWORD` is `verysecretwow`
 - the `POSTGRES_USER` is `superduperuser`

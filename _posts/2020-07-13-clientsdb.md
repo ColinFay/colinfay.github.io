@@ -52,8 +52,11 @@ data.table::fwrite(dataset, "datasetwithusers.csv")
 The main purpose of this image is to provide a “real life” tool for
 teaching databases use.
 
-Info: - the `POSTGRES_DB` used is `clients` - the `POSTGRES_PASSWORD` is
-`verysecretwow` - the `POSTGRES_USER` is `superduperuser`
+Info:
+
+  - the `POSTGRES_DB` used is `clients`
+  - the `POSTGRES_PASSWORD` is `verysecretwow`
+  - the `POSTGRES_USER` is `superduperuser`
 
 To launch the db, do:
 
@@ -87,12 +90,12 @@ dbFetch(res)
 ```
 
 ``` 
-  score                               title             name       date
-1     5                      Fantastic Item   Karolyn Wunsch 2003-01-02
-2     4            Easy to Use, Great Value  Wayland Langosh 2008-06-06
-3     4                      It works well!  Fed Oberbrunner 1989-07-22
-4     3                        Meets a need        Lora Yost 1976-04-13
-5     4 Ion TTUSB Turntable with USB Record Valentina Harvey 1986-01-28
+  score                                 title             name       date
+1     3                    more like funchuck       Shep Hills 1993-04-01
+2     5                             Inspiring Tremayne Effertz 1975-02-07
+3     5 The best soundtrack ever to anything.     Trae Schultz 1974-03-12
+4     4                      Chrono Cross OST  Johnny Prohaska 1987-02-03
+5     5                   Too good to be true   Arnett Denesik 1994-12-31
 ```
 
 ``` r
@@ -103,17 +106,28 @@ dbFetch(res)
 ```
 
 ``` 
-                                title             name       date
-1                      underrated art  Burgess Kuhlman 1998-05-12
-2                      Great product!   Madelyn Bailey 1998-05-12
-3         Disappointing, not correct.      Scott Walsh 1998-05-12
-4             The turtle says it all! Magdalen Strosin 1998-05-12
-5            I took the TEAS and NLN.    Rosie Bradtke 1998-05-12
-6                           Terrible.   Lita Marquardt 1998-05-12
-7               Harlan County History   Clemon Effertz 1998-05-12
-8  A flawed book, but a good subject.  Amey Rutherford 1998-05-12
-9                   Worth every penny   Debrah Keebler 1998-05-12
-10             A light enjoyable read Dwaine Schneider 1998-05-12
+                                                       title
+1                                    Shower Filter Cartridge
+2                           Clay's Voice Should Be the Music
+3                                        ""Laugh Out Loud""?
+4                              delightful literary biography
+5                                         Bill Cosby Himself
+6  Spock's Beard - June, Came Upon Us Much Too Soon.........
+7                          Good, but I Was Hoping for Better
+8                                             Golf bag watch
+9                                        History by Accident
+10                                     Complete release info
+                   name       date
+1      Shaquana Lockman 1998-05-12
+2     Erlene McCullough 1998-05-12
+3            Tomie Mohr 1998-05-12
+4         Trayvon Ratke 1998-05-12
+5       Enriqueta Walsh 1998-05-12
+6  Nathalia Satterfield 1998-05-12
+7          Alijah Mayer 1998-05-12
+8       Raymon Bernhard 1998-05-12
+9         Perley Ernser 1998-05-12
+10     Jaron Jakubowski 1998-05-12
 ```
 
 ``` r
