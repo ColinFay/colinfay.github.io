@@ -13,7 +13,7 @@ knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, comme
 ```
 
 Have you ever been looking for a ready to use database while doing training? 
-Search no more, this docker is an image with a client review database dropped inside a postgre, to be used for teaching.
+Search no more, this docker is an image with a client review database dropped inside a postgres, to be used for teaching.
 
 ## About the dataset
 

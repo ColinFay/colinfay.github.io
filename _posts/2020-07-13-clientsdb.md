@@ -10,7 +10,7 @@ excerpt_separator: <!--more-->
 
 Have you ever been looking for a ready to use database while doing
 training? Search no more, this docker is an image with a client review
-database dropped inside a postgre, to be used for teaching.
+database dropped inside a postgres, to be used for teaching.
 
 ## About the dataset
 
@@ -90,12 +90,18 @@ dbFetch(res)
 ```
 
 ``` 
-  score                                 title             name       date
-1     3                    more like funchuck       Shep Hills 1993-04-01
-2     5                             Inspiring Tremayne Effertz 1975-02-07
-3     5 The best soundtrack ever to anything.     Trae Schultz 1974-03-12
-4     4                      Chrono Cross OST  Johnny Prohaska 1987-02-03
-5     5                   Too good to be true   Arnett Denesik 1994-12-31
+  score                                                              title
+1     4                                             bastante bueno...,,,OK
+2     4                                                    underrated !!!!
+3     5 HENRY MANCINI'S MUSICAL SCORING IS A HIT, ALONG WITH SOLID SCRIPTS
+4     3                                                     Jury Still Out
+5     1                                              Complete release info
+                name       date
+1        Yareli Koch 1992-01-21
+2      Lyle Turcotte 1984-10-25
+3 Luvenia Vandervort 1975-04-18
+4       Diego Walter 2001-12-25
+5   Jaron Jakubowski 1998-05-12
 ```
 
 ``` r
@@ -106,28 +112,17 @@ dbFetch(res)
 ```
 
 ``` 
-                                                       title
-1                                    Shower Filter Cartridge
-2                           Clay's Voice Should Be the Music
-3                                        ""Laugh Out Loud""?
-4                              delightful literary biography
-5                                         Bill Cosby Himself
-6  Spock's Beard - June, Came Upon Us Much Too Soon.........
-7                          Good, but I Was Hoping for Better
-8                                             Golf bag watch
-9                                        History by Accident
-10                                     Complete release info
-                   name       date
-1      Shaquana Lockman 1998-05-12
-2     Erlene McCullough 1998-05-12
-3            Tomie Mohr 1998-05-12
-4         Trayvon Ratke 1998-05-12
-5       Enriqueta Walsh 1998-05-12
-6  Nathalia Satterfield 1998-05-12
-7          Alijah Mayer 1998-05-12
-8       Raymon Bernhard 1998-05-12
-9         Perley Ernser 1998-05-12
-10     Jaron Jakubowski 1998-05-12
+                                     title             name       date
+1                    Complete release info Jaron Jakubowski 1998-05-12
+2            Fun but extremely poor made!!      Velvet Hand 1998-05-12
+3       Boring if work in the industry....      Sol Gerlach 1998-05-12
+4                       our state magazine  Zebulon Reichel 1998-05-12
+5                              Loin cloth?    Linwood Beier 1998-05-12
+6                                 The Best     Ceola Heaney 1998-05-12
+7                         My favorite book      Eura Jacobs 1998-05-12
+8           ok story from the hartnell era    Raphael Moore 1998-05-12
+9              Couldn't put the book down!    Capitola Huel 1998-05-12
+10 car essential oil diffuser - great gift        Elwyn Von 1998-05-12
 ```
 
 ``` r
