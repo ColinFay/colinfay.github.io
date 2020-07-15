@@ -1,0 +1,59 @@
+---
+title: "{hexmake} is one of the 5 Grand Prizes of the 2020 Shiny Contest"
+post_date: 2020-07-15
+layout: single
+permalink: /hexmake-shiny-contest/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, comment = "")
+```
+
+Hey y'all! 
+
+I'm very happy to announce that my `{hexmake}` application has won one of the 5 Grand Prizes of the 2020 shiny contest, organized by RStudio!
+
+`{hexmake}` is a pretty simple application when it comes to its idea: building hex stickers. 
+But I wanted this simple idea to become a playground for showcasing more advanced `{shiny}` features: namely manipulating images with live display, importing and exporting data with a specific file format (here `.hex`), and importing and exporting to an external database (here a MongoDB). 
+
+You can give `{hexmake}` a try at [connect.thinkr.fr/hexmake](https://connect.thinkr.fr/hexmake/), and read more about the Shiny Contest results on the [RStudio blog](https://blog.rstudio.com/2020/07/13/winners-of-the-2nd-shiny-contest/).
+The source code of the application is at [github.com/ColinFay/hexmake](https://github.com/ColinFay/hexmake).
+
+You can also play with `{hexmake}` on your machine by installing it with:
+
+```{r eval = FALSE}
+# Install
+remotes::install_github("ColinFay/hexmake")
+# Run
+hexmake::run_app(with_mongo = FALSE)
+```
+
+If you want to use a mongodb as a back-end, you can launch one using docker with:
+
+```{bash eval = FALSE}
+docker run \
+  -v /mongo/data/db:/data/db \
+  -v /mongo/data/dump:/dump \
+  -p 12334:27017 \
+  -d --name mongohexmake \
+  -e MONGO_INITDB_ROOT_USERNAME=myuser \
+  -e MONGO_INITDB_ROOT_PASSWORD=mypassword \
+  mongo:3.4 
+```
+
+Then launch the app using:
+
+```{r eval = FALSE}
+# Change these env variables to suite your mongo configuration
+Sys.setenv("MONGOPORT" = 12334)
+Sys.setenv("MONGOURL" = "127.0.0.1")
+Sys.setenv("MONGODB" = "hex")
+Sys.setenv("MONGOCOLLECTION" = "make")
+Sys.setenv("MONGOUSER" = "myuser")
+Sys.setenv("MONGOPASS" = "mypassword")
+hexmake::run_app(with_mongo = TRUE)
+```
+
