@@ -1,0 +1,352 @@
+---
+title: "Can I host my R packages on npm? (Spoiler: yes)"
+post_date: 2020-07-28
+layout: single
+permalink: /r-package-npm/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+I’m a big fan of how dependencies are managed in the NodeJS world, be it
+internally when developing, or when it comes to where they are hosted
+(*i.e* via npm, the Node Package Manager). Of course it has its downside
+(that I won’t be talking about here), but from a developer point of view
+the easiness of publication and installation is really nice.
+
+While building [hordes](https://www.npmjs.com/package/hordes), a NodeJS
+module that interacts with R, I wanted to add a way to automatically
+install the companion R package when installing the Node module from
+npm. And when I found how to, I thought: hey, maybe we can generalize
+that for any R package\!
+
+## First of all, why would you want to do that?
+
+Well, because why not?
+
+And also, because the easiness of publication offers a rapid way to
+publish online an R package that you need to send to production: for
+example, if you have an R package that needs to be installed in a Docker
+image that you want to send to prod NOW, CRAN is not a solution, passing
+a tar.gz works but means you have to share the tar.gz with the
+Dockerfile, and it can feel weird to install stuffs from GitHub, even
+more if you want to be sure to install a fixed version. Plus there is
+always the issue of GitHub API rate limit, that you can bypass by
+setting a personal token, but that means that your token is passed to
+the container.
+
+Anyway, I wanted to see if I could use npm as a platform for publishing
+an R package, whatever the excuse/reason you want to find for doing
+that.
+
+## Setting the `package.json`
+
+So I took my `{dockerstats}` package
+([github.com/ColinFay/dockerstats](https://github.com/ColinFay/dockerstats)),
+as an example of a package I’ll push to npm.
+
+The first thing you need to do when you build a Node module is to add a
+file called `package.json`. To do that, go to your package folder and
+run in your terminal `npm init -y`. That command will add the default
+file in your working directory.
+
+This is what the default `package.json` file looks like:
+
+    {
+      "name": "dockerstats",
+      "version": "1.0.0",
+      "description": "<!-- README.md is generated from README.Rmd. Please edit that file -->",
+      "main": "index.js",
+      "directories": {
+        "man": "man",
+        "test": "tests"
+      },
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+      },
+      "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ColinFay/dockerstats.git"
+      },
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "bugs": {
+        "url": "https://github.com/ColinFay/dockerstats/issues"
+      },
+      "homepage": "https://github.com/ColinFay/dockerstats#readme"
+    }
+
+Kind of nice of npm to have matched the git info (and apparently the
+first line of the Readme.md).
+
+Next step, add this file to the `.Rbuildignore`, so it doesn’t return an
+error at check.
+
+``` bash
+Rscript -e "usethis::use_build_ignore('package.json')"
+✔ Setting active project to 'XXX/R/opensource/dockerstats'
+✔ Adding '^package\\.json$' to '.Rbuildignore'
+```
+
+Now, let’s complete the JSON file with what we will need: updating the
+description, adding an author, changing the license… and of course, the
+most important thing: adding a script to install the R package. This
+last part will be performed with the `postinstall` command available in
+the `"scripts"` entry: the command contained here will be run after the
+Node module is “installed” (here, nothing related to Node will be
+installed, we’re just using the structure for this postinstall
+behavior).
+
+``` json
+{
+    "name": "r-dockerstats",
+    "version": "0.1.0",
+    "description": "`{dockerstats}` is a small wrapper around `docker stats` that returns the output of this command as an R data.frame. ",
+    "directories": {
+        "man": "man",
+        "test": "tests"
+    },
+    "scripts": {
+        "test": "Rscript -e 'devtools::check()'",
+        "compile-readme": "Rscript -e 'knitr::knit(\"Readme.Rmd\")'",
+        "postinstall": "Rscript -e 'source(\"install.R\")'"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ColinFay/dockerstats.git"
+    },
+    "keywords": [
+        "RStats",
+        "Docker"
+    ],
+    "author": "Colin Fay <contact@colinfay.me> (https://colinfay.me)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ColinFay/dockerstats/issues"
+    },
+    "homepage": "https://github.com/ColinFay/dockerstats#readme"
+}
+```
+
+What is R specific to this `package.json`:
+
+  - `test` calls `devtools::check()`, so I can run this command by doing
+    `npm test`
+  - `compile-readme` will knit the README.Rmd into its md counterpart, I
+    can call it using `npm run compile-readme`
+  - `postinstall` will launch R and source the script below, inserted in
+    the project
+
+<!-- end list -->
+
+``` bash
+#!/usr/bin/env Rscript --vanilla
+
+installr <- function(){
+    # Creating a directory where to install {remotes} in case it's
+    # not already on the machine, and remove this 
+    # directory when the function exits
+    dir.create("rtemplib")
+    on.exit(unlink("rtemplib", TRUE, TRUE))
+
+    if (!requireNamespace("remotes", quietly = TRUE)){
+        # If {remotes} is not found, we install it inside the temp lib
+        install.packages("remotes", lib = "rtemplib", repos = "https://cloud.r-project.org/")
+        library(remotes, lib.loc = "rtemplib")
+    } else {
+        # {remotes} was found on the machine, load it
+        library(remotes)
+    }
+    # Install the local directory on the machine
+    install_local()
+
+}
+
+installr()
+```
+
+And of course, don’t forget to add this script to the buildigore:
+
+``` bash
+Rscript -e "usethis::use_build_ignore('install.R')"
+✔ Adding '^install\.R$' to '.Rbuildignore'
+```
+
+Let’s start by trying to install the package locally (*i.e* not from npm
+but from our local machine)
+
+``` bash
+# Removing {dockerstats}
+$ Rscript -e "remove.packages('dockerstats')"
+Removing package from ‘/Library/Frameworks/R.framework/Versions/3.6/Resources/library’
+(as ‘lib’ is unspecified)
+
+# Trying to load it fails
+$ Rscript -e "library(dockerstats)"
+Error in library(dockerstats) : there is no package called ‘dockerstats’
+Execution halted
+
+# Installing the local package (we are in the {dockerstats} root directory)
+$ npm install
+> r-dockerstats@1.0.0 postinstall XXX/R/opensource/dockerstats
+> Rscript -e 'source("install.R")'
+
+✔  checking for file ‘/private/var/folders/5z/rm2h62lj45d332kfpj28c8zm0000gn/T/RtmplcREug/fileb68433db245/dockerstats/DESCRIPTION’ ...
+─  preparing ‘dockerstats’: (588ms)
+✔  checking DESCRIPTION meta-information
+─  checking for LF line-endings in source and make files and shell scripts
+─  checking for empty or unneeded directories
+   Removed empty directory ‘dockerstats/rtemplib’
+─  building ‘dockerstats_0.1.0.tar.gz’
+   
+* installing *source* package ‘dockerstats’ ...
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (dockerstats)
+up to date in 5.717s
+found 0 vulnerabilities
+
+# Checking that the package now loads
+$ Rscript -e "library(dockerstats);dockerstats()"
+     Container                   Name           ID CPUPerc MemUsage MemLimit
+1 e9466ba17125           mongohexmake e9466ba17125    0.41 43.45MiB  7.78GiB
+  MemPerc   NetI   NetO BlockI BlockO PIDs         record_time extra
+1    0.55 2.43kB     0B     0B     0B   28 2020-07-28 21:28:02      
+```
+
+🎉
+
+That seems to work, let’s try to push it to npm.
+
+``` bash
+# Publishing the package
+$ npm publish
+npm notice 
+npm notice 📦  r-dockerstats@0.1.0
+npm notice === Tarball Contents === 
+npm notice 148B   .Rbuildignore                            
+npm notice 129B   CRAN-RELEASE                             
+npm notice 944B   DESCRIPTION                              
+npm notice 39B    LICENSE                                  
+npm notice 313B   NAMESPACE                                
+npm notice 892B   package.json                             
+npm notice 1.2kB  cran-comments.md                         
+npm notice 1.1kB  LICENSE.md                               
+npm notice 13.7kB README.md                                
+npm notice 30.8kB man/figures/README-unnamed-chunk-12-1.png
+npm notice 18.9kB man/figures/README-unnamed-chunk-13-1.png
+npm notice 19.5kB man/figures/README-unnamed-chunk-14-1.png
+npm notice 26.3kB man/figures/README-unnamed-chunk-15-1.png
+npm notice 770B   R/available.R                            
+npm notice 2.2kB  R/converters.R                           
+npm notice 1.5kB  R/csv.R                                  
+npm notice 161B   dev/dev.R                                
+npm notice 231B   R/dockerstats-package.R                  
+npm notice 336B   tests/testthat/helper-config.R           
+npm notice 736B   install.R                                
+npm notice 817B   R/stats_recurse.R                        
+npm notice 3.8kB  R/stats.R                                
+npm notice 863B   tests/testthat/test-converters.R         
+npm notice 233B   tests/testthat/test-stats.R              
+npm notice 299B   tests/testthat/test-utils.R              
+npm notice 66B    tests/testthat.R                         
+npm notice 1.4kB  man/byte-conversion.Rd                   
+npm notice 2.2kB  man/csv.Rd                               
+npm notice 329B   man/docker_stats_names.Rd                
+npm notice 671B   man/dockerstats_available.Rd             
+npm notice 968B   man/dockerstats_recurse.Rd               
+npm notice 367B   man/dockerstats-package.Rd               
+npm notice 1.5kB  man/dockerstats.Rd                       
+npm notice 4.0kB  README.Rmd                               
+npm notice 386B   dockerstats.Rproj                        
+npm notice === Tarball Details === 
+npm notice name:          r-dockerstats                           
+npm notice version:       0.1.0                                   
+npm notice package size:  88.0 kB                                 
+npm notice unpacked size: 137.7 kB                                
+npm notice shasum:        7dddb83c54ea7b25be55cabae3ab030f2bfdec29
+npm notice integrity:     sha512-RsH+yhCrSnAe5[...]9zp+Il2uIuWIg==
+npm notice total files:   35                                      
+npm notice 
++ r-dockerstats@0.1.0
+```
+
+Yeay\! <https://www.npmjs.com/package/r-dockerstats>. That was also
+blazing fast (just a couple of seconds).
+
+Can we really install it from npm now?
+
+``` bash
+# Removing {dockerstats}
+$ Rscript -e "remove.packages('dockerstats')"
+Removing package from ‘/Library/Frameworks/R.framework/Versions/3.6/Resources/library’
+(as ‘lib’ is unspecified)
+
+# Trying to load it fails
+$ Rscript -e "library(dockerstats)"
+Error in library(dockerstats) : there is no package called ‘dockerstats’
+Execution halted
+
+# Installing from npm
+$ npm install -g r-dockerstats
+
+> r-dockerstats@0.1.0 postinstall /Users/colin/.npm-global/lib/node_modules/r-dockerstats
+> Rscript -e 'source("install.R")'
+
+✔  checking for file ‘/private/var/folders/5z/rm2h62lj45d332kfpj28c8zm0000gn/T/RtmpC6bEWW/filec6a6667653f/r-dockerstats/DESCRIPTION’ ...
+─  preparing ‘dockerstats’:
+✔  checking DESCRIPTION meta-information ...
+─  checking for LF line-endings in source and make files and shell scripts
+─  checking for empty or unneeded directories
+   Removed empty directory ‘dockerstats/rtemplib’
+─  building ‘dockerstats_0.1.0.tar.gz’
+   
+* installing *source* package ‘dockerstats’ ...
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (dockerstats)
++ r-dockerstats@0.1.0
+added 1 package from 1 contributor in 7.109s
+
+$ Rscript -e "library(dockerstats);dockerstats()"
+     Container                   Name           ID CPUPerc MemUsage MemLimit
+1 e9466ba17125           mongohexmake e9466ba17125    0.71 43.48MiB  7.78GiB
+  MemPerc   NetI   NetO BlockI BlockO PIDs         record_time extra
+1    0.55 2.43kB     0B     0B     0B   28 2020-07-28 21:33:27      
+```
+
+Nice\!
+
+Some note on the install:
+
+  - I used `npm install -g`, because it will install via the “global”
+    node module folder. If I hadn’t used this flag, I would have first
+    needed to init an npm project in the current folder.
+
+  - To meet production standards, I should also use `npm install -g
+    r-dockerstats@0.1.0`, so that I have the fixed version.
+
+## Install Node on your machine
+
+Of course, before trying it yourself, you’ll need to install NodeJS,
+which will bundle npm with it.
+
+The [Downloads](https://nodejs.org/en/download/) page from NodeJS comes
+with a series of installers that you might find handy.
