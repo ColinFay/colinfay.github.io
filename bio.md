@@ -22,8 +22,8 @@ If you need a pic, please chose between:
 
 This one:
 
-<img src = "https://colinfay.me/assets/img/colin_fay.JPG" ></img>
+<img src = "https://colinfay.me/assets/img/colin_fay.JPG" >
 
 And This one:
 
-<img src = "https://colinfay.me/assets/img/colin_fay_horns.jpeg"></img>
+<img src = "https://colinfay.me/assets/img/colin_fay_horns.jpeg">
