@@ -20,8 +20,8 @@ He is also active in the Data Science community in his home country (France) and
 
 If you need a pic, please chose between: 
 
-<li><img src = "https://colinfay.me/assets/img/colin_fay.JPG">this one</img></li>
+<li><img src = "https://colinfay.me/assets/img/colin_fay.JPG" target = "_blank">this one</img></li>
 
 And
 
-<li><img src = "https://colinfay.me/assets/img/colin_fay_horns.jpeg">this one</img></li>
+<li><img src = "https://colinfay.me/assets/img/colin_fay_horns.jpeg" target = "_blank">this one</img></li>
