@@ -22,6 +22,8 @@ td {
 
 ## &#128483; I've been talking &#128483;
 
+| __2020-07-28__ |  ["Everything not Tested Will Eventually Fail"](https://speakerdeck.com/colinfay/everything-not-tested-will-eventually-fail), NYR Meetup, Online. |  |
+| __2020-06-18__ |  ["Testing Shiny: Why, what, and how"](https://speakerdeck.com/colinfay/erum-2020-testing-shiny-why-what-and-how), e-Rum, Online. |   |
 | __2020-03-07__ |  ["Engineering Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/bristolr-engineering-production-grade-shiny-apps-with-golem), Bristol Online Meetup, Online. | [ &#127909; ](https://youtu.be/aY5ekC4-WQs?t=1784) |
 | __2020-03-07__ |  ["Keynote - 'prod' is not a four letter word"](https://speakerdeck.com/colinfay/keynote-prod-is-not-a-four-letter-word), satRday, Johannesburg. | [ &#127909; ](https://youtu.be/UoNhFn_QoFw) |
 | __2020-03-06__ |  ["Workshop - Building Successful Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/workshop-building-successful-shiny-apps-with-golem), satRday, Johannesburg.. | |
