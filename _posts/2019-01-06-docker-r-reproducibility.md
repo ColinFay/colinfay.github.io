@@ -122,7 +122,7 @@ we want. You can get your current R Version with:
 R.Version()$version.string
 ```
 
-    ## [1] "R version 3.4.4 (2018-03-15)"
+    ## [1] "R version 3.6.1 (2019-07-05)"
 
 So, let’s start the `Dockerfile` with:
 
@@ -331,9 +331,16 @@ Some resources:
 Reading list:
 
   - [Docker: Up & Running: Shipping Reliable Containers in
-    Production](https://amzn.to/2VWfXs6)
-  - [Docker in Practice](https://amzn.to/2wqpNZ0)
+    Production](https://amzn.to/3n10xkP)
+  - [Docker in Practice](https://amzn.to/2Gf3rld)
   - [Using Docker: Developing and Deploying Software with
-    Containers](https://amzn.to/2wqiIaQ)
+    Containers](https://amzn.to/2EGoRqZ)
   - [Building Microservices: Designing Fine-Grained
-    Systems](https://amzn.to/2WfsoV3)
+    Systems](https://amzn.to/30gIOw3)
+  - [Container Security: Fundamental Technology Concepts that Protect
+    Containerized Applications](https://amzn.to/3kWiNdy)
+  - [The Docker Book: Containerization is the new
+    virtualization](https://amzn.to/3cB2PTa)
+  - [Learn Docker - Fundamentals of Docker 18.x: Everything you need to
+    know about containerizing your applications and running them in
+    production](https://amzn.to/3kXZIHE)
