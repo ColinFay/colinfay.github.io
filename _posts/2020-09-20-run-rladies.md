@@ -8,93 +8,89 @@ output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---
 
-Hey internet!
+Hey internet\!
 
 Around two weeks ago I started a club on Strava called [“The RStats
-Strava Club”](https://www.strava.com/clubs), with no real idea in mind,
-I just wanted to virtually gather runners from the R community, the one
-that I already know, and the one I didn’t know yet. It was fun to see
-that after one week this group gathered more than 150 members 😱. (For
-those of you who don’t know, Strava is a social media platform around
-running, biking, and swimming.)
+Strava Club”](https://www.strava.com/clubs/rstats), with no real idea in
+mind, I just wanted to virtually gather runners from the R community,
+the one that I already know, and the one I didn’t know yet. It was fun
+to see that after one week this group gathered more than 150 members 😱.
+(For those of you who don’t know, Strava is a social media platform
+around running, biking, and swimming.)
 
 Anyway, I had no real agenda in mind when I opened it, but then as the
 size grew I was thinking that it would be nice to have something
 organized by the Club. And, that it would be nice to make this event
 serve a good cause. Hence, I came up with the idea of organizing and
-online “Run for RLadies” online event!
+online “Run for RLadies” online event\!
 
-How it works
-------------
+## How it works
 
--   Using [this google form](https://forms.gle/CMzaiACVbNT7opok7), you
+  - Using [this google form](https://forms.gle/CMzaiACVbNT7opok7), you
     can select one or several runner(s) to “sponsor”: every runner has
     an expected distance they will run.
--   On the weekend of the 3 and 4 of October, the registered runners
+  - On the weekend of the 3 and 4 of October, the registered runners
     will go for a run, matching the amount of kilometers they have
     declared they will do.
--   Once this run is done, you’ll receive a mail (probably on the Monday
+  - Once this run is done, you’ll receive a mail (probably on the Monday
     after that), with the distance that each runner has accomplished.
--   You will match 1 $/€ by kilometer run for the runner you’ve
+  - You will match 1 $/€ by kilometer run for the runner you’ve
     selected, by doing a donation to R-Ladies through their website
     (there is a little button on the bottom right of the website
-    <a href="https://rladies.org/" class="uri">https://rladies.org/</a>).
+    <https://rladies.org/>).
 
-FAQ
----
+## FAQ
 
--   Q: I’m a runner, and I want to be a part of it!
+  - Q: I’m a runner, and I want to be a part of it\!
 
--   A: Of course, please join :) Feel free to reach out either on the
-    RStats Strava Club
-    (<a href="https://www.strava.com/clubs/rstats" class="uri">https://www.strava.com/clubs/rstats</a>),
-    by sending me an email, or DM on Twitter
-    (<a href="https://twitter.com/_ColinFay" class="uri">https://twitter.com/_ColinFay</a>).
-    Note that you can definitely register as a runner without having a
-    Strava account.
+  - A: Of course, please join :) Feel free to reach out either on the
+    RStats Strava Club (<https://www.strava.com/clubs/rstats>), by
+    sending me an email, or DM on Twitter
+    (<https://twitter.com/_ColinFay>). Note that you can definitely
+    register as a runner without having a Strava account.
 
--   Q: What happens if a runner that said they’d do 20km end up doing
+  - Q: What happens if a runner that said they’d do 20km end up doing
     40km?
 
--   A: This event will work on trust: if a runner says they’ll do 20km,
+  - A: This event will work on trust: if a runner says they’ll do 20km,
     I trust them to do so. And of course, even if they do more, you will
     definitely be free to do a donation of the amount of your choice.
 
--   Q: Can I select multiple runners?
+  - Q: Can I select multiple runners?
 
--   A: Of course!
+  - A: Of course\!
 
--   Q: What happens if I change my mind/can’t do a donation after all?
+  - Q: What happens if I change my mind/can’t do a donation after all?
 
--   A: As said before, this event is built on trust, and there will be
+  - A: As said before, this event is built on trust, and there will be
     absolutely no check to see if someone registered here is actually
     making a donation. You’re totally free to register to sponsor and
     don’t do the donation. You’re free to give less, free to give more.
     I just hope that if you are registering here to sponsor someone to
     do a 20k, you are ok with giving 20$/€ when the time comes.
 
--   Q: Why this event?
+  - Q: Why this event?
 
--   A: In the past, every time I’ve talked about the fact that it’s
+  - A: In the past, every time I’ve talked about the fact that it’s
     possible to do a donation online to initiatives like RLadies or the
     R Foundation, most people seems to like the idea, they just don’t
     know that was possible. I believe that most of us are ok with the
     idea of making a donation for RLadies—it’s just that we don’t think
     about doing it.
 
--   Q: Why are you collecting emails?
+  - Q: Why are you collecting emails?
 
--   A: I’m collecting emails to send the results when the runs are
+  - A: I’m collecting emails to send the results when the runs are
     completed. This will be the only time I’ll use the mail collected
     here.
 
--   Q: Is this event affiliated to RLadies or Strava?
+  - Q: Is this event affiliated to RLadies or Strava?
 
--   A: Nop, this is an initiative by me, but I reached out to RLadies to
+  - A: Nop, this is an initiative by me, but I reached out to RLadies to
     get there agreement to launch that.
 
-Q: I have another question! A: Feel free to reach out to me. That will
+Q: I have another question\! A: Feel free to reach out to me. That will
 probably work best through Twitter, or via mail
 contact(at)colinfay(dot)me
 
-### And again, the form is at <a href="https://forms.gle/CMzaiACVbNT7opok7" class="uri">https://forms.gle/CMzaiACVbNT7opok7</a>!
+### And again, the form is at <https://forms.gle/CMzaiACVbNT7opok7>\!

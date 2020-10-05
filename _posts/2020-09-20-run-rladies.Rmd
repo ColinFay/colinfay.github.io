@@ -14,7 +14,7 @@ knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, comme
 
 Hey internet! 
 
-Around two weeks ago I started a club on Strava called ["The RStats Strava Club"](https://www.strava.com/clubs), with no real idea in mind, I just wanted to virtually gather runners from the R community, the one that I already know, and the one I didn't know yet. 
+Around two weeks ago I started a club on Strava called ["The RStats Strava Club"](https://www.strava.com/clubs/rstats), with no real idea in mind, I just wanted to virtually gather runners from the R community, the one that I already know, and the one I didn't know yet. 
 It was fun to see that after one week this group gathered more than 150 members 😱. 
 (For those of you who don't know, Strava is a social media platform around running, biking, and swimming.)
 
