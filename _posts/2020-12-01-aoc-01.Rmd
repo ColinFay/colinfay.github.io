@@ -27,9 +27,9 @@ The JavaScript code has been written in the same RMarkdown as the R code. It run
 
 + Combine all the possible duos and trios of the input numbers
 
-+ Locate combination that equal 2020
++ Locate the combination that equals 2020
 
-+ Multiply the numbers from these combinations to get the puzzle answer
++ Multiply the numbers from this combination to get the puzzle answer
 
 Find the complete instructions at: <https://adventofcode.com/2020/day/1>. 
 
@@ -41,22 +41,30 @@ Find the complete instructions at: <https://adventofcode.com/2020/day/1>.
 # Read
 ipt <- read.delim( "2020-01-aoc.txt",  header = FALSE )
 library(dplyr, warn.conflicts = FALSE)
+# Creating all the combinations
 tidystringdist::tidy_comb_all(ipt$V1) %>%
+  # Adding them together
   mutate(sum = V1 + V2) %>%
+  # keeping only the one that equals 2020
   filter(sum == 2020) %>%
+  # Multiplying it
   mutate(res = V1 * V2) %>%
+  # Getting the answer
   pull(res)
 ```
 
 ### Part two 
 
 ```{r}
+# Creating all the combinations
 combn(
   ipt$V1, 
   3
 ) %>% 
+  # Transposing the matrix and turning it to a tibble
   t() %>%
   as_tibble() %>%
+  # Same old song as step 1
   mutate(sum = V1 + V2 + V3) %>%
   filter(sum == 2020)  %>%
   mutate(res = V1 * V2 * V3) %>%
