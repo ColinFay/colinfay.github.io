@@ -1,0 +1,140 @@
+---
+title: "Advent of Code 2020-02 with R & JavaScript"
+post_date: 2019-12-02
+layout: single
+permalink: /aoc-2020-02/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, warning = FALSE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2020-01 with R and JavaScript. 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code.
+
+[Disclaimer bis] I'm no JavaScript expert so this might not be the perfect solution. TBH, that's also the case for the R solution. 
+
+## About the JavaScript code
+
+The JavaScript code has been written in the same RMarkdown as the R code. It runs thanks to the `{bubble}` package: https://github.com/ColinFay/bubble
+
+## Instructions
+
+### Step 1
+
++ Inputs are of the form `1-3 a: abcde`, for `min`-`max` `letter`:`code`, where `letter` must be found at least `min` and no more than `max` in `code`
+
+How to: split the input in four columns, for `min`,`max`,`letter`, and `code`, count the number of `letter` in `code`, and then make sure this count is >= min and <= max.
+
+### Step 2
+
++ Inputs are of the form `1-3 a: abcde`, for `position1`-`position2` `letter`:`code`, where `code[position1] == letter | code[position2] == letter` but not `code[position1] == letter & code[position2] == letter`, nor `!code[position1] == letter & !code[position2] == letter`
+
+Find the complete instructions at: <https://adventofcode.com/2020/day/2>. 
+
+## R solution
+
+### Part one
+
+```{r}
+# Read
+ipt <- read.delim( "2020-02-aoc.txt",  header = FALSE )
+
+library(dplyr, warn.conflicts = FALSE)
+library(tidyr)
+library(purrr)
+
+ipt %>%
+  # Create the four columns
+  separate(V1, c("min", "max", "letter", "code")) %>%
+  pmap_dbl(~{
+    # If the letter is not in the input, return 0
+    if (!stringr::str_detect(..4, ..3)) return(0)
+    # Count the n of letter in code
+    count <- stringr::str_count(..4, ..3)
+    # Is this count between the boundaries?
+    count >= as.numeric(..1) & count <= as.numeric(..2)
+  }) %>% sum()
+```
+
+### Part two 
+
+```{r}
+ipt %>%
+  # Create the four columns
+  separate(V1, c("min", "max", "letter", "code")) %>%
+  pmap_dbl(~{
+    #browser()
+    # Split the code 
+    code <- strsplit(..4, "")[[1]]
+    # code[position1] == letter
+    p1_match <- code[as.numeric(..1)] == ..3
+    # code[position1] == letter
+    p2_match <- code[as.numeric(..2)] == ..3
+    # No match
+    if (!p1_match & !p2_match) return(0)
+    # Two matches
+    if (p1_match && p2_match) return(0)
+    return(1)
+  }) %>% sum()
+```
+
+## JS solution
+
+### Part one & Two
+
+> // Reading the file and converting it to int
+
+```{node results = 'hide'}
+const fs = require('fs')
+var ipt = fs.readFileSync("2020-02-aoc.txt", 'utf8').split("\n").filter(x => x.length != 0);
+ipt = ipt.map(x => x.split(/[^A-Za-z0-9]/));
+```
+
+> // Doing the combn
+
+```{node results = "hide"}
+var res1 = ipt.map(x => {
+  if (!x[4].includes(x[2])) return 0
+  var match = x[4].match(new RegExp(x[2], "g")).length
+  return match >= parseInt(x[0]) & match <= parseInt(x[1])
+})
+```
+
+> // Solution
+
+```{node}
+// https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Array/reduce
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+res1.reduce(reducer)
+```
+
+> // Same with three
+
+```{node results = "hide"}
+var res2 = ipt.map(x => {
+    // Split the code 
+    var code = x[4].split("")
+    // code[position1] == letter
+    var p1_match = code[parseInt(x[0]) - 1] === x[2]
+    // code[position1] == letter
+    var p2_match = code[parseInt(x[1]) - 1] === x[2]
+    // No match
+    if (!p1_match && !p2_match) return 0
+    // Two matches
+    if (p1_match && p2_match) return 0
+    return 1
+})
+```
+
+
+> // Solution
+
+```{node}
+res2.reduce(reducer)
+```
