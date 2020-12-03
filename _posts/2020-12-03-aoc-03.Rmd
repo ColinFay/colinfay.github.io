@@ -1,0 +1,99 @@
+---
+title: "Advent of Code 2020-03 with R"
+post_date: 2019-12-03
+layout: single
+permalink: /aoc-2020-03/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, warning = FALSE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2020-03 with R 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code.
+
+
+## Instructions
+
+### Step 1
+
++ The input is a map (x, y), where `.` is a square, `#` is a tree. 
+
++ We can move this way: 3 right (x + 3), 1 down (y - 1).
+
++ The y repeats itself indefinitely.
+
++ We start from the top left corner (coordinate x = nrow(map), and y = 1).
+
++ We move until we've reached x == 1, i.e by taking nrow(map) steps.
+
++ How many trees `#` have we met along the way? 
+
+### Step 2
+
+Repeat this but modify the step schema.
+
+Find the complete instructions at: <https://adventofcode.com/2020/day/3>. 
+
+## R solution
+
+### Part one
+
+```{r}
+library(purrr)
+
+n_trees <- function(
+  by_x = 1, 
+  by_y = 3
+){
+  ipt <- read.delim( "2020-03-aoc.txt",  header = FALSE, stringsAsFactors = FALSE)
+  # Building the path
+  # x need to go from 1 to nrow(ipt), 1 by 1
+  x <- seq(1, nrow(ipt), by = by_x)
+  # y needs to start at 1, and go by 3 steps until we have length(x) steps
+  y <- seq(1, by = by_y, length.out = length(x))
+  list(
+    x = x, 
+    y = y
+  ) %>%
+    pmap_dbl(~ {
+      # Which x step are we in?
+      row <- ipt[..1, ] 
+      # If the row isn't wide enough, expand it until it is
+      # There is probably a better way to do that but I'm not 
+      # sure I want to spend 5 minutes trying stuff that will
+      # save me half a micro second
+      while(nchar(row) < ..2){
+        row <- paste0(row, row)
+      }
+      # Split the damn thing
+      row <- strsplit(row, "")[[1]]
+      # look for the y, is it a tree?
+      if (row[..2] == ".") return(0)
+      if (row[..2] == "#") return(1)
+    }
+    ) %>% sum()
+}
+n_trees()
+
+```
+
+### Part two 
+
+```{r}
+data.frame(
+  x = c(1, 1, 1, 1, 2),
+  y = c(1, 3, 5, 7, 1)
+) %>%
+  pmap_dbl(~ n_trees(..1, ..2)) %>%
+  reduce(`*`)
+```
+
+## JS solution
+
+Sorry, no time for JS today  ¯\_(ツ)_/¯
