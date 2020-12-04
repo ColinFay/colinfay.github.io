@@ -1,6 +1,6 @@
 ---
 title: "Advent of Code 2020-02 with R & JavaScript"
-post_date: 2019-12-02
+post_date: 2020-12-02
 layout: single
 permalink: /aoc-2020-02/
 categories: r-blog-en
