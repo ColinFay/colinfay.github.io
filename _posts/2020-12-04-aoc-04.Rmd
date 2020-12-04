@@ -1,0 +1,121 @@
+---
+title: "Advent of Code 2020-04 with R"
+post_date: 2020-12-04
+layout: single
+permalink: /aoc-2020-04/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, warning = FALSE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2020-04 with R and JavaScript. 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code.
+
+## Instructions
+
+### Step 1
+
++ Inputs are of the form of
+
+```
+ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
+byr:1937 iyr:2017 cid:147 hgt:183cm
+
+iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
+hcl:#cfa07d byr:1929
+
+hcl:#ae17e1 iyr:2013
+eyr:2024
+ecl:brn pid:760753108 byr:1931
+hgt:179cm
+
+hcl:#cfa07d eyr:2025 pid:166559648
+iyr:2011 ecl:brn hgt:59in
+```
+
+Where each "passport" is separated by a new line.
+
+To be considered valid, a passport has to have all of `c("byr","iyr","eyr", "hgt", "hcl", "ecl", "pid")`.
+
+### Step 2
+
+To be considered valid, a passport has to have all of `c("byr","iyr","eyr", "hgt", "hcl", "ecl", "pid")`, plus, each entry has to validate a series of rules.
+
+Find the complete instructions at: <https://adventofcode.com/2020/day/4>. 
+
+## R solution
+
+### Part one
+
+```{r}
+# Read the data
+ipt <- readLines("2020-04-aoc.txt" ) %>% 
+  # pasting everything into one big character string
+  paste(collapse = "\n") %>% 
+  # splitting where there are two \n\n (new lines)
+  strsplit("\n\n") %>% 
+  .[[1]] %>%
+  # Removing the new lines
+  gsub("\n", " ", .)
+
+library(purrr)
+
+is_north_pole_valid <- function(
+  x, 
+  patt = c("byr","iyr","eyr", "hgt", "hcl", "ecl", "pid")
+){
+  map_lgl(
+    patt, 
+    ~ grepl(.x, x)
+  ) %>% all()
+}
+
+map_dbl(
+  ipt, ~{
+    if (is_north_pole_valid(.x)) return(1)
+    return(0)
+  }
+) %>% sum()
+```
+
+### Part two 
+
+```{r}
+ipt %>%
+  # Remove the unvalid passport
+  discard(~ !is_north_pole_valid(.x)) %>%
+  # Split stuff
+  str_split(pattern = " ") %>%
+  map_dbl(~{
+    # Now, the heavy lifting
+    # we have a string of key:value pairs, 
+    # split it
+    vals <- map_chr(.x, ~ gsub("([^:]*):(.*)", "\\2", .x)) 
+    names(vals) <- map_chr(.x, ~ gsub("([^:]*):(.*)", "\\1", .x)) 
+    
+    # checking that values are inside range
+    if (! dplyr::between(vals["byr"], 1920, 2002) ) return(0)
+    if (! dplyr::between(vals["iyr"], 2010, 2020) ) return(0)
+    if (! dplyr::between(vals["eyr"], 2020, 2030) ) return(0)
+    # If height is in inch, check the range
+    if ( grepl("in", vals["hgt"]) ) {
+      if (! dplyr::between(gsub("in", "", vals["hgt"]), 59, 76)) return(0)
+    } else if (grepl("cm", vals["hgt"])) {
+      if (! dplyr::between(gsub("cm", "", vals["hgt"]), 150, 193)) return(0)
+    } else {
+      # No unit provided
+      return(0)
+    }
+    if (! grepl("^#[a-f0-9]{6}$", vals["hcl"])) return(0)
+    if (! vals["ecl"] %in% c("amb","blu", "brn", "gry", "grn","hzl", "oth")) return(0)
+    if (! grepl("^[0-9]{9}$", vals["pid"])) return(0)
+    return(1)
+  }
+) %>% sum()
+```
