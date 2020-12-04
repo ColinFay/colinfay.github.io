@@ -13,7 +13,7 @@ knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, warni
 bubble::set_node_engine()
 ```
 
-Solving Advent of Code 2020-04 with R and JavaScript. 
+Solving Advent of Code 2020-04 with R. 
 
 [Disclaimer] Obviously, this post contains a big spoiler about Advent of Code.
 
