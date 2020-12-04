@@ -54,6 +54,7 @@ Find the complete instructions at: <https://adventofcode.com/2020/day/4>.
 ### Part one
 
 ```{r}
+library(magrittr)
 # Read the data
 ipt <- readLines("2020-04-aoc.txt" ) %>% 
   # pasting everything into one big character string
@@ -64,7 +65,7 @@ ipt <- readLines("2020-04-aoc.txt" ) %>%
   # Removing the new lines
   gsub("\n", " ", .)
 
-library(purrr)
+library(purrr, warn.conflicts = FALSE)
 
 is_north_pole_valid <- function(
   x, 
@@ -91,7 +92,7 @@ ipt %>%
   # Remove the unvalid passport
   discard(~ !is_north_pole_valid(.x)) %>%
   # Split stuff
-  str_split(pattern = " ") %>%
+  strsplit(" ") %>%
   map_dbl(~{
     # Now, the heavy lifting
     # we have a string of key:value pairs, 
