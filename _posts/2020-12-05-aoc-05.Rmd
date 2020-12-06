@@ -1,0 +1,99 @@
+---
+title: "Advent of Code 2020-05 with R"
+post_date: 2020-12-05
+layout: single
+permalink: /aoc-2020-05/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, warning = FALSE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2020-05 with R. 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code.
+
+## Instructions
+
+Find the complete instructions at: <https://adventofcode.com/2020/day/5>. 
+
+## R solution
+
+### Part one
+
+```{r}
+library(magrittr)
+# Read the data
+ipt <- read.table("2020-05-aoc.txt", header = FALSE, stringsAsFactors = FALSE)
+
+library(magrittr)
+# For chunk2
+library(stackoverflow)
+library(purrr, warn.conflicts = FALSE)
+get_chunks <- function(vec, ext, nms){
+  # split the vec in two, set the name, and extract the correct chunk
+  chunk2(vec, 2) %>%
+    setNames(nms) %>%
+    pluck(ext)
+}
+
+# Prefilling the functions with the correct nms
+get_bf<- partial(get_chunks, nms = c("F", "B"))
+get_lr <- partial(get_chunks, nms = c("L", "R"))
+
+
+get_all <- function(entry){
+  entry <- strsplit(entry, "")[[1]] 
+  
+  # Doing the get_bf on the 7 first letters
+  row <- get_bf(0:127, entry[1]) %>%
+    get_bf(entry[2]) %>%
+    get_bf(entry[3]) %>%
+    get_bf(entry[4]) %>%
+    get_bf(entry[5]) %>%
+    get_bf(entry[6]) %>%
+    get_bf(entry[7]) 
+  
+  # Doing the get_lr on the 3 last letters
+  column <- get_lr(0:7, entry[8]) %>%
+    get_lr(entry[9]) %>%
+    get_lr(entry[10]) 
+  
+  # Computing the seat id
+  seatid <- (row * 8) + column   
+  
+  return(seatid)
+}
+
+# Getting the max
+map_dbl(ipt$V1, get_all) %>%
+  max()
+```
+
+
+### Part two 
+
+```{r}
+library(dplyr, warn.conflicts = FALSE)
+# Extracting all the ids
+map_dbl(ipt$V1, get_all) %>%
+  # Sorting them in order and turning into a df
+  sort() %>%
+  data.frame(
+    x = . 
+  ) %>%
+  # Computing the diff between all ids
+  mutate(
+    y = lag(x), 
+    diff = x - y
+  ) %>%
+  # My passport ID will be the one between the IDS 
+  # of diff != 1
+  filter(
+    diff != 1
+  ) 
+```
