@@ -1,0 +1,157 @@
+---
+title: "Advent of Code 2020-07 with R & Neo4j"
+post_date: 2020-12-07
+layout: single
+permalink: /aoc-2020-07/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, warning = FALSE)
+```
+
+Solving Advent of Code 2020-07 with R & Neo4j. 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code.
+
+## Instructions
+
+Find the complete instructions at: <https://adventofcode.com/2020/day/7>. 
+
+## R & Neo4j solution
+
+As today's options was a graph challenge, I decided to play a little bit with R and Neo4J.
+
+### Part one
+
+```{r}
+library(tidyverse)
+# Reading the data
+input <- read.delim(
+  "2020-07-aoc.txt", 
+  header = FALSE, 
+  stringsAsFactors = FALSE
+) %>% as_tibble()
+
+
+clean <- input %>%
+  # Extracting the origin
+  mutate(
+    origin = gsub("(.*) bags .*", "\\1", V1), 
+    contain = gsub(".* contain (.*) bags*\\.", "\\1", V1), 
+    contain = map(contain, ~ (strsplit(.x, ","))[[1]])
+  ) %>%
+  unnest(contain) %>%
+  # Extracting what they can contain
+  mutate(
+    n_contain = gsub(".*([0-9]+).*", "\\1", contain),
+    n_contain = case_when(
+      n_contain == "no other" ~ "0", 
+      TRUE  ~  n_contain
+    ) %>% as.character(),
+    contain = gsub(" bags*", "", contain),
+    contain = gsub("[0-9]*", "", contain),
+    contain = stringr::str_trim(contain)
+  ) %>%
+  # Keeping only the needed elements
+  select(
+    origin, contain, n_contain
+  )
+clean
+```
+
+
+
+```{r include = FALSE}
+system("docker run --rm --name neo4j --env NEO4J_AUTH=neo4j/password --publish=7687:7687 --publish=7474:7474 -v $(pwd):/var/lib/neo4j/import -d neo4j:3.4")
+
+library(neo4r)
+con <- neo4j_api$new(
+  url = "http://localhost:7474", 
+  user = "neo4j", 
+  password = "password"
+)
+
+while (try(con$ping()) != 200){
+  Sys.sleep(10)
+}
+
+"MATCH (n)
+DETACH DELETE n" %>%
+  call_neo4j(con, include_stats = TRUE)
+```
+
+```{r eval = FALSE}
+# Launching the container
+# 
+system("docker run --rm --name neo4j --env NEO4J_AUTH=neo4j/password --publish=7687:7687 --publish=7474:7474 -v $(pwd):/var/lib/neo4j/import -d neo4j:3.4")
+
+library(neo4r)
+# Connecting to the Neo4j API
+con <- neo4j_api$new(
+  url = "http://localhost:7474", 
+  user = "neo4j", 
+  password = "password"
+)
+
+# Waiting for the container to be ready
+Sys.sleep(10)
+while (try(con$ping()) != 200){
+  Sys.sleep(10)
+}
+```
+
+```{r}
+# Writing CSV for Neo4J
+data.frame(
+  nodes = unique(clean$origin, clean$contain)
+) %>%
+  write_csv("aoc07_nodes.csv")
+clean %>%
+  write_csv("aoc07_relationships.csv")
+```
+
+
+```{r}
+# Adding constraint of uniqueness on names
+"CREATE CONSTRAINT ON (origin:origin) ASSERT origin.name IS UNIQUE;" %>%
+  call_neo4j(con, include_stats = TRUE)
+"CREATE CONSTRAINT ON (contain:contain) ASSERT contain.name IS UNIQUE;" %>%
+  call_neo4j(con, include_stats = TRUE)
+
+# Load the nodes
+'LOAD CSV WITH HEADERS FROM "file:///aoc07_nodes.csv" AS csvLine
+MERGE (:bag {name : csvLine.nodes} ) ' %>%
+  call_neo4j(con, include_stats = TRUE)
+#
+# # Load the relationships
+'LOAD CSV WITH HEADERS FROM "file:///aoc07_relationships.csv" AS csvLine
+MATCH (c:bag {name : csvLine.contain})
+MATCH (o:bag {name : csvLine.origin})
+MERGE (o) -[:CAN_CONTAIN {n_contain: csvLine.n_contain}]->(c);' %>%
+  call_neo4j(con, include_stats = TRUE)
+
+# Count all the bags that can eventually contain a shiny gold ones
+'MATCH (b:bag)-[:CAN_CONTAIN*1..]-> (:bag {name:"shiny gold"}) RETURN count( DISTINCT b) AS count' %>%
+  call_neo4j(con)
+```
+
+
+### Part two 
+
+```{r}
+'MATCH (:bag {name:"shiny gold"})-[r:CAN_CONTAIN*1..]-> (:bag) WITH reduce(tot = 1, i IN r| tot * toInteger(i.n_contain)) AS total RETURN sum(total) AS total' %>%
+  call_neo4j(con)
+```
+
+
+```{r}
+# Removing the container
+system("docker kill neo4j")
+
+unlink("aoc07_nodes.csv")
+unlink("aoc07_relationships.csv")
+```
+
