@@ -1,0 +1,105 @@
+---
+title: "Advent of Code 2020-09 with R"
+post_date: 2020-12-09
+layout: single
+permalink: /aoc-2020-09/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, warning = FALSE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2020-09 with R. 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code.
+
+## Instructions
+
+We have a `XMAS` code, which: 
+
++ Start with 25 numbers
+
++ Any following number should be the sum of one of the possible pairs from the previous 25
+
++ In step 2, find the consecutive set of number that sums to the result of part 1, and add its min and max
+
+Find the complete instructions at: <https://adventofcode.com/2020/day/9>. 
+
+## R solution
+
+### Part one
+
+```{r}
+# Reading the data
+input <- read.delim(
+  sep = " ",
+  "2020-09-aoc.txt", 
+  header = FALSE, 
+  stringsAsFactors = FALSE
+)
+
+for (i in 26:length(input$V1)){
+  # The 25 starting numbers
+  to_get <- (i - 25):(i-1)
+  
+  # The 26th number should be between the 
+  # sum of the two lowest number and the sum 
+  # of the two highest
+  lower_bond <- sum(
+    head(
+      sort(input$V1[to_get]),
+      2
+    )
+  )
+  
+  higher_bond <- sum(
+    tail(
+      sort(
+        input$V1[to_get]
+      ), 
+      2
+    )
+  )
+  
+  if (
+    !dplyr:::between(input$V1[i], lower_bond, higher_bond)
+  ){
+    output1 <<- input$V1[i]
+    print(output1)
+    break
+    
+  }
+}
+
+```
+
+### Part Two
+
+
+```{r}
+for (i in 1:length(input$V1)){
+  # We will try to find any sequence in 1:n, then 2:n, 
+  # then 3:n, etc, that sums to output1
+  selection <- input$V1[i:length(input$V1)]
+  c_s <- cumsum(selection) == output1
+  if (
+    any(c_s)
+  ){
+    bounds <- selection[1:which(c_s)]
+    
+    print(
+      sum(
+        min(bounds), 
+        max(bounds)
+      )
+    )
+    break
+  }
+}
+
+```
+

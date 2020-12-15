@@ -13,7 +13,7 @@ knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, warni
 bubble::set_node_engine()
 ```
 
-Solving Advent of Code 2020-08 with R & Neo4j. 
+Solving Advent of Code 2020-08 with R. 
 
 [Disclaimer] Obviously, this post contains a big spoiler about Advent of Code.
 
@@ -99,6 +99,7 @@ give_me_a_break(input)
 
 ```
 
+### Part Two
 
 ```{r}
 for (i in which(input$V1 %in% c("nop", "jmp"))){
