@@ -100,7 +100,7 @@ give_me_a_break(input)
 ```
 
 
-```{r eval = FALSE}
+```{r}
 for (i in which(input$V1 %in% c("nop", "jmp"))){
   
   modified_ipt <- input
