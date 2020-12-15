@@ -1,0 +1,123 @@
+---
+title: "Advent of Code 2020-08 with R"
+post_date: 2020-12-08
+layout: single
+permalink: /aoc-2020-08/
+categories: r-blog-en
+output: jekyllthat::jekylldown
+excerpt_separator: <!--more-->
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.path="../assets/img/", eval = TRUE, error =TRUE, warning = FALSE)
+bubble::set_node_engine()
+```
+
+Solving Advent of Code 2020-08 with R & Neo4j. 
+
+[Disclaimer] Obviously, this post contains a big spoiler about Advent of Code.
+
+## Instructions
+
+Input looks like this
+
+```
+nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6
+```
+
++ There is a global var called `accumulator`, starting at 0
+
++ `acc n` increases or decreases `accumulator` by `n`, and goes to next row
+
++ `jmp n` jumps to a its position +  `n`
+
++ `nop` does nothing but going to the next execution
+
++ If the program tries to execute a row twice, we stop, and the eturned value is the value just before that
+
+Find the complete instructions at: <https://adventofcode.com/2020/day/8>. 
+
+## R solution
+
+### Part one
+
+```{r}
+# Reading the data
+input <- read.delim(
+  sep = " ",
+  "2020-08-aoc.txt", 
+  header = FALSE, 
+  stringsAsFactors = FALSE
+)
+
+give_me_a_break <- function(input){
+  
+  accumultor <- 0
+  current_row <- 1
+  done_row <- c()
+  exit_code <- 0
+  
+  while(TRUE){
+    if (current_row %in% done_row){
+      exit_code <- 1
+      break
+    }
+    if (current_row > nrow(input)){
+      break
+    }
+    done_row <- c(done_row, current_row)
+    curr_row <- input[current_row, ]
+    if (curr_row$V1 == "nop") {
+      current_row <- current_row + 1
+    }
+    if (curr_row$V1 == "acc") {
+      accumultor <- accumultor + curr_row$V2
+      current_row <- current_row + 1
+    }
+    if (curr_row$V1 == "jmp") {
+      current_row <- current_row + curr_row$V2
+    }
+  }
+  return(
+    list(
+      accumultor = accumultor, 
+      exit_code = exit_code
+    )
+  )
+}
+
+
+give_me_a_break(input)
+
+```
+
+
+```{r eval = FALSE}
+for (i in which(input$V1 %in% c("nop", "jmp"))){
+  
+  modified_ipt <- input
+  
+  if (modified_ipt[i, 'V1'] == "nop"){
+    modified_ipt[i, 'V1'] <- "jmp"
+  } else {
+    modified_ipt[i, 'V1'] <- "nop"
+  }
+  
+  res <- give_me_a_break(modified_ipt)
+  
+  if (res$exit_code == 0){
+    print(res$accumultor)
+    break
+  }
+  
+}
+```
+
