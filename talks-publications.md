@@ -22,6 +22,9 @@ td {
 
 ## &#128483; I've been talking &#128483;
 
+| __2020-10-15__ |  [Workshop - "Good Practices for {shiny} development with {golem}"](https://speakerdeck.com/colinfay/workshop-good-practices-for-shiny-development-with-golem), EARL, Online. |  |
+| __2020-09-25__ |  [Workshop - "Engineering {shiny} with {golem}"](https://speakerdeck.com/colinfay/engineering-shiny-with-golem-whyr), WhyR, Online. |  |
+| __2020-09-09__ |  [An overview of testing in R](https://speakerdeck.com/colinfay/an-overview-of-testing-in-r), AI Testing online meetup. |  |
 | __2020-07-28__ |  ["Everything not Tested Will Eventually Fail"](https://speakerdeck.com/colinfay/everything-not-tested-will-eventually-fail), NYR Meetup, Online. |  |
 | __2020-06-18__ |  ["Testing Shiny: Why, what, and how"](https://speakerdeck.com/colinfay/erum-2020-testing-shiny-why-what-and-how), e-Rum, Online. |   |
 | __2020-03-07__ |  ["Engineering Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/bristolr-engineering-production-grade-shiny-apps-with-golem), Bristol Online Meetup, Online. | [ &#127909; ](https://youtu.be/aY5ekC4-WQs?t=1784) |
@@ -65,11 +68,11 @@ td {
 
 ### Open source Books
 
-+ [WIP] - [Engineering Production Grade Shiny Apps](https://connect.thinkr.fr/engineering-shiny/)
++ [Engineering Production Grade Shiny Apps](https://connect.thinkr.fr/engineering-shiny/)
 
 + [JavaScript 4 Shiny - Field Notes](https://connect.thinkr.fr/js4shinyfieldnotes/)
 
-+ [WIP] - [Licensing R](https://thinkr-open.github.io/licensing-r/)
++ [Licensing R](https://thinkr-open.github.io/licensing-r/)
  
 ### Technical reviewer
 
@@ -77,7 +80,7 @@ td {
 
 ### Articles:
 
-+ "The Rockerverse: Packages and Applications for Containerization with R" (co-author), arXiv preprint, [link](https://arxiv.org/abs/2001.10641)
++ "The Rockerverse: Packages and Applications for Containerization with R" (co-author), The R Journal, [link](https://journal.r-project.org/archive/2020/RJ-2020-007/index.html)
 
 + "Text Mining with R: A Tidy Approach". Journal of Statistical Software, Vol 83, 10.18637/jss.v083.b01. [link](https://www.jstatsoft.org/article/view/v083b01)
 
