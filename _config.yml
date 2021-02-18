@@ -98,8 +98,8 @@ analytics:
 author:
   name             : "Colin FAY"
   avatar           : "https://avatars1.githubusercontent.com/u/17936236?v=3&s=460" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Data Scientist & R Hacker at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. Founder of <a href = 'https://data-bzh.fr'><u>Data Bzh</u></a> and cofounder of the <a href = 'http://breizhdataclub.org/'><u>Breizh Data Club</u></a>. Part of the <a href='http://www.rweekly.org'><u>RWeekly</u></a> Team. International Speaker."
-  location         : "Rennes"
+  bio              : "Data Science and Engineering at <a href='https://thinkr.fr/'><u>ThinkR</u></a>. 'Chaotic good developer'. International Speaker. Runs. Eats plants."
+  location         : "127.0.0.1"
   email            : "contact@colinfay.me"
   uri              :
   home             : # null (default), "absolute or relative url to link to author home"
