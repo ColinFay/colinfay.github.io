@@ -15,7 +15,7 @@ editor_options:
 experimental** at the time of writing these lines (2021-02-18), so it
 might face some API changes in the future.
 
-## Multi-page in {shiny}, and random thought about designing web applications
+## Multi-page in {shiny}, and random thoughts about designing web applications
 
 Something that has been bugging me for a while is the inability to
 really share a specific part of a `{shiny}` dashboard, at least

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(fig.path="../assets/img/", eval = FALSE, error =TRUE, warn
 
 [Disclaimer] The package **presented in this blog post is still experimental** at the time of writing these lines (2021-02-18), so it might face some API changes in the future.
 
-## Multi-page in {shiny}, and random thought about designing web applications
+## Multi-page in {shiny}, and random thoughts about designing web applications
 
 Something that has been bugging me for a while is the inability to really share a specific part of a `{shiny}` dashboard, at least natively, using a specific path.
 In other words, I've always wanted to be able to do something like `my-uberapp.io/contact` to share with someone a specific part of the app.
