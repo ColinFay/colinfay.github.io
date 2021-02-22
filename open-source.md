@@ -117,6 +117,7 @@ add_repos(repos, "jsthings")
 var repos = [
   "ColinFay/r-ci", 
   "ColinFay/r-db", 
+  "ColinFay/clientsdb", 
   "neo4j-rstats/neo4r-docker"
   ]
 
