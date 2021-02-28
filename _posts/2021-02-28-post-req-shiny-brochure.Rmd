@@ -145,7 +145,8 @@ postpage <- function(){
           )
           # Here, you can define your own handling 
           # logic of the body. 
-          # We'll simply print it to the console here.
+          # We'll simply print it to the console 
+          # in this example.
           print(body)
           return(
             httpResponse(
