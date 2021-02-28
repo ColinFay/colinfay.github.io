@@ -18,6 +18,8 @@ might face some API changes in the future.
 Yesterday Jacqueline’s tweeted about her need to add `POST` requests to
 a `{shiny}` application.
 
+<div data-align="center">
+
 <blockquote class="twitter-tweet">
 
 <p lang="en" dir="ltr">
@@ -34,6 +36,8 @@ POST requests. I have data I wanna pass to my server :/
 </blockquote>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+</div>
 
 This is actually one of the things I had in mind when building
 `{brochure}`: more flexibility with the HTTP requests and how they are

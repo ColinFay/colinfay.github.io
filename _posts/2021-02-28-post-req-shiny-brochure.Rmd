@@ -19,7 +19,11 @@ knitr::opts_chunk$set(fig.path="../assets/img/", eval = FALSE, error =TRUE, warn
 
 Yesterday Jacqueline's tweeted about her need to add `POST` requests to a `{shiny}` application.
 
+<div align = "center">
+
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">I&#39;m astounded that it doesn&#39;t seem like a Shiny app is able to accept POST requests. I have data I wanna pass to my server :/</p>&mdash; Dr. Jacqueline Nolis (@skyetetra) <a href="https://twitter.com/skyetetra/status/1365785536049291264?ref_src=twsrc%5Etfw">February 27, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+</div>
 
 This is actually one of the things I had in mind when building `{brochure}`: more flexibility with the HTTP requests and how they are handled. 
 
