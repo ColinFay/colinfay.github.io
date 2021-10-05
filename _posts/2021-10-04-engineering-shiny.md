@@ -14,6 +14,14 @@ editor_options:
 I'm so, so excited to announce that the _'Engineering Production-Grade Shiny Apps'_ book is now available in print! 
 This book is the result of two years of work, and I couldn't be more happy to see it available in print.
 
+<div align = "center">
+
+<h3>
+[📚 Get a copy 📚](https://www.routledge.com/Engineering-Production-Grade-Shiny-Apps/Fay-Rochette-Guyader-Girard/p/book/9780367466022)
+</h3>
+
+</div>
+
 As its title suggests, _'Engineering Production-Grade Shiny Apps'_ is a book about building `{shiny}` apps that  will be sent to production. 
 It goes deep into `{golem}`, of course, but it's not a book about `{golem}` only --- it tries to cover a large panel of topics, and I'm pretty sure that if you are a `{shiny}` developer, there is something for you in this book: project management, code organization, team work, best practices for front end development, CI and CD, deployment, code optimization...
 
