@@ -17,7 +17,9 @@ This book is the result of two years of work, and I couldn't be more happy to se
 <div align = "center">
 
 <h3>
-[📚 Get a copy 📚](https://www.routledge.com/Engineering-Production-Grade-Shiny-Apps/Fay-Rochette-Guyader-Girard/p/book/9780367466022)
+
+<a href = "https://www.routledge.com/Engineering-Production-Grade-Shiny-Apps/Fay-Rochette-Guyader-Girard/p/book/9780367466022">📚 Get a copy 📚</a>
+
 </h3>
 
 </div>
