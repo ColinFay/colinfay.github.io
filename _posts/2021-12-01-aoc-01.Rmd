@@ -83,7 +83,7 @@ ipt.map(
 ```
 
 
-### Part two 
+## Part two 
 
 ### R solution
 
@@ -118,7 +118,7 @@ tmp.
     (x, y) => tmp[y] - tmp[y-1] 
     ).
   filter(
-    // keeping the one that have raised
+    // keeping the ones that have raised
     x => x > 0
   ).
   length;
