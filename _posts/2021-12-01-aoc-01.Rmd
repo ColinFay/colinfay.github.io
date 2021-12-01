@@ -15,7 +15,7 @@ bubble::set_node_engine()
 
 Solving Advent of Code 2021-01 with R and JavaScript. 
 
-I'll try in this post to write R code that looks like the JavaScript one, using `{purrr}`, to show how both syntax can look alike.
+I'll try in this post to write R code that looks like the JavaScript one, using `{purrr}`, to show how both syntaxes can look alike.
 The idea is to highlight how you can leverage your `{purrr}` knowledge when writting JavaScript code.
 
 ## Disclaimer
