@@ -10,7 +10,6 @@ excerpt_separator: <!--more-->
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(fig.path = "../assets/img/", eval = TRUE, error = TRUE, warning = FALSE)
-bubble::set_node_engine()
 ```
 
 Solving Advent of Code 2021-02 with R and JavaScript. 
@@ -26,6 +25,10 @@ Like yesterday, trying to write JS code that looks like R code.
 ## About the JavaScript code
 
 The JavaScript code has been written in the same RMarkdown as the R code. It runs thanks to the `{bubble}` package: https://github.com/ColinFay/bubble.
+
+```{r}
+bubble::set_node_engine()
+```
 
 ## Instructions
 
@@ -89,7 +92,7 @@ start_pos[1] * start_pos[2]
 
 ### JS solution
 
-```{node}
+```{node results = 'hide'}
 var start_pos = [0, 0]
 
 // Gotcha: R for(x in y) is JS for(x of y)
@@ -111,9 +114,11 @@ for (moves of ipt) {
     start_pos[0] = start_pos[0] + parseInt(move[1])
   }
 }
-start_pos[0] * start_pos[1]
 ```
 
+```{node}
+start_pos[0] * start_pos[1]
+```
 
 ## Part two 
 
@@ -142,7 +147,7 @@ start_pos[1] * start_pos[2]
 
 ### JS solution
 
-```{node}
+```{node results = 'hide'}
 var start_pos = [0, 0, 0]
 
 for (moves of ipt) {
@@ -158,5 +163,8 @@ for (moves of ipt) {
     start_pos[1] = start_pos[1] + (start_pos[2] * parseInt(move[1]))
   }
 }
+```
+
+```{node}
 start_pos[0] * start_pos[1]
 ```
