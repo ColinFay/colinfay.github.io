@@ -22,14 +22,15 @@ td {
 
 ## &#128483; I've been talking &#128483;
 
-| __2021-11-18__ |  [Building Multiple Page Shiny Apps with {brochure}](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Webinar, Online. | [ &#127909; ](https://youtu.be/aY5ekC4-WQs?t=1784)  |
-| __2021-11-18__ |  [Let's talk about accessibility](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Conference, Online. |  |
+| __2022-02-16__ |  [Building Multiple Page Shiny Apps with {brochure}](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Webinar, Online. | [ &#127909; ](https://youtu.be/aY5ekC4-WQs?t=1784)  |
+| __2021-11-08__ |  [Let's talk about accessibility](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Conference, Online. |  |
+| _2021-05-18 | Mastering Shiny Book Club: the golem package, Online. | [ &#127909; ](https://www.youtube.com/watch?v=Vq2GKCbfpTI) |
 | __2020-10-15__ |  [Workshop - "Good Practices for {shiny} development with {golem}"](https://speakerdeck.com/colinfay/workshop-good-practices-for-shiny-development-with-golem), EARL, Online. |  |
 | __2020-09-25__ |  [Workshop - "Engineering {shiny} with {golem}"](https://speakerdeck.com/colinfay/engineering-shiny-with-golem-whyr), WhyR, Online. |  |
 | __2020-09-09__ |  [An overview of testing in R](https://speakerdeck.com/colinfay/an-overview-of-testing-in-r), AI Testing online meetup. |  |
 | __2020-07-28__ |  ["Everything not Tested Will Eventually Fail"](https://speakerdeck.com/colinfay/everything-not-tested-will-eventually-fail), NYR Meetup, Online. |  |
 | __2020-06-18__ |  ["Testing Shiny: Why, what, and how"](https://speakerdeck.com/colinfay/erum-2020-testing-shiny-why-what-and-how), e-Rum, Online. |   |
-| __2020-03-07__ |  ["Engineering Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/bristolr-engineering-production-grade-shiny-apps-with-golem), Bristol Online Meetup, Online. | [ &#127909; ](https://youtu.be/aY5ekC4-WQs?t=1784) |
+| __2020-04-27__ |  ["Engineering Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/bristolr-engineering-production-grade-shiny-apps-with-golem), Bristol Online Meetup, Online. | [ &#127909; ](https://youtu.be/aY5ekC4-WQs?t=1784) |
 | __2020-03-07__ |  ["Keynote - 'prod' is not a four letter word"](https://speakerdeck.com/colinfay/keynote-prod-is-not-a-four-letter-word), satRday, Johannesburg. | [ &#127909; ](https://youtu.be/UoNhFn_QoFw) |
 | __2020-03-06__ |  ["Workshop - Building Successful Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/workshop-building-successful-shiny-apps-with-golem), satRday, Johannesburg.. | |
 | __2020-01-30__ |  ["Production-grade Shiny Apps with golem"](https://resources.rstudio.com/rstudio-conf-2020/production-grade-shiny-apps-with-golem-colin-fay), rstudio::conf(2020L), San Fransisco. | [ &#127909; ](https://resources.rstudio.com/rstudio-conf-2020/production-grade-shiny-apps-with-golem-colin-fay) |
