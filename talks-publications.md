@@ -22,6 +22,8 @@ td {
 
 ## &#128483; I've been talking &#128483;
 
+| __2021-11-18__ |  [Building Multiple Page Shiny Apps with {brochure}](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Webinar, Online. | [ &#127909; ](https://youtu.be/aY5ekC4-WQs?t=1784)  |
+| __2021-11-18__ |  [Let's talk about accessibility](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Conference, Online. |  |
 | __2020-10-15__ |  [Workshop - "Good Practices for {shiny} development with {golem}"](https://speakerdeck.com/colinfay/workshop-good-practices-for-shiny-development-with-golem), EARL, Online. |  |
 | __2020-09-25__ |  [Workshop - "Engineering {shiny} with {golem}"](https://speakerdeck.com/colinfay/engineering-shiny-with-golem-whyr), WhyR, Online. |  |
 | __2020-09-09__ |  [An overview of testing in R](https://speakerdeck.com/colinfay/an-overview-of-testing-in-r), AI Testing online meetup. |  |
@@ -60,7 +62,8 @@ td {
 
 ## &#127911; I've been on podcasts &#127911;
 
-+ ["`{golem}` and Effective Shiny Development Methods"](https://shinydevseries.com/ep2/) - Shiny Developer Series, episode 2.
++ ["Episode 25: Colin Fay is back!"](https://shinydevseries.com/interview/ep025/) - Shiny Developer Series, episode 25.
++ ["`{golem}` and Effective Shiny Development Methods"](https://shinydevseries.com/interview/ep002/) - Shiny Developer Series, episode 2.
 
 ***
 
@@ -87,12 +90,6 @@ td {
 ### Books I've contributed to
 
 + [Advanced R - R6 Chapter](https://adv-r.hadley.nz/r6) — Wickham H. 
-
-***
-
-## &#x1F4D6; I've compiled Bookdowns &#x1F4D6;
-
-+ The R manuals converted to bookdown:  [R manuals](/r-manuals/)
 
 ***
 
