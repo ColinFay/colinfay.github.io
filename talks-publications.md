@@ -20,7 +20,7 @@ td {
 }
 </style>
 
-## &#128483; I've been talking &#128483;
+## &#128483; I've been talking &#128483;  
 
 | __2022-02-16__ |  [Building Multiple Page Shiny Apps with {brochure}](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Webinar, Online. | [ &#127909; ](https://youtu.be/aY5ekC4-WQs?t=1784)  |
 | __2021-11-08__ |  [Let's talk about accessibility](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Conference, Online. |  |
