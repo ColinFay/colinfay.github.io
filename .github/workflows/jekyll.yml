@@ -1,0 +1,9 @@
+name: Jekyll Actions
+run-name: ${{ github.actor }} is build 🚀
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Jekyll Actions
+        uses: helaili/jekyll-action@2.4.0
