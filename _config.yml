@@ -127,7 +127,7 @@ author:
   xing             :
   youtube          : # "https://youtube.com/c/MichaelRoseDesign"
 
-menu: 
+menu:
   home : "https://colinfay.me"
 
 # Reading Files
@@ -209,6 +209,7 @@ plugins:
   - jekyll-gist
   - jekyll-feed
   - jemoji
+  - jekyll-include-cache
 
 # mimic GitHub Pages with --safe
 whitelist:
