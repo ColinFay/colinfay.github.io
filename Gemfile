@@ -6,4 +6,9 @@ gem "jekyll", "~> 3.7"
 
 gem 'jekyll-redirect-from'
 
-gem install jemoji
+gem 'jemoji'
+gem "jekyll-paginate"
+gem "jekyll-sitemap"
+gem "jekyll-gist"
+gem "jekyll-feed"
+gem "jemoji"
