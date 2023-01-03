@@ -5,3 +5,5 @@ gem "minimal-mistakes-jekyll"
 gem "jekyll", "~> 3.7"
 
 gem 'jekyll-redirect-from'
+
+gem install jemoji
