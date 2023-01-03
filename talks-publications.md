@@ -5,7 +5,7 @@ permalink: /talks-publications/
 author_profile: true
 ---
 
-<style> 
+<style>
 .page__content p {
     margin: 0 0 0em;
     line-height: 1.5em;
@@ -20,11 +20,12 @@ td {
 }
 </style>
 
-## &#128483; I've been talking &#128483;  
+## &#128483; I've been talking &#128483;
 
-| __2022-02-16__ |  [Building Multiple Page Shiny Apps with {brochure}](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Webinar, Online. | [ &#127909; ](https://youtu.be/aY5ekC4-WQs?t=1784)  |
+| __2022-02-16__ |  [DESTROY ALL WIDGETS](https://speakerdeck.com/colinfay/destroy-all-widgets), Shiny in Production, NewCastle. | [ &#127909; ](https://www.youtube.com/watch?v=8_k-iPwcleU)  |
+| __2022-02-16__ |  [Building Shiny Apps with {golem}](https://www.meetup.com/fr-FR/prague-r-meetup-group/events/286072616/), Prague RUG, Prague. | |
 | __2021-11-08__ |  [Let's talk about accessibility](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Conference, Online. |  |
-| _2021-05-18 | Mastering Shiny Book Club: the golem package, Online. | [ &#127909; ](https://www.youtube.com/watch?v=Vq2GKCbfpTI) |
+| _2021-05-18__ | Mastering Shiny Book Club: the golem package, Online. | [ &#127909; ](https://www.youtube.com/watch?v=Vq2GKCbfpTI) |  |
 | __2020-10-15__ |  [Workshop - "Good Practices for {shiny} development with {golem}"](https://speakerdeck.com/colinfay/workshop-good-practices-for-shiny-development-with-golem), EARL, Online. |  |
 | __2020-09-25__ |  [Workshop - "Engineering {shiny} with {golem}"](https://speakerdeck.com/colinfay/engineering-shiny-with-golem-whyr), WhyR, Online. |  |
 | __2020-09-09__ |  [An overview of testing in R](https://speakerdeck.com/colinfay/an-overview-of-testing-in-r), AI Testing online meetup. |  |
@@ -42,8 +43,8 @@ td {
 | __2019-04-25__ | ["R in Production"](https://speakerdeck.com/colinfay/r-in-production), R Nantes Meetup, Nantes.||
 | __2019-01-16__ | ["Building Big Shiny Apps - A Workflow"](https://thinkr-open.github.io/rstudioconf2019/), RStudio Conference 2019, Austin, Texas. ||
 | __2018-11-05__ |  ["Data Science en production avec R — Quels enjeux ? Quelles solutions?"](https://speakerdeck.com/colinfay/data-science-en-production-avec-r-quels-enjeux-quelles-solutions), Lyon Data Science Meetup, Lyon. | [ &#127909; ](https://www.youtube.com/watch?v=rjQ1CcHEEF4) |
-| __2018-10-19__ | "Data Science en production avec R, retour d'expérience", Breizh Data day, Rennes.  || 
-| __2018-07-05__ | ["Vous allez aimer avoir {purrr}"](https://github.com/ColinFay/conf/tree/master/2018-07-rencontresr-rennes), Rencontres R Rennes.  || 
+| __2018-10-19__ | "Data Science en production avec R, retour d'expérience", Breizh Data day, Rennes.  ||
+| __2018-07-05__ | ["Vous allez aimer avoir {purrr}"](https://github.com/ColinFay/conf/tree/master/2018-07-rencontresr-rennes), Rencontres R Rennes.  ||
 | __2018-06-14__ | ["Quand un langage de datascience se met à faire du web"](https://github.com/ColinFay/conf/tree/master/2018-06-Web2Day-Nantes), Web2Day, Nantes.  | [&#127909;](https://www.youtube.com/watch?v=8aRmY3A6raU) |
 | __2018-05-14__ | ["Workshop - Building a package that lasts"](https://github.com/ColinFay/erum2018), eRum, Budapest.  ||
 | __2018-04-19__ | ["R pour le web, mais pour quoi faire ?"](https://github.com/ColinFay/conf/tree/master/2018-04-nantes_R_meetup), Meetup R Nantes.  ||
@@ -77,7 +78,7 @@ td {
 + [JavaScript 4 Shiny - Field Notes](https://connect.thinkr.fr/js4shinyfieldnotes/)
 
 + [Licensing R](https://thinkr-open.github.io/licensing-r/)
- 
+
 ### Technical reviewer
 
 + [Domain-Specific Languages in R - Mailund, Thomas](https://www.apress.com/us/book/9781484235874)
@@ -90,7 +91,7 @@ td {
 
 ### Books I've contributed to
 
-+ [Advanced R - R6 Chapter](https://adv-r.hadley.nz/r6) — Wickham H. 
++ [Advanced R - R6 Chapter](https://adv-r.hadley.nz/r6) — Wickham H.
 
 ***
 

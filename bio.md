@@ -7,23 +7,22 @@ hide: true
 
 ## Biography
 
-Colin FAY works at ThinkR, a french agency focused on everything R-related.
+Colin FAY is a lead developer at ThinkR, a french agency focused on everything R-related.
 
-During the day, he helps companies with their R needs, provides training (from beginner to expert), creates tools (packages, web apps...) and builds infrastructure. 
-His main areas of expertise are data & software engineering, back-end & infrastructure, and R in production.
+During the day, he helps companies to take full advantage of the power of R, by building tools and deploying infrastructure.
+His main areas of expertise are data & software engineering, web applications (frontend and backend), and R in production.
 
-During the night, Colin is also an hyperactive open source developer and advocate. 
-You can find a lot of his work on his GitHub account (https://github.com/ColinFay) and on ThinkR's account (https://github.com/thinkr-open).
-He is also active in the Data Science community in his home country (France) and worldwide, and an international speaker.  
+During the night, Colin is also an active open source developer and advocate.
+
+He's the main developer of the {golem} package, and the lead author of the "Building Production Grade Shiny Apps" book.
 
 ## Pics
 
-If you need a pic, please chose between: 
+If you need a pic, please chose between:
 
 This one:
+<img src = "https://colinfay.me/assets/img/colin_fay_horns.jpeg">
+
+And this one:
 
 <img src = "https://colinfay.me/assets/img/colin_fay.JPG" >
-
-And This one:
-
-<img src = "https://colinfay.me/assets/img/colin_fay_horns.jpeg">

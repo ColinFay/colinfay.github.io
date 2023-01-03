@@ -6,12 +6,14 @@ permalink: /about/
 
 ## &#128187; What I'm doing right now &#128187;
 
-### Data Scientist & R Hacker at <a href = "https://www.thinkr.fr">ThinkR</a>
+### Lead Developer at <a href = "https://www.thinkr.fr">ThinkR</a>
 
-+ Software Engineering, focused on R and JavaScript 
++ Software Engineering, focused on R, Web Technologies and Infrastructure (Docker, K8, ...)
 + Data Science Engineering
 + Consulting
-+ Training 
++ Training
+
+## Previous stuff I did
 
 ### Cofounder of the <a href = "http://breizhdataclub.org/">Breizh Data Club</a>
 
@@ -27,9 +29,9 @@ In 2016, Data Bzh won the Trophée Open Data 2016 ([More on that](http://data-bz
 
 ## &#129337; Skills &#129337;
 
-### Programming languages 
+### Programming languages
 
-<i class="fab fa-r-project"></i> R 
+<i class="fab fa-r-project"></i> R
 
 <i class="fab fa-js-square"></i> JavaScript
 
@@ -41,7 +43,7 @@ In 2016, Data Bzh won the Trophée Open Data 2016 ([More on that](http://data-bz
 
 <i class="fab fa-html5"></i> HTML
 
-<i class="fab fa-css3-alt"></i> CSS 
+<i class="fab fa-css3-alt"></i> CSS
 
 ### Data Science Engineering
 
