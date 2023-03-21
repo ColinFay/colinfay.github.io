@@ -22,7 +22,7 @@ td {
 
 ## &#128483; I've been talking &#128483;
 
-| __2022-02-16__ |  [DESTROY ALL WIDGETS](https://speakerdeck.com/colinfay/destroy-all-widgets), Shiny in Production, NewCastle. | [ &#127909; ](https://www.youtube.com/watch?v=8_k-iPwcleU)  |
+| __2022-10-07__ |  [DESTROY ALL WIDGETS](https://speakerdeck.com/colinfay/destroy-all-widgets), Shiny in Production, NewCastle. | [ &#127909; ](https://www.youtube.com/watch?v=8_k-iPwcleU)  |
 | __2022-02-16__ |  [Building Shiny Apps with {golem}](https://www.meetup.com/fr-FR/prague-r-meetup-group/events/286072616/), Prague RUG, Prague. | |
 | __2021-11-08__ |  [Let's talk about accessibility](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Conference, Online. |  |
 | __2021-05-18__ | Mastering Shiny Book Club: the golem package, Online. | [ &#127909; ](https://www.youtube.com/watch?v=Vq2GKCbfpTI) |  |
