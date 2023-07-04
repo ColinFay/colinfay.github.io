@@ -1,5 +1,5 @@
 ---
-title: "Calling webR from an Express JS API"
+title: "Using webR in an Express JS REST API"
 post_date: 2023-07-04
 layout: single
 permalink: /calling-webr-from-expressjs/
