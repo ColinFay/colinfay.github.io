@@ -218,7 +218,7 @@ document.querySelector('#customRange1').addEventListener(
 
 And here it is!
 You can see the app live at [srv.colinfay.me/express-webr-old-faithful](https://srv.colinfay.me/express-webr-old-faithful/).
-You can find the code [here](https://github.com/ColinFay/webr-examples/tree/main/express-webr-old-faithful), and
+You can find the code [here](https://github.com/ColinFay/webr-examples/tree/main/express-webr-old-faithful).
 
 You can also try it with:
 
