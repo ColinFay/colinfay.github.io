@@ -6,7 +6,7 @@ post_date: 2016-03-08 18:41:11
 post_excerpt: ""
 layout: single
 permalink: /rennes-social-derby-la-competition-de-community-managers/
-published: true
+published: false
 geo_public:
   - "0"
 publicize_twitter_user:
