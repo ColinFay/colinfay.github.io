@@ -8,6 +8,12 @@ output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---
 
+This post is the second one of a series of post about webR:
+
++ Using webR in an Express JS REST API
++ [The Old Faithful Geyser Data shiny app with webR, Bootstrap & ExpressJS](/old-faithful-express-bootstrap-webr/)
+
+
 ## webR? wat again?
 
 As described in the [doc](https://docs.r-wasm.org/webr/latest/):
