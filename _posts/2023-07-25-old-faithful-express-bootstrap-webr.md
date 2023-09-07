@@ -12,6 +12,7 @@ This post is the second one of a series of post about webR:
 
 + [Using webR in an Express JS REST API](/calling-webr-from-expressjs/)
 + The Old Faithful Geyser Data shiny app with webR, Bootstrap & ExpressJS
++ [Preloading your R packages in webR in an Express JS API](/preloading-your-r-packages-in-webr-in-an-express-js-api/)
 
 > Note: the first post of this series explaining roughly what webR is, I won't introduce it again here.
 
