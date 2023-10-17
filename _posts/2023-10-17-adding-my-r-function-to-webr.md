@@ -127,7 +127,7 @@ devtools::document()
 Now that we have a package skeleton, we'll have to upload it to webR.
 
 As described in the previous post, I've started a `webrtools` NodeJS module, which will contains function to play with webR.
-Before this post, it had one function, `loadPackages`, that was used to build a webr dependency library (see [Preloading your R packages in webR in an Express JS API](https://colinfay.me/preloading-your-r-packages-in-webr-in-an-express-js-api/) for more info).
+Before this post, it had one function, `loadPackages`, that was used to build a webR dependency library (see [Preloading your R packages in webR in an Express JS API](https://colinfay.me/preloading-your-r-packages-in-webr-in-an-express-js-api/) for more info).
 
 We'll need to add two features :
 
