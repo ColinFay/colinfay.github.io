@@ -340,7 +340,9 @@ Creating a directory tree is not an easy task — it implies recursive function,
 R has `list.files(recursive = TRUE)` and we should be VERY happy about it: I looked on the internet and apparently there is no native way to do that in Node, you have to do it by hand.
 
 As any sane modern JavaScript developer would do, I asked chatGPT to do it for me.
-It took me several iterations before getting the exact answer I was looking for but here it is:
+It took me several iterations before getting the exact answer I was looking for but here it is.
+
+__Note that the JS functions below are bundled in the [webrtools](https://www.npmjs.com/package/webrtools) npm module__.
 
 ```javascript
 const fs = require('fs');

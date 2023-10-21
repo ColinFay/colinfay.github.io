@@ -154,10 +154,13 @@ download_packs_and_deps_from_desc <- function (
 
 > Note: the code of `webrtools::download_packs_and_deps()` is a wrapper around the R code described in [Preloading your R packages in webR in an Express JS API](/preloading-your-r-packages-in-webr-in-an-express-js-api/)
 
-And in Node, we'll rework our `loadPackages` and split it into two functions --- one to load into any folder, and one to load into the package library:
+And in Node, we'll rework our `loadPackages` and split it into two functions --- one to load into any folder, and one to load into the package library.
+
+__Note that this function is bundled in the [webrtools](https://www.npmjs.com/package/webrtools) npm module__.
 
 ```javascript
 async function loadFolder(webR, dirPath, outputdir = "/usr/lib/R/library") {
+  // function from webrtools
   const files = getDirectoryTree(
     dirPath
   )
