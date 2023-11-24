@@ -14,6 +14,7 @@ This post is the second one of a series of post about webR:
 + [The Old Faithful Geyser Data shiny app with webR, Bootstrap & ExpressJS](/old-faithful-express-bootstrap-webr/)
 + [Preloading your R packages in webR in an Express JS API](/preloading-your-r-packages-in-webr-in-an-express-js-api/)
 + [Using my own R functions in webR in an Express JS API, and thoughts on building web apps with Node & webR](/using-own-functions-in-webr-node-js)
++ [Rethinking webR package & functions preloading with webR 0.2.2](/rethinking-packages-and-functions-preloading-in-webr-0.2.2/)
 
 ## webR? wat again?
 
