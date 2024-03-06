@@ -11,10 +11,13 @@ excerpt_separator: <!--more-->
 This post is the second one of a series of post about webR:
 
 + Using webR in an Express JS REST API
-+ [The Old Faithful Geyser Data shiny app with webR, Bootstrap & ExpressJS](/old-faithful-express-bootstrap-webr/)
-+ [Preloading your R packages in webR in an Express JS API](/preloading-your-r-packages-in-webr-in-an-express-js-api/)
-+ [Using my own R functions in webR in an Express JS API, and thoughts on building web apps with Node & webR](/using-own-functions-in-webr-node-js)
-+ [Rethinking webR package & functions preloading with webR 0.2.2](/rethinking-packages-and-functions-preloading-in-webr-0.2.2/)
++ [The Old Faithful Geyser Data shiny app with webR, Bootstrap & ExpressJS](https://colinfay.me/old-faithful-express-bootstrap-webr/)
++ [Preloading your R packages in webR in an Express JS API](https://colinfay.me/preloading-your-r-packages-in-webr-in-an-express-js-api/)
++ [Using my own R functions in webR in an Express JS API, and thoughts on building web apps with Node & webR](https://colinfay.me/using-own-functions-in-webr-node-js)
++ [Rethinking webR package & functions preloading with webR 0.2.2](https://colinfay.me/rethinking-packages-and-functions-preloading-in-webr-0.2.2/)
++ [webrcli & spidyr: A starter pack for building NodeJS projects with webR inside](https://colinfay.me/webrcli-and-spidyr/)
+
+> Note: webR and the tools I've been writing are moving fast and if you're reading this from the future, some of the things here might be obsolete.
 
 ## webR? wat again?
 
