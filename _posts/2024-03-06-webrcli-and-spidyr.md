@@ -34,13 +34,13 @@ The idea is to have one project with inside:
 
 This skeleton needed a toolkit to perform the following task:
 
-1. From a cli point of view:
+1️⃣ From a cli point of view:
 
 - init the project with a specific skeleton
 - allow to install packages from the `webr `CRAN to a local `webr` library, in the spirit of [previous post](https://colinfay.me/rethinking-packages-and-functions-preloading-in-webr-0.2.2/).
 - allow to install the deps from a DESCRIPTION file
 
-2. From a NodeJS point of view:
+2️⃣ From a NodeJS point of view:
 
 - Load the packages downloaded in a local `webr` library
 - Create an interface to load and manipulate the functions from a package downloaded from CRAN, and use them in JS.
@@ -55,7 +55,7 @@ The reasoning being: the R dev writes a standalone package that exports an `xyz`
 
 So, here comes [webrcli](https://www.npmjs.com/package/webrcli) and [spidyr](https://www.npmjs.com/package/spidyr).
 
-⚠️ Please note that these tools are work in progress and has been used very few times and only for example apps, will need a lot of bug fixes and documentation, so if ever you plan on using it be indulgent, and report any bug or feature request ⚠️
+❗️ Please note that these tools are work in progress and has been used very few times and only for example apps, will need a lot of bug fixes and documentation, so if ever you plan on using it be indulgent, and report any bug or feature request ❗️
 
 ### Project init
 
@@ -103,7 +103,7 @@ webrcli init webrspongebob
 ✅ {ps} downloaded and extracted ----
 ```
 
-The project is now init, let's move into it.
+The project is now created, let's move into it.
 
 ```bash
 cd ./webrspongebob
