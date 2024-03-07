@@ -298,4 +298,8 @@ The `webrspongebob` example is available at <https://github.com/ColinFay/webrspo
 
 Please do try these tools. I would be very happy to have your feedback on the philosophy, and on the general workflow.
 
-If ever you find a bug or have an idea, feel free to open issues.
+If ever you find a bug or have an idea, feel free to open issues at :
+
+- https://github.com/ColinFay/webrcli
+
+- https://github.com/ColinFay/spidyr
