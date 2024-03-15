@@ -1,6 +1,6 @@
 ---
 title: "webrcli & spidyr: A starter pack for building NodeJS projects with webR inside"
-post_date: 2024-11-24
+post_date: 2024-03-06
 layout: single
 permalink: /webrcli-and-spidyr/
 categories: r-blog-en
