@@ -38,8 +38,8 @@ Think of it as something that wants to achieve the following interation:
 
 ## An important note
 
-With `webR` & the tools described below, there is no R session running while the NodeJS app is running — `spidyr` imports a __converted to JS__ R function.
-It's a native JS fun, not a "call to an R session": `rfuns.hello_world` is a genuine JS fun, not a call to an R session running somewhere else.
+With `webR` & the tools described below, there is no R session running while the NodeJS app is running. `spidyr` imports an R function __converted to a native JS__.
+`rfuns.hello_world` does not call an R session running somewhere else.
 
 That also means that if you build a container containing the app, you don't need to install R in it. It's a NodeJS app.
 
