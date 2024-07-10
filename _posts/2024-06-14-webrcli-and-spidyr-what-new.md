@@ -118,7 +118,7 @@ I think I've been the only user for now 😅, so please do try these and let me 
 
 ## Future works
 
-Here are what I plan on working in the upcoming week:
+Here are what I plan on working in the upcoming weeks:
 
 - `webrcli init` should allow for specifying a `webr` version from npm [issue 17](https://github.com/ColinFay/webrcli/issues/17)
 
