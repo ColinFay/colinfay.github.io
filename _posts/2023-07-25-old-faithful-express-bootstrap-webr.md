@@ -3,7 +3,9 @@ title: "The Old Faithful Geyser Data shiny app with webR, Bootstrap & ExpressJS"
 post_date: 2023-07-25
 layout: single
 permalink: /old-faithful-express-bootstrap-webr/
-categories: r-blog-en
+categories:
+  - r-blog-en
+  - webr
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---

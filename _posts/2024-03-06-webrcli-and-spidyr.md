@@ -3,7 +3,9 @@ title: "webrcli & spidyr: A starter pack for building NodeJS projects with webR 
 post_date: 2024-03-06
 layout: single
 permalink: /webrcli-and-spidyr/
-categories: r-blog-en
+categories:
+  - r-blog-en
+  - webr
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---

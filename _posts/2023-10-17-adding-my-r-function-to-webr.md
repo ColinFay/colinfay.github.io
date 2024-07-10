@@ -3,7 +3,9 @@ title: "Using my own R functions in webR in an Express JS API, and thoughts on b
 post_date: 2023-10-17
 layout: single
 permalink: /using-own-functions-in-webr-node-js/
-categories: r-blog-en
+categories:
+  - r-blog-en
+  - webr
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---

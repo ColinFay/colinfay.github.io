@@ -3,7 +3,9 @@ title: "Preloading your R packages in webR in an Express JS API"
 post_date: 2023-09-07
 layout: single
 permalink: /preloading-your-r-packages-in-webr-in-an-express-js-api/
-categories: r-blog-en
+categories:
+  - r-blog-en
+  - webr
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---

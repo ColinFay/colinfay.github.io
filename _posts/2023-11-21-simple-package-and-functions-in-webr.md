@@ -3,7 +3,9 @@ title: "Rethinking packages & functions preloading in webR 0.2.2"
 post_date: 2023-11-24
 layout: single
 permalink: /rethinking-packages-and-functions-preloading-in-webr-0.2.2/
-categories: r-blog-en
+categories:
+  - r-blog-en
+  - webr
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---

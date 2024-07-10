@@ -3,7 +3,9 @@ title: "Using webR in an Express JS REST API"
 post_date: 2023-07-04
 layout: single
 permalink: /calling-webr-from-expressjs/
-categories: r-blog-en
+categories:
+  - r-blog-en
+  - webr
 output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---
