@@ -10,16 +10,9 @@ output: jekyllthat::jekylldown
 excerpt_separator: <!--more-->
 ---
 
-This post is the third one of a series of post about webR:
+Find all my posts about webR [here](https://colinfay.me/categories/#webr).
 
-+ [Using webR in an Express JS REST API](https://colinfay.me/calling-webr-from-expressjs/)
-+ [The Old Faithful Geyser Data shiny app with webR, Bootstrap & ExpressJS](https://colinfay.me/old-faithful-express-bootstrap-webr/)
-+ Preloading your R packages in webR in an Express JS API
-+ [Using my own R functions in webR in an Express JS API, and thoughts on building web apps with Node & webR](https://colinfay.me/using-own-functions-in-webr-node-js)
-+ [Rethinking webR package & functions preloading with webR 0.2.2](https://colinfay.me/rethinking-packages-and-functions-preloading-in-webr-0.2.2/)
-+ [webrcli & spidyr: A starter pack for building NodeJS projects with webR inside](https://colinfay.me/webrcli-and-spidyr/)
-
-> Note: the first post of this series explaining roughly what webR is, I won't introduce it again here.
+> Note: the first post of this series explaining roughly what `webR` is, I won't introduce it again here.
 
 > Note 2 (or Disclaimer): this is kind of a long post that get into the weeds of package installation and library structure
 
