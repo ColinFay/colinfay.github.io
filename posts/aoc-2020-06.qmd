@@ -1,0 +1,94 @@
+---
+title: "Advent of Code 2020-06 with R"
+date: "2020-12-06"
+categories: [r-blog-en, aoc]
+aliases:
+  - "/aoc-2020-06/"
+---
+Solving Advent of Code 2020-06 with R.
+
+\[Disclaimer\] Obviously, this post contains a big spoiler about Advent
+of Code.
+
+## Instructions
+
+Find the complete instructions at:
+<https://adventofcode.com/2020/day/6>.
+
+## R solution
+
+### Part one
+
+``` r
+library(magrittr)
+library(purrr, warn.conflicts = FALSE)
+# Read the data
+readLines("2020-06-aoc.txt" ) %>%
+  # pasting everything into one big character string
+  paste(collapse = "\n") %>%
+  # splitting where there are two \n\n (new lines)
+  strsplit("\n\n") %>%
+  .[[1]] %>%
+  map_dbl(~ {
+    # Removing the new lines of each group
+    .x <- gsub("\n", "", .x)
+    # Splitting the string
+    strsplit(.x, "") %>%
+      .[[1]] %>%
+      # Computing the number of unique answer
+      unique() %>%
+      length()
+  }) %>%
+  sum()
+```
+
+    ## [1] 6534
+
+### Part two
+
+``` r
+library(dplyr, warn.conflicts = FALSE)
+# Read the data
+readLines("2020-06-aoc.txt" ) %>%
+  # pasting everything into one big character string
+  paste(collapse = "\n") %>%
+  # splitting where there are two \n\n (new lines)
+  strsplit("\n\n") %>%
+  .[[1]] %>%
+  map_dbl(~ {
+    # Removing the new lines of each group
+    x <- strsplit(.x, "\n")[[1]]
+    # Getting the group size
+    ngroup <- length(x)
+    # Splitting the original string
+    strsplit(.x, "")[[1]] %>%
+      data.frame(
+        x = .
+      ) %>%
+      # Counting the number of occurrences of each letter
+      count(x) %>%
+      # Keeping only the questions that occur in all
+      filter(n == ngroup) %>%
+      nrow()
+  }) %>%
+  sum()
+```
+
+    ## [1] 3402
+
+```{=html}
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = "https://colinfay.me/aoc-2020-06/";
+  this.page.identifier = "/aoc-06";
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+```

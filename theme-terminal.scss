@@ -1,0 +1,220 @@
+/*-- scss:defaults --*/
+
+// ================= TERMINAL PALETTE =================
+// Change ONLY this block to recolor the whole theme.
+$term-bg:        #000500;   // pure black-green (MATRIX)
+$term-panel:     #010c04;   // sidebar / panels
+$term-fg:        #00ff41;   // matrix green
+$term-fg-bright: #7dff9b;   // bright green
+$term-dim:       #0a662b;   // dim green borders
+$term-muted:     #2f9e57;   // muted green
+$term-accent:    #39ff14;   // links (bright lime-green)
+$term-amber:     #b6ff00;   // prompt "> " + inline code (lime)
+$term-glow:      #00ff41;   // green glow
+$term-code-bg:   #000a02;   // code block background
+// ===================================================
+
+$term-selection: rgba($term-fg, 0.25);
+
+// Monospace everywhere
+$mono: "JetBrains Mono", "Fira Code", "SFMono-Regular", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+$font-family-sans-serif: $mono;
+$font-family-monospace:  $mono;
+$font-family-base:       $mono;
+
+$body-bg:        $term-bg;
+$body-color:     $term-fg;
+$link-color:     $term-accent;
+$link-hover-color: $term-fg-bright;
+$headings-color: $term-fg-bright;
+$headings-font-weight: 700;
+
+$border-color:   $term-dim;
+$code-color:     $term-amber;
+
+$navbar-bg: $term-panel;
+$card-bg: $term-panel;
+
+/*-- scss:rules --*/
+
+html, body { background: $term-bg; color: $term-fg; }
+body {
+  font-family: $mono;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: $term-selection; }
+
+// subtle CRT scanlines overlay
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 0px,
+    rgba(0,0,0,0) 2px,
+    rgba(0,0,0,0.18) 3px,
+    rgba(0,0,0,0) 4px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+}
+
+a { text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: $term-fg-bright;
+  text-shadow: 0 0 8px rgba($term-glow, 0.35);
+  font-weight: 700;
+}
+
+hr { border-color: $term-dim; opacity: .6; }
+
+// ---------------- Page title ----------------
+.quarto-title h1.title { font-size: 2.4rem; text-transform: none; }
+#title-block-header .quarto-title h1.title::after,
+header#title-block-header h1.title::after {
+  content: "_";
+  color: $term-fg-bright;
+  animation: term-blink 1.1s step-end infinite;
+  margin-left: .15rem;
+}
+@keyframes term-blink { 50% { opacity: 0; } }
+
+.quarto-title .subtitle {
+  color: $term-muted;
+  font-size: 1.05rem;
+  margin-top: .2rem;
+}
+.quarto-title .subtitle::before { content: "// "; color: $term-dim; }
+
+// ---------------- Sidebar (author + nav) ----------------
+#quarto-sidebar, .sidebar {
+  background: $term-panel !important;
+  border-right: 1px solid $term-dim;
+}
+.sidebar-menu-container .sidebar-item-container .sidebar-item a,
+#quarto-sidebar a.sidebar-item-text,
+.sidebar-navigation .sidebar-item a {
+  color: $term-fg !important;
+  font-family: $mono;
+}
+.sidebar-navigation .sidebar-item a:hover { color: $term-fg-bright !important; }
+.sidebar-navigation .sidebar-item a.active,
+.sidebar-item a.active { color: $term-amber !important; }
+
+// author card in sidebar header
+.author-card { text-align: center; padding: 1rem .5rem .4rem; }
+.author-card .author-avatar {
+  width: 118px; height: 118px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid $term-dim;
+  filter: grayscale(20%) brightness(1.02);
+  box-shadow: 0 0 0 3px rgba($term-glow, 0.10), 0 0 18px rgba($term-glow, 0.18);
+}
+.author-card .author-name {
+  margin-top: .6rem;
+  color: $term-fg-bright;
+  font-weight: 700;
+  font-size: 1.15rem;
+  text-shadow: 0 0 8px rgba($term-glow, 0.35);
+}
+.author-card .author-bio {
+  margin-top: .35rem;
+  color: $term-muted;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+.author-card .author-bio a { color: $term-accent; }
+.author-card .nav-label {
+  margin-top: 1rem;
+  color: $term-dim;
+  font-size: .8rem;
+  text-align: left;
+  border-top: 1px dashed $term-dim;
+  padding-top: .6rem;
+}
+
+// ---------------- Blog listing "> title — date" ----------------
+.quarto-listing-default .quarto-post {
+  display: block;
+  grid-template-columns: none;
+  border-bottom: 1px dotted rgba($term-dim, 0.6);
+  padding: .28rem 0;
+  column-gap: 0;
+}
+.quarto-post .thumbnail, .quarto-post .thumbnail-image { display: none !important; }
+.quarto-post .body { display: inline !important; max-width: 100%; }
+.quarto-post .listing-subtitle,
+.quarto-post .listing-categories,
+.quarto-post .listing-reading-time { display: none !important; }
+
+.quarto-post .listing-title {
+  display: inline !important;
+  margin: 0;
+  font-size: 1.06rem;
+  font-weight: 500;
+}
+.quarto-post .listing-title a { color: $term-fg; }
+.quarto-post .listing-title a:hover { color: $term-fg-bright; text-decoration: none; }
+.quarto-post .listing-title a::before { content: "> "; color: $term-amber; font-weight: 700; }
+.quarto-post .metadata { display: inline !important; text-align: left !important; }
+.quarto-post .metadata > a { display: inline !important; color: $term-muted; }
+.quarto-post .listing-date {
+  display: inline !important;
+  color: $term-muted;
+  font-size: .92rem;
+  font-style: italic;
+  margin-left: .35rem;
+}
+.quarto-post .listing-date::before { content: "— "; color: $term-dim; font-style: normal; }
+
+// hide the sidebar's auto-title (duplicate of the author-card name)
+#quarto-sidebar .sidebar-title { display: none; }
+
+// listing pagination
+.listing-pagination .page-link {
+  background: $term-panel;
+  color: $term-fg;
+  border-color: $term-dim;
+}
+.listing-pagination .active .page-link {
+  background: $term-dim;
+  color: $term-bg;
+  border-color: $term-dim;
+}
+
+// ---------------- Code ----------------
+pre, code, .sourceCode { font-family: $mono !important; }
+div.sourceCode, pre.sourceCode {
+  background: $term-code-bg !important;
+  border: 1px solid $term-dim;
+  border-radius: 4px;
+}
+pre.sourceCode code, pre code { background: transparent !important; border: none !important; }
+
+// inline code (single backticks) — dark box, readable, terminal look
+code:not(.sourceCode) {
+  color: $term-amber !important;
+  background-color: rgba($term-fg, 0.08) !important;
+  border: 1px solid rgba($term-dim, 0.6);
+  padding: 0.06em 0.36em;
+  border-radius: 3px;
+}
+a code:not(.sourceCode) { color: $term-accent !important; }
+h1 code, h2 code, h3 code, h4 code { font-size: 0.9em; }
+
+blockquote { border-left: 3px solid $term-dim; color: $term-muted; }
+
+// tables
+table, .table { color: $term-fg; }
+.table > :not(caption) > * > * { border-color: rgba($term-dim, 0.5); }
+
+// search box
+.aa-Input, #quarto-search input { color: $term-fg; }

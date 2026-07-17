@@ -14,3 +14,5 @@ node_modules
 npm-debug.log*
 .Rproj.user
 ran.R
+
+/.quarto/

@@ -1,0 +1,5 @@
+---
+title: "Search"
+---
+
+Use the search box in the top navigation bar to search the whole site.

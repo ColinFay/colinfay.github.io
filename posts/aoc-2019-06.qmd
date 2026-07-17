@@ -1,0 +1,83 @@
+---
+title: "Advent of Code 2019-06 with R "
+date: "2019-12-06"
+categories: [r-blog-en, aoc]
+aliases:
+  - "/aoc-2019-06/"
+---
+Solving Advent of Code 2019-06 with R (and no JavaScript this time).
+
+\[Disclaimer\] Obviously, this post contains a big spoiler about Advent
+of Code, as it gives solutions for solving day 6.
+
+## Instructions
+
+Find the instructions at: <https://adventofcode.com/2019/day/6>
+
+## R solution
+
+### Part one
+
+``` r
+library(magrittr)
+library(igraph)
+```
+
+    ##
+    ## Attaching package: 'igraph'
+
+    ## The following objects are masked from 'package:stats':
+    ##
+    ##     decompose, spectrum
+
+    ## The following object is masked from 'package:base':
+    ##
+    ##     union
+
+``` r
+ipt <- read.delim("input6.txt", header = FALSE, sep = ")", stringsAsFactor = FALSE)
+grph <- ipt %>%
+  graph_from_data_frame()
+
+grph %>%
+  distance_table() %>%
+  extract2("res") %>%
+  sum()
+```
+
+    ## [1] 147807
+
+### Part two
+
+``` r
+distances(
+  grph,
+  v = V(grph)[["YOU"]],
+  to = V(grph)[["SAN"]]
+) - 2
+```
+
+    ##     SAN
+    ## YOU 229
+
+## JS solution
+
+> Nop, no JS solution today… I didn’t feel like reimplementing igraph in
+> JavaScript, neither digging into the graph modules today ;)
+
+```{=html}
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = "https://colinfay.me/aoc-2019-06/";
+  this.page.identifier = "/aoc-06";
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+```

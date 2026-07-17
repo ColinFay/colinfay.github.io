@@ -1,0 +1,202 @@
+---
+title: "Tags"
+---
+
+- [**r** (38)](#r)
+- [**package** (19)](#package)
+- [**justforfun** (10)](#justforfun)
+- [**api** (9)](#api)
+- [**purrr** (8)](#purrr)
+- [**cran** (7)](#cran)
+- [**talk** (7)](#talk)
+- [**tidyverse** (5)](#tidyverse)
+- [**R6** (2)](#r6)
+- [**rtweet** (2)](#rtweet)
+- [**textmining** (2)](#textmining)
+- [**activebinding** (1)](#activebinding)
+- [**docker** (1)](#docker)
+- [**environment** (1)](#environment)
+- [**explainlikeimfive** (1)](#explainlikeimfive)
+- [**infrastructure** (1)](#infrastructure)
+- [**julia** (1)](#julia)
+- [**random** (1)](#random)
+- [**tidyeval** (1)](#tidyeval)
+- [**tidytext** (1)](#tidytext)
+
+## r {#r}
+
+- [2018-02-15] — [Explain R environments like I’m five](/posts/explain-environments-eli5.html)
+- [2018-01-12] — [\[How to\] Include a dancing banana in your R package documentation](/posts/dancing-banana-r-package-doc.html)
+- [2018-01-09] — [Some random R benchmarks](/posts/random-r-benchmarks.html)
+- [2018-01-03] — [{attempt} is now on CRAN](/posts/attempt-cran.html)
+- [2017-11-01] — [Collecting tweets with R and {rtweet}](/posts/collect-rtweet.html)
+- [2017-09-11] — [\[New Package\] {tidystringdist}](/posts/tidystringdist.html)
+- [2017-08-23] — [Why Can't I Remember Game of Thrones Characters? An Analysis in R](/posts/game-of-thrones-characters-r.html)
+- [2017-08-12] — [R and active binding (and pizza)](/posts/ractivebinfing.html)
+- [2017-07-19] — [languagelayeR 1.1.0 is now on CRAN](/posts/languagelayer110.html)
+- [2017-06-29] — [Playing with R, infix functions, and pizza](/posts/playing-r-infix-functions.html)
+- [2017-06-05] — [New R Package — proustr](/posts/proustr-package.html)
+- [2017-05-31] — [\[Just for fun\] New R package — tuRbonegro](/posts/rstats-turbonegro.html)
+- [2017-05-10] — [#RStats et Microsoft Computer Vision](/posts/rstats-microsoft-computer-vision-api-2.html)
+- [2017-05-09] — [Mapping the French second round results with R](/posts/mapping-the-french-second-round-results-with-r.html)
+- [2017-05-08] — [Cartographier le second tour français avec R](/posts/cartographier-second-tour-francais-r.html)
+- [2017-04-28] — [Predict french vote with R](/posts/predict-french-vote-with-r.html)
+- [2017-04-14] — [#RStats — API calls et Sys.sleep](/posts/rstats-api-calls-sys-sleep.html)
+- [2017-04-13] — [#RStats — Create a pixel map with R"](/posts/rstats-create-a-pixel-map-with-r.html)
+- [2017-04-02] — [Playing with #RStats and Microsoft Computer Vision API](/posts/playing-with-rstats-and-microsoft-computer-vision-api.html)
+- [2017-03-26] — [#RStats — API calls and Sys.sleep](/posts/rstats-api-calls-and-sys-sleep.html)
+- [2017-03-01] — [Create an heatmap with R and ggplot2](/posts/create-an-heatmap-with-r-and-ggplot2.html)
+- [2016-12-23] — [All I want for Christmas is a #Dataviz](/posts/all-i-want-for-christmas-is-a-dataviz-2.html)
+- [2016-12-23] — [All I want for Christmas is a #Dataviz](/posts/all-i-want-for-christmas-is-a-dataviz.html)
+- [2016-12-20] — [languagelayeR 1.0.0 disponible sur le CRAN](/posts/languagelayer-1-0-0-disponible-cran.html)
+- [2016-12-12] — [#RStats — languagelayeR : query the languagelayer API with R](/posts/rstats-languagelayer-query-the-languagelayer-api-with-r.html)
+- [2016-08-31] — [Data & Vinyles — Exploration d'une bibliothèque Discogs avec R](/posts/data-vinyles-bibliotheque-discogs-r.html)
+- [2016-08-31] — [Data & Vinyls — A discogs library exploration with R](/posts/data-vinyles-discogs-r.html)
+- [2016-08-17] — [rpinterest now on CRAN](/posts/rpinterest-cran.html)
+- [2016-08-17] — [rpinterest disponible sur le CRAN](/posts/rpinterest-disponible-cran.html)
+- [2016-07-30] — [rpinterest : acess the Pinterest API with R](/posts/rpinterest-package-r.html)
+- [2016-07-30] — [rpinterest : un package R pour accéder à l'API Pinterest](/posts/rpinterest-un-package-r-pour-acceder-a-lapi-pinterest.html)
+- [2016-07-28] — [Créer une carte avec R — rgeoapi et ggplot2](/posts/carte-r-rgeoapi-ggplot2.html)
+- [2016-07-28] — [Create a map with R — rgeoapi, ggmap and ggplot2](/posts/create-map-ggplot2-rgeoapi-ggmap.html)
+- [2016-07-20] — [Mise à jour du package R : rgeoapi](/posts/rgeoapi-v1.html)
+- [2016-06-05] — [rgeoapi — A package to access the GéoAPI](/posts/rgeoapi-package-r.html)
+- [2016-06-05] — [rgeoapi — Un package R pour accéder à la GéoAPI](/posts/rgeoapi.html)
+- [2016-05-24] — [#RStats — Text mining with R and gutenbergr](/posts/rstats-text-mining-r-gutenbergr-2.html)
+- [2016-05-24] — [#RStats — Text mining avec R et gutenbergr](/posts/rstats-text-mining-r-gutenbergr.html)
+
+## package {#package}
+
+- [2018-03-02] — [dockerfiler is now on CRAN](/posts/dockerfiler-cran.html)
+- [2018-01-16] — [Combining the new {rtweet} and {tidytext}](/posts/rtweet-tidytext.html)
+- [2018-01-12] — [\[How to\] Include a dancing banana in your R package documentation](/posts/dancing-banana-r-package-doc.html)
+- [2018-01-09] — [Some random R benchmarks](/posts/random-r-benchmarks.html)
+- [2018-01-03] — [{attempt} is now on CRAN](/posts/attempt-cran.html)
+- [2017-09-27] — [{proustr} 0.2.0 is on CRAN](/posts/proustr-0-2-0.html)
+- [2017-09-11] — [\[New Package\] {tidystringdist}](/posts/tidystringdist.html)
+- [2017-08-13] — [LoremJulia - A lorem ipsum generator made in Julia](/posts/loremjulia.html)
+- [2017-07-19] — [languagelayeR 1.1.0 is now on CRAN](/posts/languagelayer110.html)
+- [2017-06-05] — [New R Package — proustr](/posts/proustr-package.html)
+- [2016-12-20] — [languagelayeR 1.0.0 disponible sur le CRAN](/posts/languagelayer-1-0-0-disponible-cran.html)
+- [2016-12-12] — [#RStats — languagelayeR : query the languagelayer API with R](/posts/rstats-languagelayer-query-the-languagelayer-api-with-r.html)
+- [2016-08-17] — [rpinterest now on CRAN](/posts/rpinterest-cran.html)
+- [2016-08-17] — [rpinterest disponible sur le CRAN](/posts/rpinterest-disponible-cran.html)
+- [2016-07-30] — [rpinterest : acess the Pinterest API with R](/posts/rpinterest-package-r.html)
+- [2016-07-30] — [rpinterest : un package R pour accéder à l'API Pinterest](/posts/rpinterest-un-package-r-pour-acceder-a-lapi-pinterest.html)
+- [2016-07-20] — [Mise à jour du package R : rgeoapi](/posts/rgeoapi-v1.html)
+- [2016-06-05] — [rgeoapi — A package to access the GéoAPI](/posts/rgeoapi-package-r.html)
+- [2016-06-05] — [rgeoapi — Un package R pour accéder à la GéoAPI](/posts/rgeoapi.html)
+
+## justforfun {#justforfun}
+
+- [2018-01-12] — [\[How to\] Include a dancing banana in your R package documentation](/posts/dancing-banana-r-package-doc.html)
+- [2017-06-29] — [Playing with R, infix functions, and pizza](/posts/playing-r-infix-functions.html)
+- [2017-05-31] — [\[Just for fun\] New R package — tuRbonegro](/posts/rstats-turbonegro.html)
+- [2017-05-10] — [#RStats et Microsoft Computer Vision](/posts/rstats-microsoft-computer-vision-api-2.html)
+- [2017-04-13] — [#RStats — Create a pixel map with R"](/posts/rstats-create-a-pixel-map-with-r.html)
+- [2017-04-02] — [Playing with #RStats and Microsoft Computer Vision API](/posts/playing-with-rstats-and-microsoft-computer-vision-api.html)
+- [2016-12-23] — [All I want for Christmas is a #Dataviz](/posts/all-i-want-for-christmas-is-a-dataviz-2.html)
+- [2016-12-23] — [All I want for Christmas is a #Dataviz](/posts/all-i-want-for-christmas-is-a-dataviz.html)
+- [2016-08-31] — [Data & Vinyles — Exploration d'une bibliothèque Discogs avec R](/posts/data-vinyles-bibliotheque-discogs-r.html)
+- [2016-08-31] — [Data & Vinyls — A discogs library exploration with R](/posts/data-vinyles-discogs-r.html)
+
+## api {#api}
+
+- [2017-04-14] — [#RStats — API calls et Sys.sleep](/posts/rstats-api-calls-sys-sleep.html)
+- [2017-03-26] — [#RStats — API calls and Sys.sleep](/posts/rstats-api-calls-and-sys-sleep.html)
+- [2016-12-12] — [#RStats — languagelayeR : query the languagelayer API with R](/posts/rstats-languagelayer-query-the-languagelayer-api-with-r.html)
+- [2016-08-17] — [rpinterest now on CRAN](/posts/rpinterest-cran.html)
+- [2016-07-30] — [rpinterest : acess the Pinterest API with R](/posts/rpinterest-package-r.html)
+- [2016-07-30] — [rpinterest : un package R pour accéder à l'API Pinterest](/posts/rpinterest-un-package-r-pour-acceder-a-lapi-pinterest.html)
+- [2016-07-20] — [Mise à jour du package R : rgeoapi](/posts/rgeoapi-v1.html)
+- [2016-06-05] — [rgeoapi — A package to access the GéoAPI](/posts/rgeoapi-package-r.html)
+- [2016-06-05] — [rgeoapi — Un package R pour accéder à la GéoAPI](/posts/rgeoapi.html)
+
+## purrr {#purrr}
+
+- [2018-07-07] — [Happy dev with {purrr}](/posts/happy-dev-purrr.html)
+- [2018-04-18] — [\[How to\] Write a purrr-like adverb](/posts/purrr-adverb-tidyverse.html)
+- [2017-12-28] — [A Crazy Little Thing Called {purrr} - Part 6 : doing statistics](/posts/purrr-statistics.html)
+- [2017-12-20] — [A Crazy Little Thing Called {purrr} - Part 5: code optimization](/posts/purrr-code-optim.html)
+- [2017-12-12] — [A Crazy Little Thing Called {purrr} - Part 4: mappers](/posts/purrr-mappers.html)
+- [2017-12-06] — [A Crazy Little Thing Called {purrr} - Part 3 : Setting NA](/posts/purrr-set-na.html)
+- [2017-11-29] — [A Crazy Little Thing Called {purrr} - Part 2 : Text Wrangling](/posts/purrr-text-wrangling.html)
+- [2017-11-24] — [A Crazy Little Thing Called {purrr} - Part 1 : Web Mining ](/posts/purrr-web-mining.html)
+
+## cran {#cran}
+
+- [2018-03-02] — [dockerfiler is now on CRAN](/posts/dockerfiler-cran.html)
+- [2018-01-03] — [{attempt} is now on CRAN](/posts/attempt-cran.html)
+- [2017-09-27] — [{proustr} 0.2.0 is on CRAN](/posts/proustr-0-2-0.html)
+- [2017-09-11] — [\[New Package\] {tidystringdist}](/posts/tidystringdist.html)
+- [2017-07-19] — [languagelayeR 1.1.0 is now on CRAN](/posts/languagelayer110.html)
+- [2016-12-20] — [languagelayeR 1.0.0 disponible sur le CRAN](/posts/languagelayer-1-0-0-disponible-cran.html)
+- [2016-08-17] — [rpinterest disponible sur le CRAN](/posts/rpinterest-disponible-cran.html)
+
+## talk {#talk}
+
+- [2017-11-17] — [Back from Budapest](/posts/back-budapest.html)
+- [2017-11-09] — [Budapest Here I Come](/posts/coming-budapest.html)
+- [2017-09-18] — [De passage à la Nantes Digital Week](/posts/nantes-digital-week.html)
+- [2017-03-15] — [1 dataset, 10 visualisations with R](/posts/1-dataset-10-dataviz-with-r.html)
+- [2017-03-12] — [1 dataset, 10 visualisations — retour de La Fabrique de l’info](/posts/1-dataset-10-visualisations.html)
+- [2017-03-05] — [Atelier Dataviz — Dimanche 12 mars, la Fabrique de l'info](/posts/atelier-dataviz-dimanche-12-mars-fabrique-de-linfo.html)
+- [2016-07-09] — [Data Bzh à l'Apéro StoryCode de Rennes Nouvelles Écritures](/posts/data-bzh-apero-storycode-rennes.html)
+
+## tidyverse {#tidyverse}
+
+- [2017-07-14] — [Down the rabbit hole with tidy eval — Part 1](/posts/tidyeval-1.html)
+- [2017-03-19] — [Une heatmap avec R et ggplot2](/posts/heatmap-avec-r-et-ggplot2.html)
+- [2017-03-01] — [Create an heatmap with R and ggplot2](/posts/create-an-heatmap-with-r-and-ggplot2.html)
+- [2016-07-28] — [Créer une carte avec R — rgeoapi et ggplot2](/posts/carte-r-rgeoapi-ggplot2.html)
+- [2016-07-28] — [Create a map with R — rgeoapi, ggmap and ggplot2](/posts/create-map-ggplot2-rgeoapi-ggmap.html)
+
+## R6 {#r6}
+
+- [2017-08-29] — [R6 and parent exposure](/posts/r6-parent-exposure.html)
+- [2017-08-15] — [R6 and shared objects](/posts/r6-shared-objects.html)
+
+## rtweet {#rtweet}
+
+- [2018-01-16] — [Combining the new {rtweet} and {tidytext}](/posts/rtweet-tidytext.html)
+- [2017-11-01] — [Collecting tweets with R and {rtweet}](/posts/collect-rtweet.html)
+
+## textmining {#textmining}
+
+- [2016-05-24] — [#RStats — Text mining with R and gutenbergr](/posts/rstats-text-mining-r-gutenbergr-2.html)
+- [2016-05-24] — [#RStats — Text mining avec R et gutenbergr](/posts/rstats-text-mining-r-gutenbergr.html)
+
+## activebinding {#activebinding}
+
+- [2017-08-12] — [R and active binding (and pizza)](/posts/ractivebinfing.html)
+
+## docker {#docker}
+
+- [2018-03-02] — [dockerfiler is now on CRAN](/posts/dockerfiler-cran.html)
+
+## environment {#environment}
+
+- [2018-02-15] — [Explain R environments like I’m five](/posts/explain-environments-eli5.html)
+
+## explainlikeimfive {#explainlikeimfive}
+
+- [2018-02-15] — [Explain R environments like I’m five](/posts/explain-environments-eli5.html)
+
+## infrastructure {#infrastructure}
+
+- [2018-01-09] — [Some random R benchmarks](/posts/random-r-benchmarks.html)
+
+## julia {#julia}
+
+- [2017-08-13] — [LoremJulia - A lorem ipsum generator made in Julia](/posts/loremjulia.html)
+
+## random {#random}
+
+- [2017-08-23] — [Why Can't I Remember Game of Thrones Characters? An Analysis in R](/posts/game-of-thrones-characters-r.html)
+
+## tidyeval {#tidyeval}
+
+- [2017-07-14] — [Down the rabbit hole with tidy eval — Part 1](/posts/tidyeval-1.html)
+
+## tidytext {#tidytext}
+
+- [2018-01-16] — [Combining the new {rtweet} and {tidytext}](/posts/rtweet-tidytext.html)

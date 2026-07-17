@@ -1,0 +1,402 @@
+---
+title: "A quick #WorldEmojiDay exploration"
+date: "2018-07-17"
+categories: [r-blog-en]
+aliases:
+  - "/worldemojiday"
+---
+Let’s celebrate \#WorldEmojiDay with a quick exploration of my [own
+twitter account](https://twitter.com/_ColinFay).
+
+## The 📦
+
+We’ll need:
+
+#### From Github
+
+  - `{emo}`
+
+<!-- end list -->
+
+``` r
+remote::install_github("hadley/emo")
+```
+
+#### From CRAN
+
+  - `{dplyr}`
+  - `{tidyr}`
+  - `{rtweet}`
+  - `{tidytext}`
+
+> Note: This page has been created at:
+
+``` r
+Sys.time()
+```
+
+    ## [1] "2018-07-17 17:22:29 CEST"
+
+## The 🔍
+
+Let’s get my last 3200 tweets:
+
+``` r
+library(emo)
+library(rtweet)
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+res <- get_timeline(
+  "_ColinFay",
+  n = 3200
+)
+names(res)
+```
+
+    ##  [1] "user_id"                 "status_id"              
+    ##  [3] "created_at"              "screen_name"            
+    ##  [5] "text"                    "source"                 
+    ##  [7] "display_text_width"      "reply_to_status_id"     
+    ##  [9] "reply_to_user_id"        "reply_to_screen_name"   
+    ## [11] "is_quote"                "is_retweet"             
+    ## [13] "favorite_count"          "retweet_count"          
+    ## [15] "hashtags"                "symbols"                
+    ## [17] "urls_url"                "urls_t.co"              
+    ## [19] "urls_expanded_url"       "media_url"              
+    ## [21] "media_t.co"              "media_expanded_url"     
+    ## [23] "media_type"              "ext_media_url"          
+    ## [25] "ext_media_t.co"          "ext_media_expanded_url" 
+    ## [27] "ext_media_type"          "mentions_user_id"       
+    ## [29] "mentions_screen_name"    "lang"                   
+    ## [31] "quoted_status_id"        "quoted_text"            
+    ## [33] "quoted_created_at"       "quoted_source"          
+    ## [35] "quoted_favorite_count"   "quoted_retweet_count"   
+    ## [37] "quoted_user_id"          "quoted_screen_name"     
+    ## [39] "quoted_name"             "quoted_followers_count" 
+    ## [41] "quoted_friends_count"    "quoted_statuses_count"  
+    ## [43] "quoted_location"         "quoted_description"     
+    ## [45] "quoted_verified"         "retweet_status_id"      
+    ## [47] "retweet_text"            "retweet_created_at"     
+    ## [49] "retweet_source"          "retweet_favorite_count" 
+    ## [51] "retweet_retweet_count"   "retweet_user_id"        
+    ## [53] "retweet_screen_name"     "retweet_name"           
+    ## [55] "retweet_followers_count" "retweet_friends_count"  
+    ## [57] "retweet_statuses_count"  "retweet_location"       
+    ## [59] "retweet_description"     "retweet_verified"       
+    ## [61] "place_url"               "place_name"             
+    ## [63] "place_full_name"         "place_type"             
+    ## [65] "country"                 "country_code"           
+    ## [67] "geo_coords"              "coords_coords"          
+    ## [69] "bbox_coords"             "status_url"             
+    ## [71] "name"                    "location"               
+    ## [73] "description"             "url"                    
+    ## [75] "protected"               "followers_count"        
+    ## [77] "friends_count"           "listed_count"           
+    ## [79] "statuses_count"          "favourites_count"       
+    ## [81] "account_created_at"      "verified"               
+    ## [83] "profile_url"             "profile_expanded_url"   
+    ## [85] "account_lang"            "profile_banner_url"     
+    ## [87] "profile_background_url"  "profile_image_url"
+
+Here is what the `text` column looks like:
+
+``` r
+res %>% 
+  pull(text) %>%
+  .[1:5]
+```
+
+    ## [1] "@GoldbergData It adds a little label at the top left with the text you provide. \nCan be useful if you want to add some legends in a markdown / shiny app, for example"
+    ## [2] "#RStats \nCool new feature in ggplot2 v3 — tagging plots : https://t.co/jFUqX2Tj5T"                                                                                    
+    ## [3] "#RStats — A perfect introduction to \U0001f5fa with the {sf} \U0001f4e6 &amp; Co by @statnmap : \nhttps://t.co/IrmcSBDMDy https://t.co/m3TyUjrxYF"                     
+    ## [4] "@vsbuffalo Amen to that"                                                                                                                                               
+    ## [5] "#RStats — \U0001f680 Setting up RStudio Server, Shiny Server and PostgreSQL :\nhttps://t.co/J1Y7edNAj0"
+
+As you can see, the emojis are not printed in the console, but converted
+to weird characters like `\U0001f4e6` and such. These are unicode
+characters: translations of the emojis into a language your machine can
+understand. I won’t go deeper into this, here are two resources you can
+read if you want to know more about encoding:
+
+  - [The Absolute Minimum Every Software Developer Absolutely,
+    Positively Must Know About Unicode and Character Sets (No
+    Excuses\!)](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/)
+
+  - [What emojis tell us about
+    encoding](https://www.codenewbie.org/blogs/what-emojis-tell-us-about-encoding)
+
+## The 📊
+
+Let’s use the `{emo}` package to extract the emojis from the text.
+Inspired by `{stringr}`, this package has a `ji_extract_all` function
+that is designed to **extract all the emojis from a character vector**.
+We’ll use it on out text column, then extract the date and emo column.
+We then pass the result to `tidyr::unnest` in order to remove the empty
+emo rows (i.e, the tweets without an emoji).
+
+``` r
+library(tidyr)
+emos <- res %>%
+  mutate(
+    emo = ji_extract_all(text)
+  ) %>%
+  select(created_at,emo) %>%
+  unnest(emo)
+
+emos
+```
+
+    ## # A tibble: 887 x 2
+    ##    created_at          emo  
+    ##    <dttm>              <chr>
+    ##  1 2018-07-17 10:00:47 📦   
+    ##  2 2018-07-17 08:35:05 🚀   
+    ##  3 2018-07-16 18:47:25 😮   
+    ##  4 2018-07-16 14:51:30 😁   
+    ##  5 2018-07-16 14:51:16 😱   
+    ##  6 2018-07-16 13:28:08 🍒   
+    ##  7 2018-07-16 13:27:00 😈   
+    ##  8 2018-07-16 13:27:00 🌲   
+    ##  9 2018-07-16 13:27:00 💀   
+    ## 10 2018-07-16 13:25:01 🐛   
+    ## # ... with 877 more rows
+
+``` r
+emos %>%
+  count(emo, sort = TRUE)
+```
+
+    ## # A tibble: 187 x 2
+    ##    emo       n
+    ##    <chr> <int>
+    ##  1 🤔       84
+    ##  2 📦       56
+    ##  3 😬       51
+    ##  4 🎉       50
+    ##  5 😱       50
+    ##  6 😇       42
+    ##  7 😝       36
+    ##  8 🙃       35
+    ##  9 😂       33
+    ## 10 😜       28
+    ## # ... with 177 more rows
+
+So apparently, I use a lot of 🤔. But also talk about 📦, which sounds
+more appropriate :)
+
+As you can see, `{tibble}` converts elements to emojis when printing.
+When using a data.frame, you have a simple unicode translation:
+
+``` r
+emos %>%
+  as.data.frame() %>%
+  head()
+```
+
+    ##            created_at        emo
+    ## 1 2018-07-17 10:00:47 \U0001f4e6
+    ## 2 2018-07-17 08:35:05 \U0001f680
+    ## 3 2018-07-16 18:47:25 \U0001f62e
+    ## 4 2018-07-16 14:51:30 \U0001f601
+    ## 5 2018-07-16 14:51:16 \U0001f631
+    ## 6 2018-07-16 13:28:08 \U0001f352
+
+## The 🏷
+
+Let’s flag all the emojis with their names:
+
+``` r
+emos %>%
+  left_join(
+    data.frame(
+      emo = ji_name, 
+      name = names(ji_name)
+    )
+  ) %>% 
+  count(emo, name, sort = TRUE)
+```
+
+    ## Joining, by = "emo"
+
+    ## Warning: Column `emo` joining character vector and factor, coercing into
+    ## character vector
+
+    ## # A tibble: 295 x 3
+    ##    emo   name                       n
+    ##    <chr> <fct>                  <int>
+    ##  1 🤔    thinking                  84
+    ##  2 🤔    thinking_face             84
+    ##  3 📦    package                   56
+    ##  4 😬    grimacing                 51
+    ##  5 😬    grimacing_face            51
+    ##  6 🎉    party_popper              50
+    ##  7 🎉    tada                      50
+    ##  8 😱    face_screaming_in_fear    50
+    ##  9 😱    scream                    50
+    ## 10 😇    innocent                  42
+    ## # ... with 285 more rows
+
+## The 🔠
+
+And finally, let’s see what are the most associated words with the
+emojis we just saw:
+
+``` r
+library(tidytext)
+emos_with_id <- res %>%
+  mutate(
+    emo = ji_extract_all(text)
+  ) %>% 
+  select(status_id, text, emo) %>%
+  tidyr::unnest(emo)
+
+emos_with_id %>%
+  unnest_tokens(word,text) %>%
+  anti_join(stop_words) %>%
+  anti_join(proustr::stop_words) %>%
+  anti_join(
+    data.frame(
+      word = c("https", "t.co", "https", "gt")
+    )
+  ) %>% 
+  count(emo, word, sort = TRUE)
+```
+
+    ## Joining, by = "word"
+    ## Joining, by = "word"
+    ## Joining, by = "word"
+
+    ## Warning: Column `word` joining character vector and factor, coercing into
+    ## character vector
+
+    ## # A tibble: 5,660 x 3
+    ##    emo   word          n
+    ##    <chr> <chr>     <int>
+    ##  1 📦    rstats       37
+    ##  2 🎉    rstats       27
+    ##  3 💻    macbook      26
+    ##  4 📦    package      20
+    ##  5 👏    trans        18
+    ##  6 ☕    pm           15
+    ##  7 💻    pro          15
+    ##  8 💻    marche       10
+    ##  9 🤔    ma_salmon    10
+    ## 10 😱    ma_salmon    10
+    ## # ... with 5,650 more rows
+
+And what are the most used emojis with “rstats”?
+
+``` r
+emos_with_id %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  anti_join(proustr::stop_words) %>%
+  anti_join(
+    data.frame(
+      word = c("https", "t.co", "https", "gt")
+    )
+  ) %>%
+  count(emo, word, sort = TRUE) %>%
+  filter(
+    word == "rstats"
+  )
+```
+
+    ## Joining, by = "word"
+    ## Joining, by = "word"
+    ## Joining, by = "word"
+
+    ## Warning: Column `word` joining character vector and factor, coercing into
+    ## character vector
+
+    ## # A tibble: 81 x 3
+    ##    emo   word       n
+    ##    <chr> <chr>  <int>
+    ##  1 📦    rstats    37
+    ##  2 🎉    rstats    27
+    ##  3 😬    rstats     5
+    ##  4 🌟    rstats     4
+    ##  5 👌    rstats     4
+    ##  6 🤔    rstats     4
+    ##  7 ✍️    rstats     3
+    ##  8 💎    rstats     3
+    ##  9 🙌    rstats     3
+    ## 10 ⚡    rstats     2
+    ## # ... with 71 more rows
+
+## Other cool functions
+
+I recently discovered the `ji_glue()` function which allows you to
+insert an emoji easily into a character vector :
+
+``` r
+ji_glue("I love to code :package:")
+```
+
+    ## I love to code 📦
+
+``` r
+ji_glue("Sometimes they make me :scream:")
+```
+
+    ## Sometimes they make me 😱
+
+``` r
+ji_glue("Sometimes they make me :cry:")
+```
+
+    ## Sometimes they make me 😢
+
+``` r
+ji_glue("Sometimes they make me :fear:")
+```
+
+    ## Sometimes they make me 😨
+
+``` r
+ji_glue("But in the end I'm always :tada:")
+```
+
+    ## But in the end I'm always 🎉
+
+The `ji()` function can also be used inside your markdown, so you can
+write:
+
+“I hate *backtick* r emo::ji(”bug“) *backtick*”, and it will come as: “I
+hate 🐛”.
+
+(of course, replace *backtick* by actuwith backticks :) ).
+
+## That’s all folks 🎬
+
+That’s all for today\! Now have a nice emoji day 🎉
+
+```{=html}
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = "https://colinfay.me/worldemojiday";
+  this.page.identifier = "/emoji-day";
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+```

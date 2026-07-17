@@ -1,0 +1,163 @@
+---
+title: "Advent of Code 2019-04 with R & JavaScript"
+date: "2019-12-04"
+categories: [r-blog-en, aoc]
+aliases:
+  - "/aoc-2019-04/"
+---
+Solving Advent of Code 2019-04 with R and JavaScript.
+
+\[Disclaimer\] Obviously, this post contains a big spoiler about Advent
+of Code, as it gives solutions for solving day 4.
+
+\[Disclaimer bis\] I’m no JavaScript expert so this might not be the
+perfect solution. TBH, that’s also the case for the R solution.
+
+## About the JavaScript code
+
+The JavaScript code has been written in the same RMarkdown as the R
+code. It runs thanks to the `{bubble}` package:
+<https://github.com/ColinFay/bubble>
+
+## Instructions
+
+Find the instructions at: <https://adventofcode.com/2019/day/4>
+
+## R solution
+
+### Part one
+
+``` r
+test <- 156218:652527
+library(magrittr)
+cond <- function(vec){
+  splt <- strsplit(
+    as.character(vec),
+    "")[[1]] %>% as.numeric()
+  adj_eq <- (splt == dplyr::lag(splt))[-1]
+  incre <- (splt >= dplyr::lag(splt))[-1]
+  any(adj_eq) & all(incre)
+}
+vapply(test, cond, logical(1)) %>% sum()
+```
+
+    ## [1] 1694
+
+### Part two
+
+``` r
+cond2 <- function(vec){
+  splt <- strsplit(
+    as.character(vec),
+    "")[[1]] %>% as.numeric()
+  adj_eq <- (splt == dplyr::lag(splt))[-1]
+  if (any(adj_eq)){
+    adj_eq <- any(table(splt) == 2)
+  }
+  incre <- (splt >= dplyr::lag(splt))[-1]
+  any(adj_eq) & all(incre)
+}
+vapply(test, cond2, logical(1)) %>% sum()
+```
+
+    ## [1] 1148
+
+## JS solution
+
+### Part one & Two
+
+> // Generating the array (from
+> <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from>)
+
+``` javascript
+const range = (start, stop, step = 1) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
+var test = range(156218, 652527)
+```
+
+``` javascript
+function lag(vec){
+  var res = [];
+  res.push(null);
+  for (var i = 0; i < vec.length - 1; i ++){
+    res.push(vec[i])
+  }
+  return res
+}
+
+function cond(vec){
+  var vec = vec.toString().split("").map(x => parseInt(x));
+  var laged = lag(vec);
+  var adj_eq = vec.map( (x, i) => x == laged[i] )
+  adj_eq.shift()
+  var adj_eq = adj_eq.some(z => z);
+  var incre = vec.map( (x, i) => x >= laged[i] )
+  incre.shift()
+  var incre = incre.every(z => z);
+  var all = [incre, adj_eq].every(z => z);
+  return all
+}
+```
+
+``` javascript
+test.map(cond).filter(v => v).length
+```
+
+    ## 1694
+
+``` javascript
+function table(vec){
+  var tbl = {}
+  vec.map(function(x){
+    if (tbl[x]){
+      tbl[x] = tbl[x] + 1;
+    } else {
+      tbl[x] = 1;
+    }
+  })
+  return tbl
+}
+function cond2(vec){
+  var vec = vec.toString().split("").map(x => parseInt(x));
+  var laged = lag(vec);
+  var adj_eq = vec.map( (x, i) => x == laged[i] )
+  adj_eq.shift()
+  var adj_eq = adj_eq.some(z => z);
+  if (adj_eq){
+    var tb = table(vec);
+    var res = [];
+    for (i in tb){
+      res.push(tb[i] == 2);
+    }
+    var adj_eq = res.some(x => x);
+  }
+
+  var incre = vec.map( (x, i) => x >= laged[i] );
+  incre.shift();
+  var incre = incre.every(z => z);
+  var all = [incre, adj_eq].every(z => z);
+  return all;
+}
+```
+
+``` javascript
+test.map(cond2).filter(v => v).length;
+```
+
+    ## 1148
+
+```{=html}
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = "https://colinfay.me/aoc-2019-04/";
+  this.page.identifier = "/aoc-04";
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+```

@@ -1,0 +1,46 @@
+---
+title: "De passage à la Nantes Digital Week"
+date: "2017-09-18"
+aliases:
+  - "/nantes-digital-week/"
+---
+Cette semaine, j'interviens sur la question de la dataviz à la Nantes Digital Week : mardi au Medialab Speedtraining, et mercredi à Datarama !
+
+
+
+## 2017-09-19
+
+### Des données brutes à la dataviz 
+
+> MediaLab Speedtraining 
+
+Retour d'experience, conseils et méthodes pour visualiser ses données. 
+
+Plus d'infos : [http://www.medialabspeedtraining.fr/de-donnee-brute-a-dataviz/](http://www.medialabspeedtraining.fr/de-donnee-brute-a-dataviz/)
+
+## 2017-09-20 : 
+
+### Éthique et Dataviz 
+
+> Datarama #2 
+
+Penser la question de l'éthique en visualisation de données. 
+
+Plus d'infos : [https://www.lecolededesign.com/actualites/datarama-nantes-digital-week-2017-2735](https://www.lecolededesign.com/actualites/datarama-nantes-digital-week-2017-2735)
+
+```{=html}
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = "https://colinfay.me/nantes-digital-week/";
+  this.page.identifier = "/passage-digital-week";
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://http-colinfay-me.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+```

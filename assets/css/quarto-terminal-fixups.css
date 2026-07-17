@@ -1,0 +1,111 @@
+/* =========================================================
+   Quarto structural fixups on top of the real terminal.css
+   (https://panr.github.io/terminal-css/) — "Black & White"
+   preset: --background #000, --foreground #fff, --accent #fff
+   (set in terminal.css :root). Loaded AFTER terminal.css.
+   ========================================================= */
+
+:root {
+  --muted:    color-mix(in srgb, var(--foreground) 45%, var(--background));
+  --hairline: color-mix(in srgb, var(--foreground) 22%, transparent);
+}
+
+body { background: var(--background); color: var(--foreground); }
+
+/* ---- Sidebar (author card + nav) ---- */
+#quarto-sidebar, .sidebar {
+  background: var(--background) !important;
+  border-right: 1px solid var(--hairline);
+}
+#quarto-sidebar .sidebar-title { display: none; }
+#quarto-sidebar ul, #quarto-sidebar li { list-style: none; }
+#quarto-sidebar li::marker, #quarto-sidebar li::before { content: none !important; }
+.sidebar-navigation .sidebar-item a,
+#quarto-sidebar a.sidebar-item-text { color: var(--foreground) !important; }
+.sidebar-navigation .sidebar-item a:hover { background: var(--accent); color: var(--background) !important; }
+.sidebar-navigation .sidebar-item a.active { font-weight: 700; }
+
+/* reorder sidebar: author card, then nav, then the search box at the bottom */
+#quarto-sidebar { display: flex; flex-direction: column; }
+#quarto-sidebar > .quarto-sidebar-header { order: 1; }     /* author card + "Navigation:" */
+#quarto-sidebar > .sidebar-menu-container { order: 2; }    /* nav links */
+#quarto-sidebar > div:has(.sidebar-search) { order: 3; }   /* search box, moved below nav */
+#quarto-sidebar > .sidebar-header { display: none; }       /* empty hidden-title wrapper */
+#quarto-sidebar .sidebar-search {
+  margin-top: 1.1rem; padding-top: .7rem;
+  border-top: 1px dashed var(--hairline);
+}
+/* "Search:" label above the search box, styled like the "Navigation:" label */
+#quarto-sidebar .sidebar-search::before {
+  content: "Search:";
+  display: block;
+  color: var(--muted);
+  font-size: .8rem;
+  margin-bottom: .5rem;
+}
+
+.author-card { text-align: center; padding: 1rem .5rem .4rem; }
+.author-card .author-avatar {
+  display: block; margin: 0 auto;
+  width: 118px; height: 118px; border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--hairline); filter: grayscale(100%) contrast(1.05);
+}
+.author-card .author-name { margin-top: .6rem; color: var(--foreground); font-weight: 700; font-size: 1.15rem; }
+.author-card .author-bio { margin-top: .35rem; color: var(--muted); font-size: .82rem; line-height: 1.5; }
+.author-card .author-bio a { color: var(--foreground); }
+.author-card .nav-label {
+  margin-top: 1rem; color: var(--muted); font-size: .8rem; text-align: left;
+  border-top: 1px dashed var(--hairline); padding-top: .6rem;
+}
+
+/* ---- Page title + subtitle ---- */
+#title-block-header .quarto-title h1.title,
+.quarto-title h1.title {
+  font-size: 2.1rem;
+  border-bottom: 4px double var(--foreground);
+  padding-bottom: .3rem;
+  margin-bottom: .1rem;
+}
+.quarto-title .subtitle { color: var(--muted); font-size: 1rem; margin-top: .35rem; }
+.quarto-title .subtitle::before { content: "// "; color: var(--muted); }
+
+/* ---- Home listing "> title — date" ---- */
+.quarto-listing-default .quarto-post {
+  display: block; grid-template-columns: none;
+  border-bottom: 1px dashed var(--hairline); padding: .3rem 0; column-gap: 0;
+}
+.quarto-post .thumbnail, .quarto-post .thumbnail-image { display: none !important; }
+.quarto-post .body { display: inline !important; max-width: 100%; }
+.quarto-post .listing-subtitle,
+.quarto-post .listing-categories,
+.quarto-post .listing-reading-time { display: none !important; }
+.quarto-post .listing-title { display: inline !important; margin: 0; font-size: 1.02rem; font-weight: 500; }
+.quarto-post .listing-title a { color: var(--foreground); }
+.quarto-post .listing-title a:hover { background: var(--accent); color: var(--background) !important; }
+.quarto-post .listing-title a::before { content: "> "; color: var(--foreground); font-weight: 700; }
+.quarto-post .metadata { display: inline !important; text-align: left !important; }
+.quarto-post .metadata > a { display: inline !important; color: var(--muted); }
+.quarto-post .listing-date { display: inline !important; color: var(--muted); font-size: .9rem; margin-left: .35rem; }
+.quarto-post .listing-date::before { content: "— "; }
+
+/* ---- Code blocks (dark, match terminal.css inline-code treatment) ---- */
+div.sourceCode, pre.sourceCode {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--background)) !important;
+  border: 1px solid var(--hairline); border-radius: 0;
+}
+pre.sourceCode code, pre code { background: transparent !important; }
+/* inline code: make it visible on pure black (terminal.css uses only 5% fg) */
+code:not(.sourceCode) {
+  background: color-mix(in srgb, var(--foreground) 12%, var(--background)) !important;
+  border: 1px solid var(--hairline);
+  padding: 0.03em 0.32em;
+  border-radius: 0;
+}
+h1 code::before, h1 code::after, h2 code::before, h2 code::after,
+h3 code::before, h3 code::after, h4 code::before, h4 code::after,
+a code::before, a code::after { content: "" !important; }
+h1 code, h2 code, h3 code, h4 code { background: transparent !important; }
+
+/* ---- Pagination ---- */
+.listing-pagination .page-link { background: var(--background); color: var(--foreground); border-color: var(--hairline); }
+.listing-pagination .active .page-link { background: var(--accent); color: var(--background); border-color: var(--accent); }

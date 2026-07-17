@@ -1,0 +1,14 @@
+---
+title: "All Code No Brain"
+subtitle: "On the blog"
+listing:
+  id: posts
+  contents: "posts/*.qmd"
+  sort: "date desc"
+  type: default
+  page-size: 20
+  feed: true
+  fields: [date, title, categories, reading-time]
+  date-format: "YYYY-MM-DD"
+aliases: [ /page2/, /page3/, /page4/, /page5/, /page6/, /page7/ ]
+---
