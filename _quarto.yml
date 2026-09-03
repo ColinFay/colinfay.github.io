@@ -40,50 +40,60 @@ website:
   back-to-top-navigation: true
   page-navigation: false
   search:
-    location: sidebar
-    type: textbox
-  sidebar:
-    style: docked
-    background: dark
-    search: true
-    collapse-level: 1
-    header: |
-      <div class="author-card">
-        <img class="author-avatar" src="https://avatars.githubusercontent.com/u/17936236?s=300" alt="Colin Fay">
-        <div class="author-name">Colin FAY</div>
-        <div class="author-bio">Data Science and Engineering at <a href="https://thinkr.fr">ThinkR</a>. 'Chaotic good developer'. International Speaker. Runs. Eats plants.</div>
-        <div class="nav-label">Navigation:</div>
-      </div>
-    contents:
-      - text: "🏡 Home"
+    location: navbar
+    type: overlay
+  navbar:
+    title: "colinfay.me"
+    left:
+      - text: "[home]"
         href: index.qmd
-      - text: "✍️ Blog"
+      - text: "[blog]"
         href: categories/index.qmd
-      - text: "🤘 About"
+      - text: "[about]"
         href: about/index.qmd
-      - text: "📣 Talks & Publications"
+      - text: "[talks]"
         href: talks-publications/index.qmd
-      - text: "💾 Open Source"
+        aria-label: "Talks and publications"
+      - text: "[oss]"
         href: open-source/index.qmd
-      - text: "📕 Engineering Shiny"
+        aria-label: "Open source"
+      - text: "[book]"
         href: "https://engineering-shiny.org/"
+        target: _blank
+        aria-label: "Engineering Production-Grade Shiny Apps, the book"
+    right:
+      - text: "[rss]"
+        href: /feed.xml
+        aria-label: "RSS feed"
+      - text: "[github]"
+        href: "https://github.com/ColinFay"
+        target: _blank
+      - text: "[mastodon]"
+        href: "https://fosstodon.org/@colinfay"
+        target: _blank
 
 format:
   html:
     theme: darkly
     css:
       - assets/css/terminal.css
-      - assets/css/quarto-terminal-fixups.css
-    highlight-style: github-dark
+      - assets/css/crt.css
+    highlight-style: assets/css/crt.theme
+    date-format: "YYYY-MM-DD"
     toc: false
     grid:
-      sidebar-width: 260px
-      body-width: 900px
+      sidebar-width: 0px
+      margin-width: 0px
+      body-width: 1300px
+      gutter-width: 1.5rem
     include-in-header:
       - text: |
           <link rel="preconnect" href="https://fonts.googleapis.com">
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=VT323&display=swap">
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
           <meta name="twitter:card" content="summary_large_image">
           <meta name="twitter:site" content="@_ColinFay">
+    include-after-body:
+      - text: |
+          <script src="/assets/js/crt.js"></script>

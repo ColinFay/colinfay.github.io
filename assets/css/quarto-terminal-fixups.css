@@ -22,7 +22,7 @@ body { background: var(--background); color: var(--foreground); }
 #quarto-sidebar li::marker, #quarto-sidebar li::before { content: none !important; }
 .sidebar-navigation .sidebar-item a,
 #quarto-sidebar a.sidebar-item-text { color: var(--foreground) !important; }
-.sidebar-navigation .sidebar-item a:hover { background: var(--accent); color: var(--background) !important; }
+#quarto-sidebar .sidebar-item a:hover { background: var(--accent); color: var(--background) !important; }
 .sidebar-navigation .sidebar-item a.active { font-weight: 700; }
 
 /* reorder sidebar: author card, then nav, then the search box at the bottom */

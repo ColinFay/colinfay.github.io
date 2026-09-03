@@ -1,6 +1,5 @@
 ---
-title: "All Code No Brain"
-subtitle: "On the blog"
+pagetitle: "Colin Fay — All Code No Brain"
 listing:
   id: posts
   contents: "posts/*.qmd"
@@ -8,7 +7,22 @@ listing:
   type: default
   page-size: 20
   feed: true
-  fields: [date, title, categories, reading-time]
+  fields: [date, title, reading-time]
   date-format: "YYYY-MM-DD"
 aliases: [ /page2/, /page3/, /page4/, /page5/, /page6/, /page7/ ]
 ---
+
+```{=html}
+<div class="crt-hero">
+  <div>
+    <div class="crt-prompt"><span class="p">colin@colinfay.me:~$</span> whoami</div>
+    <div class="dim">Colin Fay — Data Science &amp; Engineering @ <a href="https://thinkr.fr">ThinkR</a>. Chaotic good developer. International speaker. Runs. Eats plants.</div>
+    <h1 class="crt-title">ALL CODE<br>NO BRAIN</h1>
+    <div class="crt-prompt"><span class="p">colin@colinfay.me:~$</span> ls -lt ~/blog | head -20</div>
+  </div>
+  <img class="crt-avatar" src="https://avatars.githubusercontent.com/u/17936236?s=300" alt="Colin Fay">
+</div>
+```
+
+::: {#posts}
+:::
