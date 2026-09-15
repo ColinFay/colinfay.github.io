@@ -6,9 +6,9 @@ title: "Talks & Publications"
 
 | | | |
 |---|---|---|
-| __2026-06-16__ |  Tutoriel - "Conception d'applications Shiny avec {golem}" (avec Vincent Guyader et Laurent Spanu), [Rencontres R 2026](https://astamm.github.io/fr/rr2026.html), Nantes. | |
 | __2025-10-09__ |  [After {shiny}: The Future of Mobile Apps with R](https://speakerdeck.com/colinfay/after-shiny-the-future-of-mobile-apps-with-r), [Shiny in Production 2025](https://shiny-in-production.jumpingrivers.com/), Newcastle. | |
 | __2025-10-08__ |  Workshop - "Production-Proof Shiny — End-to-End Testing with Playwright and {golem}", [Shiny in Production 2025](https://shiny-in-production.jumpingrivers.com/), Newcastle. | |
+| __2025-05-19__ |  Tutoriel - ["Conception d'applications Shiny avec {golem}"](https://rr2025.sciencesconf.org/resource/page/id/4) (avec Vincent Guyader et Laurent Spanu), Rencontres R 2025, Mons. | |
 | __2025-04-10__ |  [Beyond {shiny}: The Future of Mobile Apps with R](https://speakerdeck.com/colinfay/beyond-shiny-the-future-of-mobile-apps-with-r), ShinyConf 2025, Online. | |
 | __2024-07-09__ |  "WebR, and the Future of Building Web Applications with R", [useR! 2024](https://userconf2024.sched.com/list/simple), Salzburg. | |
 | __2023-06-21__ |  [MongoDB - J'suis pas venu ici pour souffrir, ok ?](https://rr2023.sciencesconf.org/), Rencontres R 2023, Avignon. | |
