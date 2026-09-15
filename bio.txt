@@ -1,18 +1,40 @@
-Colin FAY is a lead developer at ThinkR, a french agency focused on everything R-related.
+# Short version
 
-During the day, he helps companies to take full advantage of the power of R, by building tools and deploying infrastructure.
-His main areas of expertise are data & software engineering, web applications (frontend and backend), and R in production.
+Colin Fay is a lead developer at ThinkR, a French agency focused on everything
+R-related. He builds R packages, {shiny} apps that survive production, and
+maintains the golemverse.
 
-During the night, Colin is also an active open source developer and advocate.
+# Long version
 
-He's the main developer of the {golem} package, and the lead author of the "Building Production Grade Shiny Apps" book.
+Colin Fay is a lead developer at ThinkR, a French agency focused on everything
+R-related.
 
-More about Colin :
+By day, he helps companies take full advantage of the power of R. He builds
+tools, deploys infrastructure, and patiently explains that a {shiny} app is a
+serious piece of software like any other. His playground: data & software
+engineering, web applications (frontend and backend), and the long unglamorous
+road that takes R code all the way to production.
+
+By night, he is an active open source developer and advocate: main developer of
+{golem} and the wider golemverse, lead author of "Engineering Production-Grade
+Shiny Apps", and he travels the world to complain about computers in front of
+an audience.
+
+# Unofficial version (for the brave)
+
+Colin writes R for a living and runs absurdly long distances for fun. He eats
+only plants, listens to music that sounds like a chainsaw falling down a flight
+of stairs, and holds strong opinions about putting R in production. Buy him a
+coffee, and he will tell you about all four, whether you asked or not.
+
+# More about Colin
+
 https://colinfay.me
 https://github.com/ColinFay
-https://twitter.com/_ColinFay
+https://fosstodon.org/@colinfay
+https://speakerdeck.com/colinfay
 
-More about ThinkR :
+# More about ThinkR
+
 http://www.thinkr.fr/
 https://github.com/ThinkR-open
-https://twitter.com/Thinkr_FR

@@ -6,12 +6,17 @@ title: "Talks & Publications"
 
 | | | |
 |---|---|---|
-| __2023-06-21__ |  [MongoDB - J'suis pas venu ici pour souffrir, ok ?](https://www.meetup.com/fr-FR/prague-r-meetup-group/events/286072616/), Prague RUG, Prague. | |
+| __2026-06-16__ |  Tutoriel - "Conception d'applications Shiny avec {golem}" (avec Vincent Guyader et Laurent Spanu), [Rencontres R 2026](https://astamm.github.io/fr/rr2026.html), Nantes. | |
+| __2025-10-09__ |  [After {shiny}: The Future of Mobile Apps with R](https://speakerdeck.com/colinfay/after-shiny-the-future-of-mobile-apps-with-r), [Shiny in Production 2025](https://shiny-in-production.jumpingrivers.com/), Newcastle. | |
+| __2025-10-08__ |  Workshop - "Production-Proof Shiny — End-to-End Testing with Playwright and {golem}", [Shiny in Production 2025](https://shiny-in-production.jumpingrivers.com/), Newcastle. | |
+| __2025-04-10__ |  [Beyond {shiny}: The Future of Mobile Apps with R](https://speakerdeck.com/colinfay/beyond-shiny-the-future-of-mobile-apps-with-r), ShinyConf 2025, Online. | |
+| __2024-07-09__ |  "WebR, and the Future of Building Web Applications with R", [useR! 2024](https://userconf2024.sched.com/list/simple), Salzburg. | |
+| __2023-06-21__ |  [MongoDB - J'suis pas venu ici pour souffrir, ok ?](https://rr2023.sciencesconf.org/), Rencontres R 2023, Avignon. | |
 | __2023-03-16__ |  [[Keynote] Production is like ultra running: brutal, ungrateful, but worth every step](https://speakerdeck.com/colinfay/keynote-production-is-like-ultra-running-brutal-ungrateful-but-worth-every-step), ShinyConf 2023. | [\[video\]](https://www.youtube.com/watch?v=wMbhxTJNrmw)  |
 | __2022-10-07__ |  [DESTROY ALL WIDGETS](https://speakerdeck.com/colinfay/destroy-all-widgets), Shiny in Production, NewCastle. | [\[video\]](https://www.youtube.com/watch?v=8_k-iPwcleU)  |
 | __2022-07-01__ |  [Building Shiny Apps with {golem}](https://www.meetup.com/fr-FR/prague-r-meetup-group/events/286072616/), Prague RUG, Prague. | |
-| __2022-02-16__ |  [Building Multiple Page Shiny Apps with {brochure} ](https://www.meetup.com/fr-FR/prague-r-meetup-group/events/286072616/), Prague RUG, Prague. | [\[video\]](https://www.youtube.com/watch?v=8UiCqSKlfew) |
-| __2021-11-08__ |  [Let's talk about accessibility](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Conference, Online. | [](https://www.youtube.com/watch?v=8UiCqSKlfew) |
+| __2022-02-16__ |  [Building Multiple Page Shiny Apps with {brochure}](https://speakerdeck.com/colinfay/building-multi-page-shiny-apps-with-brochure), NHS-R Webinar, Online. | [\[video\]](https://www.youtube.com/watch?v=8UiCqSKlfew) |
+| __2021-11-08__ |  [Let's talk about accessibility](https://speakerdeck.com/colinfay/lets-talk-about-accessibility), NHS-R Conference, Online. | |
 | __2021-05-18__ | Mastering Shiny Book Club: the golem package, Online. | [\[video\]](https://www.youtube.com/watch?v=Vq2GKCbfpTI) |  |
 | __2020-10-15__ |  [Workshop - "Good Practices for {shiny} development with {golem}"](https://speakerdeck.com/colinfay/workshop-good-practices-for-shiny-development-with-golem), EARL, Online. |  |
 | __2020-09-25__ |  [Workshop - "Engineering {shiny} with {golem}"](https://speakerdeck.com/colinfay/engineering-shiny-with-golem-whyr), WhyR, Online. |  |
@@ -22,7 +27,9 @@ title: "Talks & Publications"
 | __2020-03-07__ |  ["Keynote - 'prod' is not a four letter word"](https://speakerdeck.com/colinfay/keynote-prod-is-not-a-four-letter-word), satRday, Johannesburg. | [\[video\]](https://youtu.be/UoNhFn_QoFw) |
 | __2020-03-06__ |  ["Workshop - Building Successful Shiny Apps with {golem}"](https://speakerdeck.com/colinfay/workshop-building-successful-shiny-apps-with-golem), satRday, Johannesburg.. | |
 | __2020-01-30__ |  ["Production-grade Shiny Apps with golem"](https://resources.rstudio.com/rstudio-conf-2020/production-grade-shiny-apps-with-golem-colin-fay), rstudio::conf(2020L), San Fransisco. | [\[video\]](https://resources.rstudio.com/rstudio-conf-2020/production-grade-shiny-apps-with-golem-colin-fay) |
-|  __2019-12-03__|  ["{golem} - Engineering Production-Grade Shiny Apps"](https://speakerdeck.com/colinfay/hacking-rstudio-advanced-use-of-your-favorite-ide), Barcelona R Meetup, Barcelona.||
+| __2020-01-28__ |  [Bringing JavaScript to Shiny with {golem}](https://speakerdeck.com/colinfay/rstudio-conf-2020l-bringing-javascript-to-shiny-with-golem), short talk du workshop "JavaScript for Shiny Users", rstudio::conf(2020L), San Fransisco. | |
+| __2020-01-04__ |  [Créer des applications Shiny avec {golem}](https://speakerdeck.com/colinfay/creer-des-applications-shiny-avec-golem), R-Ladies Algiers Meetup. | |
+|  __2019-12-03__|  ["{golem} - Engineering Production-Grade Shiny Apps"](https://speakerdeck.com/colinfay/engineering-production-grade-shiny-apps-with-golem), Barcelona R Meetup, Barcelona.||
 |  __2019-09-29__|  ["R & Microservices"](https://speakerdeck.com/colinfay/r-and-microservices), whyR 2019, Warsaw.||
 |  __2019-07-09__|  ["Hacking RStudio: Advanced Use of your Favorite IDE"](https://speakerdeck.com/colinfay/hacking-rstudio-advanced-use-of-your-favorite-ide), useR!2019, Toulouse.||
 |  __2019-07-08__|  ["Contributing to the R ecosystem"](https://speakerdeck.com/colinfay/contributing-to-the-r-ecosystem), useR!2019, Toulouse.||

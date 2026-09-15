@@ -2,7 +2,56 @@
 title: "About"
 ---
 
-## &#128187; What I'm doing right now &#128187;
+```{=html}
+<div class="crt-prompt"><span class="p">colin@colinfay.me:~$</span> cat ~/about.md<span class="crt-cursor"></span></div>
+```
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│  COLIN FAY                                    class: R dev    │
+├───────────────────────────────────────────────────────────────┤
+│  R / {shiny}          █████████████████████████████░   lvl 99 │
+│  Package dev          █████████████████████████████░   lvl 99 │
+│  JS & webR            ████████████████████░░░░░░░░░░   lvl 74 │
+│  Data engineering     ████████████████░░░░░░░░░░░░░░   lvl 60 │
+│  Docker & CI          ██████████████████░░░░░░░░░░░░   lvl 68 │
+│  Talks given          ████████████████████████░░░░░░   lvl 82 │
+│  Kilometres per week  ██████████████████████████████   lvl 100│
+│  Decibels tolerated   ███████████████████████████████████████████
+├───────────────────────────────────────────────────────────────┤
+│  quest    » shipping {shiny} apps that survive production     │
+│  loot     » a book, a bunch of packages, way too many talks   │
+│  weakness » needs black metal and coffee to ship code         │
+└───────────────────────────────────────────────────────────────┘
+```
+
+```r
+colin <- list(
+  day_job = "Lead Developer @ ThinkR",
+  builds = c(
+    "R packages",
+    "{shiny} apps that go to prod",
+    "books"
+  ),
+  ask_me_about = c(
+    "R",
+    "web apps",
+    "software engineering",
+    "open source"
+  ),
+  pronouns = "he/him",
+  offline = c(
+    "ultra running",
+    "black metal",
+    "plants (eating them)"
+  ),
+  status = "complaining about computers"
+)
+```
+
+***
+
+## 💻 What I'm doing right now 💻
 
 ### Lead Developer at <a href = "https://www.thinkr.fr">ThinkR</a>
 
@@ -11,7 +60,9 @@ title: "About"
 + Consulting
 + Training
 
-## Previous stuff I did
+***
+
+## 🗃️ Previously, on colinfay 🗃️
 
 ### Cofounder of the <a href = "http://breizhdataclub.org/">Breizh Data Club</a>
 
@@ -25,23 +76,20 @@ In 2016, Data Bzh won the Trophée Open Data 2016 ([More on that](http://data-bz
 
 ***
 
-## &#129337; Skills &#129337;
+## 🧰 Weapons of choice 🧰
 
 ### Programming languages
 
-<i class="fab fa-r-project"></i> R
-
-<i class="fab fa-js-square"></i> JavaScript
-
-<i class="fab fa-docker"></i> Docker
-
+<i class="fab fa-r-project"></i> R &nbsp;·&nbsp;
+<i class="fab fa-js-square"></i> JavaScript &nbsp;·&nbsp;
+<i class="fab fa-html5"></i> HTML &nbsp;·&nbsp;
+<i class="fab fa-css3-alt"></i> CSS &nbsp;·&nbsp;
 <i class="fas fa-terminal"></i> Bash
 
+### Plumbing
+
+<i class="fab fa-docker"></i> Docker &nbsp;·&nbsp;
 <i class="fab fa-git-alt"></i> Git
-
-<i class="fab fa-html5"></i> HTML
-
-<i class="fab fa-css3-alt"></i> CSS
 
 ### Data Science Engineering
 
@@ -51,7 +99,7 @@ In 2016, Data Bzh won the Trophée Open Data 2016 ([More on that](http://data-bz
 
 ***
 
-## &#127891; Education &#127891;
+## 🏆 Achievements unlocked 🏆
 
 ### Official RStudio Certificate
 
@@ -75,11 +123,18 @@ Full Service Certified Partners certification since 2019-01
 
 + Advanced Git, with _Human Coders_
 
-***
-
 ### University
 
 2014: Master 2 Information et Communication, Université de Rennes 2 parcours EPIC, mention Bien (15,5)
 
 2012: Master Langues, Cultures Étrangères et Régionales, Université de Rennes 2
 parcours Aire anglophone mention Bien (15,5)
+
+***
+
+## 📫 Say hi 📫
+
+Always up for talking R, {shiny} in production, long stupid runs, or blast beats.
+Ping me on [GitHub](https://github.com/ColinFay) or [Mastodon](https://fosstodon.org/@colinfay).
+
+🤘 May your builds be green, your coffee black, and your riffs heavy. 🤘

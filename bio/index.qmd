@@ -1,0 +1,42 @@
+---
+title: "Bio"
+aliases: [/bio.html]
+---
+
+```{=html}
+<div class="crt-prompt"><span class="p">colin@colinfay.me:~$</span> cat ~/bio.md<span class="crt-cursor"></span></div>
+```
+
+Need a bio for your conference website? Three sizes, help yourself — also available as [plain text](/bio.txt).
+
+## 🥄 Short version (one spoonful)
+
+> Colin Fay is a lead developer at ThinkR, a French agency focused on everything R-related. He builds R packages, `{shiny}` apps that survive production, and maintains the `golemverse`.
+
+## 🍽️ Long version (full plate)
+
+> Colin Fay is a lead developer at ThinkR, a French agency focused on everything R-related.
+>
+> By day, he helps companies take full advantage of the power of R. He builds tools, deploys infrastructure, and patiently explains that a `{shiny}` app is a serious piece of software like any other. His playground: data & software engineering, web applications (frontend *and* backend), and the long unglamorous road that takes R code all the way to production.
+>
+> By night, he is an active open source developer and advocate: main developer of `{golem}` and the wider `golemverse`, lead author of *Engineering Production-Grade Shiny Apps*, and he travels the world to complain about computers in front of an audience.
+
+## 🤘 Unofficial version (for the brave)
+
+> Colin writes R for a living and runs absurdly long distances for fun. He eats only plants, listens to music that sounds like a chainsaw falling down a flight of stairs, and holds strong opinions about putting R in production. Buy him a coffee, and he will tell you about all four, whether you asked or not.
+
+***
+
+## 📸 Pics
+
+Two flavours — pick your fighter.
+
+::: {layout-ncol=2}
+![The one with the horns](https://colinfay.me/assets/img/colin_fay_horns.jpeg)
+
+![The one for the serious slides](https://colinfay.me/assets/img/colin_fay.JPG)
+:::
+
+***
+
+[colinfay.me](https://colinfay.me) · [GitHub](https://github.com/ColinFay) · [Mastodon](https://fosstodon.org/@colinfay) · [Speakerdeck](https://speakerdeck.com/colinfay) · [ThinkR](https://www.thinkr.fr/)

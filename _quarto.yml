@@ -9,10 +9,10 @@ project:
     - "!osgridfolio/**"
   resources:
     - "CNAME"
+    - "bio.txt"
     - "assets/**"
     - "pics/**"
     - "src/**"
-    - "random/**"
     - "zee-you-user-2019/**"
     - "one-week-shiny-gogole-search/**"
     - "one-week-shiny-gogole-search.html"
